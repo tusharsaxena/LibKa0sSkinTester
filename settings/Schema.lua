@@ -112,6 +112,51 @@ add{
 }
 
 -- ---------------------------------------------------------------------------
+-- Sample controls -- a page of its own (settings/Panel.lua): one row of each widget type the
+-- renderer draws, so a skin can be judged on a settings page as well as in the showroom. The rows
+-- do nothing; the page wears the owner's skin like every Ka0s settings page.
+-- ---------------------------------------------------------------------------
+
+local SAMPLE = { section = "sample", page = "sample", group = "Sample controls" }
+local function sample(t)
+    for k, v in pairs(SAMPLE) do t[k] = v end
+    add(t)
+end
+
+sample{
+    path = "sample.checked", type = "bool", label = "A checkbox",
+    tooltip = "A checkbox in the skin you are wearing. It changes nothing.",
+    default = C.sample.checked,
+}
+sample{
+    path = "sample.size", type = "number", min = 1, max = 10, step = 1, label = "A slider",
+    tooltip = "A slider in the skin you are wearing. It changes nothing.",
+    default = C.sample.size,
+}
+sample{
+    path = "sample.mode", type = "string", widget = "Dropdown", label = "A dropdown",
+    values = {
+        { value = "small",  text = "Small" },
+        { value = "medium", text = "Medium" },
+        { value = "large",  text = "Large" },
+    },
+    tooltip = "A dropdown in the skin you are wearing. It changes nothing.",
+    default = C.sample.mode,
+}
+-- A color row carries its class-color companion beside it (options-ui-§17). The sample draws no
+-- unit, so the class meant is the player's.
+sample{
+    path = "sample.color", type = "color", label = "A color swatch", startsLine = true,
+    tooltip = "A color swatch in the skin you are wearing. It changes nothing. Not read while Use class color is on, except for its opacity, which always applies.",
+    default = C.sample.color,
+}
+sample{
+    path = "sample.useClassColor", type = "bool", label = "Use class color", classColorSource = "player",
+    tooltip = "The class-color companion every color swatch carries. It changes nothing here.",
+    default = C.sample.useClassColor,
+}
+
+-- ---------------------------------------------------------------------------
 -- Session-only paths (WhatGroup WG-12 / debug-logging-§5)
 -- ---------------------------------------------------------------------------
 --
@@ -277,7 +322,7 @@ Settings.ConsumeResetCount = S.ConsumeResetCount
 -- `string` arrived with the Master controls block: General visibility is a DROPDOWN, because a
 -- boolean can only ever answer two of options-ui-§15's four states. It is the only enum row in
 -- this addon and the library's flow engine and CLI parser both already read `values` / `sorting`.
-local VALID_TYPES = { bool = true, number = true, string = true }
+local VALID_TYPES = { bool = true, number = true, string = true, color = true }
 
 function Helpers.ValidateSchema()
     local errors = S.Validate{ types = VALID_TYPES }

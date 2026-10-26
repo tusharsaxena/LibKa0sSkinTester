@@ -132,8 +132,8 @@ test("settings: every schema row declares the fields the panel and CLI need", fu
         assertEqual(type(def.section), "string", where .. " section")
         assertEqual(type(def.group), "string", where .. " group")
         assertEqual(type(def.label), "string", where .. " label")
-        assertTrue(def.type == "bool" or def.type == "number" or def.type == "string",
-            where .. " type")
+        assertTrue(def.type == "bool" or def.type == "number" or def.type == "string"
+            or def.type == "color", where .. " type")
         assertTrue(def.default ~= nil, where .. " default")
         -- An enum row is only usable if the panel and the CLI can both enumerate it.
         -- `values` is either a map with a `sorting` order, or an ordered array of { value, text }
@@ -179,7 +179,7 @@ end)
 test("settings: ValidateSchema counts each defect on a broken row", function()
     local NS, _, mock = T.newAddon()
     local S = NS.addon.Settings.Schema
-    S[#S + 1] = { type = "color", label = 42 }   -- no path, bad type/section/group/label
+    S[#S + 1] = { type = "vector", label = 42 }   -- no path, bad type/section/group/label
     local mark = #mock.prints
     assertEqual(NS.addon.Settings.Helpers.ValidateSchema(), 5,
         "path, type, section, group and label are each reported")
@@ -196,9 +196,9 @@ end)
 test("settings: a broken row does not stop the panel registering", function()
     local NS, _, mock = T.bootAddon()
     local S = NS.addon.Settings.Schema
-    S[#S + 1] = { type = "color", label = 42 }
+    S[#S + 1] = { type = "vector", label = 42 }
     NS.addon.Settings.Register()
-    assertEqual(#mock.categories, 2,
+    assertEqual(#mock.categories, 3,
         "a bad row is an author bug: report it, but still ship the panel")
 end)
 
@@ -375,11 +375,18 @@ test("settings: RestoreAllDefaults restores every schema row", function()
     local NS = T.bootAddon()
     local H = NS.addon.Settings.Helpers
     for _, def in ipairs(NS.addon.Settings.Schema) do
-        H.Set(def.path, def.type == "bool" and not def.default or 9)
+        local moved = def.type == "bool" and not def.default or 9
+        if def.type == "color" then moved = { r = 0, g = 0, b = 0, a = 0 } end
+        H.Set(def.path, moved)
     end
     H.RestoreAllDefaults()
     for _, def in ipairs(NS.addon.Settings.Schema) do
-        assertEqual(H.Get(def.path), def.default, def.path .. " was not restored")
+        local got, want = H.Get(def.path), def.default
+        if type(want) == "table" then
+            for k, v in pairs(want) do assertEqual(got[k], v, def.path .. "." .. k .. " was not restored") end
+        else
+            assertEqual(got, want, def.path .. " was not restored")
+        end
     end
 end)
 
@@ -522,12 +529,14 @@ function()
     for _, expected in pairs(PARTITION) do
         local order, counts, seen = {}, {}, {}
         for _, row in ipairs(NS.addon.Settings.Schema) do
-            local g = row.group or "?"
-            if not seen[g] then
-                seen[g] = true
-                order[#order + 1] = g
+            if (row.page or "general") == "general" then   -- the General page's tabs only
+                local g = row.group or "?"
+                if not seen[g] then
+                    seen[g] = true
+                    order[#order + 1] = g
+                end
+                counts[g] = (counts[g] or 0) + 1
             end
-            counts[g] = (counts[g] or 0) + 1
         end
 
         local wantNames = {}
@@ -558,7 +567,7 @@ test("settings: every row's group is one of the designed tabs", function()
     -- The partition case above pins the counts; this one pins the NAMES, so a typo'd group on a
     -- new row reads as "Notificatons is not a tab" rather than as a count that happens to still add up.
     local NS = T.newAddon()
-    local known = { ["Master controls"] = true, Appearance = true }
+    local known = { ["Master controls"] = true, Appearance = true, ["Sample controls"] = true }
     for _, row in ipairs(NS.addon.Settings.Schema) do
         assertTrue(known[row.group] == true, row.path .. " is filed under " .. tostring(row.group))
     end
@@ -720,6 +729,11 @@ local STORED_SETTINGS = {
     "alpha = number|1|0|1|0.05|general|false",
     "enabled = bool|true|nil|nil|nil|general|false",
     "global.minimap.shown = bool|true|nil|nil|nil|general|false",
+    "sample.checked = bool|true|nil|nil|nil|sample|false",
+    "sample.color = color|0.2,0.6,1,1|nil|nil|nil|sample|false",
+    "sample.mode = string|medium|nil|nil|nil|sample|false",
+    "sample.size = number|5|1|10|1|sample|false",
+    "sample.useClassColor = bool|false|nil|nil|nil|sample|false",
     "scale = number|1|0.5|2|0.05|general|false",
     "skin.skin = string|ka0s|nil|nil|nil|skin|false",
     "skin.source = string|ka0s|nil|nil|nil|skin|false",
@@ -730,8 +744,10 @@ local function storedSettings(NS)
     local out = {}
     for _, row in ipairs(NS.addon.Settings.Schema) do
         if row.path then
+            local d = row.default
+            if type(d) == "table" then d = ("%s,%s,%s,%s"):format(d.r, d.g, d.b, d.a) end
             out[#out + 1] = row.path .. " = " .. table.concat({
-                tostring(row.type), tostring(row.default), tostring(row.min), tostring(row.max),
+                tostring(row.type), tostring(d), tostring(row.min), tostring(row.max),
                 tostring(row.step), tostring(row.section), tostring(row.sessionOnly and true or false),
             }, "|")
         end

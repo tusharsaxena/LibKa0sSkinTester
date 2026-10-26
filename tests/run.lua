@@ -158,6 +158,7 @@ Kit.run{
         "test_showroom",
         "test_showroom_coverage",
         "test_showroom_values",
+        "test_settings_sample",
         "test_panel",
         "test_profiles",
         "test_diagnostics",

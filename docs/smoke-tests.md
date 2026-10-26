@@ -10,8 +10,8 @@ its theme, and a retired number is never reused.
 | ID range | Theme | What it covers |
 |---|---|---|
 | INSTALL-1..3 | Install | Load, reload, first run |
-| SLASH-1..3 | Slash commands | `/st`, `/skintester`, help, the disabled refusal |
-| PANEL-1..4 | Settings panel | Landing page, General's tabs, Appearance, Keybindings |
+| SLASH-1..4 | Slash commands | `/st`, `/skintester`, help, the disabled refusal, a foreign `/st` |
+| PANEL-1..5 | Settings panel | Landing page, General's tabs, Appearance, Keybindings, Sample controls |
 | PROFILE-1..2 | Profiles | The Profiles page and the `profile` verb |
 | STATE-1..2 | Enable and disable | The stand-down and its refusal |
 | COMBAT-1..2 | Combat | The showroom and the panel in combat |
@@ -40,6 +40,9 @@ restart the client: new font and texture files are only seen at client start.
 - **SLASH-2. Alias.** `/skintester show`. → Opens the showroom. Result:
 - **SLASH-3. Disabled refusal.** `/st disable`, then `/st show`. → One tagged line naming
   `/st enable`; nothing opens. `/st enable` afterwards. Result:
+- **SLASH-4. A foreign /st.** With another addon that registers `/st` enabled (any one will do), log
+  in. → One tagged line saying this addon answers only to `/skintester`; `/st` reaches the other
+  addon, and `/skintester show` opens the showroom. With no such addon, no line at all. Result:
 
 ## Settings panel
 
@@ -52,6 +55,10 @@ restart the client: new font and texture files are only seen at client start.
   showroom repaints at once each time; the pick survives a `/reload`. Result:
 - **PANEL-4. Keybindings.** Bind a key on General -> Keybindings, then press it. → The showroom
   toggles; the same key shows under Options -> Keybindings -> Ka0s Skin Tester. Result:
+- **PANEL-5. Sample controls.** Pick Obsidian, then open Settings -> AddOns -> Ka0s Skin Tester ->
+  Sample controls. → One group heading over a checkbox, a slider, a dropdown, a color swatch and Use
+  class color, all in Obsidian; no Appearance tab and no copy button. Pick Glass on General and come
+  back. → The page follows. Result:
 
 ## Profiles
 
@@ -132,3 +139,4 @@ restart the client: new font and texture files are only seen at client start.
 | INSTALL-1..3, SLASH-1..3, PANEL-1..4, PROFILE-1..2, STATE-1..2, COMBAT-1..2, DIAG-1..2, DEGRADED-1, SHOW-1..4, LOC-1 | v0.1.0 scaffold | No client pass recorded yet |
 | SHOW-5..7 | ST-03, the swatch selector | No client pass recorded yet |
 | SHOW-8..10 | ST-05 + ST-06, the sections | No client pass recorded yet |
+| SLASH-4, PANEL-5 | ST-07, the collision and the sample page | No client pass recorded yet |

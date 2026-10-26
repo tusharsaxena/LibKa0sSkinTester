@@ -22,3 +22,11 @@ table in `settings/Slash.lua`. Bare `/st` opens the settings panel.
 
 The reserved verbs mean the same in every Ka0s addon (slash-commands-§2); `show` is this addon's one
 feature verb. The dispatcher's own refusals land in the debug console as `[Cmd]` lines.
+
+## When another addon holds `/st`
+
+`/st` is two letters, and another addon may already use it. At login (OnEnable, once every addon has
+registered) `NS.CheckSlashCollision` looks for any `SLASH_<NAME><n>` global spelling `/st` with a live
+`SlashCmdList[<NAME>]` that is not AceConsole's `ACECONSOLE_ST`. On a hit, this addon unregisters its
+`/st`, so the other addon keeps it, and prints one line: "Another addon already uses /st, so this one
+answers only to /skintester." The help text still shows `/st`.

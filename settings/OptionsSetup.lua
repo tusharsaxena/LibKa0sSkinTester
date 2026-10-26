@@ -230,7 +230,15 @@ local O = lib:New({
 
     -- One page, so the page key is ignored and every row belongs to it. `filter` (ctx.unit) is
     -- never set: this addon has no per-unit pages.
-    rowsForPage = function() return Settings.Schema end,
+    -- A row with no `page` is the General page's (the skin rows); the Sample controls rows carry
+    -- page = "sample" and draw only there.
+    rowsForPage = function(pageKey)
+        local out = {}
+        for _, row in ipairs(Settings.Schema) do
+            if (row.page or "general") == pageKey then out[#out + 1] = row end
+        end
+        return out
+    end,
     allRows     = function() return Settings.Schema end,
 
     -- Runs once, before the page builders. settings/Schema.lua's own shape check, which PRINTS its

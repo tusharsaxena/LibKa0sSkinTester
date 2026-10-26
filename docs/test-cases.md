@@ -217,7 +217,7 @@ Total.
 - settings: every color row is followed by its class-color companion, and none is disabled
 - settings: the stored settings are exactly the pinned ones
 
-### test_slash.lua (16)
+### test_slash.lua (19)
 
 - slash: COMMANDS order is the help order, fifteen positional triples
 - slash: every description has an enUS entry
@@ -235,6 +235,9 @@ Total.
 - slash: perf is registered by the addon and answers through the library
 - slash: show toggles the showroom while enabled
 - slash: degraded, the CLI verbs name the missing library and nothing raises
+- slash: /skintester opens the window
+- slash: a foreign /st is reported once and left alone
+- slash: with no foreign /st, nothing is said and both commands stay
 
 ### test_selector.lua (7)
 
@@ -267,6 +270,13 @@ Total.
 - values: every getter is displayed
 - values: every sem token has a line
 - values: a skin change redraws them
+
+### test_settings_sample.lua (4)
+
+- settings: the sample page carries one row of each widget type
+- settings: the sample page wears the owner's skin
+- settings: the sample rows stay on their page
+- settings: no copy button on the sample page
 
 ### test_panel.lua (37)
 
@@ -592,11 +602,12 @@ Total.
 | test_util.lua | 26 |
 | test_database.lua | 11 |
 | test_settings.lua | 53 |
-| test_slash.lua | 16 |
+| test_slash.lua | 19 |
 | test_selector.lua | 7 |
 | test_showroom.lua | 6 |
 | test_showroom_coverage.lua | 4 |
 | test_showroom_values.lua | 3 |
+| test_settings_sample.lua | 4 |
 | test_panel.lua | 37 |
 | test_profiles.lua | 17 |
 | test_diagnostics.lua | 10 |
@@ -617,4 +628,4 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | Skipped | 1 |
-| **Total** | **475** |
+| **Total** | **482** |

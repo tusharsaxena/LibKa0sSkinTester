@@ -26,4 +26,5 @@
 - File load: the skin owner registers (Ka0s Default, since AceDB does not exist yet).
 - OnInitialize: AceDB, migrations, the profile callbacks, the stored skin applied, the chat
   commands.
-- OnEnable: the settings category, the launcher, then the latch from the stored `enabled`.
+- OnEnable: the settings category, the launcher, the `/st` collision check, then the latch from
+  the stored `enabled`.

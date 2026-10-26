@@ -11,7 +11,12 @@ capture ring, outside AceDB, written only by the harness).
 | `scale` | number | `1` | Master controls (composed) | The showroom's scale, 0.5 to 2 |
 | `alpha` | number | `1` | Master controls (composed) | The showroom's opacity |
 | `skin.source` | string | `ka0s` | Appearance | `ka0s` or `eui` |
-| `skin.skin` | string | `ka0s` | Appearance | Any registered Ka0s skin key |
+| `skin.skin` | string | `ka0s` | Appearance | Any registered Ka0s skin key; an unregistered one applies Ka0s Default |
+| `sample.checked` | bool | `true` | Sample controls | Shown, read by nothing |
+| `sample.size` | number | `5` | Sample controls | 1 to 10, step 1; read by nothing |
+| `sample.mode` | string | `medium` | Sample controls | `small`, `medium`, `large`; read by nothing |
+| `sample.color` | color | `{ r = 0.2, g = 0.6, b = 1, a = 1 }` | Sample controls | Read by nothing |
+| `sample.useClassColor` | bool | `false` | Sample controls | The swatch's class-color companion (options-ui-§17), `classColorSource = "player"` |
 
 Defaults live in `defaults/Profile.lua` (`NS.C`); each row reads its default from there.
 

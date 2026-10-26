@@ -15,7 +15,14 @@ login; each page's body builds on its first show.
   - **Appearance**, the library's own tab: the skin source, the nine skins, "Copy to every Ka0s
     addon..." and the note. A pick repaints the showroom at once.
   - **Keybindings**, the library's own tab, last: the Show window binding (`NS.BINDINGS`).
-- **Profiles**: AceDBOptions' profile controls.
+- **Sample controls**: one row of each widget type the renderer draws (a checkbox, a slider, a
+  dropdown, a color swatch and its Use class color companion) under one group heading, untabbed. It
+  shows the skin on a settings page; the rows are read by nothing. No Appearance tab and no copy
+  action: the skin is picked on General.
+- **Profiles**: AceDBOptions' profile controls, last.
+
+A row with no `page` is the General page's; the sample rows carry `page = "sample"`, and the host's
+`rowsForPage` (settings/OptionsSetup.lua) hands each page only its own rows.
 
 ## The write seam
 

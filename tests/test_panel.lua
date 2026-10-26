@@ -79,7 +79,7 @@ end
 
 test("panel: OnEnable registers the parent category and the General subcategory", function()
     local _, _, mock = T.enableAddon()
-    assertEqual(#mock.categories, 2)
+    assertEqual(#mock.categories, 3)
     assertEqual(mock.categories[1].label, "Ka0s Skin Tester")
     assertEqual(mock.categories[2].label, "General")
 end)
@@ -93,7 +93,7 @@ test("panel: Register is idempotent — a second call registers nothing more", f
     local NS, _, mock = T.enableAddon()
     NS.addon.Settings.Register()
     NS.addon.Settings.Register()
-    assertEqual(#mock.categories, 2)
+    assertEqual(#mock.categories, 3)
 end)
 
 -- End combat the way the client does for LibKa0s Options' registration park (minor 24): the
@@ -122,11 +122,11 @@ test("panel: a registration taken in combat is parked and lands at PLAYER_REGEN_
     assertTrue(NS.addon._settingsRegistered, "the idempotence flag is set; the library owns the replay")
     assertEqual(#mock.categories, 0, "nothing registers under InCombatLockdown()")
     local f = endCombat(env, mock)
-    assertEqual(#mock.categories, 2, "the parked registration lands at combat end")
+    assertEqual(#mock.categories, 3, "the parked registration lands at combat end")
     assertFalse(f.__events.PLAYER_REGEN_ENABLED and true or false,
         "the park lets go of PLAYER_REGEN_ENABLED once drained")
     NS.addon.Settings.Register()
-    assertEqual(#mock.categories, 2, "a second Register registers nothing more")
+    assertEqual(#mock.categories, 3, "a second Register registers nothing more")
 end)
 
 -- red under: LibKa0s Options registering immediately under InCombatLockdown (pre-LK-25)
@@ -136,9 +136,9 @@ test("panel: a login taken in combat is parked and lands at combat end, with no 
     NS.addon:OnEnable()
     assertEqual(#mock.categories, 0, "the login registration is parked in combat")
     endCombat(env, mock)
-    assertEqual(#mock.categories, 2, "and lands at combat end with no user action")
+    assertEqual(#mock.categories, 3, "and lands at combat end with no user action")
     NS.addon.Settings.Register()
-    assertEqual(#mock.categories, 2, "the landed registration stands; the second call is a no-op")
+    assertEqual(#mock.categories, 3, "the landed registration stands; the second call is a no-op")
 end)
 
 test("panel: registration validates the schema", function()

@@ -53,6 +53,8 @@ L["Text"]                               = "Text"
 L["Panels"]                             = "Panels"
 L["Overlays"]                           = "Overlays"
 L["Values"]                             = "Values"
+L["Another addon already uses /st, so this one answers only to /skintester."] =
+    "Another addon already uses /st, so this one answers only to /skintester."
 L["Toggle the skin showroom"]           = "Toggle the skin showroom"
 L["Shows or hides the skin showroom."]  = "Shows or hides the skin showroom."
 
