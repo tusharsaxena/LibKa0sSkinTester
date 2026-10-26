@@ -16,6 +16,8 @@ local addonName, NS = ...
 --                                  its height, where paint(name, ...) is R.Paint
 --   R.Caption(parent, text)        a FontString in the skin's muted text: a sample's label
 --   R.Section(key)                 a built section's frame (with .title); nil before the first open
+--   R.Grid(body)                   a wrapping row layout of captioned cells, for a section's build
+--   R.SampleButton(parent, w, h, text, template)   a Button with its label in .text
 
 NS.Showroom = NS.Showroom or {}
 local R = NS.Showroom
@@ -70,6 +72,41 @@ function R.Caption(parent, text)
     fs:SetText(text)
     R.Paint("Text", fs, "muted")
     return fs
+end
+
+local CELL_GAP, CELL_MIN_W, CAPTION_H = 14, 150, 18
+
+--- A section's samples, left to right, wrapping at the body's width. g:Add(w, h, caption) answers a
+--- fresh cell frame of that size with the caption under it; g:Height() is what a build answers.
+function R.Grid(body)
+    local g = { x = 0, y = 0, rowH = 0, width = body:GetWidth() or WIDTH - 16 }
+    function g:Add(w, h, caption)
+        local span = math.max(w, CELL_MIN_W)
+        if self.x > 0 and self.x + span > self.width then
+            self.x, self.y, self.rowH = 0, self.y + self.rowH + CELL_GAP, 0
+        end
+        local cell = CreateFrame("Frame", nil, body)
+        cell:SetSize(w, h)
+        cell:SetPoint("TOPLEFT", body, "TOPLEFT", self.x, -self.y)
+        local cap = R.Caption(body, caption)
+        cap:SetPoint("TOPLEFT", cell, "BOTTOMLEFT", 0, -4)
+        self.x = self.x + span + CELL_GAP
+        self.rowH = math.max(self.rowH, h + CAPTION_H)
+        return cell
+    end
+    function g:Height() return self.y + self.rowH end
+    return g
+end
+
+function R.SampleButton(parent, w, h, text, template)
+    local btn = CreateFrame("Button", nil, parent, template or "BackdropTemplate")
+    btn:SetSize(w, h)
+    local fs = btn:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+    fs:SetPoint("CENTER", btn, "CENTER", 0, 0)
+    fs:SetText(text)
+    btn.text = fs
+    if btn.SetFontString then btn:SetFontString(fs) end
+    return btn
 end
 
 --- The skin the showroom wears, by its label, for the footer.

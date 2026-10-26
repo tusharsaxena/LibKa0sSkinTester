@@ -46,6 +46,13 @@ L["Diagnostic report written to the debug console: %d lines. Use Copy to share i
 -- The showroom window and its key binding
 L["Skin showroom"]                      = "Skin showroom"
 L["Wearing %s"]                          = "Wearing %s"
+L["Window chrome"]                      = "Window chrome"
+L["Controls"]                           = "Controls"
+L["Lists"]                              = "Lists"
+L["Text"]                               = "Text"
+L["Panels"]                             = "Panels"
+L["Overlays"]                           = "Overlays"
+L["Values"]                             = "Values"
 L["Toggle the skin showroom"]           = "Toggle the skin showroom"
 L["Shows or hides the skin showroom."]  = "Shows or hides the skin showroom."
 

@@ -17,7 +17,7 @@ its theme, and a retired number is never reused.
 | COMBAT-1..2 | Combat | The showroom and the panel in combat |
 | DIAG-1..2 | Diagnostics | The debug console and the report |
 | DEGRADED-1 | Degraded install | The library-absent load |
-| SHOW-1..7 | Showroom | The window, the swatch selector, position and scale |
+| SHOW-1..10 | Showroom | The window, the swatch selector, the sections, position and scale |
 | LOC-1 | Non-English client | Locale-dependent behavior |
 
 ## Before you start
@@ -105,6 +105,15 @@ restart the client: new font and texture files are only seen at client start.
   card that repaints nothing, or a reload that comes back in Default. Result:
 - **SHOW-7. A pick made elsewhere.** With the showroom open, pick Glass on General -> Appearance. →
   The window repaints and the Glass card becomes the selected one. Result:
+- **SHOW-8. Every section, every skin.** Click through all nine cards and scroll the whole window on
+  each. → Chrome, Controls, Lists, Text, Panels, Overlays and Values are all legible in every skin.
+  Record an illegible sample as a skin defect (skin, section, caption), not as a showroom failure.
+  Result:
+- **SHOW-9. Live samples.** Hover "Hover me", click the dropdown, click the second and third tabs. →
+  A skinned tooltip, the skinned popup menu, and the tab selection moving. Result:
+- **SHOW-10. Values.** Look at the Values section in Ka0s Default, then Azeroth. → The swatches and the
+  `sem.*` lines change color with the skin, and the body-font line changes face where the skin sets
+  one. Result:
 
 ## Non-English client
 
@@ -122,3 +131,4 @@ restart the client: new font and texture files are only seen at client start.
 |---|---|---|
 | INSTALL-1..3, SLASH-1..3, PANEL-1..4, PROFILE-1..2, STATE-1..2, COMBAT-1..2, DIAG-1..2, DEGRADED-1, SHOW-1..4, LOC-1 | v0.1.0 scaffold | No client pass recorded yet |
 | SHOW-5..7 | ST-03, the swatch selector | No client pass recorded yet |
+| SHOW-8..10 | ST-05 + ST-06, the sections | No client pass recorded yet |

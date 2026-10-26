@@ -156,6 +156,8 @@ Kit.run{
         "test_slash",
         "test_selector",
         "test_showroom",
+        "test_showroom_coverage",
+        "test_showroom_values",
         "test_panel",
         "test_profiles",
         "test_diagnostics",

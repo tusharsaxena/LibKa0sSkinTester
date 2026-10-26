@@ -69,6 +69,13 @@ defaults\Profile.lua
 # settings\Panel.lua reads at file scope; the # Modules -> # Settings order guarantees it.
 modules\Selector.lua
 modules\Showroom.lua
+modules\ShowroomChrome.lua
+modules\ShowroomControls.lua
+modules\ShowroomLists.lua
+modules\ShowroomText.lua
+modules\ShowroomPanels.lua
+modules\ShowroomOverlays.lua
+modules\ShowroomValues.lua
 modules\Diagnostics.lua
 
 # Settings
