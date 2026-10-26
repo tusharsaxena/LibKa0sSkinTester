@@ -17,7 +17,7 @@ its theme, and a retired number is never reused.
 | COMBAT-1..2 | Combat | The showroom and the panel in combat |
 | DIAG-1..2 | Diagnostics | The debug console and the report |
 | DEGRADED-1 | Degraded install | The library-absent load |
-| SHOW-1..4 | Showroom | The window, the skin switch, position and scale |
+| SHOW-1..7 | Showroom | The window, the swatch selector, position and scale |
 | LOC-1 | Non-English client | Locale-dependent behavior |
 
 ## Before you start
@@ -96,6 +96,14 @@ restart the client: new font and texture files are only seen at client start.
 - **SHOW-3. Scale and opacity.** Move Master scale and Master opacity. → The window follows. Result:
 - **SHOW-4. Two addons, one copy.** With Ka0s Loot History also installed and on the same skin, open
   both. → Both wear the skin the same way. Result:
+- **SHOW-5. Swatch selector.** `/st show`. → Nine cards across the top, Ka0s Default first, each with
+  its name and four color swatches; the card of the skin you are wearing has its name in the skin's
+  accent. No EllesmereUI card. Result:
+- **SHOW-6. Pick a skin.** Click Obsidian, then `/reload` and reopen. → The window repaints in Obsidian
+  at the click, Obsidian's card reads selected, and after the reload it is still Obsidian. Fail: a
+  card that repaints nothing, or a reload that comes back in Default. Result:
+- **SHOW-7. A pick made elsewhere.** With the showroom open, pick Glass on General -> Appearance. →
+  The window repaints and the Glass card becomes the selected one. Result:
 
 ## Non-English client
 
@@ -112,3 +120,4 @@ restart the client: new font and texture files are only seen at client start.
 | ID | Origin | Why it is owed |
 |---|---|---|
 | INSTALL-1..3, SLASH-1..3, PANEL-1..4, PROFILE-1..2, STATE-1..2, COMBAT-1..2, DIAG-1..2, DEGRADED-1, SHOW-1..4, LOC-1 | v0.1.0 scaffold | No client pass recorded yet |
+| SHOW-5..7 | ST-03, the swatch selector | No client pass recorded yet |

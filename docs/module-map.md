@@ -21,6 +21,7 @@ LibDataBroker, LibDBIcon, LibKa0s) and `tests/_kit/` are vendored and never edit
 | `core/Database.lua` | The migration runner | Conventional |
 | `core/LauncherSetup.lua` | The minimap button and broker row (LibKa0s-Launcher-1.0) | Conventional; registered from OnEnable |
 | `defaults/Profile.lua` | `NS.C`, every default value | Before `settings/Schema.lua` |
+| `modules/Selector.lua` | The swatch selector: one card per Ka0s skin, `Pick` (apply, then save) and `Refresh` | Before `modules/Showroom.lua`, which builds it into the window |
 | `modules/Showroom.lua` | The showroom window, its toggle, the key-binding button and `NS.BINDINGS` | Before `settings/Panel.lua` (group order) |
 | `modules/Diagnostics.lua` | The sections of `/st diagnostics` | Conventional; read at run time |
 | `settings/SchemaSetup.lua` | `Settings.SchemaLib`: LibKa0s-Schema-1.0 or the host stub | Directly before `settings/Schema.lua` |

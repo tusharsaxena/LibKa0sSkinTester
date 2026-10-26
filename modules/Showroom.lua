@@ -68,11 +68,14 @@ local function build()
         f.close = close
     end
 
-    -- The body later items fill: the swatch selector on top, the sections below it.
+    -- The body: the swatch selector on top, the sections below it.
     local body = CreateFrame("Frame", nil, f)
     body:SetPoint("TOPLEFT", bar, "BOTTOMLEFT", 8, -8)
     body:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", -8, 8)
     f.body = body
+
+    f.selector = NS.Selector.Build(body)
+    f.selector:SetPoint("TOPLEFT", body, "TOPLEFT", 0, 0)
 
     local skin = S()
     skin.Shell(f)
@@ -99,6 +102,11 @@ function R.ResetPosition()
     NS.Windows.Forget(WINDOW_NAME)
     if frame then anchorDefault(frame) end
     NS.Debug("Showroom", "position reset")
+end
+
+--- The swatch selector of the built window; nil before the first open.
+function R.Selector()
+    return frame and frame.selector
 end
 
 function R.IsShown()
@@ -147,6 +155,7 @@ end
 if NS.Skin and NS.Skin.OnLooksChanged then
     NS.Skin.OnLooksChanged(function()
         local t0 = Perf.on and debugprofilestop()
+        if frame then NS.Selector.Refresh(frame.selector) end
         NS.Debug("Showroom", "skin changed")
         if t0 then Perf.Note("repaint", debugprofilestop() - t0) end
     end)

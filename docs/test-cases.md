@@ -236,6 +236,16 @@ Total.
 - slash: show toggles the showroom while enabled
 - slash: degraded, the CLI verbs name the missing library and nothing raises
 
+### test_selector.lua (7)
+
+- selector: one card per Ka0s skin, in Skins() order
+- selector: clicking a card applies and saves the skin
+- selector: a pick made elsewhere moves the selection
+- selector: the saved skin is applied at load
+- selector: an unknown saved skin falls back to ka0s
+- selector: clicking the current card does nothing
+- selector: no EllesmereUI card and no copy button
+
 ### test_panel.lua (37)
 
 - panel: OnEnable registers the parent category and the General subcategory
@@ -561,6 +571,7 @@ Total.
 | test_database.lua | 11 |
 | test_settings.lua | 53 |
 | test_slash.lua | 16 |
+| test_selector.lua | 7 |
 | test_panel.lua | 37 |
 | test_profiles.lua | 17 |
 | test_diagnostics.lua | 10 |
@@ -581,4 +592,4 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | Skipped | 1 |
-| **Total** | **455** |
+| **Total** | **462** |

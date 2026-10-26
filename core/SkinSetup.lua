@@ -11,7 +11,10 @@ local addonName, NS = ...
 --                           `/st set` and the panel write through (architecture-§5).
 --   NS.ApplySkinChoice(s,k) moves the applied skin with Skin:SetChoice, which repaints every frame
 --                           recorded for this owner and then fires OnLooksChanged. No argument applies
---                           the stored pair; a nil half keeps that half.
+--                           the stored pair; a nil half keeps that half. A skin key no registered
+--                           skin carries applies Ka0s Default: the library keeps any non-empty
+--                           string, and a hand-edited or stale profile must not wear a skin nobody
+--                           can pick.
 --   NS.SKIN_OPTIONS         the skin row's values, every registered skin in the library's order,
 --   NS.SKIN_SOURCE_OPTIONS  and the source row's. settings/Schema.lua reads both at load.
 --   NS.SkinPaintAceTree(c)  Skin:PaintAceTree with the owner bound, for AceGUI widgets this addon
@@ -109,8 +112,12 @@ function NS.SkinPaintAceTree(container)
     return Skin:PaintAceTree(addonName, container)
 end
 
+local KNOWN = {}
+for _, opt in ipairs(NS.SKIN_OPTIONS) do KNOWN[opt.value] = true end
+
 function NS.ApplySkinChoice(source, skin)
     if source == nil and skin == nil then source, skin = NS.SkinChoice() end
+    if skin ~= nil and not KNOWN[skin] then skin = DEFAULT end
     local changed, reload = Skin:SetChoice(addonName, source, skin)
     if reload and NS.Print then NS.Print(RELOAD_LINE) end
     return changed, reload

@@ -154,6 +154,7 @@ Kit.run{
         "test_database",
         "test_settings",
         "test_slash",
+        "test_selector",
         "test_panel",
         "test_profiles",
         "test_diagnostics",
