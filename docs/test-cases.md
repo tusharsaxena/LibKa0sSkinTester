@@ -258,12 +258,13 @@ Total.
 - showroom: opened after a skin change, it wears the new skin
 - showroom: a skin change repaints the open window
 
-### test_showroom_coverage.lua (4)
+### test_showroom_coverage.lua (5)
 
 - showroom: every lib.VOCAB name is shown
 - showroom: every section is built and none is empty
 - showroom: the tabs sample moves its selection on a click
 - showroom: the sections build without the library's widgets
+- showroom: the slider sample is visible under Ka0s Default, which sets no slider token
 
 ### test_showroom_values.lua (3)
 
@@ -605,7 +606,7 @@ Total.
 | test_slash.lua | 19 |
 | test_selector.lua | 7 |
 | test_showroom.lua | 6 |
-| test_showroom_coverage.lua | 4 |
+| test_showroom_coverage.lua | 5 |
 | test_showroom_values.lua | 3 |
 | test_settings_sample.lua | 4 |
 | test_panel.lua | 37 |
@@ -628,4 +629,4 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | Skipped | 1 |
-| **Total** | **482** |
+| **Total** | **483** |

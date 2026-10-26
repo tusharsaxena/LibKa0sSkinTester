@@ -100,17 +100,26 @@ R.AddSection("controls", L["Controls"], function(body, paint)
     slider:SetOrientation("HORIZONTAL")
     slider:SetMinMaxValues(0, 100)
     slider:SetValue(40)
+    -- Drawn the way a host draws its own slider: white textures in the host's tints, which the
+    -- primitive re-tints with SetVertexColor in a skin. Ka0s Default sets no slider token, so it
+    -- leaves these as drawn; blank textures would show nothing there at all.
     slider.track = slider:CreateTexture(nil, "BACKGROUND")
     slider.track:SetPoint("LEFT", slider, "LEFT", 0, 0)
     slider.track:SetPoint("RIGHT", slider, "RIGHT", 0, 0)
     slider.track:SetHeight(4)
+    slider.track:SetColorTexture(0.24, 0.24, 0.27, 0.9)
     local fill = slider:CreateTexture(nil, "ARTWORK")
     fill:SetPoint("LEFT", slider.track, "LEFT", 0, 0)
     fill:SetSize(72, 4)
+    fill:SetColorTexture(1, 1, 1, 1)
+    fill:SetVertexColor(1, 0.82, 0)
     local thumb = slider:CreateTexture(nil, "OVERLAY")
     thumb:SetSize(10, 16)
+    thumb:SetColorTexture(1, 1, 1, 1)
+    thumb:SetVertexColor(0.9, 0.9, 0.9)
     slider:SetThumbTexture(thumb)
     paint("Slider", slider, { fill = fill, thumb = thumb })
+    body.slider, slider.thumb = slider, thumb
 
     return g:Height()
 end)
