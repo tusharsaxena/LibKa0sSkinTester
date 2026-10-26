@@ -155,6 +155,7 @@ Kit.run{
         "test_settings",
         "test_slash",
         "test_selector",
+        "test_showroom",
         "test_panel",
         "test_profiles",
         "test_diagnostics",

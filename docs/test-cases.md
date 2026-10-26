@@ -246,6 +246,15 @@ Total.
 - selector: clicking the current card does nothing
 - selector: no EllesmereUI card and no copy button
 
+### test_showroom.lua (6)
+
+- showroom: the window is painted through the wrapper
+- showroom: Paint answers the primitive's answer and records the name once
+- showroom: sections lay out in registration order, each under its title
+- showroom: a caption is muted text
+- showroom: opened after a skin change, it wears the new skin
+- showroom: a skin change repaints the open window
+
 ### test_panel.lua (37)
 
 - panel: OnEnable registers the parent category and the General subcategory
@@ -572,6 +581,7 @@ Total.
 | test_settings.lua | 53 |
 | test_slash.lua | 16 |
 | test_selector.lua | 7 |
+| test_showroom.lua | 6 |
 | test_panel.lua | 37 |
 | test_profiles.lua | 17 |
 | test_diagnostics.lua | 10 |
@@ -592,4 +602,4 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | Skipped | 1 |
-| **Total** | **462** |
+| **Total** | **468** |

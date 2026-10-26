@@ -90,7 +90,8 @@ restart the client: new font and texture files are only seen at client start.
 ## Showroom
 
 - **SHOW-1. Window.** `/st show`. → A window titled "Ka0s Skin Tester — Skin showroom", closed by its
-  close button and by Escape. Result:
+  close button and by Escape, with a footer reading "Wearing Ka0s Default" (the skin you wear) and the
+  sections scrolling under the mouse wheel. Result:
 - **SHOW-2. Position.** Drag it by the title bar, `/reload`, reopen. → Same place. Master controls ->
   Reset position centers it. Result:
 - **SHOW-3. Scale and opacity.** Move Master scale and Master opacity. → The window follows. Result:
