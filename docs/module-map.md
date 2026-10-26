@@ -23,7 +23,7 @@ LibDataBroker, LibDBIcon, LibKa0s) and `tests/_kit/` are vendored and never edit
 | `defaults/Profile.lua` | `NS.C`, every default value | Before `settings/Schema.lua` |
 | `modules/Selector.lua` | The swatch selector: one card per Ka0s skin, `Pick` (apply, then save) and `Refresh` | Before `modules/Showroom.lua`, which builds it into the window |
 | `modules/Showroom.lua` | The showroom window, its toggle, the key-binding button and `NS.BINDINGS`; the paint wrapper (`Paint`, which records every primitive in `used`), the section registry (`AddSection`, laid out in a scroll body) and `Caption` | Before `settings/Panel.lua` (group order) |
-| `modules/ShowroomChrome.lua` | Section: the tab strip (Tab, SetTabSelection); the window itself is the rest of the chrome | After `modules/Showroom.lua` (it calls `AddSection`); the six section files load in display order |
+| `modules/ShowroomChrome.lua` | Section: the tab strip (Tab, SetTabSelection); the window itself is the rest of the chrome | After `modules/Showroom.lua` (it calls `AddSection`); the seven section files load in display order |
 | `modules/ShowroomControls.lua` | Section: buttons in every state, paging arrows, an icon button, the library's search box and dropdown, check buttons, a slider | As above |
 | `modules/ShowroomLists.lua` | Section: sort header, a list row in each state, a scroll bar | As above |
 | `modules/ShowroomText.lua` | Section: the nine text roles, Font and White | As above |
@@ -33,9 +33,9 @@ LibDataBroker, LibDBIcon, LibKa0s) and `tests/_kit/` are vendored and never edit
 | `modules/Diagnostics.lua` | The sections of `/st diagnostics` | Conventional; read at run time |
 | `settings/SchemaSetup.lua` | `Settings.SchemaLib`: LibKa0s-Schema-1.0 or the host stub | Directly before `settings/Schema.lua` |
 | `settings/Schema.lua` | The rows, the runtime `NS.SchemaRuntime`, defaults, reset | Before OptionsSetup, Panel and Slash |
-| `settings/OptionsSetup.lua` | The LibKa0s-Options-1.0 instance, `Settings.Helpers` | Before `settings/Panel.lua` |
-| `settings/Panel.lua` | The landing spec, the General page and its tabs, `Settings.Register` | After OptionsSetup |
-| `settings/Slash.lua` | `COMMANDS`, the host verbs, the LibKa0s-Slash-1.0 dispatcher | Conventional within `# Settings` |
+| `settings/OptionsSetup.lua` | The LibKa0s-Options-1.0 instance, `Settings.Helpers`, and `rowsForPage`, which hands each page only its own rows | Before `settings/Panel.lua` |
+| `settings/Panel.lua` | The landing spec, the General page and its tabs, the Sample controls page, `Settings.Register` | After OptionsSetup |
+| `settings/Slash.lua` | `COMMANDS`, the host verbs, the LibKa0s-Slash-1.0 dispatcher, `NS.CheckSlashCollision` | Conventional within `# Settings` |
 | `settings/Profiles.lua` | The Profiles page (AceDBOptions) | Last, so it is the last subcategory |
 
 ## Events

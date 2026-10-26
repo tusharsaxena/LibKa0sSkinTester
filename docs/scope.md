@@ -15,8 +15,11 @@ never published on CurseForge.
 ## What it does
 
 - `/st` or `/skintester` opens the showroom; so do the minimap button's menu and a key binding.
-- The skin is chosen on General -> Appearance, the library's own tab, and the showroom repaints at
-  once on a pick.
+- The skin is chosen from the swatch cards across the top of the showroom (Ka0s skins only), or on
+  General -> Appearance, the library's own tab; the showroom repaints at once on a pick.
+- Seven sections show every primitive in `lib.VOCAB` and every getter's value, each sample captioned
+  with the primitive and state it shows; a Sample controls settings page shows the skin on the
+  settings renderer's widgets.
 - Everything is painted through the addon's own skin facade, so what the showroom shows is what an
   adopting addon gets.
 

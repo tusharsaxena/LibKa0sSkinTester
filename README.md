@@ -15,9 +15,13 @@ None yet.
 
 ## Usage
 
-Type `/st` to open the settings, and `/st show` to open the showroom. `/skintester` works the same way, in case another addon already answers to `/st`.
+Type `/st` to open the settings, and `/st show` to open the showroom. `/skintester` works the same way. If another addon already answers to `/st`, the tester tells you once when you log in and leaves `/st` to that addon.
 
-The skin is picked on the General page's Appearance tab, one of nine Ka0s skins. The showroom changes the moment you pick, and the choice is saved with your profile, so a second profile can wear a different skin.
+Across the top of the showroom is a row of nine cards, one per Ka0s skin, each with four color swatches. Click one and the window repaints in it. The General page's Appearance tab picks the same thing, and either way the choice is saved with your profile, so a second profile can wear a different skin.
+
+Below the cards, the showroom scrolls through the window chrome, controls, lists, text, panels and overlays, then the skin's raw colors at the bottom. Every sample has a small label under it naming the part it shows.
+
+The settings have a Sample controls page too: a checkbox, a slider, a dropdown and a color swatch, so you can see a skin on a settings page. None of them does anything.
 
 The minimap button opens the settings on a left-click and a small menu on a right-click, where Show window opens the showroom. You can also bind a key to it from the game's Keybindings menu (the Ka0s Skin Tester header) or from the General page's Keybindings tab.
 
@@ -27,6 +31,7 @@ Everything else is in Settings, AddOns, Ka0s Skin Tester, and `/st help` lists t
 
 - The addon wears a Ka0s skin the same way every other Ka0s addon with skins does.
 - The showroom draws everything through the same painting code those addons use, so a skin looks the same here as it does there. If a part looks wrong in the showroom, the skin is at fault, not the showroom.
+- A test checks that every part a skin can paint has a sample in the window. When the skins learn to paint something new, that test fails until the tester has a sample for it.
 
 ## FAQ
 
@@ -40,9 +45,9 @@ Everything else is in Settings, AddOns, Ka0s Skin Tester, and `/st help` lists t
 
 | Symptom | Fix |
 |---|---|
-| `/st` opens something else | Another addon has `/st`. Use `/skintester`. |
+| `/st` opens something else | Another addon has `/st`, and the tester said so at login. Use `/skintester`. |
 | The showroom does not open | The addon may be disabled: `/st enable`. |
-| A skin looks wrong | That is what the tool is for. Note the skin and the part, and report it. |
+| A skin looks wrong | That is what the tool is for. Note the skin and the label under the sample, and report it. |
 | Something else looks wrong and I want to report it | Follow [Reporting a bug](#reporting-a-bug) below. |
 
 ## Reporting a bug
