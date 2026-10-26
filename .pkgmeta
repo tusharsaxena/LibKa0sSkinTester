@@ -1,0 +1,20 @@
+package-as: LibKa0sSkinTester
+
+# Every library is vendored under libs/ and committed — this addon declares NO externals: block
+# (packaging, library-stack-§3). It is never published on CurseForge; the packaging rules still bind
+# the repo, so a zip built by hand ships only what the client loads.
+
+ignore:
+  - .luacheckrc
+  - .pkgmeta         # packager configuration: consumed before the zip is built
+  - .gitignore
+  - .gitattributes   # dev-only: the repo's line-ending policy (line-endings)
+  - docs             # holds docs/audits/, docs/reviews/ and docs/revendor/ too, all dev-only
+  - tests
+  - _dev
+  - "*.bak"
+  - CLAUDE.md
+  - DEPENDENCIES.md
+  # layout-§4: the editable logo source and its .jpg render are committed but never loadable.
+  - media/logos/*.png
+  - media/logos/*.jpg

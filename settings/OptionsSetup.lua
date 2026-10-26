@@ -1,0 +1,360 @@
+-- settings/OptionsSetup.lua — wires the addon into LibKa0s-Options-1.0.
+--
+-- What moved out of settings/Panel.lua: the canvas factory and its header, the breadcrumb, the
+-- lazily-built Defaults button, the always-shown-scrollbar patch, the AceGUI ScrollFrame, the
+-- tooltip helper, the spacer helper, the section heading, the two widget makers, the two-column
+-- flow engine, the page registry, the panel-open with its combat gate, and the refresh fan-out.
+--
+-- What stayed the host's, and why, is recorded below the descriptor and in this repo's GitHub issues.
+--
+-- TOC slot: after settings/Schema.lua, whose schema runtime the descriptor binds, and before
+-- settings/Panel.lua, which registers its page at file load (options-ui-§1).
+
+local addonName, NS = ...
+local LibKa0sSkinTester = NS.addon
+local Settings  = LibKa0sSkinTester.Settings
+
+local lib = LibStub and LibStub("LibKa0s-Options-1.0", true)
+
+if not lib then
+    -- The ONE documented exception to the member-answering stub every other Ka0s setup file uses
+    -- (options-ui-§1). The rule there is about WHEN the missing code is reached: a page file that
+    -- calls a helper inside a schema-row literal at FILE LOAD raises with the member nil, its rows
+    -- never register, and a third of the schema silently disappears — taking `list`, `get`, `set`
+    -- and `reset` with it.
+    --
+    -- This addon's measured load-time set is the composers settings/Panel.lua calls at file scope
+    -- (MasterControls, KeybindingsTab, AppearanceTab, ResetAllTooltip): each answers its empty
+    -- shape below. settings/Schema.lua builds the rest of the schema from defaults/Profile.lua and
+    -- touches nothing here.
+    -- tests/test_libka0s.lua pins that by loading with the library absent and comparing the schema
+    -- row count against a full load — those two numbers agreeing is the whole thing standing
+    -- between this stub and a silent half-load.
+    --
+    -- So everything here is a no-op or one honest line, and NOTHING copies a widget maker, the flow
+    -- engine, the header or a layout constant (anti-patterns #47).
+    local missing = NS.LIBKA0S_MISSING .. ", so the settings panel is unavailable."
+
+    -- ONE announce per ENTRY POINT, not one for the whole seam. CreateOptionsPanel is called
+    -- automatically from OnEnable, so a single shared token is always spent at login — and
+    -- `/st config`, the one path a user actually asks for, would then be a silent no-op for the
+    -- rest of the session. slash-commands-§1 requires every lost verb to NAME the missing library
+    -- rather than go quiet.
+    local function announcer()
+        local said = false
+        return function()
+            if said then return end
+            said = true
+            if NS.Print then NS.Print(missing) end
+        end
+    end
+    local sayAtLoad, sayOnConfig = announcer(), announcer()
+
+    local H = Settings.Helpers
+    H.CreatePanel          = function() return { refreshers = {} } end
+    H.EnsureDefaultsButton = function() end
+    H.EnsureScroll         = function() return nil end
+    H.ClearScroll          = function() end
+    H.AddSpacer            = function() end
+    H.Section              = function() end
+    H.AttachTooltip        = function() end
+    H.InlineButtonPair     = function() end
+    H.RenderField          = function() end
+    H.SessionCheckbox      = function() end
+    H.RenderRows           = function() end
+    H.RenderSchema         = function() end
+    H.RenderGrid           = function() end
+    -- The tabbed page (options-ui-§13) and the page banner (options-ui-§14). settings/Panel.lua
+    -- calls RenderTabbedSchema and nothing else here; the rest are the members the live surface
+    -- grew with them, carried so the degraded table is the same SHAPE as the live one rather than
+    -- the subset somebody remembered -- tests/test_surface_parity.lua is what says so.
+    -- PageBanner has no host call site at all (LibKa0sSkinTester has no per-window state to name) and is
+    -- stubbed for the same reason.
+    H.RenderTabbedSchema   = function() end
+    H.TabStrip             = function() end
+    H.PageBanner           = function() end
+    H.PageHeader           = function() end
+    H.SubTabStrip          = function() end
+    H.SetChromeHeight      = function() end
+    -- The chrome band's own arithmetic. Library-internal, reached only from the makers above, and
+    -- absent from anything this addon calls.
+    --
+    -- These eight, and the three `__` members further down -- eleven in all -- are NO LONGER GATED,
+    -- which is worth saying here rather than leaving to be discovered.
+    -- tests/test_surface_parity.lua moved onto Kit.assertSurfaceParity's by-name form at kit 15,
+    -- and that form compares Kit.publicMembers, which drops every `__`-prefixed key before it
+    -- compares anything. That is the kit's rule rather than this file's, and it is the right one:
+    -- the library publishes these to talk to itself across a file boundary, and
+    -- libs/LibKa0s/Options.lua's comment at O.__print says in as many words that a degradation
+    -- stub does not mirror them.
+    --
+    -- So the reason the eleven stay is now SHAPE alone, and shape is a weaker reason than a gate.
+    -- They are kept rather than deleted because deleting shipped lines was not what the item that
+    -- un-gated them was for; whichever way that goes later, it goes deliberately.
+    H.__bannerBand         = function() end
+    H.__tabBand            = function() end
+    H.__tabPlacement       = function() end
+    H.__layoutTabs         = function() end
+    H.__scrollTopInset     = function() end
+    H.__releaseSubTabs     = function() end
+    H.__tabArtHeight       = function() return 0 end
+    H.__resetTabArtHeight  = function() end
+    -- The five schema COMPOSERS (options-ui-§15, options-ui-§16, options-ui-§17). Four of them have no call site here --
+    -- the schema is bool, number and one enum, so there is no font, border, bar or standalone
+    -- color block to compose -- and they are stubbed for the shape reason the chrome members
+    -- above are. MasterControls is different: settings/Panel.lua calls it at FILE LOAD, which is
+    -- the one load-time call this seam has, so its stub has to ANSWER rather than return nil. Two
+    -- values, because the caller takes two: no rows, and an afterGroup hook that draws nothing.
+    -- The Master controls tab is what is lost on this path; the profile's own defaults are not,
+    -- because Settings.BuildDefaults seeds from defaults/Profile.lua rather than from the schema
+    -- (settings/Schema.lua).
+    H.ColorPair            = function() return {} end
+    H.FontGroup            = function() return {} end
+    H.BorderGroup          = function() return {} end
+    H.BarGroup             = function() return {} end
+    H.MasterControls       = function() return {}, function() end end
+    -- No FONT_FLAGS / FONT_FLAGS_SORT / VISIBILITY_VALUES / VISIBILITY_SORT / MASTER_GROUP /
+    -- CLASS_COLOR_NOTE. They are the composers' published DATA, and hand-copying the value sets
+    -- and the wording whose nine-way drift OptionsCompose exists to end is anti-patterns #47 in
+    -- the same spirit the layout scalars are: a host copy is the copy that goes stale.
+    -- tests/test_surface_parity.lua lists all six as live-only on purpose.
+    --
+    -- ONE of them now has a host reader: settings/Panel.lua keys its afterGroup hook off
+    -- MASTER_GROUP rather than respelling the group name, which is the whole point of publishing
+    -- the constant. That read is guarded there BECAUSE of this omission, and the guard is not
+    -- defensive padding -- it is the degraded shape stated honestly. On this path MasterControls
+    -- emits no rows and its tail draws nothing, so there is no Master controls group in the schema
+    -- for a hook to key to, and the correct number of hooks is zero. Carrying the string here to
+    -- spare the caller an `if` would trade a real omission for a host copy, which is the trade this
+    -- whole block exists to refuse.
+    --
+    -- The choice grid and the id input / id list (Options minor 16, LibKa0s v1.35.0). Render-time
+    -- makers with no call site here, carried INERT for the shape reason the chrome members above
+    -- are: tests/test_surface_parity.lua walks the whole live surface. ID_NAME_HINT is an EMPTY
+    -- table, not a copy of the library's per-kind hint wording -- the live widgets read their own
+    -- defaults, never this table, so an empty one answers an index without carrying a string.
+    H.ChoiceGrid           = function() end
+    H.IdInput              = function() end
+    H.IdList               = function() end
+    H.ResolveId            = function() return nil end
+    H.UnnamedCandidates    = function() return nil end
+    H.ID_NAME_HINT         = {}
+    -- SelectTab, new at LibKa0s v1.36.0: reached only from a tab click on an already-rendered
+    -- page. This addon does not adopt tab-scoped refresh, so the same inert no-op applies.
+    H.SelectTab            = function() end
+    -- NavRail, new at LibKa0s v1.61.0 (OptionsNav minor 1): drawn only by a page render, and no
+    -- page here draws a rail, so the same inert no-op applies.
+    H.NavRail              = function() end
+    -- Drawer, new at LibKa0s v1.73.0 (OptionsDrawer minor 1): no call site here, so inert for the shape reason.
+    H.Drawer               = function() end
+    -- LibKa0s v1.77.0's four instance members: OptionsKeybinds minor 2's KeybindingsTab, KeybindRows
+    -- and KEYBINDS_UNCHANGED, and OptionsCompose minor 8's StrataTooltip. The library's "What a
+    -- consumer owes" list for v1.77.0 names them, and tests/test_surface_parity.lua holds the stub to
+    -- the live surface. No panel renders on this path, so no tab or row is drawn: KeybindingsTab
+    -- answers nil (no tab entry), KeybindRows nil (the library's own degraded answer), and the two
+    -- strings are empty rather than a host copy of the library's wording (anti-patterns #47).
+    H.KeybindingsTab       = function() return nil end
+    H.KeybindRows          = function() return nil end
+    H.KEYBINDS_UNCHANGED   = ""
+    H.StrataTooltip        = function() return "" end
+    -- OptionsCompose minor 11's ResetAllTooltip (the v1.77.0 tag moved, LK-95): the General page
+    -- header's Reset all tooltip. No page renders here, so it answers an empty string, as above.
+    H.ResetAllTooltip      = function() return "" end
+    -- The Appearance tab (LibKa0s v1.78.0, OptionsAppearance minor 1; skinning-§3, hard rule 24b):
+    -- every Options stub owes both members. No page renders on this path, so the entry draws
+    -- nothing and AppearanceRows answers nil, as the live one does when it cannot draw.
+    H.AppearanceTab        = function()
+        return { key = "Appearance", label = "Appearance", before = "Keybindings", render = function() end }
+    end
+    H.AppearanceRows       = function() return nil end
+    H.SetRenderer          = function() end
+    H.RegisterOptionsPage  = function() end
+    H.RefreshAllPanels     = function() end
+    H.RefreshPanel         = function() end
+    H.RefreshScalars       = function() end
+    -- options-ui-§1: the stub keeps the global reset REAL. H is Settings.Helpers, where
+    -- settings/Schema.lua already defined the host's RestoreAllDefaults -- the one stub member that
+    -- collides with a Schema.lua seam -- so a bare no-op here would wipe the real reset and leave
+    -- `/st resetall` and the Defaults popup printing success over an untouched profile.
+    H.RestoreAllDefaults   = H.RestoreAllDefaults or function() end
+    H.LSMValues            = function() return function() return {} end end
+    H.PatchAlwaysShowScrollbar = function() end
+    H.__pages              = function() return {} end
+    H.__panels             = function() return {} end
+    H.__panelFor           = function() return nil end
+    H.CreateOptionsPanel   = function() sayAtLoad() end
+    H.OpenOptionsPanel     = function() sayOnConfig() end
+    -- No ROW_VSPACER / SECTION_HEADING_H / BUTTON_PAIR_REL here, and no CHROME_GAP / TAB_H /
+    -- BANNER_H either -- the chrome band's scalars are layout constants like the other four, and
+    -- arrived with the same rule attached. options-ui-§1 forbids carrying the
+    -- library's layout constants into the stub and options-ui-§8 forbids a host copy of them
+    -- anywhere, precisely because a host copy is the copy that goes stale. Every consumer of them
+    -- in settings/Panel.lua sits behind a maker that is a no-op on this path, so a nil reaches
+    -- nothing.
+    return
+end
+
+-- The instance IS the namespace member (options-ui-§1). settings/Schema.lua ran first and hung its
+-- data seams — Get / Set / FindSchema / RestoreDefaults / RefreshAll / ValidateSchema — on
+-- Settings.Helpers, so those move ONTO the instance here and the instance is what gets published.
+-- The other direction (copying the library's members into the host's table) would look equivalent
+-- and is not: RenderRows resolves O.RenderField from the instance at call time, so a suite that
+-- swapped a member on a copy-across table would be spying on a function nobody calls.
+--
+-- settings/Schema.lua's file-local `Helpers` upvalue still points at the pre-move table. That is
+-- deliberate and harmless: the members are the same FUNCTION OBJECTS, and no state lives on either
+-- table — the refreshers and the panel registry are the library's, per-ctx.
+local host = Settings.Helpers
+
+local O = lib:New({
+    parentTitle = "Ka0s Skin Tester",
+    -- The main canvas keeps the name settings/Panel.lua gave it, so /framestack still attributes it
+    -- to this addon and any saved layout keyed on it survives. It is the one descriptor field the
+    -- library validates, and it raises rather than defaulting.
+    mainPanelName = "LibKa0sSkinTesterParentPanel",
+    -- The FOLDER (first vararg), not the brand: the library builds the IdList help-mark art path from
+    -- it (Media.Icon(addonName, "info")) and checks it against the client's loaded-addon list.
+    addonName = addonName,
+
+    print = function(line) NS.Print(line) end,
+    debug = function(tag, fmt, ...) NS.Debug(tag, fmt, ...) end,
+
+    -- The single write seam (options-ui-§1): the schema runtime's own members, bound as VALUES
+    -- (settings/Schema.lua builds it as NS.SchemaRuntime). A panel checkbox takes exactly the path
+    -- `/st set` takes: the same [Set] debug line, the same row `onChange`, the same refresh. There
+    -- is no pre-seam gate in this addon, so nothing sits in front of Set that a reset would bypass
+    -- (LibKa0s docs/api/Schema/version-2-docs.md, "A gate in front of the seam").
+    get          = NS.SchemaRuntime.Get,
+    set          = NS.SchemaRuntime.Set,
+    applyDefault = NS.SchemaRuntime.ApplyDefault,
+
+    -- One page, so the page key is ignored and every row belongs to it. `filter` (ctx.unit) is
+    -- never set: this addon has no per-unit pages.
+    rowsForPage = function() return Settings.Schema end,
+    allRows     = function() return Settings.Schema end,
+
+    -- Runs once, before the page builders. settings/Schema.lua's own shape check, which PRINTS its
+    -- errors rather than raising — a broken row is an addon-author bug, and the right user-visible
+    -- behavior is "the option you wanted is missing AND a chat error tells you why".
+    validate = function() host.ValidateSchema() end,
+
+    -- The landing page's body — the logo, the TOC notes line and the command list — is the host's
+    -- half by design (options-ui-§5), handed over as a hook so the library still owns WHEN it draws.
+    buildMain = function(ctx) Settings.Helpers.BuildMainContent(ctx) end,
+
+    -- The bulk bracket (Options minor 16, debug-logging-§10) around the library's RestoreDefaults and
+    -- RestoreAllDefaults: the seam's per-row [Set] line is muted inside it, and the act logs one
+    -- `[Set] reset <scope>: N rows` line. Neither walk is on the live path today (the host's
+    -- RestoreAllDefaults overrides the library's, and the Defaults button goes through the popup), so
+    -- this is defensive: a future caller of either logs one line per act, not one per row. The
+    -- runtime's own BulkBegin / BulkEnd, which already take the descriptor's argument shape.
+    bulkBegin = NS.SchemaRuntime.BulkBegin,
+    bulkEnd   = NS.SchemaRuntime.BulkEnd,
+
+    -- RESET ALL SETTINGS IS A PROFILE RESET (options-ui-§12), and these two fields tell the library
+    -- so. What they change is the Master controls "Reset all settings" tooltip (Options minor 18):
+    -- with both, it names the current profile, says the other profiles are not affected, and names
+    -- the equivalence with Profiles -> Reset Profile, since settings/Profiles.lua ships that page.
+    -- The reset itself is still the host's RestoreAllDefaults below, reached through the
+    -- confirmation popup; the library's own RestoreAllDefaults is overridden and nothing calls
+    -- `resetProfile`. It is supplied as the real act anyway, so the field is accurate if that is
+    -- ever reached.
+    resetProfile = function() LibKa0sSkinTester.db:ResetProfile() end,
+    profilesPage = true,
+    -- The reset veto (options-ui-§3), named ONCE in settings/Schema.lua and shared with the host's
+    -- own session sweep: the Profiles page and every row whose value lives in the profile are kept
+    -- out of any row walk. With `resetProfile` supplied the library narrows its walk to sessionOnly
+    -- rows on its own, so this is the belt to that brace, and it is the rule stated where the
+    -- standard asks for it.
+    skipRestoreAll = Settings.VetoedFromResetAll,
+
+    -- Deliberately NOT passed, each for a reason worth writing down rather than leaving as an
+    -- absence:
+    --
+    --   colorDecode / colorEncode — the schema is bool and number only, so there is no stored
+    --     color shape to declare.
+    --   getLSM / scheduleTimer    — no media pickers and no color pickers, and the one slider is
+    --     release-only, so nothing reaches either.
+    --   afterRestoreAll — the global reset is host-owned (see below), so the library's
+    --     RestoreAllDefaults is not on the path, and nothing sits outside both the profile and
+    --     the schema for a hook to restore.
+    --   onAceGUI                  — settings/Panel.lua reads O.AceGUI off this instance at call
+    --     time instead, which is the same handle without a second LibStub lookup.
+})
+
+-- ---------------------------------------------------------------------------
+-- The one adapter: the panel body still builds on the NEXT frame
+-- ---------------------------------------------------------------------------
+--
+-- The library's SetRenderer wires its own OnShow and calls the renderer — and EnsureDefaultsButton
+-- — SYNCHRONOUSLY inside it. This addon does not, and the reason is written down at length in
+-- docs/midnight-quirks.md: Blizzard's GameMenu / Logout flows can dispatch a settings canvas's OnShow
+-- inside a secure-execute chain, and creating AceGUI frames there was tripping
+-- ADDON_ACTION_FORBIDDEN on the Logout button. Keeping OnShow itself a no-op and building on the
+-- next frame moves the work out of the protected context entirely, and `tests/test_panel.lua` has
+-- pinned that contract since the fix landed.
+--
+-- This is a HOST-shaped misfit, so it belongs here rather than upstream: one addon wants the extra
+-- hop today, and it is expressible as a wrapper over two instance members. Both are wrapped ON THE
+-- INSTANCE, because the library resolves them from `O` at call time — a host-side helper sitting
+-- beside them would be bypassed by every page the shell draws. If a second host ever needs the same
+-- deferral, that is the signal it should become a descriptor field instead.
+--
+-- (options-ui-§9 sanctions the library's synchronous form: "a host whose builder is reached from
+-- the library's lazy first-OnShow already satisfies this". The extra hop is this addon keeping a
+-- belt it already fastened, not a standards requirement.)
+do
+    local baseSetRenderer        = O.SetRenderer
+    local baseEnsureDefaultsBtn  = O.EnsureDefaultsButton
+
+    function O.EnsureDefaultsButton(panel)
+        if not panel or panel.defaultsBtn or not panel.wantsDefaultsButton then return end
+        if panel.__wgDefaultsScheduled then return end
+        panel.__wgDefaultsScheduled = true
+        C_Timer.After(0, function() baseEnsureDefaultsBtn(panel) end)
+    end
+
+    function O.SetRenderer(ctx, fn)
+        baseSetRenderer(ctx, function(c)
+            -- The library already flipped _rendered/_dirty and is inside its own pcall, which
+            -- returns before this hop runs — so the render is pcall'd HERE instead, or a raising
+            -- builder would surface as a bare Lua error with no page named.
+            C_Timer.After(0, function()
+                local ok, err = pcall(fn, c)
+                if not ok then
+                    -- Chat for the player, and the log once per distinct error (debug-logging-§8),
+                    -- its site built behind the gate.
+                    if NS.State.debug then
+                        NS.DebugErrorOnce("Cfg", "settings page '" .. tostring(c.pageKey or "?")
+                            .. "' render raised", err)
+                    end
+                    NS.Print(("settings page '%s' failed to render: %s")
+                        :format(tostring(c.pageKey or "?"), tostring(err)))
+                end
+            end)
+        end)
+    end
+end
+
+-- The move: every data seam settings/Schema.lua published lands on the instance, and the instance
+-- becomes Settings.Helpers.
+--
+-- UNCONDITIONAL, and the one collision is the point. `RestoreAllDefaults` exists on both sides and
+-- the HOST's wins, deliberately (issue #10, LIBKA0S-08): the library's is row-by-row
+-- over every row, while this addon's is a `db:ResetProfile()` — which is what drops a key from a
+-- removed or renamed schema row instead of leaving it in the profile forever — and whose reset is
+-- logged once, as `[Set] reset profile '<name>' to defaults (N rows)` by the OnProfileReset handler,
+-- never one [Set] per row (debug-logging-§10). Copying only where the instance was nil silently gave
+-- the library's, and the suite said so.
+--
+-- The library's per-page `RestoreDefaults(pageKey, ctx)` is a DIFFERENT verb with a different
+-- arity, and it is left alone.
+for k, v in pairs(host) do
+    O[k] = v
+end
+Settings.Helpers = O
+
+-- The host's refresh name, kept because settings/Schema.lua's write seam calls it on every Set.
+-- SCALARS, not the structural tier: writing a value does not change which rows exist, and a rebuild
+-- per checkbox click is anti-patterns #39.
+function O.RefreshAll() O.RefreshScalars() end

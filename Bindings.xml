@@ -1,0 +1,4 @@
+<Bindings>
+	<!-- The Show window key (launcher-§6): clicks the plain, hidden LibKa0sSkinTesterToggleShowroom button that modules/Showroom.lua creates at load, which runs NS.Showroom.Toggle, the handler the launcher menu's Show window entry and /st show run. Its label and NS.BINDINGS are set there. The binding names this addon's own category, BINDING_HEADER_LIBKA0SSKINTESTER, which the client titles with that global (the brand), and carries no header attribute. No default key: the player picks one under Options, Keybindings, Ka0s Skin Tester, or on the General page's Keybindings tab. The button name is permanent; renaming it unbinds every player's key. -->
+	<Binding name="CLICK LibKa0sSkinTesterToggleShowroom:LeftButton" category="BINDING_HEADER_LIBKA0SSKINTESTER"/>
+</Bindings>

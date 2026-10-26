@@ -1,0 +1,84 @@
+## Interface: 120105
+## Title: Ka0s Skin Tester
+## Notes: A showroom of everything a Ka0s skin can paint: pick a skin, see every element in it
+## Author: add1kted2ka0s
+## Version: 0.1.0
+## IconTexture: Interface\AddOns\LibKa0sSkinTester\media\logos\libka0sskintester.logo.128.tga
+## SavedVariables: LibKa0sSkinTesterDB, LibKa0sSkinTesterPerfDB
+## OptionalDeps: Ace3, LibStub, CallbackHandler-1.0, LibSharedMedia-3.0, LibDataBroker-1.1, LibDBIcon-1.0, EllesmereUI
+## DefaultState: enabled
+## Category-enUS: UI
+## X-License: MIT
+## X-Standard: https://github.com/tusharsaxena/WowAddonStandards
+# X-Curse-Project-ID: never published on CurseForge (a developer showroom for the Ka0s skins)
+
+# Libraries (must load first)
+libs\LibStub\LibStub.lua
+libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
+libs\AceAddon-3.0\AceAddon-3.0.lua
+libs\AceEvent-3.0\AceEvent-3.0.lua
+libs\AceConsole-3.0\AceConsole-3.0.lua
+libs\AceTimer-3.0\AceTimer-3.0.lua
+libs\AceDB-3.0\AceDB-3.0.lua
+libs\AceGUI-3.0\AceGUI-3.0.xml
+# LOAD-BEARING: after AceGUI. AceConfigDialog resolves AceGUI-3.0 with a non-silent LibStub at file
+# load, so this line above AceGUI-3.0.xml raises (the Profiles page, settings\Profiles.lua).
+libs\AceConfig-3.0\AceConfig-3.0.xml
+libs\AceDBOptions-3.0\AceDBOptions-3.0.lua
+libs\LibSharedMedia-3.0\lib.xml
+# The launcher's two libraries (launcher-§1); conventional, resolved at Register time.
+libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
+libs\LibDBIcon-1.0\LibDBIcon-1.0.lua
+libs\LibKa0s\LibKa0s.xml
+
+# Locales
+locales\enUS.lua
+
+# Core
+# LOAD-BEARING: publishes NS.PREFIX, NS.BRAND_NAME and NS.LIBKA0S_MISSING, which every seam below reads.
+core\Namespace.lua
+# LOAD-BEARING: the printer and the window chrome; after Namespace, before everything that prints.
+core\CoreSetup.lua
+# LOAD-BEARING: publishes NS.MediaFont, which core\Constants.lua resolves FONT_MONO from at load.
+core\MediaSetup.lua
+core\Constants.lua
+core\State.lua
+core\EnvSetup.lua
+core\Util.lua
+# LOAD-BEARING: publishes NS.Lifecycle, which core\PerfSetup.lua hands LibKa0s-Perf-1.0 at file load.
+core\LifecycleSetup.lua
+# LOAD-BEARING: publishes NS.Perf, which modules\Showroom.lua takes as a file-scope upvalue.
+core\PerfSetup.lua
+# LOAD-BEARING: after Constants (FONT_MONO), State (the flag) and CoreSetup (the printer), before
+# any NS.Debug call.
+core\DebugLogSetup.lua
+# LOAD-BEARING: the skin owner. Before core\LibKa0sSkinTester.lua, whose OnInitialize applies the
+# stored skin, and before settings\Schema.lua, which reads NS.SKIN_OPTIONS at file load.
+core\SkinSetup.lua
+core\LibKa0sSkinTester.lua
+core\Database.lua
+# Conventional: the launcher object is built here, registered from OnEnable.
+core\LauncherSetup.lua
+
+# Defaults
+# LOAD-BEARING: publishes NS.C, which settings\Schema.lua takes as a file-scope upvalue.
+defaults\Profile.lua
+
+# Modules
+# Conventional: reads core\ members only at file scope. Publishes NS.BINDINGS, which
+# settings\Panel.lua reads at file scope; the # Modules -> # Settings order guarantees it.
+modules\Showroom.lua
+modules\Diagnostics.lua
+
+# Settings
+# LOAD-BEARING: publishes Settings.SchemaLib, which settings\Schema.lua calls :New on at file scope.
+settings\SchemaSetup.lua
+# LOAD-BEARING: creates the schema and NS.SchemaRuntime, which OptionsSetup, Panel and Slash bind.
+settings\Schema.lua
+# LOAD-BEARING: publishes the LibKa0s-Options-1.0 instance as Settings.Helpers, whose composers
+# settings\Panel.lua calls at file scope.
+settings\OptionsSetup.lua
+settings\Panel.lua
+settings\Slash.lua
+# Conventional, and LAST so the Profiles page is the last subcategory (options-ui-§3).
+settings\Profiles.lua

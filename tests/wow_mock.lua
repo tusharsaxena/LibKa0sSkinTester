@@ -1,0 +1,617 @@
+-- tests/wow_mock.lua
+--
+-- LibKa0sSkinTester's EXTENDER over the shared kit's `mock_base` (testing-§1). The base builder owns
+-- everything universal — LibStub with a real `NewLibrary` (without which every LibKa0s seam
+-- silently measures its own fallback stub), AceDB's merge-in-place `copyDefaults`, AceConsole's
+-- `:Print` clobber, the AceGUI widget recorder, the Settings registrars and the timer queue. This
+-- file overwrites the keys LibKa0sSkinTester genuinely needs differently and adds the ones the base
+-- deliberately omits.
+--
+-- Returns a BUILDER. Each call constructs a fresh, isolated environment so suites are isolated
+-- from one another; `M._G = M`, so the table a suite reads as `mock` and the table the chunk reads
+-- as `_G` are the same object (settings/Panel.lua and the library both reach several APIs through
+-- an explicit `_G.`).
+--
+-- ---------------------------------------------------------------------------
+-- Mock fidelity is load-bearing
+-- ---------------------------------------------------------------------------
+--
+-- Six pieces of this harness model REAL client behavior rather than no-op'ing it, and must not be
+-- "simplified" back into blanket stubs — each one is the only reason a whole class of addon bug is
+-- catchable headlessly. Four live in this file, and they are why it is an extender rather than a
+-- swap: the kit's own README names the fifth as a divergence it deliberately keeps. The other two,
+-- the AceTimer queue (3) and the event dispatch (6), have been the KIT'S own since WhatGroup#19
+-- (kit revision 17); they stay listed because the reason they must stay faithful is this addon's.
+--
+--  1. FRAME VISIBILITY. A blanket self-returning no-op makes IsShown() return the frame —
+--     permanently truthy — so "the console closed" is untestable and a window that never hides
+--     looks identical to one that does. Real frames track a shown flag; Show / Hide / SetShown flip
+--     it, and Hide fires OnHide so the console's visibility callback is reachable.
+--
+--  2. FRAME GEOMETRY. The showroom's position is persisted to SavedVariables and restored on the
+--     next login. With GetPoint() handing back the frame, "we saved the position" and "we saved
+--     garbage" are the same assertion. SetPoint's two overloads are both modeled because the
+--     showroom's default anchor and NS.Windows.Restore use different ones. GetLeft/Right/Top/Bottom
+--     answer real NUMBERS so arithmetic on a frame's edges does not raise on a self-returning stub.
+--
+--  3. THE ACETIMER QUEUE (the kit's). `ScheduleTimer` as a no-op would let a timer that is armed
+--     and never canceled look exactly like no timer at all, which is what the stand-down suite's
+--     "no timer survives" step asserts on. The kit's AceTimer queues on `mock.__timers` and `mock.__fireTimers()` skips a
+--     canceled handle — separate from the C_Timer queue the panel's secure-defer hop uses
+--     (`mock.timers`, below), because a suite has to be able to fire one without the other.
+--
+--  4. SCALE AND THE DRAG STATE. `Master scale` and the opacity row are options-ui-§15's canonical
+--     rows, and both are only observable through methods the PascalCase catch-all would answer
+--     with the frame itself — permanently truthy, never a number. A scale the showroom never
+--     applied would then be indistinguishable from one it did.
+--
+--  5. FONT STRINGS AND TEXTURES ARE DISTINCT OBJECTS. The base answers CreateFontString /
+--     CreateTexture from the frame stub's metatable, so they return THE FRAME ITSELF; its README
+--     records that LibKa0sSkinTester's mock is right to differ. Every label would collapse into one SetText
+--     sink otherwise, so "this sample shows its own text" cannot be distinguished from "every
+--     sample shows the same string" — and the debug console's title, ON/OFF toggle and line
+--     counter all hang off one title bar.
+
+--
+--  6. ADDON EVENT REGISTRATIONS CARRY THEIR HANDLER NAME (the kit's): `NS.addon.__events[event]`
+--     is the handler as given, and `mock.__fireEvent(event, ...)` dispatches it the way AceEvent
+--     does, answering how many handlers ran. Recording only that something was registered lets a
+--     suite prove the
+--     registration exists and then call the handler by hand — which passes just as happily when
+--     the two are not connected to each other. It matters most where several events share one
+--     handler (`PLAYER_REGEN_DISABLED` / `PLAYER_REGEN_ENABLED` → `OnCombatStateChanged`), because
+--     the event NAME is then the only thing telling the handler which edge it is on, and a suite
+--     that calls the method directly is free to pass the name the code wants rather than the one
+--     the client would send.
+--
+local base = dofile("tests/_kit/mock_base.lua")
+
+-- The kit's binding model (kit revision 42): the client's key-binding API that the General page's
+-- Keybindings tab (options-ui-§20) drives. The installer keeps no state of its own, so it is read
+-- once and run on every fresh mock, at the end of build() below.
+local installBindings = dofile("tests/_kit/mock_bindings.lua")
+
+local function build()
+    local M = base()
+
+    local mock = M          -- one table: the suites' `env` and their `mock` are the same object
+
+    -- Per-instance control surface. Everything a suite seeds before driving the addon, and
+    -- everything it reads back afterwards.
+    mock.now           = 10000 -- GetTime()'s answer
+    mock.inGroup       = false
+    mock.combat        = false
+    mock.timers        = {}   -- queued C_Timer.After callbacks (fn list); AceTimer is the kit's
+                              -- and queues on mock.__timers instead (fidelity note 3)
+    mock.prints        = {}   -- captured chat output lines
+    mock.hooks         = {}   -- [name] -> { fn, ... } recorded by hooksecurefunc
+    mock.frames        = {}   -- every CreateFrame'd stub, creation order (+ keyed by name)
+    mock.blocked       = {}   -- "<frame>:Hide()" per call the client would have refused in combat,
+                              -- i.e. every ADDON_ACTION_BLOCKED this addon would have raised
+    mock.fontStrings   = {}   -- every CreateFontString'd stub, creation order
+    mock.fontFetchFails = {}  -- [fontPath] = true -> SetFont answers false, as the client does
+                              -- when it cannot load the file (debug-logging-§2's fetch failure)
+    mock.textures      = {}   -- every CreateTexture'd stub, creation order
+    mock.popups        = {}   -- StaticPopup_Show(name) calls, in order
+    mock.categories    = {}   -- Settings.Register*Category calls, in order
+    mock.openedTo      = {}   -- Settings.OpenToCategory(id) calls, in order
+    mock.metadata      = {    -- C_AddOns.GetAddOnMetadata fields
+        Version = "0.1.0",
+        Notes   = "A showroom of everything a Ka0s skin can paint: pick a skin, see every element in it",
+    }
+    mock.aceWidgets    = {}   -- every AceGUI:Create'd widget, creation order
+
+
+    -- ---- Stateful frame stub ----------------------------------------------
+    --
+    -- Models the frame state the addon actually reads back (see the fidelity note above): shown
+    -- flag, anchor points, size, text, secure attributes, scripts and registered events.
+    -- Everything else falls through to the catch-all, which returns a self-returning no-op for any
+    -- PascalCase key (WoW frame methods are always PascalCase) and nil otherwise — so addon code
+    -- doing `if not f.someCustomField then f.someCustomField = ... end` still works.
+    --
+    -- The catch-all deliberately returns the FRAME (not a number) from unmodeled getters.
+    -- LibKa0s-DebugLog-1.0's scroll sync type-guards exactly that case, so the guard stays
+    -- exercised.
+
+    local stubFrame   -- forward declaration (CreateFontString creates children)
+
+    -- SetPoint has two shapes in the wild, and the showroom and NS.Windows use both:
+    --   (point, x, y)                              -- implicit parent
+    --   (point, relativeTo, relativePoint, x, y)
+    local function recordPoint(point, ...)
+        local a, b, c, d = ...
+        if type(a) == "number" or a == nil then
+            return { point = point, relativeTo = nil, relativePoint = point,
+                     x = a or 0, y = b or 0 }
+        end
+        return { point = point, relativeTo = a, relativePoint = b or point,
+                 x = c or 0, y = d or 0 }
+    end
+
+    function stubFrame(kind, name, template, parent)
+        local f = {
+            __kind      = kind or "Frame",
+            __name      = name,
+            __template  = template,
+            __parent    = parent,
+            -- A frame built from a Secure* template is PROTECTED, and modeling that is not
+            -- decoration. The client refuses Hide on a protected frame in combat, and refuses it on
+            -- every ANCESTOR of one too, because hiding the parent would hide the protected child.
+            -- A mock that models combat but not protection answers "fine" to the one call the
+            -- client blocks, and a window whose Close button raises ADDON_ACTION_BLOCKED mid-fight
+            -- would pass every case.
+            __protected = (template and template:find("Secure", 1, true)) and true or false,
+            __shown     = true,
+            __points    = {},
+            __w         = 100,
+            __h         = 100,
+            __text      = nil,
+            __attrs     = {},
+            __scripts   = {},
+            __hooks     = {},
+            __events    = {},
+            __children  = {},
+            __textures  = {},
+            __fontStrings = {},
+            __messages  = {},
+            __desaturated = nil,
+            __alpha     = 1,
+            __scale     = 1,
+            __movable   = false,
+            __moving    = false,
+            __texture   = nil,
+        }
+
+        local api = {}
+
+        -- visibility
+        --
+        -- SHOW IS PROTECTED EXACTLY AS HIDE IS, and this stub said otherwise until 2026-09-09. The
+        -- client's rule is about changing a protected frame's visibility, and showing an ancestor
+        -- changes it just as hiding one does. `/st test` during combat raised
+        -- ADDON_ACTION_BLOCKED on `LibKa0sSkinTesterFrame:Show()` in a real client while this mock answered
+        -- "fine" — modeling only the Hide half is what let that reach a player, one report after
+        -- the Hide half did.
+        api.Show      = function()
+            if mock.combat and f.__holdsProtected and f.__holdsProtected() then
+                mock.blocked[#mock.blocked + 1] =
+                    (f.__name or "<anonymous>") .. ":Show()"
+                return f
+            end
+            local was = f.__shown
+            f.__shown = true
+            if not was then
+                if f.__scripts.OnShow then f.__scripts.OnShow(f) end
+                for _, fn in ipairs(f.__hooks.OnShow or {}) do fn(f) end
+            end
+            return f
+        end
+        -- True when this frame is protected or holds a protected descendant. The client's rule is
+        -- about the subtree, not the frame, so the check has to walk down.
+        local function holdsProtected(node)
+            if node.__protected then return true end
+            for _, kid in ipairs(node.__children) do
+                if holdsProtected(kid) then return true end
+            end
+            return false
+        end
+        f.__holdsProtected = function() return holdsProtected(f) end
+
+        api.Hide      = function()
+            -- The client blocks this call rather than performing it, and fires ADDON_ACTION_BLOCKED
+            -- naming the frame. Record and refuse, so a case can assert the call was never made.
+            if mock.combat and holdsProtected(f) then
+                mock.blocked[#mock.blocked + 1] =
+                    (f.__name or "<anonymous>") .. ":Hide()"
+                return f
+            end
+            local was = f.__shown
+            f.__shown = false
+            if was then
+                for _, fn in ipairs(f.__hooks.OnHide or {}) do fn(f) end
+                if f.__scripts.OnHide then f.__scripts.OnHide(f) end
+            end
+            return f
+        end
+        api.SetShown  = function(_, v) if v then api.Show() else api.Hide() end return f end
+        api.IsShown   = function() return f.__shown end
+        api.IsVisible = function() return f.__shown end
+
+        -- geometry
+        api.SetPoint = function(_, point, ...)
+            f.__points[#f.__points + 1] = recordPoint(point, ...)
+            return f
+        end
+        api.ClearAllPoints = function() f.__points = {}; return f end
+        api.GetPoint = function(_, i)
+            local pt = f.__points[i or 1]
+            if not pt then return nil end
+            return pt.point, pt.relativeTo, pt.relativePoint, pt.x, pt.y
+        end
+        api.GetNumPoints = function() return #f.__points end
+        api.SetSize   = function(_, w, h) f.__w, f.__h = w, h; return f end
+        api.SetWidth  = function(_, w) f.__w = w; return f end
+        api.SetHeight = function(_, h) f.__h = h; return f end
+        api.GetWidth  = function() return f.__w end
+        api.GetHeight = function() return f.__h end
+        api.GetName   = function() return f.__name end
+        -- Screen-space getters must be NUMBERS: arithmetic on a self-returning stub would raise.
+        api.GetLeft   = function() return 0 end
+        api.GetRight  = function() return f.__w end
+        api.GetTop    = function() return 0 end
+        api.GetBottom = function() return -f.__h end
+
+        -- text (FontStrings, Buttons, EditBoxes)
+        api.SetText = function(_, t) f.__text = t; return f end
+        api.GetText = function() return f.__text end
+        api.GetTextColor = function() return 1, 0.82, 0, 1 end
+
+        -- secure attributes
+        api.SetAttribute = function(_, k, v) f.__attrs[k] = v; return f end
+        api.GetAttribute = function(_, k) return f.__attrs[k] end
+
+        -- scripts
+        api.SetScript = function(_, script, handler) f.__scripts[script] = handler; return f end
+        api.GetScript = function(_, script) return f.__scripts[script] end
+        api.HookScript = function(_, script, handler)
+            f.__hooks[script] = f.__hooks[script] or {}
+            f.__hooks[script][#f.__hooks[script] + 1] = handler
+            return f
+        end
+
+        -- events
+        api.RegisterEvent = function(_, event) f.__events[event] = true; return f end
+        api.UnregisterEvent = function(_, event) f.__events[event] = nil; return f end
+        api.UnregisterAllEvents = function() f.__events = {}; return f end
+        api.IsEventRegistered = function(_, event) return f.__events[event] and true or false end
+
+        -- children
+        api.CreateFontString = function(_, fsName, _layer, fontTemplate)
+            local fs = stubFrame("FontString", fsName, fontTemplate)
+            f.__fontStrings[#f.__fontStrings + 1] = fs
+            mock.fontStrings[#mock.fontStrings + 1] = fs
+            return fs
+        end
+        api.CreateTexture = function(_, texName, _layer)
+            local tex = stubFrame("Texture", texName)
+            f.__textures[#f.__textures + 1] = tex
+            mock.textures[#mock.textures + 1] = tex
+            return tex
+        end
+
+        -- Fonts. The ONE font behavior that is MODELED rather than caught by the PascalCase
+        -- catch-all, because the catch-all's truthy return is exactly the answer that hides the
+        -- failure: the client returns FALSE from SetFont when it cannot fetch the file, and does
+        -- not raise. `mock.fontFetchFails[path] = true` reproduces that, which is the only way a
+        -- suite can drive core/DebugLogSetup.lua's Blizzard fallback (debug-logging-§2).
+        -- Click-edge registration, recorded rather than caught: a SecureActionButton fires its
+        -- secure action once per registered edge, so how MANY edges are registered is behavior.
+        api.RegisterForClicks = function(_, ...)
+            f.__clicks = { ... }
+            return f
+        end
+
+        api.SetFont = function(_, path, size, flags)
+            if mock.fontFetchFails[path] then return false end
+            f.__font = { path, size, flags }
+            return true
+        end
+
+        -- textures / appearance the addon reads back
+        api.SetTexture      = function(_, t) f.__texture = t; return f end
+        api.GetTexture      = function() return f.__texture end
+        api.SetDesaturated  = function(_, v) f.__desaturated = v and true or false; return f end
+        api.IsDesaturated   = function() return f.__desaturated end
+        api.SetAlpha        = function(_, a) f.__alpha = a; return f end
+        api.GetAlpha        = function() return f.__alpha end
+        -- SCALE AND THE DRAG STATE, modeled rather than caught by the PascalCase catch-all, for
+        -- the reason (1) gives about visibility: the catch-all answers the FRAME, which is truthy
+        -- and non-numeric, so "the master scale reached the showroom" and "SetScale was never called"
+        -- are the same assertion, and a lock that never stops a drag looks exactly like one that
+        -- does (options-ui-§15).
+        api.SetScale        = function(_, s) f.__scale = s; return f end
+        api.GetScale        = function() return f.__scale end
+        api.SetMovable      = function(_, v) f.__movable = v and true or false; return f end
+        api.IsMovable       = function() return f.__movable end
+        api.StartMoving     = function() f.__moving = true; return f end
+        api.StopMovingOrSizing = function() f.__moving = false; return f end
+        api.IsMoving        = function() return f.__moving end
+
+        -- ScrollingMessageFrame line sink. Recorded rather than discarded so the console's log
+        -- content is assertable; the scroll getters stay UNMODELED on purpose, so they answer the
+        -- frame from the catch-all and the library's type-guarded scroll sync takes its no-op path
+        -- (anti-patterns #41).
+        api.AddMessage = function(_, msg) f.__messages[#f.__messages + 1] = msg; return f end
+        api.Clear      = function()
+            for i = #f.__messages, 1, -1 do f.__messages[i] = nil end
+            return f
+        end
+
+        -- GameTooltip body, recorded so a tooltip is assertable.
+        api.AddLine = function(_, text)
+            f.__lines = f.__lines or {}
+            f.__lines[#f.__lines + 1] = text
+            return f
+        end
+
+        -- Fire a script/hook the way the client would. Test-only seam. `__fire` is the kit's own
+        -- name for it, so a suite written to either idiom drives the same handler.
+        f.__fire = function(script, ...)
+            if f.__scripts[script] then f.__scripts[script](f, ...) end
+            for _, fn in ipairs(f.__hooks[script] or {}) do fn(f, ...) end
+        end
+
+        return setmetatable(f, {
+            __index = function(_, k)
+                local v = api[k]
+                if v ~= nil then return v end
+                -- WoW frame methods are always PascalCase; anything else must miss through to nil
+                -- so `f.customField` stays assignable.
+                if type(k) == "string" and k:match("^%u") then
+                    return function() return f end
+                end
+                return nil
+            end,
+        })
+    end
+
+    -- Published so the kit's own consumers (and any suite that needs an extra frame-shaped object)
+    -- build THIS stub rather than the base's thinner one.
+    mock.__stubFrame = stubFrame
+
+    -- ---- Ace library fakes -------------------------------------------------
+    --
+    -- The kit's own, whole (WhatGroup#19). core/LibKa0sSkinTester.lua's `NewAddon(NS, addonName,
+    -- "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0")` reaches the kit's AceAddon unchanged, so the
+    -- name and the mixin list select its faithful path (kit revision 17): the object is named and
+    -- registered for GetAddon, carries the real Enable / Disable, and embeds exactly those three
+    -- libraries. What the suites read comes from them:
+    --
+    --   events    `NS.addon.__events[event]` is the handler as given (`"OnCombatStateChanged"`) or
+    --             `true`; `mock.__fireEvent(event, ...)` dispatches the way AceEvent does and answers
+    --             how many handlers ran. A registration the client refuses raises (fidelity note 6).
+    --   timers    AceTimer handles queue on `mock.__timers` as `{ fn, delay, timer = <handle> }`;
+    --             `mock.__fireTimers()` runs them, skips a canceled one and answers how many ran. A
+    --             repeating handle carries `looping` and re-queues itself (fidelity note 3).
+    --   commands  `LibStub("AceConsole-3.0").commands[verb]` is `"ACECONSOLE_<VERB>"`, and
+    --             `AceConsole:__slash(verb, input)` runs the verb the way typing it would.
+    --
+    -- Until #19 this file replaced the kit's AceAddon with a copy that recorded events without
+    -- validating them, into a table the kit's own UnregisterAllEvents could not see, and ran its own
+    -- timer queue. Nothing wraps the kit's AceAddon now: a wrapper with nothing left to add would
+    -- only be a second place for the two to drift apart.
+
+    -- Run every queued C_Timer.After callback (the panel's secure-defer hops).
+    mock.fireCTimers = function()
+        local due = mock.timers
+        mock.timers = {}
+        for _, fn in ipairs(due) do fn() end
+        return #due
+    end
+
+    -- Invoke the post-hooks recorded by hooksecurefunc, the way the client would after the original
+    -- function has run.
+    mock.fireHook = function(key, ...)
+        for _, fn in ipairs(mock.hooks[key] or {}) do fn(...) end
+    end
+
+    -- ---- AceGUI widget stub ------------------------------------------------
+    --
+    -- LibKa0s-Options-1.0 renders the entire schema through AceGUI, so a `Create` that returns a
+    -- bare no-op frame makes the whole panel layer untestable. The base's recorder is close, but it
+    -- lacks the `.label` FontString the Heading/Label font branches key off, the `Fire` alias this
+    -- repo's suites drive, and a ScrollFrame modeled richly enough for the always-shown-scrollbar
+    -- patch's enable/disable and OnRelease-restore paths to be reachable.
+
+    local aceGUI = M.__libs["AceGUI-3.0"]
+    local baseCreate = aceGUI.Create
+
+    -- The receiver is named `lib` and not `self`: AceGUI is called as `aceGUI:Create(...)`, but
+    -- the three widget methods defined below take their own implicit `self` (the WIDGET), and two
+    -- names for two different tables in one scope is how a mock grows a bug that reads as correct.
+    aceGUI.Create = function(lib, widgetType)
+        local w = baseCreate(lib, widgetType)
+        w.frame = stubFrame("Frame", nil, "AceGUI-" .. widgetType)
+        w.label = stubFrame("FontString")
+        w.Fire  = w.__fire
+        w.relWidth = nil
+        local baseSetRelativeWidth = w.SetRelativeWidth
+        function w:SetRelativeWidth(v)
+            self.relWidth = v
+            return baseSetRelativeWidth(self, v)
+        end
+        function w:SetSliderValues(minV, maxV, step)
+            self.sliderMin, self.sliderMax, self.sliderStep = minV, maxV, step
+            self.min, self.max, self.step = minV, maxV, step
+            return self
+        end
+        function w:ReleaseChildren() self.children = {}; return self end
+
+        if widgetType == "ScrollFrame" then
+            w.scrollframe = stubFrame("ScrollFrame")
+            w.content     = stubFrame("Frame")
+            w.content.original_width = 400
+            w.scrollbar   = stubFrame("Slider")
+            w.scrollbar.__enabled = true
+            w.scrollbar.Enable  = function(s) s.__enabled = true end
+            w.scrollbar.Disable = function(s) s.__enabled = false end
+            w.scrollbar.SetValue = function(s, v) s.__value = v end
+            w.scrollbar.GetThumbTexture = function() return stubFrame("Texture") end
+            w.scrollbar.GetName = function() return nil end
+            w.localstatus = { offset = 0 }
+            w.FixScroll  = function(s) s.stockFixScrollRuns = (s.stockFixScrollRuns or 0) + 1 end
+            w.MoveScroll = function(s) s.stockMoveScrollRuns = (s.stockMoveScrollRuns or 0) + 1 end
+            w.OnRelease  = function(s) s.released = true end
+            w.SetScroll  = function() end
+        end
+
+        mock.aceWidgets[#mock.aceWidgets + 1] = w
+        return w
+    end
+
+    -- Find the first AceGUI widget matching a predicate — the seam suites use to reach "the
+    -- checkbox for notify.showLeader" without walking the tree.
+    mock.findWidget = function(predicate)
+        for _, w in ipairs(mock.aceWidgets) do
+            if predicate(w) then return w end
+        end
+    end
+
+    -- ---- Environment -------------------------------------------------------
+
+    -- LibSharedMedia is looked up with the `silent` flag; leaving it unregistered exercises the
+    -- "no LSM present" branch of the font registration.
+
+    -- Record post-hooks so a suite can fire them the way the client does after the original runs.
+    -- Both call shapes are supported:
+    --   hooksecurefunc(table, "Method", fn)  and  hooksecurefunc("Global", fn)
+    mock.hooksecurefunc = function(a, b, c)
+        local key, fn
+        if type(a) == "string" then key, fn = a, b else key, fn = b, c end
+        mock.hooks[key] = mock.hooks[key] or {}
+        mock.hooks[key][#mock.hooks[key] + 1] = fn
+    end
+
+    mock.CreateFrame = function(kind, name, parent, template)
+        local f = stubFrame(kind, name, template, parent)
+        -- The parent link is what makes protection reachable: a window is refused Hide because of
+        -- what hangs off it, so the subtree has to actually exist in the mock.
+        if parent and type(parent) == "table" and parent.__children then
+            parent.__children[#parent.__children + 1] = f
+        end
+        mock.frames[#mock.frames + 1] = f
+        if name then mock.frames[name] = f end
+        return f
+    end
+    -- Font OBJECTS (CreateFont), as distinct from FontStrings. Recorded under mock.frames by name
+    -- like any other stub, so a suite can find the console font probe.
+    mock.CreateFont = function(name)
+        local f = stubFrame("Font", name)
+        mock.frames[#mock.frames + 1] = f
+        if name then mock.frames[name] = f end
+        return f
+    end
+    mock.UIParent = stubFrame("Frame", "UIParent")
+    mock.UIParent:SetSize(1920, 1080)
+    mock.IsInGroup        = function() return mock.inGroup and true or false end
+    mock.InCombatLockdown = function() return mock.combat and true or false end
+    mock.UISpecialFrames  = {}
+    mock.date             = function(fmt) return os.date(fmt) end
+
+    -- The client's own guaranteed face. Present because core/LibKa0sSkinTester.lua's FONT_MONO falls back
+    -- to it when LibKa0s-Media is absent, and a fallback that resolves to nil in the harness would
+    -- pass every case while shipping a console that draws nothing.
+    mock.STANDARD_TEXT_FONT = "Fonts\\FRIZQT__.TTF"
+
+    -- Blizzard font objects the panel hands to SetFontObject. Present (rather than nil) so the
+    -- `_G.GameFontNormalLarge and …` branches are exercised.
+    mock.GameFontNormalLarge = stubFrame("Font", "GameFontNormalLarge")
+    mock.GameFontHighlight   = stubFrame("Font", "GameFontHighlight")
+    mock.YES = "Yes"
+    mock.NO  = "No"
+
+    mock.C_Timer = {
+        After = function(_delay, fn) mock.timers[#mock.timers + 1] = fn end,
+    }
+
+    mock.GetTime = function() return mock.now end
+
+    -- Category handles carry a GetID, which is what `/st config` opens against.
+    local nextCategoryID = 0
+    local function makeCategory(label)
+        nextCategoryID = nextCategoryID + 1
+        local id = nextCategoryID
+        local cat = { label = label, GetID = function() return id end }
+        mock.categories[#mock.categories + 1] = cat
+        return cat
+    end
+
+    mock.Settings = {
+        RegisterCanvasLayoutCategory    = function(_panel, label) return makeCategory(label) end,
+        RegisterCanvasLayoutSubcategory = function(_parent, _panel, label) return makeCategory(label) end,
+        RegisterAddOnCategory           = function(cat) mock.registeredCategory = cat end,
+        OpenToCategory                  = function(id) mock.openedTo[#mock.openedTo + 1] = id end,
+    }
+    mock.StaticPopupDialogs = {}
+    mock.StaticPopup_Show   = function(name) mock.popups[#mock.popups + 1] = name end
+    mock.C_AddOns = {
+        GetAddOnMetadata = function(_addon, field) return mock.metadata[field] end,
+    }
+    mock.GameTooltip = stubFrame("GameTooltip", "GameTooltip")
+
+    -- Capture every addon print so suites can assert chat output. LibKa0sSkinTester's printer sinks to the
+    -- Lua global `print` rather than DEFAULT_CHAT_FRAME (core/CoreSetup.lua passes an explicit
+    -- `sink` that keeps it there), so this is where every user-facing line lands.
+    mock.print = function(...)
+        local parts = {}
+        for i = 1, select("#", ...) do
+            parts[i] = tostring((select(i, ...)))
+        end
+        mock.prints[#mock.prints + 1] = table.concat(parts, " ")
+    end
+
+    -- ---- The launcher's two libraries (launcher-§1) ------------------------
+    --
+    -- BOTH ARE PRESENT BY DEFAULT, because both are vendored under libs/ and listed in the TOC's
+    -- `# Libraries` block: a harness without them would measure the library's degraded arm on every
+    -- case and never once exercise the button the section is about. A case that WANTS the degraded
+    -- install clears one or both through the loader's `mock` option, which is the same shape every
+    -- other absent-client scenario in this file uses.
+    --
+    -- Registered on `mock.__libs` rather than by loading libs/LibDataBroker-1.1: these are the two
+    -- fakes' whole surface as LibKa0s-Launcher-1.0 uses it, and modeling the callbacks and the
+    -- minimap-angle maths of the real ones would be modeling code no case asserts.
+    mock.ldbObjects = {}      -- name -> the ONE data object, as NewDataObject stored it
+    mock.__libs["LibDataBroker-1.1"] = {
+        NewDataObject = function(_, name, tbl)
+            -- The real one answers nil for a name already taken, which is what the library's
+            -- idempotent Register leans on.
+            if mock.ldbObjects[name] then return nil end
+            mock.ldbObjects[name] = tbl
+            return tbl
+        end,
+        GetDataObjectByName = function(_, name) return mock.ldbObjects[name] end,
+    }
+
+    -- `minimapButtons[name]` is `{ object, db, shown }`. `shown` starts from the db's OWN `hide`
+    -- key, because that is what the real Register reads -- a button registered against a table
+    -- saying hidden is never drawn.
+    mock.minimapButtons = {}
+    mock.__libs["LibDBIcon-1.0"] = {
+        Register = function(_, name, object, db)
+            mock.minimapButtons[name] = { object = object, db = db, shown = not (db and db.hide) }
+        end,
+        IsRegistered = function(_, name) return mock.minimapButtons[name] ~= nil end,
+        Show = function(_, name)
+            local b = mock.minimapButtons[name]
+            if b then b.shown = true end
+        end,
+        Hide = function(_, name)
+            local b = mock.minimapButtons[name]
+            if b then b.shown = false end
+        end,
+        GetMinimapButton = function(_, name) return mock.minimapButtons[name] end,
+    }
+
+    -- In-game `_G` IS the table the WoW API lives in, and both settings/Panel.lua and the library
+    -- read several APIs through it explicitly (`_G.Settings`, `_G.GameFontNormalLarge`,
+    -- `_G[scrollbarName .. "ScrollUpButton"]`). Pointing `_G` back at the mock makes it
+    -- self-consistent; real Lua built-ins still reach through the kit loader's env metatable.
+    mock._G = mock
+
+    -- The client's context-menu API (11.0+), which LibKa0s-Launcher-1.0 minor 4 opens on a right
+    -- click. Installed on every build because the live client has it; tests/mock_menu.lua says why
+    -- and how a case takes it away.
+    mock.menu = dofile("tests/mock_menu.lua")(mock)
+
+    -- GetBindingKey / GetBindingAction / SetBinding / SaveBindings (refusing in combat, through the
+    -- InCombatLockdown above) / GetCurrentBindingSet / GetBindingName / GetBindingText. Installed
+    -- last and on every build, as the live client has them; only names still unset are filled.
+    -- tests/test_keybinds.lua is its reader.
+    installBindings(mock)
+
+    return mock
+end
+
+return build

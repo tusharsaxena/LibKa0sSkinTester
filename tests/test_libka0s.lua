@@ -1,0 +1,1037 @@
+-- tests/test_libka0s.lua — the LibKa0s seams this addon owns: that the vendored library actually
+-- registers, that each descriptor is well-formed, that the degraded install answers rather than
+-- errors, and the `L`-trap guards (testing-§8).
+--
+-- The library's own behavior is tested where it lives. What is pinned here is the WIRING, and
+-- above all the two things nothing else can see: that the modules are really present (a seam
+-- measuring its own fallback stub is green and proves nothing), and that no descriptor was handed
+-- this addon's locale table.
+local T = _G.SKINTESTER_TEST
+local test, assertEqual, assertTrue, assertFalse, assertNil =
+    T.test, T.assertEqual, T.assertTrue, T.assertFalse, T.assertNil
+
+local function readFile(path)
+    local f = io.open(path, "rb")
+    if not f then return nil end
+    local body = f:read("*a")
+    f:close()
+    return body
+end
+
+-- Every file the addon's own source may hand a descriptor to a LibKa0s module from. The `L`-trap
+-- source guard below sweeps exactly these.
+--
+-- Derived from the TOC, not typed out. The hand-written list this replaced named four paths —
+-- core/CoreSetup.lua, core/DebugLogSetup.lua, settings/OptionsSetup.lua, settings/Slash.lua — the
+-- four files that happened to build descriptors on the day it was written. Nothing made it grow: a
+-- fifth file that starts calling `lib:New` is swept by nothing, and the sweep reports green over
+-- it forever, because a list of paths cannot notice a path that was never added to it.
+--
+-- The whole TOC load list is the honest denominator. The trap only matches a descriptor field
+-- spelled `L = NS.L`, so a file that builds no descriptor contributes no match and costs one
+-- io.open; there is no reason to guess in advance which of the sixteen might grow one. It is also
+-- the same derivation tests/loader.lua feeds the sandbox, so the set the guard sweeps and the set
+-- the addon actually loads cannot drift apart.
+local SEAM_FILES = T.loadAddon.tocFiles
+
+-- ---------------------------------------------------------------------------
+-- The vendored library is really there
+-- ---------------------------------------------------------------------------
+
+test("libka0s: every vendored major registers under LibStub", function()
+    local _, env = T.newAddon()
+    for _, major in ipairs({
+        "LibKa0s-Core-1.0", "LibKa0s-DebugLog-1.0", "LibKa0s-Slash-1.0",
+        "LibKa0s-Options-1.0", "LibKa0s-Perf-1.0",
+    }) do
+        assertTrue(env.LibStub(major, true) ~= nil, major .. " did not register")
+    end
+end)
+
+test("libka0s: MODULES names every file of every major, at a positive integer minor", function()
+    local _, env = T.newAddon()
+    local expected = {
+        ["LibKa0s-Core-1.0"]     = { "Core" },
+        ["LibKa0s-DebugLog-1.0"] = { "DebugLog" },
+        ["LibKa0s-Slash-1.0"]    = { "Slash" },
+        ["LibKa0s-Options-1.0"]  = { "Options", "OptionsWidgets", "OptionsScroll" },
+        ["LibKa0s-Perf-1.0"]     = { "Perf", "PerfPanel" },
+    }
+    for major, files in pairs(expected) do
+        local lib = env.LibStub(major, true)
+        assertTrue(type(lib.MODULES) == "table", major .. " has no MODULES registry")
+        for _, file in ipairs(files) do
+            local minor = lib.MODULES[file]
+            assertEqual(type(minor), "number", major .. " does not report " .. file)
+            assertTrue(minor > 0 and minor == math.floor(minor),
+                major .. "." .. file .. " minor must be a positive integer")
+        end
+    end
+end)
+
+-- ---------------------------------------------------------------------------
+-- Core (core/CoreSetup.lua)
+-- ---------------------------------------------------------------------------
+
+test("core: the published seams ARE the library's, not a lookalike", function()
+    -- Identity, not behavior. Two implementations that agree today is exactly the drift the
+    -- extraction exists to end, and a behavioral assertion cannot tell them apart.
+    local NS, env = T.newAddon()
+    local core = env.LibStub("LibKa0s-Core-1.0", true)
+    assertEqual(NS.SafeToString, core.SafeToString)
+    assertEqual(NS.IsConcatSafe, core.IsConcatSafe)
+    assertEqual(NS.SKIN, core.SKIN, "the skin table is shared, never copied")
+    assertEqual(NS.ApplySkin, core.ApplySkin)
+end)
+
+test("core: the close button is the library's, told which addon folder is asking", function()
+    -- The one seam in core/CoreSetup.lua that is WRAPPED rather than bound, and the argument is
+    -- the whole point: LibKa0s draws this collection's `close` mark only when it can build a
+    -- texture path, and being vendored it cannot work out which folder it was copied into. A
+    -- two-of-three passthrough builds a perfectly good button drawing a multiplication sign, so
+    -- nothing errors and nothing goes red — this is the only witness (anti-patterns #64).
+    -- red under: NS.MakeCloseButton = lib.MakeCloseButton.
+    local NS, env = T.newAddon()
+    local core = env.LibStub("LibKa0s-Core-1.0", true)
+    local seen, real = nil, core.MakeCloseButton
+    core.MakeCloseButton = function(_, _, name) seen = name; return nil end
+    NS.MakeCloseButton(env.UIParent, function() end)
+    core.MakeCloseButton = real
+
+    assertEqual(seen, "LibKa0sSkinTester",
+        "the library was not told which addon FOLDER to build the texture path from")
+end)
+
+test("core: ApplySkin stays a bare bind, so its optional override survives", function()
+    -- Guarding the line above the wrapper. `ApplySkin(frame, skin)` takes a per-window override,
+    -- and wrapping it to one argument while adding the close-button wrapper beside it would be the
+    -- same defect on the next line.
+    local NS, env = T.newAddon()
+    local core = env.LibStub("LibKa0s-Core-1.0", true)
+    assertEqual(NS.ApplySkin, core.ApplySkin)
+end)
+
+test("core: the printer emits <prefix><space><body> as one line", function()
+    -- The byte-level half of the formatter handover. The old seam called
+    -- `print(NS.PREFIX, body)` and let the client join the two; Core composes the line itself and
+    -- hands it to the sink, so this pins that the composed bytes are the same.
+    local NS, _, mock = T.newAddon()
+    NS.Print("   - Group:", "My Group")
+    assertEqual(mock.prints[#mock.prints], NS.PREFIX .. " " .. "   - Group: My Group")
+end)
+
+test("core: the prefix is read at CALL time, not captured at load", function()
+    -- core/CoreSetup.lua loads before core/LibKa0sSkinTester.lua defines NS.PREFIX, so the string form
+    -- would have captured nil forever. Move the constant and the next line must move with it.
+    local NS, _, mock = T.newAddon()
+    NS.PREFIX = "|cff00FF00[XX]|r"
+    NS.Print("after")
+    assertEqual(mock.prints[#mock.prints], "|cff00FF00[XX]|r after")
+end)
+
+test("core: the sink is the Lua global print, so the harness can see chat output", function()
+    -- Core defaults to DEFAULT_CHAT_FRAME:AddMessage. This addon has always printed through the
+    -- global, and the mock captures the global — without the explicit `sink` every chat assertion
+    -- in this suite would go silent while still passing.
+    local NS, _, mock = T.newAddon()
+    local before = #mock.prints
+    NS.Print("routed")
+    assertEqual(#mock.prints, before + 1, "the line landed in the global-print capture")
+end)
+
+-- ---------------------------------------------------------------------------
+-- DebugLog (core/DebugLogSetup.lua)
+-- ---------------------------------------------------------------------------
+
+test("debuglog: the console is the library's instance, and the sink is bound bare", function()
+    local NS = T.newAddon()
+    assertEqual(type(NS.DebugLog.SetEnabled), "function", "the instance surface is there")
+    assertEqual(NS.Debug, NS.DebugLog.Debug,
+        "NS.Debug must BE the instance's plain function, not a wrapper — ~20 call sites bind it")
+end)
+
+test("debuglog: the library is told the FOLDER name, not just the frame name", function()
+    -- Two fields, two questions, one string in this addon. `name` seeds the frame globals below;
+    -- `addonName` is what the library builds a TEXTURE PATH from, which is what turns the
+    -- console's close, clear and copy controls from a multiplication sign and two words into this
+    -- collection's marks — on the copy window too. Asserted against the SOURCE because the
+    -- descriptor is not published back, and because the appearance it produces is not something a
+    -- headless run can see.
+    -- red under: dropping the key and letting the console keep its words.
+    local src = readFile("core/DebugLogSetup.lua")
+    assertTrue(src ~= nil, "core/DebugLogSetup.lua is readable")
+    local body = src:gsub("%-%-[^\r\n]*", "")
+    assertTrue(body:match("addonName%s*=%s*addonName") ~= nil,
+        "the descriptor does not pass addonName, so both console windows draw the fallback glyph")
+end)
+
+test("debuglog: the descriptor keeps the frame globals the old console used", function()
+    -- A rename here is invisible until a player's Esc stops closing the window or /framestack
+    -- attributes it to nobody.
+    local NS, _, mock = T.newAddon()
+    NS.DebugLog:Show()
+    assertTrue(mock.frames["LibKa0sSkinTesterDebugWindow"] ~= nil, "the console window keeps its name")
+    NS.DebugLog:ShowCopy()
+    assertTrue(mock.frames["LibKa0sSkinTesterDebugCopyWindow"] ~= nil, "and so does the copy window")
+    assertTrue(mock.frames["LibKa0sSkinTesterDebugCopyScroll"] ~= nil, "and its scroll frame")
+end)
+
+test("debuglog: the composed window title is unchanged", function()
+    -- The library appends its own " — Debug" to the descriptor's `title`, so this is the byte-level
+    -- check that the two halves still compose to what the hand-written console rendered.
+    local NS, _, mock = T.newAddon()
+    NS.DebugLog:Show()
+    assertEqual(mock.frames["LibKa0sSkinTesterDebugWindow"].titleText, "Ka0s Skin Tester \226\128\148 Debug")
+end)
+
+test("debuglog: the flag stays the addon's — the library never keeps a copy", function()
+    local NS = T.newAddon()
+    NS.State.debug = false
+    NS.DebugLog:SetEnabled(true)
+    assertTrue(NS.State.debug, "SetEnabled wrote through to NS.State.debug")
+    assertTrue(NS.DebugLog:IsEnabled(), "and IsEnabled reads the same flag")
+    NS.State.debug = false
+    assertFalse(NS.DebugLog:IsEnabled(), "a write straight to the flag is seen too")
+end)
+
+test("debuglog: the [Init] summary is the addon's, reached through the descriptor", function()
+    local NS = T.bootAddon()
+    NS.State.debug = false
+    NS.DebugLog:SetEnabled(true)
+    -- The line after the bracket, not the last one: since LibKa0s v1.65.0 the at-enable queue's
+    -- held state lines (the boot's [Migrate] line here) are written after the [Init] summary.
+    local buf = NS.DebugLog.buffer
+    local last
+    for i = #buf, 1, -1 do
+        if buf[i]:find("[Debug] logging enabled", 1, true) then last = buf[i + 1]; break end
+    end
+    assertEqual(last and last:find("[Init]", 1, true) ~= nil, true, "the bracket is followed by [Init]")
+    assertTrue(last:find(NS.addon:InitSummary(), 1, true) ~= nil,
+        "and the line IS this addon's summary, not a library default")
+end)
+
+test("debuglog: the console's user-visible strings resolve to prose, not to their own keys", function()
+    -- The rendered half of the `L` trap, for the one adopted module that can express it and does
+    -- render a real library string. Reached through a REAL accessor: a case that guards on
+    -- `if label then` passes vacuously when the accessor does not exist.
+    --
+    -- red under: `L = { CHECKBOX_LABEL = "CHECKBOX_LABEL" }` on the descriptor. Note that
+    -- `L = NS.L` alone does NOT redden this one — DebugLog's resolver has used `rawget` since
+    -- minor 3, so a metatable-backed table falls through correctly and the trap is invisible from
+    -- the rendered end on this copy. The SOURCE guard above is what catches that spelling; this
+    -- case guards what the user actually sees, and would go red the day the resolver changed or
+    -- the accessor stopped answering.
+    local NS = T.newAddon()
+    local spec = NS.DebugLog:ConsoleCheckbox()
+    assertEqual(type(spec.label), "string", "ConsoleCheckbox really returns a label")
+    assertEqual(type(spec.tooltip), "string", "and a tooltip")
+    -- No English label is SCREAMING_SNAKE_CASE. A resolved string is prose; an unresolved one is
+    -- the key.
+    assertNil(spec.label:match("^[A-Z][A-Z0-9_]+$"), "label rendered as a raw key: " .. spec.label)
+    assertNil(spec.tooltip:match("^[A-Z][A-Z0-9_]+$"),
+        "tooltip rendered as a raw key: " .. spec.tooltip)
+    -- Non-vacuity: couple it to the library's own value, so the case fails if the accessor ever
+    -- stops answering rather than passing on an empty string.
+    local _, env = T.newAddon()
+    local lib = env.LibStub("LibKa0s-DebugLog-1.0", true)
+    assertEqual(spec.label, lib.STRINGS.CHECKBOX_LABEL)
+    assertTrue(spec.tooltip:find("/st debug", 1, true) ~= nil,
+        "the tooltip is composed from the descriptor's own slash")
+end)
+
+test("debuglog: the gated sink survives a format its arguments cannot satisfy (WhatGroup WG-22)", function()
+    -- The library gained this at DebugLog minor 7, driven by this addon: `%d` handed the
+    -- stringified sentinel used to raise inside the sink. Pinned here as well as upstream, because
+    -- it is the behavior LibKa0sSkinTester's own hand-written sink guaranteed and would otherwise have
+    -- lost on adoption.
+    local NS = T.newAddon()
+    NS.State.debug = true
+    local ok = pcall(function() NS.Debug("Capture", "n=%d", {}) end)
+    assertTrue(ok, "NS.Debug must not propagate a format error")
+    local last = NS.DebugLog.buffer[#NS.DebugLog.buffer]
+    assertTrue(last:find("<secret>", 1, true) ~= nil, "and the value degrades to the sentinel")
+end)
+
+-- ---------------------------------------------------------------------------
+-- Options (settings/OptionsSetup.lua)
+-- ---------------------------------------------------------------------------
+
+test("options: Settings.Helpers IS the library instance, decorated in place", function()
+    -- Identity, not resemblance, and this is the case options-ui-§1 exists for. RenderRows resolves
+    -- O.RenderField from the INSTANCE at call time, so a host table that merely copied the
+    -- library's members across would give a test a member nobody calls.
+    -- red under: build a fresh table in settings/OptionsSetup.lua and copy the library's members
+    -- into it instead of moving the host's onto the instance.
+    local NS, _, mock = T.enableAddon()
+    local H = NS.addon.Settings.Helpers
+    local seen = 0
+    local realRenderField = H.RenderField
+    H.RenderField = function(...) seen = seen + 1; return realRenderField(...) end
+    local panel = mock.frames["LibKa0sSkinTesterGeneralPanel"]
+    panel:Show()
+    mock.fireCTimers()
+    assertTrue(seen > 0,
+        "the flow engine did not go through the member on the published table")
+    -- Once per row OF THE OPEN TAB, not once per schema row: the page is tabbed (options-ui-§13)
+    -- and renders one group at a time, so the whole-schema count would be asserting widgets that
+    -- were never asked for. General is the group the strip opens on -- its first in declaration
+    -- order -- which is what makes this a fixed number rather than "whatever rendered".
+    local onFirstTab = 0
+    local firstGroup = NS.addon.Settings.Schema[1].group
+    for _, def in ipairs(NS.addon.Settings.Schema) do
+        if def.group == firstGroup then onFirstTab = onFirstTab + 1 end
+    end
+    assertEqual(seen, onFirstTab, "once per row of the tab the page opens on")
+end)
+
+test("options: the library is told the FOLDER name, and the help-mark art is declared if drawn", function()
+    -- LibKa0s#42. The Options descriptor's `addonName` is the route to the library's own `info`
+    -- help-mark art (Media.Icon(addonName, "info")); without it every IdList help mark draws the
+    -- client's blue disc. It must be the first vararg -- the folder -- and never the "Ka0s Skin Tester"
+    -- brand, which builds a well-formed path to a file that does not exist. Latent here: no IdList
+    -- in this addon carries help yet, so the first help line anyone adds is what this protects.
+    -- Asserted against the SOURCE because the descriptor is not published back.
+    -- red under: dropping the key, or putting `_` back as the first vararg.
+    local src = readFile("settings/OptionsSetup.lua")
+    assertTrue(src ~= nil, "settings/OptionsSetup.lua is readable")
+    local body = src:gsub("%-%-[^\r\n]*", "")
+    assertTrue(body:match("local%s+addonName%s*,%s*NS%s*=%s*%.%.%.") ~= nil,
+        "the first vararg is thrown away, so there is no folder name to pass")
+    assertTrue(body:match("lib:New%s*%(%s*{.-addonName%s*=%s*addonName%s*,.-}%s*%)") ~= nil,
+        "the Options descriptor does not pass addonName, so help marks draw the fallback glyph")
+    -- The one residual the library's loaded-addon guard cannot catch is a path with no file behind
+    -- it. Since LibKa0s v1.75.0 the vendored icons folder is pruned to the CLAUDE.md
+    -- `LibKa0s icons:` line, so `info` ships only when declared: any settings file other than the
+    -- degradation stub that calls IdList must come with `info` on that line. Today none does.
+    -- red under: adding an IdList call (a help line) to settings/Panel.lua without declaring info.
+    local callers = {}
+    local pipe = io.popen and io.popen("ls -1 settings")
+    assertTrue(pipe ~= nil, "settings/ cannot be listed")
+    for name in pipe:lines() do
+        if name:match("%.lua$") and name ~= "OptionsSetup.lua" then
+            local text = (readFile("settings/" .. name) or ""):gsub("%-%-[^\r\n]*", "")
+            if text:match("IdList%s*%(") then callers[#callers + 1] = name end
+        end
+    end
+    pipe:close()
+    local decl = dofile("tests/_kit/vendor_sync.lua").iconDeclaration(readFile("CLAUDE.md") or "")
+    local declaresInfo = false
+    for _, n in ipairs(decl and decl.names or {}) do
+        if n == "info" then declaresInfo = true end
+    end
+    -- info undeclared (today) means no settings file may build an id list.
+    if not declaresInfo then
+        assertEqual(table.concat(callers, ", "), "",
+            "a settings file builds an id list, so CLAUDE.md's `LibKa0s icons:` line must name info")
+    end
+end)
+
+test("options: the host's data seams survived the move onto the instance", function()
+    local NS = T.enableAddon()
+    local H = NS.addon.Settings.Helpers
+    for _, member in ipairs({
+        "Get", "Set", "FindSchema", "ValidateSchema", "ApplyDefault",
+        "RestoreAllDefaults", "RefreshAll", "BuildMainContent",
+    }) do
+        assertEqual(type(H[member]), "function", "lost the host member " .. member)
+    end
+    -- RE-PINNED AT ADOPTION (LibKa0s docs/api/Schema/version-2-docs.md, Adoption notes: skip flags
+    -- and side-effect-free writers stay in the host that has them; this one had no caller left).
+    -- RawSet left with the host seam when WhatGroup#22 moved it onto LibKa0s-Schema-1.0.
+    assertNil(H.RawSet, "the side-effect-free writer is gone")
+    for _, member in ipairs({
+        "CreatePanel", "EnsureScroll", "ClearScroll", "Section", "AddSpacer", "AttachTooltip",
+        "RenderField", "RenderRows", "RenderSchema", "SessionCheckbox", "SetRenderer",
+        "RegisterOptionsPage", "CreateOptionsPanel", "OpenOptionsPanel", "RefreshScalars",
+        "RefreshAllPanels", "PatchAlwaysShowScrollbar", "__panelFor",
+    }) do
+        assertEqual(type(H[member]), "function", "the library member " .. member .. " is missing")
+    end
+end)
+
+test("options: the host's RestoreAllDefaults deliberately overrides the library's", function()
+    -- Both sides define the name and the HOST's has to win: it wipes db.profile before re-threading
+    -- (which is what drops an orphaned key), and the reset is logged as one [Set] reset profile line
+    -- rather than one [Set] per row (debug-logging-§10).
+    -- Copying only where the instance was nil silently gave the library's, and the suite said so.
+    local NS = T.bootAddon()
+    NS.addon.db.profile.stale = "orphan"
+    NS.addon.Settings.Helpers.RestoreAllDefaults()
+    assertNil(NS.addon.db.profile.stale, "the library's row-by-row form would have left this")
+end)
+
+test("options: a panel write takes the addon's single write seam", function()
+    -- options-ui-§1: a checkbox must take exactly the path `/st set` takes — same [Set] debug line,
+    -- same row onChange, same refresh — or there are two behaviors and only one gets tested.
+    local NS, _, mock = T.enableAddon()
+    NS.State.debug = true
+    local panel = mock.frames["LibKa0sSkinTesterGeneralPanel"]
+    panel:Show()
+    mock.fireCTimers()
+    -- On Master controls, the tab the page opens on.
+    local cb = mock.findWidget(function(w)
+        return w.type == "CheckBox" and w.labelText == "Enable Skin Tester"
+    end)
+    cb:Fire("OnValueChanged", false)
+    assertEqual(NS.addon.db.profile.enabled, false, "the value landed")
+    assertTrue(NS.DebugLog:FindLine("[Set] enabled = false") ~= nil,
+        "and it produced the same [Set] trace a slash write does")
+end)
+
+test("options: no layout constant is restated in this addon's own source", function()
+    -- options-ui-§8: a host copy of a library constant is the copy that goes stale. Where a bespoke
+    -- widget needs one, it is read off the instance (Helpers.ROW_VSPACER), never written down.
+    local NS = T.enableAddon()
+    local H = NS.addon.Settings.Helpers
+    assertEqual(H.ROW_VSPACER, 8)
+    assertEqual(H.SECTION_HEADING_H, 26)
+    assertEqual(H.BUTTON_PAIR_REL, 0.492)
+    for _, path in ipairs({ "settings/Panel.lua", "settings/OptionsSetup.lua" }) do
+        local src = readFile(path)
+        for _, name in ipairs({
+            "PADDING_X", "HEADER_TOP", "HEADER_HEIGHT", "DEFAULTS_W",
+            "SECTION_TOP_SPACER", "SECTION_BOTTOM_SPACER", "SECTION_HEADING_H", "ROW_VSPACER",
+        }) do
+            assertNil(src:match("local%s+" .. name .. "%s*="),
+                path .. " restates the library layout constant " .. name)
+        end
+    end
+end)
+
+test("options: the panel body still builds on the NEXT frame, not inside OnShow", function()
+    -- The one adapter this adoption needed. LibKa0s-Options-1.0's SetRenderer calls the renderer —
+    -- and EnsureDefaultsButton — synchronously inside its own OnShow; this addon wraps both on the
+    -- instance so neither creates an AceGUI frame inside a secure-execute chain, which is the fix
+    -- docs/midnight-quirks.md records and the contract tests/test_panel.lua has pinned since.
+    -- red under: drop the C_Timer.After wrappers in settings/OptionsSetup.lua.
+    local _, _, mock = T.enableAddon()
+    local panel = mock.frames["LibKa0sSkinTesterGeneralPanel"]
+    panel:Show()
+    assertEqual(#mock.aceWidgets, 0,
+        "OnShow built nothing — not the page body and not the Defaults button")
+    assertTrue(#mock.timers > 0, "a next-frame hop is queued instead")
+    mock.fireCTimers()
+    assertTrue(#mock.aceWidgets > 0, "and the widgets appear on the next frame")
+end)
+
+-- ---------------------------------------------------------------------------
+-- Slash (settings/Slash.lua)
+-- ---------------------------------------------------------------------------
+--
+-- Every case below asserts BYTES. Four formatters changed hands here — the help header, the
+-- command row, the `key = value` pair and the value renderer — and "does it still run" is exactly
+-- the question that cannot see a formatter drift.
+
+test("slash: the help header is the library's, with this addon's alias sentence", function()
+    local NS, _, mock = T.bootAddon()
+    NS.addon:OnSlashCommand("help")
+    assertEqual(mock.prints[1],
+        NS.PREFIX .. " v" .. NS.addon.VERSION ..
+        " \226\128\148 slash commands (|cFFFFFF00/skintester|r is an alias for |cFFFFFF00/st|r)")
+end)
+
+test("slash: a help row is the one command-row formatter, indented two spaces", function()
+    local NS, _, mock = T.bootAddon()
+    NS.addon:OnSlashCommand("help")
+    local first = NS.addon.COMMANDS[1]
+    assertEqual(mock.prints[2],
+        NS.PREFIX .. "   |cFFFFFF00/st " .. first[1] .. "|r \226\128\148 |cFFFFFFFF"
+        .. first[2] .. "|r")
+end)
+
+test("slash: the landing page renders the SAME rows, un-indented (convergence #2)", function()
+    -- The convergence itself. This panel used to carry a second formatter for the same data —
+    -- double spaces around the em dash, the dash white-wrapped, the description bare. Asserting
+    -- that the two differ by exactly the indent is what makes a future divergence impossible to
+    -- introduce quietly.
+    local NS = T.bootAddon()
+    local Sl = NS.SlashCommands
+    local help, landing = Sl:HelpRows(), Sl:LandingRows()
+    assertEqual(#help, #NS.addon.COMMANDS)
+    assertEqual(#landing, #help)
+    for i = 1, #help do
+        assertEqual(help[i], "  " .. landing[i], "row " .. i .. " differs by more than the indent")
+    end
+end)
+
+test("slash: the landing page draws those rows and nothing of its own", function()
+    local NS, _, mock = T.enableAddon()
+    local main = mock.frames["LibKa0sSkinTesterParentPanel"]
+    main:Show()
+    mock.fireCTimers()
+    for _, line in ipairs(NS.SlashCommands:LandingRows()) do
+        local found = mock.findWidget(function(w) return w.type == "Label" and w.text == line end)
+        assertTrue(found ~= nil, "the landing page is missing the row: " .. line)
+    end
+end)
+
+test("slash: `list` renders through the shared key/value formatter", function()
+    local NS, _, mock = T.bootAddon()
+    NS.addon:OnSlashCommand("get enabled")
+    assertEqual(mock.prints[#mock.prints],
+        NS.PREFIX .. " |cFFFFFF00enabled|r = |cFFFFFFFFtrue|r")
+end)
+
+test("slash: a number row still renders through its schema `fmt`", function()
+    local NS, _, mock = T.bootAddon()
+    NS.addon.Settings.Helpers.Set("scale", 1.5)
+    NS.addon:OnSlashCommand("get scale")
+    assertEqual(mock.prints[#mock.prints],
+        NS.PREFIX .. " |cFFFFFF00scale|r = |cFFFFFFFF1.5|r")
+end)
+
+test("slash: `toggle` survived the adoption, through the descriptor's parse adapter", function()
+    -- The library's parseBool knows true/false/on/off/1/0/yes/no and nothing else. `toggle` is this
+    -- addon's own grammar and a shipped verb, so it is handled in a `parse` adapter
+    -- (slash-commands-§6) rather than dropped — and everything else still delegates, so the
+    -- clamping and the enum validation stay the library's.
+    local NS = T.bootAddon()
+    local H = NS.addon.Settings.Helpers
+    NS.addon:OnSlashCommand("set enabled toggle")
+    assertEqual(H.Get("enabled"), false)
+    NS.addon:OnSlashCommand("set enabled toggle")
+    assertEqual(H.Get("enabled"), true)
+end)
+
+test("slash: the descriptor's L overrides exactly one string and nothing else", function()
+    -- A PLAIN one-key table, and the rendered proof that it resolved: the library's own ERR_BOOL
+    -- lists yes/no, ours names `toggle`, and every OTHER string still comes from the library.
+    -- red under: drop the `L` table from the descriptor.
+    local NS, env, mock = T.bootAddon()
+    local lib = env.LibStub("LibKa0s-Slash-1.0", true)
+    local Sl = NS.SlashCommands
+    assertEqual(Sl:Text("ERR_BOOL"), "expected true/false/on/off/1/0/toggle")
+    assertTrue(Sl:Text("ERR_BOOL") ~= lib.STRINGS.ERR_BOOL, "the override really took")
+    assertEqual(Sl:Text("ERR_NUMBER"), lib.STRINGS.ERR_NUMBER, "and nothing else was overridden")
+    -- Reached through the real path, not just the accessor.
+    NS.addon:OnSlashCommand("set enabled maybe")
+    assertEqual(mock.prints[#mock.prints], NS.PREFIX .. "   expected true/false/on/off/1/0/toggle")
+end)
+
+test("slash: every user-visible CLI string resolves to prose, not to its own key", function()
+    -- The rendered half of the `L` trap for this module. No English message is
+    -- SCREAMING_SNAKE_CASE, so a key that reached the screen is a key that never resolved.
+    local NS, env = T.bootAddon()
+    local lib = env.LibStub("LibKa0s-Slash-1.0", true)
+    local Sl = NS.SlashCommands
+    local checked = 0
+    for key in pairs(lib.STRINGS) do
+        local rendered = Sl:Text(key)
+        assertEqual(type(rendered), "string", key .. " did not resolve to a string")
+        assertNil(rendered:match("^[A-Z][A-Z0-9_]+$"),
+            key .. " rendered as a raw key: " .. rendered)
+        checked = checked + 1
+    end
+    assertTrue(checked >= 20, "the whole string table was walked, not an empty one")
+end)
+
+-- ---------------------------------------------------------------------------
+-- The degraded install — the library genuinely absent
+-- ---------------------------------------------------------------------------
+--
+-- Loaded with the file MISSING, never by hand-stubbing the namespace member under test
+-- (testing-§8). Core.lua absent means every other major returns before LibStub:NewLibrary too, so
+-- this is the whole-library-missing scenario as well as the Core one.
+
+local NO_LIBKA0S = {
+    "libs/LibKa0s/Core.lua", "libs/LibKa0s/Env.lua", "libs/LibKa0s/Compat.lua",
+    "libs/LibKa0s/Bus.lua", "libs/LibKa0s/Schema.lua", "libs/LibKa0s/Pool.lua",
+    "libs/LibKa0s/Item.lua", "libs/LibKa0s/Media.lua", "libs/LibKa0s/Widgets.lua",
+    "libs/LibKa0s/DebugLog.lua", "libs/LibKa0s/Slash.lua",
+    "libs/LibKa0s/Options.lua", "libs/LibKa0s/OptionsWidgets.lua",
+    "libs/LibKa0s/OptionsCompose.lua",
+    "libs/LibKa0s/OptionsScroll.lua", "libs/LibKa0s/Perf.lua", "libs/LibKa0s/PerfPanel.lua",
+}
+
+test("degraded: the addon loads with LibKa0s absent", function()
+    local NS, env = T.newAddon{ skip = NO_LIBKA0S }
+    assertNil(env.LibStub("LibKa0s-Core-1.0", true), "the library really is absent")
+    assertEqual(type(NS.Print), "function", "the printer still answers")
+    assertEqual(type(NS.SafeToString), "function", "the stringifier still answers")
+end)
+
+test("degraded: the cause clause is published on BOTH paths", function()
+    -- Every later seam appends its own consequence to this one sentence, so it has to exist even
+    -- when the library is present.
+    local withLib = T.newAddon()
+    local withOut = T.newAddon{ skip = NO_LIBKA0S }
+    assertEqual(withLib.LIBKA0S_MISSING, withOut.LIBKA0S_MISSING)
+    assertTrue(withLib.LIBKA0S_MISSING:find("LibKa0s", 1, true) ~= nil, "it names the library")
+    assertTrue(withLib.LIBKA0S_MISSING:find("libs/LibKa0s", 1, true) ~= nil,
+        "and where it was expected")
+end)
+
+test("degraded: the printer announces the absence exactly ONCE, then prints normally", function()
+    local NS, _, mock = T.newAddon{ skip = NO_LIBKA0S }
+    NS.Print("first")
+    NS.Print("second")
+    NS.Print("third")
+    local notices = 0
+    for _, line in ipairs(mock.prints) do
+        if line:find("running on reduced built-in fallbacks", 1, true) then notices = notices + 1 end
+    end
+    assertEqual(notices, 1, "one notice, not one per line and not none")
+    assertTrue(mock.prints[1]:find(NS.LIBKA0S_MISSING, 1, true) ~= nil,
+        "the notice carries the shared cause clause verbatim")
+    assertTrue(mock.prints[#mock.prints]:find("third", 1, true) ~= nil,
+        "and the line the user asked for still lands")
+end)
+
+test("degraded: the fallback printer still degrades a secret in place", function()
+    local NS, _, mock = T.newAddon{ skip = NO_LIBKA0S }
+    NS.Print("value:", {})
+    assertTrue(mock.prints[#mock.prints]:find("<secret>", 1, true) ~= nil)
+end)
+
+test("degraded: every DebugLog member the addon calls still answers", function()
+    -- The stub has to cover the whole surface, not the members that happened to be convenient:
+    -- `/st debug`, the panel's console checkbox and every NS.Debug trace site reach it.
+    local NS = T.newAddon{ skip = NO_LIBKA0S }
+    for _, member in ipairs({
+        "Add", "Debug", "Clear", "Show", "Hide", "Toggle", "IsShown", "IsEnabled",
+        "RefreshHeader", "ShowCopy", "UpdateScrollBar", "UpdateStatus", "BufferSize",
+        "LastLine", "FindLine", "CopyText", "MakeCloseButton", "SetEnabled", "ConsoleCheckbox",
+        "Text",
+    }) do
+        assertEqual(type(NS.DebugLog[member]), "function", "the stub does not answer " .. member)
+    end
+    assertEqual(type(NS.DebugLog.buffer), "table", "and the buffer every test reads is present")
+    assertEqual(NS.Debug, NS.DebugLog.Debug, "the sink is still bound bare")
+end)
+
+test("degraded: the console stub copies NO library formatter", function()
+    -- debug-logging-§3: hand-copying the exact color codes whose seven-way drift the extraction
+    -- exists to end is the one duplicate the standard most specifically forbids. The stub must not
+    -- carry FormatPlain/FormatColored at all.
+    local NS = T.newAddon{ skip = NO_LIBKA0S }
+    assertNil(NS.DebugLog.FormatPlain, "the stub must not reimplement the plain formatter")
+    assertNil(NS.DebugLog.FormatColored, "nor the colored one")
+    local src = readFile("core/DebugLogSetup.lua")
+    assertNil(src:match("6f8faf"), "no console color code may appear in the seam file")
+    assertNil(src:match("c9a66b"), "nor the tag color")
+end)
+
+test("degraded: every HAND-WRITTEN schema row survives the options library's absence (options-ui-§1)",
+function()
+    -- The MUST behind the load-completing stub, and it has to be MEASURED rather than reasoned
+    -- about: a page file that touched a helper inside a schema-row literal at file load would raise
+    -- with the member nil, its rows would never register, and a third of the schema would vanish —
+    -- taking list/get/set/reset and the profile defaults with it, silently.
+    --
+    -- It used to compare the two ROW COUNTS outright, and that stopped being the right assertion
+    -- when the Master controls block became composed (options-ui-§15): those six rows are the
+    -- library's to emit, so they are legitimately absent when the library is. What is NOT allowed
+    -- to change is everything else — settings/Schema.lua's own rows, in order — and the case is
+    -- narrowed to exactly that rather than relaxed to a count that would wave a real half-load
+    -- through.
+    --
+    -- red under: settings/Schema.lua calling any Helpers member inside a row literal (the rows
+    -- after it vanish), or settings/Panel.lua splicing the composed block anywhere but the head.
+    local full    = T.newAddon()
+    local without = T.newAddon{ skip = NO_LIBKA0S }
+    assertTrue(#full.addon.Settings.Schema > 0, "there is a schema to compare")
+
+    local composed = 0
+    for _, row in ipairs(full.addon.Settings.Schema) do
+        if row.group == "Master controls" then composed = composed + 1 end
+    end
+    assertTrue(composed > 0, "the composed block is in the full schema")
+    assertEqual(#without.addon.Settings.Schema, #full.addon.Settings.Schema - composed,
+        "exactly the composed block is missing — nothing else")
+
+    for i = 1, #without.addon.Settings.Schema do
+        assertEqual(without.addon.Settings.Schema[i].path,
+                    full.addon.Settings.Schema[i + composed].path, "row " .. i .. " differs")
+    end
+end)
+
+test("degraded: the STORED profile is the same shape with the library absent", function()
+    -- The half of the case above that the row counts used to carry. A composed row is a row the
+    -- degraded load does not have, so a schema-only BuildDefaults would hand AceDB a profile with
+    -- no `enabled` key at all — which reads as false and turns the addon off for exactly the
+    -- install that is already missing a library. settings/Schema.lua seeds from defaults/Profile.lua
+    -- first for this reason, and this is the assertion that says so.
+    --
+    -- red under: BuildDefaults dropping the NS.C seed and walking the schema alone.
+    local full    = T.newAddon()
+    local without = T.newAddon{ skip = NO_LIBKA0S }
+    local a = full.addon.Settings.BuildDefaults().profile
+    local b = without.addon.Settings.BuildDefaults().profile
+
+    local function sameShape(x, y, where)
+        for k, v in pairs(x) do
+            if type(v) == "table" then
+                assertEqual(type(y[k]), "table", where .. k .. " is a table on both paths")
+                sameShape(v, y[k], where .. k .. ".")
+            else
+                assertEqual(y[k], v, where .. k)
+            end
+        end
+    end
+    sameShape(a, b, "")
+    sameShape(b, a, "")
+end)
+
+-- Written before the LibKa0s-Schema-1.0 adoption (WhatGroup#22) as the characterization of a path
+-- the adoption moves, and REWRITTEN by it to the owner's ruling. On a library-absent load the
+-- Master controls block is not composed (the hollow composer, options-ui-§1), so `enabled` and
+-- `state.testMode` have NO schema row, and the schema seam -- the library's, or
+-- settings/SchemaSetup.lua's host stub -- refuses a path no row declares. LibKa0sSkinTester passes no
+-- `writeThrough` list: that is options-ui-§1's route (b), the SHOULD deviation recorded in
+-- docs/ARCHITECTURE.md. So the verbs say they are unavailable, in one line through L, raise no Lua
+-- error, write nothing and acknowledge nothing.
+--
+-- red under: the pre-adoption seam, whose RawSet wrote the row-less path; or a verb that acks a
+-- write that did not land.
+local ABSENT = " is unavailable: the LibKa0s library did not load."
+
+test("degraded: `/st disable` and `/st enable` print the library-absent line and write nothing "
+     .. "(options-ui-§1, WhatGroup#22)", function()
+    local NS, _, mock = T.newAddon{ skip = NO_LIBKA0S }
+    NS.addon:OnInitialize()
+    NS.addon:OnEnable()
+    assertNil(NS.addon.Settings.Helpers.FindSchema("enabled"), "the composed row is absent here")
+    for _, verb in ipairs({ "disable", "enable" }) do
+        local ok, err = pcall(NS.addon.OnSlashCommand, NS.addon, verb)
+        assertTrue(ok, "/st " .. verb .. " raised: " .. tostring(err))
+        local last = mock.prints[#mock.prints] or ""
+        local want = "/st " .. verb .. ABSENT
+        assertEqual(last:sub(-#want), want, "the library-absent line names the verb")
+        assertEqual(NS.addon.db.profile.enabled, true, "the stored switch did not move")
+    end
+end)
+
+-- Slash minor 17 put CliProfile and ProfileSwitch on the live instance, so the stub owes both
+-- (slash-commands-§1). With the library absent there is no store adapter to trust: both take
+-- route (b), one library-absent line naming `/st profile`, and no profile moves.
+--
+-- red under: a stub member that switches, raises, or says nothing.
+test("degraded: `/st profile`, CliProfile and ProfileSwitch print the library-absent line and "
+     .. "switch nothing (Slash 17)", function()
+    local NS, _, mock = T.newAddon{ skip = NO_LIBKA0S }
+    NS.addon:OnInitialize()
+    NS.addon:OnEnable()
+    NS.addon.db:SetProfile("Alt")
+    NS.addon.db:SetProfile("Default")
+    local Sl = NS.SlashCommands
+    local calls = {
+        function() return Sl:CliProfile("Alt") end,
+        function() return Sl:ProfileSwitch("Alt") end,
+        -- and the COMMANDS row, the route a player takes, in both forms
+        function() return NS.addon:OnSlashCommand("profile Alt") end,
+        function() return NS.addon:OnSlashCommand("profile") end,
+    }
+    for i, call in ipairs(calls) do
+        local mark = #mock.prints
+        local ok, answer = pcall(call)
+        assertTrue(ok, "stub member " .. i .. " raised: " .. tostring(answer))
+        assertEqual(#mock.prints - mark, 1, "stub member " .. i .. " answers one line")
+        local want = "/st profile" .. ABSENT
+        assertEqual(mock.prints[#mock.prints]:sub(-#want), want, "the line names /st profile")
+        assertEqual(NS.addon.db:GetCurrentProfile(), "Default", "no profile moved")
+    end
+    assertEqual(Sl:ProfileSwitch("Alt"), false, "ProfileSwitch answers false: nothing switched")
+end)
+
+-- options-ui-§1 keeps the global reset real in the stub. On this path H IS Settings.Helpers, the
+-- table settings/Schema.lua already hung the host's RestoreAllDefaults on, so a stub that assigns
+-- its own no-op wipes the real reset -- and both entry points (the direct call and `/st resetall`'s
+-- popup OnAccept body) then print success over an untouched profile.
+--
+-- red under: the stub assigning a no-op RestoreAllDefaults
+test("degraded: Reset all settings still resets the profile (options-ui-§1)", function()
+    local NS, env = T.newAddon{ skip = NO_LIBKA0S }
+    NS.addon:OnInitialize()
+    NS.addon:OnEnable()
+    NS.addon.db.profile.scale = 1.5
+    NS.addon.Settings.Helpers.RestoreAllDefaults()
+    assertEqual(NS.addon.db.profile.scale, NS.C.scale, "the direct call resets")
+
+    -- And `/st resetall` through the popup body, the path a user actually takes.
+    NS.addon.db.profile.scale = 1.5
+    NS.addon:OnSlashCommand("resetall")
+    env.StaticPopupDialogs["LIBKA0SSKINTESTER_RESET_ALL"].OnAccept()
+    assertEqual(NS.addon.db.profile.scale, NS.C.scale, "the popup body resets")
+end)
+
+test("degraded: the settings stub carries no widget maker and no layout constant", function()
+    -- options-ui-§1 forbids both outright: hand-copying the code whose drift the extraction ended
+    -- is anti-patterns #47, and a host copy of a library constant is the copy that goes stale.
+    local NS = T.newAddon{ skip = NO_LIBKA0S }
+    local H = NS.addon.Settings.Helpers
+    assertNil(H.ROW_VSPACER, "the stub must not carry the library's layout constants")
+    assertNil(H.SECTION_HEADING_H)
+    assertNil(H.BUTTON_PAIR_REL)
+    -- The chrome band's three, added when the tabbed page landed. Named individually rather than
+    -- left to the parity case's ignore list: that list says "live-only on purpose", this says
+    -- "and here is the assertion that catches somebody copying the number in".
+    assertNil(H.CHROME_GAP, "nor the chrome band's")
+    assertNil(H.TAB_H)
+    assertNil(H.BANNER_H)
+    local src = readFile("settings/OptionsSetup.lua")
+    local stub = src:match("if not lib then(.-)\r?\nend\r?\n")
+    assertTrue(stub ~= nil, "the degraded branch is findable")
+    assertNil(stub:match("AceGUI"), "the stub creates no widget")
+    assertNil(stub:match("SetRelativeWidth"), "nor lays one out")
+end)
+
+test("degraded: the settings panel explains itself once at load and once per config", function()
+    local NS, _, mock = T.newAddon{ skip = NO_LIBKA0S }
+    NS.addon:OnInitialize()
+    NS.addon:OnEnable()          -- CreateOptionsPanel: the load-time notice
+    NS.addon:OnSlashCommand("config")
+    NS.addon:OnSlashCommand("config")
+    local notices = 0
+    for _, line in ipairs(mock.prints) do
+        if line:find("settings panel is unavailable", 1, true) then notices = notices + 1 end
+    end
+    assertEqual(notices, 2,
+        "once at load, once for the verb the user actually typed — and never again")
+end)
+
+test("degraded: a bare /st runs `config`, as the library's dispatcher does", function()
+    -- The stub mirrors LibKa0s-Slash-1.0's OnSlash (slash-commands-§4): bare runs the `config`
+    -- row, and only a host with no such row gets the help index.
+    local NS, _, mock = T.newAddon{ skip = NO_LIBKA0S }
+    NS.addon:OnInitialize()
+    NS.addon:OnEnable()          -- spends the load-time notice
+    NS.addon:OnSlashCommand("   ")
+    local notices, help = 0, false
+    for _, line in ipairs(mock.prints) do
+        if line:find("settings panel is unavailable", 1, true) then notices = notices + 1 end
+        if line:find("slash commands", 1, true) then help = true end
+    end
+    assertEqual(notices, 2, "the bare form reached runConfig, which says why nothing opened")
+    assertFalse(help, "and it did not print the help index")
+end)
+
+test("degraded: `/st debug on` still moves the flag and explains the missing window ONCE", function()
+    -- The flag is ours, so it must keep working; the WINDOW is what is lost, and one announce per
+    -- entry point is what keeps `/st debug` from going silent after `/st debug on` spent the token.
+    local NS, _, mock = T.newAddon{ skip = NO_LIBKA0S }
+    NS.addon:OnSlashCommand("debug on")
+    assertTrue(NS.State.debug, "the session flag still flips")
+    NS.addon:OnSlashCommand("debug on")
+    NS.addon:OnSlashCommand("debug")
+    NS.addon:OnSlashCommand("debug")
+    local notices = 0
+    for _, line in ipairs(mock.prints) do
+        if line:find("debug console window is unavailable", 1, true) then notices = notices + 1 end
+    end
+    assertEqual(notices, 2, "once for the enable path, once for the window path — never more")
+    for _, line in ipairs(mock.prints) do
+        if line:find("debug console window is unavailable", 1, true) then
+            assertTrue(line:find(NS.LIBKA0S_MISSING, 1, true) ~= nil,
+                "and each explains the absence through the shared cause clause")
+        end
+    end
+end)
+
+-- ---------------------------------------------------------------------------
+-- The refusal line — one spelling (slash-commands-§7)
+-- ---------------------------------------------------------------------------
+
+test("libka0s: no seam re-spells the refusal line (slash-commands-§7)", function()
+    -- The disabled line has ONE shape collection-wide, and the library owns it. The only copy this
+    -- addon may hold is the degraded Slash stub's DISABLED_LINE_FORMAT constant, which exists
+    -- because there is no library to ask on that path, and which the next case pins to the
+    -- library's bytes. Any other literal is a second spelling that drifts the day the library's
+    -- wording improves. Comments are stripped first: prose ABOUT the line is not a copy of it.
+    -- red under: the launcher's old `or "Ka0s Skin Tester is disabled."` fallback, or a stub that
+    -- writes the sentence out in its DisabledLine body.
+    local offenders = {}
+    for _, rel in ipairs(SEAM_FILES) do
+        if rel:match("^core/") or rel:match("^settings/") then
+            local n = 0
+            for line in (readFile(rel) or ""):gmatch("([^\n]*)\n?") do
+                n = n + 1
+                local code = line:gsub("%-%-.*$", "")
+                if code:find("is disabled", 1, true)
+                    and not code:match("^%s*local%s+DISABLED_LINE_FORMAT%s*=") then
+                    offenders[#offenders + 1] = rel .. ":" .. n
+                end
+            end
+        end
+    end
+    assertEqual(table.concat(offenders, ", "), "", "the refusal line is spelled outside the constant")
+end)
+
+test("degraded: the Slash stub's DisabledLine uses the library's DISABLED_LINE_FORMAT bytes",
+function()
+    -- The stub cannot ask the library (it is absent), so it carries a byte copy of
+    -- libs/LibKa0s/Slash.lua's DISABLED_LINE_FORMAT and publishes it as `__disabledLineFormat` — a
+    -- `__` key, so Kit.publicMembers skips it and surface parity is unaffected. The copy is pinned
+    -- against the LIVE library's constant through the kit's by-name read, which reaches the
+    -- lib-level member through the LibStub fallback tests/run.lua hands Kit.expose.
+    -- red under: a stub that does not publish the constant, or whose bytes drift from the library's.
+    local NS = T.newAddon{ skip = NO_LIBKA0S }
+    local Sl = NS.SlashCommands
+    T.assertLibraryConstant(Sl.__disabledLineFormat, "LibKa0s-Slash-1.0", "DISABLED_LINE_FORMAT")
+    assertEqual(Sl:DisabledLine(), Sl.__disabledLineFormat:format("Ka0s Skin Tester", "/st enable"),
+        "DisabledLine is built from the constant")
+    -- And it is the same sentence the library-backed dispatcher answers.
+    assertEqual(Sl:DisabledLine(), T.newAddon().SlashCommands:DisabledLine())
+end)
+
+test("libka0s: the Master controls hook is keyed off the library's constant, not a copy of it",
+function()
+    -- options-ui-§8. `["Master controls"]` in settings/Panel.lua was a hand-typed copy of
+    -- libs/LibKa0s/OptionsCompose.lua:50, which publishes the same string as O.MASTER_GROUP at
+    -- :189. That the two agree today is not the point — they do, and that is exactly why the copy
+    -- survived a review. The point is what a library-side rename does: it moves the `group` on
+    -- every composed row, and RenderTabbedSchema fires the afterGroup hook PER GROUP, so a host
+    -- keyed to the old spelling has its hook fire for a group that no longer exists. The reset
+    -- button pair stops being drawn. Nothing raises, no row goes missing, and the tab looks
+    -- ordinary — which is the failure this case exists to make impossible rather than unlikely.
+    --
+    -- red under: keying the hook off any literal spelling of the group name.
+    local src = readFile("settings/Panel.lua")
+    assertNil(src:find('"Master controls"', 1, true),
+        "the group name is the library's to spell — key off Helpers.MASTER_GROUP")
+
+    -- And the constant is genuinely the one the rows are filed under, which is what makes keying
+    -- off it equivalent to the literal today and correct after a rename.
+    local NS = T.newAddon()
+    local H  = NS.addon.Settings.Helpers
+    assertTrue(type(H.MASTER_GROUP) == "string" and H.MASTER_GROUP ~= "",
+        "the live surface publishes the group name")
+    local composed = 0
+    for _, row in ipairs(NS.addon.Settings.Schema) do
+        if row.group == H.MASTER_GROUP then composed = composed + 1 end
+    end
+    assertEqual(composed, 5, "the whole composed block answers to the published constant")
+end)
+
+-- ---------------------------------------------------------------------------
+-- The `L` trap — the source guard
+-- ---------------------------------------------------------------------------
+--
+-- A descriptor field is not observable after `lib:New` returns, so the only way to see a locale
+-- table handed to one is to read the seam files. The obvious pattern is wrong:
+--
+--     L = NS.L                     -- the table itself                        OFFENDER
+--     L = NS.L or { ... }          -- NS.L is always truthy, so: the table    OFFENDER
+--     L = NS.L and { ... } or nil  -- evaluates to the plain table            fine
+--
+-- so the matcher keys on what the expression EVALUATES TO — flag any `L =` whose value starts with
+-- the locale table unless the next token is `and`.
+
+local function offendingL(src)
+    for prefix, value in src:gmatch("([%w]*)%s-[%s,{]L%s*=%s*([^\r\n]+)") do
+        -- `local L = NS.L` is the file's own upvalue for the locale table, not a descriptor field.
+        -- Excluding it by the `local` keyword is what the reference sweep does too.
+        if prefix ~= "local" then
+            local rest = value:match("^NS%.L%s*(.-)%s*$") or value:match("^L%s*(.-)%s*$")
+            if rest and not rest:match("^and%f[%W]") then return value end
+        end
+    end
+    return nil
+end
+
+test("libka0s: the L-trap matcher flags the table and the `or` spelling, not the `and` one", function()
+    -- A matcher nothing tests can be narrowed back to a single anchored form while still reporting
+    -- green, which is exactly how it got there. Drive it against all three spellings.
+    assertTrue(offendingL("local d = { L = NS.L }") ~= nil, "the bare table must be flagged")
+    assertTrue(offendingL('local d = { L = NS.L or { A = "a" } }') ~= nil,
+        "the `or` spelling still evaluates to the locale table")
+    assertNil(offendingL('local d = { L = NS.L and { A = "a" } or nil }'),
+        "the `and` spelling evaluates to the plain table and is legitimate")
+    assertNil(offendingL('local d = { L = { ERR_BOOL = "expected" } }'),
+        "a plain literal table is the contract")
+    assertNil(offendingL("local L = NS.L\nlocal x = 1"),
+        "a file's own locale upvalue is not a descriptor field")
+    assertTrue(offendingL("local L = NS.L\nlocal d = { L = NS.L }") ~= nil,
+        "and excluding it must not hide a real offender in the same file")
+end)
+
+test("libka0s: no seam file hands a descriptor this addon's locale table (the L trap)", function()
+    -- What this case sweeps is now the whole TOC load list, not four hand-typed paths, and that is
+    -- the half that changes what it can catch: put `local d = { L = NS.L }` in core/Util.lua and
+    -- the old four-path form reported PASS, because Util was never on the list and a list cannot
+    -- notice a file nobody added to it.
+    --
+    -- Red under the mutation, seen (M4-19): `local d = { L = NS.L }` anywhere in core/Util.lua →
+    --   "core/Util.lua hands a descriptor NS.L: NS.L }"
+    --
+    -- `assertTrue(src ~= nil)` replaces an `if src then` that wrapped the assertion and swallowed
+    -- an unreadable path — the sweep quietly covered one file fewer and still printed PASS. Be
+    -- clear about what that guard is worth NOW: with SEAM_FILES derived from the TOC, a path that
+    -- does not resolve kills tests/loader.lua's `loadfile` at runner start, so the repo is already
+    -- red before this case is reached and I have not seen this line fail on its own. It stays
+    -- because the sweep must never be able to narrow in silence, whatever the list is derived from
+    -- later; it is a guard, not a gate, and it is not coverage of anything.
+    for _, path in ipairs(SEAM_FILES) do
+        local src = readFile(path)
+        assertTrue(src ~= nil, path .. " is in the TOC load list but could not be read; the sweep "
+            .. "would have skipped it and still reported green")
+        local bad = offendingL(src)
+        assertNil(bad, path .. " hands a descriptor NS.L: " .. tostring(bad))
+    end
+end)
+
+-- ---------------------------------------------------------------------------
+-- The two majors that CANNOT express the trap — library tripwires
+-- ---------------------------------------------------------------------------
+--
+-- Core ships no STRINGS and reads no descriptor `L`; Options ships STRINGS but reads no descriptor
+-- `L`. A rendered assertion for either is a case that cannot fail — worse than no case, because it
+-- reads as coverage. These two stand in for it, and each goes red the day the module grows one.
+
+test("libka0s: Core has no STRINGS and reads no descriptor L (tripwire)", function()
+    local _, env = T.newAddon()
+    local core = env.LibStub("LibKa0s-Core-1.0", true)
+    assertNil(core.STRINGS, "Core grew a STRINGS table; the L trap now applies to it")
+    local src = readFile("libs/LibKa0s/Core.lua")
+    assertTrue(src ~= nil, "the vendored Core.lua is readable")
+    assertNil(src:match("lib%.STRINGS"), "Core.lua now defines STRINGS")
+    assertNil(src:match("d%.L"), "Core.lua now reads a descriptor L")
+end)
+
+test("libka0s: Options reads no descriptor L (tripwire)", function()
+    -- Options DOES ship a STRINGS table, so the "STRINGS is absent" half does not transfer and
+    -- asserting it would fail on a module that is behaving correctly. The source half alone is the
+    -- tripwire, and the settings panel is where a raw SCREAMING_SNAKE key is most visible.
+    local src = readFile("libs/LibKa0s/Options.lua")
+    assertTrue(src ~= nil, "the vendored Options.lua is readable")
+    assertNil(src:match("d%.L"), "Options.lua now reads a descriptor L")
+    local widgets = readFile("libs/LibKa0s/OptionsWidgets.lua")
+    assertTrue(widgets ~= nil, "the vendored OptionsWidgets.lua is readable")
+    assertNil(widgets:match("d%.L"), "OptionsWidgets.lua now reads a descriptor L")
+end)
+
+-- ---------------------------------------------------------------------------
+-- The locale table holds only keys something reads (localization-§3)
+-- ---------------------------------------------------------------------------
+--
+-- locales/enUS.lua's header says a key with no L[...] reader is a defect: it tells a translator a
+-- surface is covered when it is not. This is the check that makes the sentence true. Each defined
+-- key's source literal, quotes and escapes included, must appear inside an L[...] read somewhere in
+-- the addon's own core/, modules/ or settings/ source. Matching the literal rather than the decoded
+-- string keeps it honest about spelling: a read that writes the em dash one way and a definition
+-- that writes it another are two keys, and the fall-back metatable would hide the mismatch.
+
+test("locale: every key enUS.lua defines has a reader", function()
+    local locale = readFile("locales/enUS.lua")
+    assertTrue(locale ~= nil, "locales/enUS.lua is readable")
+    local readers = {}
+    for _, path in ipairs(SEAM_FILES) do
+        local p = path:gsub("\\", "/")
+        if p:match("^core/") or p:match("^modules/") or p:match("^settings/") then
+            local src = readFile(path)
+            assertTrue(src ~= nil, path .. " is in the TOC load list but could not be read")
+            readers[#readers + 1] = src
+        end
+    end
+    assertTrue(#readers >= 10, "the reader sweep covered the addon's source, not an empty list")
+    local body = table.concat(readers, "\n")
+    local defined, orphans = 0, {}
+    for line in (locale .. "\n"):gmatch("([^\n]*)\n") do
+        local key = line:match('^L%[(".-")%]%s*=')
+        if key then
+            defined = defined + 1
+            if not body:find("L[" .. key .. "]", 1, true) then orphans[#orphans + 1] = key end
+        end
+    end
+    assertTrue(defined >= 15, "the locale table was walked, not an empty one")
+    assertEqual(#orphans, 0, "enUS.lua keys with no L[...] reader: " .. table.concat(orphans, ", "))
+end)

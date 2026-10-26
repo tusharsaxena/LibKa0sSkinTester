@@ -1,0 +1,522 @@
+-- tests/test_debuglog.lua — debug console: pure formatters, font constant,
+-- and the /st debug window-vs-flag semantics (debug-logging-§2, debug-logging-§3, debug-logging-§5).
+local T = _G.SKINTESTER_TEST
+local test, assertEqual, assertTrue = T.test, T.assertEqual, T.assertTrue
+
+local function debugCmd(NS, rest)
+    for _, c in ipairs(NS.addon.COMMANDS) do
+        if c[1] == "debug" then return c[3](rest) end
+    end
+    error("no debug command")
+end
+
+test("debuglog: FONT_MONO points at the library payload's JetBrains Mono TTF", function()
+    -- The face moved out of this addon's media/fonts/ and into the LibKa0s payload, so the path it
+    -- names now runs through libs/LibKa0s/. A FONT path keeps its extension, unlike an icon path —
+    -- SetFont is handed the file, not a texture name the client completes.
+    local NS = T.newAddon()
+    assertTrue(type(NS.Constants.FONT_MONO) == "string", "FONT_MONO must be a string")
+    assertTrue(NS.Constants.FONT_MONO:match("libs\\LibKa0s\\media\\fonts\\JetBrainsMono.-%.ttf$") ~= nil,
+        "FONT_MONO must point into the vendored library payload, not at a local copy: "
+        .. tostring(NS.Constants.FONT_MONO))
+end)
+
+-- debug-logging-§2's fetch-failure fallback (WG-A-13). The font the LIBRARY actually applied is
+-- read off the console's own log region rather than off the descriptor, because the descriptor is
+-- not published back — and the region is what the player sees. Driving the failure needs it set
+-- BEFORE any source loads (`opts.mock`), since the descriptor resolves the path at file load.
+local function consoleLogFont(NS, mock)
+    debugCmd(NS, "")                      -- bare toggle: opens the window, building the frame
+    for _, f in ipairs(mock.frames) do
+        if f.__kind == "ScrollingMessageFrame" and f.__font then return f.__font[1] end
+    end
+end
+
+test("debuglog: the console renders in the vendored TTF when the client can fetch it", function()
+    local NS, _, mock = T.newAddon()
+    assertEqual(consoleLogFont(NS, mock), NS.Constants.FONT_MONO)
+end)
+
+test("debuglog: FormatPlain wraps the tag in brackets, single-space separators", function()
+    local NS = T.newAddon()
+    assertEqual(NS.DebugLog.FormatPlain("15:04:43", "Capture", "title=X"),
+        "15:04:43 | [Capture] title=X")
+end)
+
+test("debuglog: FormatPlain tolerates a nil tag", function()
+    local NS = T.newAddon()
+    assertEqual(NS.DebugLog.FormatPlain("15:04:43", nil, "hi"), "15:04:43 | [] hi")
+end)
+
+test("debuglog: FormatColored colors timestamp + tag; pipe and content default", function()
+    local NS = T.newAddon()
+    assertEqual(NS.DebugLog.FormatColored("15:04:43", "Capture", "title=X"),
+        "|cff6f8faf15:04:43|r || |cffc9a66b[Capture]|r title=X")
+end)
+
+test("debuglog: /st debug on enables session state", function()
+    local NS = T.newAddon()
+    NS.State.debug = false
+    debugCmd(NS, "on")
+    assertTrue(NS.State.debug == true, "state should be on")
+end)
+
+test("debuglog: /st debug off disables session state", function()
+    local NS = T.newAddon()
+    NS.State.debug = true
+    debugCmd(NS, "off")
+    assertTrue(NS.State.debug == false, "state should be off")
+end)
+
+test("debuglog: /st debug (no arg) toggles the window, not the state", function()
+    local NS = T.newAddon()
+    NS.State.debug = true
+    debugCmd(NS, "")
+    assertTrue(NS.State.debug == true, "bare toggle must not change state")
+    NS.State.debug = false
+    debugCmd(NS, "")
+    assertTrue(NS.State.debug == false, "bare toggle must not change state")
+end)
+
+test("debuglog: header toggle click flips debug state", function()
+    local NS = T.newAddon()
+    NS.State.debug = false
+    NS.DebugLog:Show()
+    local click = NS.DebugLog._toggleClickForTest
+    assertTrue(type(click) == "function", "toggle click closure must be exposed")
+    click(); assertTrue(NS.State.debug == true, "click should turn state on")
+    click(); assertTrue(NS.State.debug == false, "second click should turn state off")
+end)
+
+test("debuglog: enabling writes a '[Debug] logging enabled' console line", function()
+    local NS = T.newAddon()
+    NS.State.debug = false
+    debugCmd(NS, "on")
+    -- The enable path appends the bracket line and THEN a [Init] state snapshot
+    -- (debug-logging-§8), so assert containment rather than last-line.
+    local found = false
+    for _, line in ipairs(NS.DebugLog.buffer) do
+        if line:find("[Debug] logging enabled", 1, true) then found = true end
+    end
+    assertTrue(found, "enabling should log '[Debug] logging enabled'")
+end)
+
+test("debuglog: enabling debug appends the [Init] session summary after the bracket (debug-logging-§5)", function()
+    local NS = T.bootAddon()
+    NS.State.debug = false
+    debugCmd(NS, "on")
+    local buf = NS.DebugLog.buffer
+    -- Since LibKa0s v1.65.0 the at-enable queue's held state lines follow the summary (the boot's
+    -- [Migrate] line here), so the summary is found after the bracket rather than read off the end.
+    local at
+    for i = #buf, 1, -1 do
+        if buf[i]:find("[Debug] logging enabled", 1, true) then at = i; break end
+    end
+    local last = at and buf[at + 1]
+    assertTrue(last and last:find("[Init]", 1, true) ~= nil,
+        "the on path must write the [Init] summary right after the bracket line")
+    -- Identity content: addon/version, schema, profile (debug-logging-§5).
+    assertTrue(last:find("LibKa0sSkinTester v", 1, true) ~= nil, "carries addon + version")
+    assertTrue(last:find("schema v", 1, true) ~= nil, "carries schema version")
+    assertTrue(last:find("profile 'Default'", 1, true) ~= nil, "carries active profile")
+end)
+
+test("debuglog: [Init] fires only on enable, not on disable (debug-logging-§5)", function()
+    local NS = T.bootAddon()
+    NS.State.debug = false
+    debugCmd(NS, "on")
+    local afterOn = #NS.DebugLog.buffer
+    debugCmd(NS, "off")
+    for i = afterOn + 1, #NS.DebugLog.buffer do
+        assertTrue(NS.DebugLog.buffer[i]:find("[Init]", 1, true) == nil,
+            "disable must not emit an [Init] line")
+    end
+end)
+
+test("debuglog: disabling still appends a '[Debug] logging disabled' line", function()
+    local NS = T.newAddon()
+    NS.State.debug = true
+    local before = #NS.DebugLog.buffer
+    debugCmd(NS, "off")
+    assertTrue(#NS.DebugLog.buffer > before, "disabling should still append a console line")
+    local last = NS.DebugLog.buffer[#NS.DebugLog.buffer]
+    assertTrue(last and last:find("[Debug] logging disabled", 1, true) ~= nil,
+        "disabling should log '[Debug] logging disabled'")
+end)
+
+test("debuglog: NS.Debug survives an unsafe format arg without raising (WhatGroup WG-22)", function()
+    local NS = T.newAddon()
+    NS.State.debug = true
+    -- `%d` with a table raises in string.format in every Lua version, exactly
+    -- as a combat-protected secret would; the sink must catch it and still land
+    -- a line with "<secret>" instead of freezing the caller.
+    local ok = pcall(function() NS.Debug("Capture", "n=%d", {}) end)
+    assertTrue(ok, "NS.Debug must not propagate a format error")
+    local last = NS.DebugLog.buffer[#NS.DebugLog.buffer]
+    assertTrue(last and last:find("<secret>", 1, true) ~= nil,
+        "the unsafe value degrades to <secret> in the logged line")
+end)
+
+test("debuglog: NS.Debug is a no-op (no console write) when debug is off", function()
+    local NS = T.newAddon()
+    NS.State.debug = false
+    local before = #NS.DebugLog.buffer
+    NS.Debug("Capture", "should not append")
+    assertEqual(#NS.DebugLog.buffer, before)
+end)
+
+test("debuglog: debug-logging-§11 scrollbar + line-counter sync is a safe no-op under the mock", function()
+    -- Anti-pattern #41 failure mode: the sync raises on first open (e.g. by
+    -- calling the nil C getters GetNumLinesDisplayed / GetCurrentScroll). The
+    -- mock's stub frame returns non-numbers from the scroll getters, so the
+    -- guarded mixin path MUST no-op rather than throw. Building the frame (Show)
+    -- and driving it via Add/Clear exercises every sync call site.
+    local NS = T.newAddon()
+    assertTrue(type(NS.DebugLog.UpdateScrollBar) == "function", "UpdateScrollBar must exist")
+    assertTrue(type(NS.DebugLog.UpdateStatus) == "function", "UpdateStatus must exist")
+    local ok = pcall(function()
+        NS.DebugLog:Show()                -- builds the debug-logging-§11 scrollbar + status bar + initial sync
+        NS.DebugLog:UpdateScrollBar()
+        NS.DebugLog:UpdateStatus()
+        NS.DebugLog:Add("Test", "a line")
+        NS.DebugLog:Clear()
+    end)
+    assertTrue(ok, "the debug-logging-§11 sync path must not raise under the headless mock")
+end)
+
+-- ── message coverage / coalescing (debug-logging-§8, debug-logging-§9, debug-logging-§10) ────────────────
+
+-- Count buffer lines containing a literal fragment (plain-text buffer, no colors).
+local function countLogged(NS, needle)
+    local n = 0
+    for _, line in ipairs(NS.DebugLog.buffer) do
+        if line:find(needle, 1, true) then n = n + 1 end
+    end
+    return n
+end
+
+local function countLines(NS, fragment)
+    local n = 0
+    for _, line in ipairs(NS.DebugLog.buffer) do
+        if line:find(fragment, 1, true) then n = n + 1 end
+    end
+    return n
+end
+
+test("debuglog: settings change logs one [Set] line at the write seam (debug-logging-§10)", function()
+    local NS = T.bootAddon()
+    NS.State.debug = true
+    local before = countLines(NS, "[Set]")
+    NS.addon.Settings.Helpers.Set("scale", 1.5)
+    assertEqual(countLines(NS, "[Set]") - before, 1, "exactly one [Set] line")
+    assertTrue(countLines(NS, "scale = 1.5") >= 1, "line shows path = value")
+end)
+
+-- Move two profile rows off their defaults, one number and one bool, so a reset has exactly two rows
+-- whose stored value it changes. Every other row is still at its default and must not be counted.
+local function dirtyTwoRows(NS)
+    local H = NS.addon.Settings.Helpers
+    H.Set("scale", 1.5)
+    H.Set("alpha", 0.5)
+end
+
+test("debuglog: RestoreAllDefaults logs one [Set] reset profile line counting the rows it changed (debug-logging-§10)", function()
+    local NS = T.bootAddon()
+    dirtyTwoRows(NS)
+    NS.State.debug = true
+    local setBefore = countLines(NS, "[Set]")
+    NS.addon.Settings.Helpers.RestoreAllDefaults()
+    assertEqual(countLines(NS, "[Set]") - setBefore, 1, "one [Set] line for the whole reset, none per row")
+    assertEqual(countLines(NS, "[Reset]"), 0, "the tag is [Set], never [Reset]")
+    -- The reset is one db:ResetProfile() (options-ui-§12), which is wholesale replacement and not a
+    -- write through the helper, so debug-logging-§10 has the OnProfileReset handler log it once. The
+    -- count is included because it is cheap: RestoreAllDefaults compares each profile row with its
+    -- default just before the reset, so N is the rows whose stored value the reset CHANGES, and a row
+    -- already at its default is not counted. The reset also empties keys no schema row names (an
+    -- orphan from a removed row). The line counts rows, and such a key is not one, so it is not in N.
+    -- The sessionOnly row the function then restores by hand lives outside the db, and stays muted.
+    assertEqual(countLines(NS, "[Set] reset profile 'Default' to defaults (2 rows)"), 1,
+        "the line names the profile and the two rows it changed")
+end)
+
+test("debuglog: RestoreAllDefaults on a pristine profile counts 0 rows (debug-logging-§10)", function()
+    local NS = T.bootAddon()
+    NS.State.debug = true
+    local setBefore = countLines(NS, "[Set]")
+    NS.addon.Settings.Helpers.RestoreAllDefaults()
+    assertEqual(countLines(NS, "[Set]") - setBefore, 1, "still exactly one line")
+    assertEqual(countLines(NS, "[Set] reset profile 'Default' to defaults (0 rows)"), 1,
+        "every row was already at its default, so none is counted")
+end)
+
+test("debuglog: a profile reset from outside the helper is logged once, without a count (debug-logging-§10)", function()
+    -- The line belongs to the profile-event handler, not to RestoreAllDefaults, so a reset driven
+    -- straight at the db (AceDBOptions, a /run) is logged too, and only once. Nothing counted the
+    -- changed rows before that reset, and debug-logging-§10 lets the line omit a count that is not cheap to know.
+    local NS = T.bootAddon()
+    dirtyTwoRows(NS)
+    NS.State.debug = true
+    local before = countLines(NS, "[Set]")
+    NS.addon.db:ResetProfile()
+    assertEqual(countLines(NS, "[Set]") - before, 1, "exactly one [Set] line")
+    assertEqual(countLines(NS, "[Set] reset profile 'Default' to defaults"), 1, "and it is the reset line")
+    assertEqual(countLines(NS, "to defaults ("), 0, "with no count it cannot vouch for")
+end)
+
+-- The descriptor's bulk bracket. Unreached in the live build: the host's RestoreAllDefaults
+-- overrides the library's, and the Defaults button goes through the popup rather than the library's
+-- per-page RestoreDefaults. It is wired anyway, so a future caller of either logs to debug-logging-§10.
+test("debuglog: the library's page reset is one [Set] line counting the rows it changed (debug-logging-§10)", function()
+    local NS = T.bootAddon()
+    dirtyTwoRows(NS)
+    NS.State.debug = true
+    local H = NS.addon.Settings.Helpers
+    local before = countLines(NS, "[Set]")
+    H.RestoreDefaults("general")
+    assertEqual(countLines(NS, "[Set]") - before, 1, "one line for the page, no per-row [Set]")
+    -- The library walks every row of the page and its `count` says so. N is the host's own tally of
+    -- the writes that changed a stored value: the two dirtied rows.
+    assertEqual(countLines(NS, "[Set] reset general: 2 rows"), 1,
+        "the line names the act, the page and the rows changed")
+    H.Set("scale", 1.5)
+    assertEqual(countLines(NS, "[Set]") - before, 2, "the mute is released when the bracket closes")
+end)
+
+test("debuglog: an all-default page reset logs 0 rows, not a line per row (debug-logging-§10)", function()
+    local NS = T.bootAddon()
+    NS.State.debug = true
+    local before = countLines(NS, "[Set]")
+    NS.addon.Settings.Helpers.RestoreDefaults("general")
+    assertEqual(countLines(NS, "[Set]") - before, 1, "one line")
+    assertEqual(countLines(NS, "[Set] reset general: 0 rows"), 1, "nothing changed, so N is 0")
+end)
+
+test("debuglog: the bulk bracket adds no line when the act reset the profile (debug-logging-§10)", function()
+    -- info.profileReset means the OnProfileReset handler has logged the reset already, and debug-logging-§10 forbids
+    -- a second line. The rows written inside the bracket stay muted, and the mute still lifts.
+    local NS = T.bootAddon()
+    NS.State.debug = true
+    local H, Bulk = NS.addon.Settings.Helpers, NS.addon.Settings.Bulk
+    local before = countLines(NS, "[Set]")
+    Bulk.begin("reset", "all")
+    H.Set("scale", 1.5)
+    Bulk.finish("reset", "all", 1, nil, { profileReset = true })
+    assertEqual(countLines(NS, "[Set]") - before, 0, "muted inside, and no bulk line")
+    H.Set("scale", 1.25)
+    assertEqual(countLines(NS, "[Set]") - before, 1, "the mute is released")
+end)
+
+test("debuglog: a nested bracket logs once, at the outermost close, with the summed tally (debug-logging-§10)", function()
+    local NS = T.bootAddon()
+    NS.State.debug = true
+    local H, Bulk = NS.addon.Settings.Helpers, NS.addon.Settings.Bulk
+    local before = countLines(NS, "[Set]")
+    Bulk.begin("reset", "general")
+    H.Set("scale", 1.5)
+    Bulk.begin("reset", "inner")
+    H.Set("alpha", 0.5)
+    H.Set("scale", 1.5)                                 -- no change: not counted
+    Bulk.finish("reset", "inner", 2, nil, { profileReset = false })
+    assertEqual(countLines(NS, "[Set]") - before, 0, "the inner close logs nothing")
+    Bulk.finish("reset", "general", 1, nil, { profileReset = false })
+    assertEqual(countLines(NS, "[Set]") - before, 1, "one line, at the outermost close")
+    assertEqual(countLines(NS, "[Set] reset general: 2 rows"), 1, "named by the outer act, tallies summed")
+end)
+
+test("debuglog: a nested bracket that reset the profile silences the outer line (debug-logging-§10)", function()
+    local NS = T.bootAddon()
+    NS.State.debug = true
+    local Bulk = NS.addon.Settings.Bulk
+    local before = countLines(NS, "[Set]")
+    Bulk.begin("reset", "general")
+    Bulk.begin("reset", "all")
+    Bulk.finish("reset", "all", 0, nil, { profileReset = true })
+    Bulk.finish("reset", "general", 0, nil, { profileReset = false })
+    assertEqual(countLines(NS, "[Set]") - before, 0, "the profile handler's line is the only one")
+end)
+
+test("debuglog: a bracket that closes on an error still logs its tally and unmutes (debug-logging-§10)", function()
+    -- The library calls bulkEnd once even when a row raised, then re-raises. The host logs the rows
+    -- changed so far, and a mute that stuck would silence every later write.
+    local NS = T.bootAddon()
+    NS.State.debug = true
+    local H, Bulk = NS.addon.Settings.Helpers, NS.addon.Settings.Bulk
+    local before = countLines(NS, "[Set]")
+    Bulk.begin("reset", "general")
+    H.Set("scale", 1.5)
+    Bulk.finish("reset", "general", 1, "boom", { profileReset = false })
+    assertEqual(countLines(NS, "[Set] reset general: 1 rows (stopped by an error)"), 1,
+        "the rows changed before the error, and the line says the act did not finish")
+    H.Set("scale", 1.25)
+    assertEqual(countLines(NS, "[Set]") - before, 2, "the mute is released")
+end)
+
+-- A row whose write raises. The debug-console row is the one row whose storage is a set() the test
+-- can reach, so the raise comes out of the real seam's store rather than a stub of the seam under test.
+local function raisingConsoleRow(NS)
+    NS.DebugLog.ConsoleCheckbox = function()
+        return { get = function() return false end, set = function() error("boom", 0) end }
+    end
+end
+
+test("debuglog: a write that raises inside a bracket is not counted (debug-logging-§10)", function()
+    -- The tally is the rows whose stored value CHANGED. A write that raised changed nothing, so it
+    -- must not reach N, even though the row was off its new value when the write began.
+    local NS = T.bootAddon()
+    NS.State.debug = true
+    local H, Bulk = NS.addon.Settings.Helpers, NS.addon.Settings.Bulk
+    raisingConsoleRow(NS)
+    local before = countLines(NS, "[Set]")
+    Bulk.begin("reset", "general")
+    local ok, err = pcall(H.Set, "state.debugConsole", true)
+    Bulk.finish("reset", "general", 1, err, { profileReset = false })
+    assertTrue(not ok, "the write raised")
+    assertEqual(countLines(NS, "[Set]") - before, 1, "one line for the act")
+    assertEqual(countLines(NS, "[Set] reset general: 0 rows (stopped by an error)"), 1,
+        "the raising write is not in N, and the line carries the failure marker")
+end)
+
+test("debuglog: a profile reset that raises logs one marked line and re-raises (debug-logging-§10)", function()
+    -- The error came before AceDB fired OnProfileReset, so the handler never logged. The reset path
+    -- logs the act's one line itself, marked, with no count: nothing says how many rows it changed.
+    local NS = T.bootAddon()
+    dirtyTwoRows(NS)
+    NS.State.debug = true
+    local db = NS.addon.db
+    local real = db.ResetProfile
+    db.ResetProfile = function() error("boom", 0) end
+    local before = countLines(NS, "[Set]")
+    local ok, err = pcall(NS.addon.Settings.Helpers.RestoreAllDefaults)
+    db.ResetProfile = real
+    assertTrue(not ok, "the error is re-raised")
+    assertEqual(err, "boom", "unchanged")
+    assertEqual(countLines(NS, "[Set]") - before, 1, "exactly one line")
+    assertEqual(countLines(NS, "[Set] reset profile 'Default' to defaults (stopped by an error)"), 1,
+        "the reset line, marked, without a count")
+end)
+
+test("debuglog: a profile reset that raises leaves no count for a later reset (debug-logging-§10)", function()
+    -- RestoreAllDefaults counts before it resets. If the reset raises, that count must not survive
+    -- for some later, unrelated reset to claim: the later reset below changed no row it counted.
+    local NS = T.bootAddon()
+    dirtyTwoRows(NS)
+    local db = NS.addon.db
+    local real = db.ResetProfile
+    db.ResetProfile = function() error("boom", 0) end
+    pcall(NS.addon.Settings.Helpers.RestoreAllDefaults)
+    db.ResetProfile = real
+    NS.State.debug = true
+    local before = countLines(NS, "[Set]")
+    db:ResetProfile()
+    assertEqual(countLines(NS, "[Set]") - before, 1, "one line for the foreign reset")
+    assertEqual(countLines(NS, "rows)"), 0, "and it carries no count")
+end)
+
+test("debuglog: a profile reset inside an open bracket silences the bracket (debug-logging-§10)", function()
+    -- The profile-event handler's line stands for the whole act. Without the silence the bracket's
+    -- close would add a second line for the same act.
+    local NS = T.bootAddon()
+    NS.State.debug = true
+    local H, Bulk = NS.addon.Settings.Helpers, NS.addon.Settings.Bulk
+    local before = countLines(NS, "[Set]")
+    Bulk.begin("reset", "general")
+    H.Set("scale", 1.25)
+    NS.addon.db:ResetProfile()
+    Bulk.finish("reset", "general", 1, nil, { profileReset = false })
+    assertEqual(countLines(NS, "[Set]") - before, 1, "one line")
+    assertEqual(countLines(NS, "[Set] reset profile 'Default' to defaults"), 1, "the handler's")
+    assertEqual(countLines(NS, "[Set] reset general"), 0, "and no bracket line")
+end)
+
+test("debuglog: a profile copy logs one [Set] copied line naming the source (debug-logging-§10)", function()
+    -- Real AceDB fires OnProfileCopied(event, db, sourceProfileKey), so the handler is called with
+    -- exactly that. Through kit revision 17 the AceDB mock passed the CURRENT profile key there,
+    -- the destination; since revision 18 it passes the source, as AceDB does.
+    local NS = T.bootAddon()
+    NS.State.debug = true
+    local before = countLines(NS, "[Set]")
+    NS.addon:OnProfileCopied("OnProfileCopied", NS.addon.db, "Alt")
+    assertEqual(countLines(NS, "[Set]") - before, 1, "one line")
+    assertEqual(countLines(NS, "[Set] copied profile 'Alt' \226\134\146 'Default'"), 1,
+        "worded by the event: source, then the active profile it landed in")
+end)
+
+test("debuglog: InitSummary leads with the debug-logging-§5 identity fields, then runtime state", function()
+    local NS = T.bootAddon()
+    local s = NS.addon:InitSummary()
+    -- Standard-mandated identity prefix (name/version/schema/profile) comes first.
+    assertEqual(s:sub(1, #("LibKa0sSkinTester v" .. NS.addon.VERSION .. ", schema v1, profile 'Default'")),
+        "LibKa0sSkinTester v" .. NS.addon.VERSION .. ", schema v1, profile 'Default'")
+    -- Runtime state appended on the same one line.
+    for _, frag in ipairs({ "enabled=true", "skin=ka0s:ka0s" }) do
+        assertTrue(s:find(frag, 1, true) ~= nil, "summary carries " .. frag)
+    end
+end)
+
+test("debuglog: enable ack is color-coded green/red matching the header (debug-logging-§5)", function()
+    -- The chat ack routes through NS.Print (prefixed). Assert the state word
+    -- carries the mandated color codes: ON 40ff40, OFF ff4040.
+    local NS, _, mock = T.newAddon()
+    NS.State.debug = false
+    debugCmd(NS, "on")
+    local onAck = mock.prints[#mock.prints]
+    assertTrue(onAck:find("|cff40ff40ON|r", 1, true) ~= nil, "ON ack is green 40ff40")
+    debugCmd(NS, "off")
+    local offAck = mock.prints[#mock.prints]
+    assertTrue(offAck:find("|cffff4040OFF|r", 1, true) ~= nil, "OFF ack is red ff4040")
+end)
+
+local function logged(NS, expected)
+    for _, line in ipairs(NS.DebugLog.buffer) do
+        if line:match("^%d%d:%d%d:%d%d | (.*)$") == expected then return true end
+    end
+    return false
+end
+
+local function assertLogged(NS, expected)
+    local tail = {}
+    local buf = NS.DebugLog.buffer
+    for i = math.max(1, #buf - 5), #buf do tail[#tail + 1] = buf[i] end
+    assertTrue(logged(NS, expected),
+        "expected the line '" .. expected .. "'; the buffer ends with:\n  " .. table.concat(tail, "\n  "))
+end
+
+-- ── the diagnosis checklist and quiet steady state (debug-logging-§8, debug-logging-§9) ──────
+--
+-- The DL-WG-02 audit's fills. Each pin names, in its red-under comment, the line whose absence
+-- leaves a support read of the log unable to say why something did not happen. The quiet cases
+-- run a repeating path N times with nothing changing and assert the buffer did not grow.
+
+test("debuglog: pin — standing down logs one [Lifecycle] line naming the holds, the library's", function()
+    -- red under: dropping `debug` from core/LifecycleSetup.lua's descriptor -- the log then shows
+    -- `[Set] enabled = false` and nothing about whether the latch actually took the addon down. The
+    -- edge line is LibKa0s-Lifecycle-1.0's (minor 3); the host's own [State] line is gone, so the
+    -- edge is one line, not two.
+    local NS = T.enableAddon()
+    NS.State.debug = true
+    NS.addon.Settings.Helpers.Set("enabled", false)
+    assertLogged(NS, "[Lifecycle] stood down: added disabled (holds: disabled)")
+    assertEqual(countLogged(NS, "stood down"), 1, "one line per edge")
+    assertEqual(countLogged(NS, "[State]"), 0, "and no host copy of it")
+end)
+
+test("debuglog: pin — standing back up logs the library's [Lifecycle] stood-up line, once", function()
+    -- red under: dropping `debug` from the Lifecycle descriptor, or restoring NS.StandUp's own line.
+    local NS = T.enableAddon()
+    NS.addon.Settings.Helpers.Set("enabled", false)
+    NS.State.debug = true
+    NS.addon.Settings.Helpers.Set("enabled", true)
+    assertLogged(NS, "[Lifecycle] stood up: released disabled (holds: none)")
+    assertEqual(countLogged(NS, "stood up"), 1, "one line per edge")
+end)
+
+test("debuglog: a caught error logged while debug was off is still logged once it is on", function()
+    -- red under: marking the error seen before the gate, which would hide it for the session.
+    local NS = T.bootAddon()
+    NS.DebugErrorOnce("Capture", "site", "boom")
+    NS.State.debug = true
+    NS.DebugErrorOnce("Capture", "site", "boom")
+    NS.DebugErrorOnce("Capture", "site", "boom")
+    assertEqual(countLogged(NS, "[Capture] site: boom"), 1)
+end)
+
