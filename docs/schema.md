@@ -12,6 +12,8 @@ capture ring, outside AceDB, written only by the harness).
 | `alpha` | number | `1` | Master controls (composed) | The showroom's opacity |
 | `skin.source` | string | `ka0s` | Appearance | `ka0s` or `eui` |
 | `skin.skin` | string | `ka0s` | Appearance | Any registered Ka0s skin key; an unregistered one applies Ka0s Default |
+| `skin.ignorePanel` | bool | `false` | Appearance (Scope) | Leave this addon's settings pages the client's (`Skin:SetIgnore`) |
+| `skin.ignoreFonts` | bool | `false` | Appearance (Scope) | Leave every font the client's; the skin still colors text |
 | `sample.checked` | bool | `true` | Sample controls | Shown, read by nothing |
 | `sample.size` | number | `5` | Sample controls | 1 to 10, step 1; read by nothing |
 | `sample.mode` | string | `medium` | Sample controls | `small`, `medium`, `large`; read by nothing |

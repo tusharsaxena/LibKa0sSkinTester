@@ -111,6 +111,25 @@ add{
     onChange = function(v) NS.ApplySkinChoice(nil, v) end,
 }
 
+-- The Scope's two exceptions (LibKa0s-Skin-1.0 minor 5), drawn by the same tab as check boxes.
+add{
+    section = "skin",  group = "Appearance",
+    path    = "skin.ignorePanel",  type = "bool",  widget = "CheckBox",  skipRender = true,
+    label   = "Ignore settings panel",
+    tooltip = "Keep this addon's settings panel in the game's own look. The showroom still wears the skin.",
+    default = C.skin.ignorePanel,
+    onChange = function(v) NS.ApplySkinIgnore(v, nil) end,
+}
+
+add{
+    section = "skin",  group = "Appearance",
+    path    = "skin.ignoreFonts",  type = "bool",  widget = "CheckBox",  skipRender = true,
+    label   = "Ignore fonts",
+    tooltip = "Keep every font in this addon as the game draws it. The skin still colors the text.",
+    default = C.skin.ignoreFonts,
+    onChange = function(v) NS.ApplySkinIgnore(nil, v) end,
+}
+
 -- ---------------------------------------------------------------------------
 -- Sample controls -- a page of its own (settings/Panel.lua): one row of each widget type the
 -- renderer draws, so a skin can be judged on a settings page as well as in the showroom. The rows

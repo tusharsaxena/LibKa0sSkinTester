@@ -239,12 +239,13 @@ Total.
 - slash: a foreign /st is reported once and left alone
 - slash: with no foreign /st, nothing is said and both commands stay
 
-### test_selector.lua (7)
+### test_selector.lua (8)
 
 - selector: one card per Ka0s skin, in Skins() order
 - selector: clicking a card applies and saves the skin
 - selector: a pick made elsewhere moves the selection
 - selector: the saved skin is applied at load
+- selector: the saved Scope is applied at load, and /st set moves one half
 - selector: an unknown saved skin falls back to ka0s
 - selector: clicking the current card does nothing
 - selector: no EllesmereUI card and no copy button
@@ -604,7 +605,7 @@ Total.
 | test_database.lua | 11 |
 | test_settings.lua | 53 |
 | test_slash.lua | 19 |
-| test_selector.lua | 7 |
+| test_selector.lua | 8 |
 | test_showroom.lua | 6 |
 | test_showroom_coverage.lua | 5 |
 | test_showroom_values.lua | 3 |
@@ -629,4 +630,4 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | Skipped | 1 |
-| **Total** | **483** |
+| **Total** | **484** |

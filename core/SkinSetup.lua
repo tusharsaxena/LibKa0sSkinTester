@@ -33,6 +33,7 @@ local addonName, NS = ...
 local Skin = LibStub and LibStub("LibKa0s-Skin-1.0", true)
 
 local SOURCE_PATH, SKIN_PATH = "skin.source", "skin.skin"
+local PANEL_PATH, FONTS_PATH = "skin.ignorePanel", "skin.ignoreFonts"
 local DEFAULT = "ka0s"
 NS.SKIN_SOURCE_PATH, NS.SKIN_PATH = SOURCE_PATH, SKIN_PATH
 
@@ -57,11 +58,22 @@ function NS.SkinChoice()
     return S.Get(SOURCE_PATH) or DEFAULT, S.Get(SKIN_PATH) or DEFAULT
 end
 
-function NS.WriteSkinChoice(source, skin)
+function NS.WriteSkinChoice(source, skin, ignore)
     local S = runtime()
     if not (NS.addon and NS.addon.db and S) then return end
     if source ~= nil then S.Set(SOURCE_PATH, source) end
     if skin ~= nil then S.Set(SKIN_PATH, skin) end
+    if type(ignore) == "table" then
+        S.Set(PANEL_PATH, ignore.panel == true)
+        S.Set(FONTS_PATH, ignore.fonts == true)
+    end
+end
+
+-- The stored Scope (LibKa0s-Skin-1.0 minor 5), nil-safely: false, false before the store exists.
+local function storedIgnore()
+    local S = runtime()
+    if not (NS.addon and NS.addon.db and S) then return false, false end
+    return S.Get(PANEL_PATH) == true, S.Get(FONTS_PATH) == true
 end
 
 -- The vocabulary a degraded facade answers, kept in the library's order; tests/test_surface_parity
@@ -91,6 +103,7 @@ if not Skin then
     NS.Skin = S
     NS.SkinAvailable = false
     function NS.ApplySkinChoice() return false, false end
+    function NS.ApplySkinIgnore() return false, false end
     function NS.SkinPaintAceTree() return 0 end
     return
 end
@@ -115,10 +128,23 @@ end
 local KNOWN = {}
 for _, opt in ipairs(NS.SKIN_OPTIONS) do KNOWN[opt.value] = true end
 
+-- The applied Scope: Skin:SetIgnore, live. No argument applies the stored pair; a nil half keeps it.
+function NS.ApplySkinIgnore(panel, fonts)
+    if type(Skin.SetIgnore) ~= "function" then return false, false end
+    if panel == nil and fonts == nil then panel, fonts = storedIgnore() end
+    local changed, reload = Skin:SetIgnore(addonName, panel, fonts)
+    if reload and NS.Print then NS.Print(RELOAD_LINE) end
+    return changed, reload
+end
+
+-- No argument applies the stored pair and the stored Scope (load, profile events); a nil half keeps
+-- that half and leaves the Scope alone (each Appearance row).
 function NS.ApplySkinChoice(source, skin)
-    if source == nil and skin == nil then source, skin = NS.SkinChoice() end
+    local whole = source == nil and skin == nil
+    if whole then source, skin = NS.SkinChoice() end
     if skin ~= nil and not KNOWN[skin] then skin = DEFAULT end
     local changed, reload = Skin:SetChoice(addonName, source, skin)
     if reload and NS.Print then NS.Print(RELOAD_LINE) end
+    if whole then NS.ApplySkinIgnore() end
     return changed, reload
 end

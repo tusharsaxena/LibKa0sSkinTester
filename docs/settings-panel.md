@@ -12,8 +12,9 @@ login; each page's body builds on its first show.
     opacity (the showroom's); Debug console and Minimap button; Reset position and Reset all
     settings. No Lock frame, Test mode or General visibility, because the showroom is a window the
     player opens, not a positionable display.
-  - **Appearance**, the library's own tab: the skin source, the nine skins, "Copy to every Ka0s
-    addon..." and the note. A pick repaints the showroom at once.
+  - **Appearance**, the library's own tab: the skin source, the nine skins, the Scope ("Ignore
+    settings panel", "Ignore fonts"), "Copy to every Ka0s addon..." and the note. A pick repaints the
+    showroom at once; so does Ignore fonts.
   - **Keybindings**, the library's own tab, last: the Show window binding (`NS.BINDINGS`).
 - **Sample controls**: one row of each widget type the renderer draws (a checkbox, a slider, a
   dropdown, a color swatch and its Use class color companion) under one group heading, untabbed. It
