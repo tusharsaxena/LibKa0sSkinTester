@@ -16,7 +16,7 @@ LibDataBroker, LibDBIcon, LibKa0s) and `tests/_kit/` are vendored and never edit
 | `core/LifecycleSetup.lua` | The stand-down latch and `NS.StandDownRefusal` (LibKa0s-Lifecycle-1.0) | Before `core/PerfSetup.lua` |
 | `core/PerfSetup.lua` | `NS.Perf` (LibKa0s-Perf-1.0): the `build` and `repaint` buckets | Before `modules/`, which take it as an upvalue |
 | `core/DebugLogSetup.lua` | `NS.DebugLog`, `NS.Debug` and the gates (LibKa0s-DebugLog-1.0) | After Constants, State and CoreSetup |
-| `core/SkinSetup.lua` | The skin owner: `NS.Skin`, the choice seams, `NS.SKIN_OPTIONS` (LibKa0s-Skin-1.0) | Before the entry file and `settings/Schema.lua` |
+| `core/SkinSetup.lua` | The skin owner: `NS.Skin`, the choice seams, the Scope's `NS.ApplySkinIgnore`, `NS.SKIN_OPTIONS` (LibKa0s-Skin-1.0) | Before the entry file and `settings/Schema.lua` |
 | `core/LibKa0sSkinTester.lua` | AceAddon registration, initialize and enable, the profile events, the stand-down callbacks, `[Init]` | After the setup files above |
 | `core/Database.lua` | The migration runner | Conventional |
 | `core/LauncherSetup.lua` | The minimap button and broker row (LibKa0s-Launcher-1.0) | Conventional; registered from OnEnable |

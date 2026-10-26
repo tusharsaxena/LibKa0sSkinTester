@@ -13,6 +13,10 @@
   selector's selection to the applied skin, so all three routes keep it right.
 - A stored skin key no registered skin carries applies Ka0s Default (`NS.ApplySkinChoice`): the
   library keeps any non-empty string.
+- A Scope tick (Ignore settings panel, Ignore fonts) runs the same way: the tab calls
+  `Skin:SetIgnore`, which repaints this owner live, then writes the pair through
+  `NS.WriteSkinChoice`'s third argument; `/st set skin.ignorePanel false` goes through the row's
+  `onChange`, `NS.ApplySkinIgnore`, one half at a time.
 
 ## Opening the showroom
 
@@ -24,7 +28,7 @@
 ## Login
 
 - File load: the skin owner registers (Ka0s Default, since AceDB does not exist yet).
-- OnInitialize: AceDB, migrations, the profile callbacks, the stored skin applied, the chat
-  commands.
+- OnInitialize: AceDB, migrations, the profile callbacks, the stored skin and its Scope applied
+  (`NS.ApplySkinChoice` with no argument), the chat commands.
 - OnEnable: the settings category, the launcher, the `/st` collision check, then the latch from
   the stored `enabled`.

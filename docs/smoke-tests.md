@@ -11,7 +11,7 @@ its theme, and a retired number is never reused.
 |---|---|---|
 | INSTALL-1..3 | Install | Load, reload, first run |
 | SLASH-1..4 | Slash commands | `/st`, `/skintester`, help, the disabled refusal, a foreign `/st` |
-| PANEL-1..5 | Settings panel | Landing page, General's tabs, Appearance, Keybindings, Sample controls |
+| PANEL-1..6 | Settings panel | Landing page, General's tabs, Appearance, Keybindings, Sample controls, the Scope |
 | PROFILE-1..2 | Profiles | The Profiles page and the `profile` verb |
 | STATE-1..2 | Enable and disable | The stand-down and its refusal |
 | COMBAT-1..2 | Combat | The showroom and the panel in combat |
@@ -55,10 +55,16 @@ restart the client: new font and texture files are only seen at client start.
   showroom repaints at once each time; the pick survives a `/reload`. Result:
 - **PANEL-4. Keybindings.** Bind a key on General -> Keybindings, then press it. → The showroom
   toggles; the same key shows under Options -> Keybindings -> Ka0s Skin Tester. Result:
-- **PANEL-5. Sample controls.** Pick Obsidian, then open Settings -> AddOns -> Ka0s Skin Tester ->
-  Sample controls. → One group heading over a checkbox, a slider, a dropdown, a color swatch and Use
+- **PANEL-5. Sample controls.** On General -> Appearance untick Ignore settings panel (a new
+  profile has it ticked, and the page is then the client's), pick Obsidian, then open Settings ->
+  AddOns -> Ka0s Skin Tester -> Sample controls. → One group heading over a checkbox, a slider, a dropdown, a color swatch and Use
   class color, all in Obsidian; no Appearance tab and no copy button. Pick Glass on General and come
   back. → The page follows. Result:
+- **PANEL-6. The Scope.** On a fresh profile open General -> Appearance with the showroom open. →
+  Ignore settings panel is ticked and Ignore fonts is not; the settings pages are in the client's
+  look while the showroom wears the skin. Untick Ignore settings panel. → The settings pages take the
+  skin at once, no reload. Pick Azeroth and tick Ignore fonts. → The showroom's Cinzel titles go back
+  to the game's fonts at once and keep the skin's colors. `/reload`. → Both ticks are as you left them. Result:
 
 ## Profiles
 
@@ -140,3 +146,4 @@ restart the client: new font and texture files are only seen at client start.
 | SHOW-5..7 | ST-03, the swatch selector | No client pass recorded yet |
 | SHOW-8..10 | ST-05 + ST-06, the sections | No client pass recorded yet |
 | SLASH-4, PANEL-5 | ST-07, the collision and the sample page | No client pass recorded yet |
+| PANEL-6 | SF-40, SF-43, SF-46: the Scope and its defaults | No client pass recorded yet |

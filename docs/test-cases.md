@@ -239,12 +239,13 @@ Total.
 - slash: a foreign /st is reported once and left alone
 - slash: with no foreign /st, nothing is said and both commands stay
 
-### test_selector.lua (7)
+### test_selector.lua (8)
 
 - selector: one card per Ka0s skin, in Skins() order
 - selector: clicking a card applies and saves the skin
 - selector: a pick made elsewhere moves the selection
 - selector: the saved skin is applied at load
+- selector: the saved Scope is applied at load, and /st set moves one half
 - selector: an unknown saved skin falls back to ka0s
 - selector: clicking the current card does nothing
 - selector: no EllesmereUI card and no copy button
@@ -258,12 +259,13 @@ Total.
 - showroom: opened after a skin change, it wears the new skin
 - showroom: a skin change repaints the open window
 
-### test_showroom_coverage.lua (4)
+### test_showroom_coverage.lua (5)
 
 - showroom: every lib.VOCAB name is shown
 - showroom: every section is built and none is empty
 - showroom: the tabs sample moves its selection on a click
 - showroom: the sections build without the library's widgets
+- showroom: the slider sample is visible under Ka0s Default
 
 ### test_showroom_values.lua (3)
 
@@ -271,10 +273,11 @@ Total.
 - values: every sem token has a line
 - values: a skin change redraws them
 
-### test_settings_sample.lua (4)
+### test_settings_sample.lua (5)
 
 - settings: the sample page carries one row of each widget type
-- settings: the sample page wears the owner's skin
+- settings: the sample page wears the owner's skin once the panel is skinned
+- settings: on a new profile the sample page is the client's
 - settings: the sample rows stay on their page
 - settings: no copy button on the sample page
 
@@ -603,11 +606,11 @@ Total.
 | test_database.lua | 11 |
 | test_settings.lua | 53 |
 | test_slash.lua | 19 |
-| test_selector.lua | 7 |
+| test_selector.lua | 8 |
 | test_showroom.lua | 6 |
-| test_showroom_coverage.lua | 4 |
+| test_showroom_coverage.lua | 5 |
 | test_showroom_values.lua | 3 |
-| test_settings_sample.lua | 4 |
+| test_settings_sample.lua | 5 |
 | test_panel.lua | 37 |
 | test_profiles.lua | 17 |
 | test_diagnostics.lua | 10 |
@@ -628,4 +631,4 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | Skipped | 1 |
-| **Total** | **482** |
+| **Total** | **485** |

@@ -70,6 +70,22 @@ test("selector: the saved skin is applied at load", function()
     assertEqual(skin, "glass")
 end)
 
+test("selector: the saved Scope is applied at load, and /st set moves one half", function()
+    -- LibKa0s-Skin-1.0 minor 5. red under: an apply at load that sets the skin and not the Scope.
+    local NS, _, mock = T.newAddon()
+    _G.LibKa0sSkinTesterDB = { profiles = { Default = { skin = { source = "ka0s", skin = "ember",
+        ignorePanel = true, ignoreFonts = false } } } }
+    NS.addon:OnInitialize()
+    NS.addon:OnEnable()
+    local panel, fonts = lib(mock):GetIgnore(OWNER)
+    assertEqual(panel, true, "the stored panel exception")
+    assertEqual(fonts, false)
+    NS.addon:OnSlashCommand("set skin.ignoreFonts true")
+    panel, fonts = lib(mock):GetIgnore(OWNER)
+    assertEqual(fonts, true, "the set applied")
+    assertEqual(panel, true, "the other half kept")
+end)
+
 test("selector: an unknown saved skin falls back to ka0s", function()
     -- red under: an apply that hands the library any string (cleanSkin keeps every non-empty one).
     local NS, mock = bootWithSkin("nope")

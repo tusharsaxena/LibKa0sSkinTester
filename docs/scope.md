@@ -19,7 +19,8 @@ never published on CurseForge.
   General -> Appearance, the library's own tab; the showroom repaints at once on a pick.
 - Seven sections show every primitive in `lib.VOCAB` and every getter's value, each sample captioned
   with the primitive and state it shows; a Sample controls settings page shows the skin on the
-  settings renderer's widgets.
+  settings renderer's widgets, once the Appearance tab's Ignore settings panel is off (a new profile
+  has it on).
 - Everything is painted through the addon's own skin facade, so what the showroom shows is what an
   adopting addon gets.
 
