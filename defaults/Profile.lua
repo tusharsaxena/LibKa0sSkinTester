@@ -12,7 +12,7 @@ NS.C = {
     skin = {
         source = "ka0s",     -- where the look comes from: Ka0s skins, or EllesmereUI
         skin   = "ka0s",     -- the Ka0s skin worn, and so shown in the showroom
-        ignorePanel = false, -- the Scope: leave this addon's settings pages the client's
+        ignorePanel = true,  -- the Scope: leave this addon's settings pages the client's (default on)
         ignoreFonts = false, -- the Scope: leave every font the client's (the skin still colors)
     },
     -- The Sample controls page: one row of each widget type, so the skin can be seen on a settings

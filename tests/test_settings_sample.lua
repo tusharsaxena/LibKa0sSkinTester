@@ -35,12 +35,27 @@ test("settings: the sample page carries one row of each widget type", function()
     assertEqual(kinds.color, 1, "a color swatch")
 end)
 
-test("settings: the sample page wears the owner's skin", function()
-    local _, _, mock = openSample("obsidian")
+test("settings: the sample page wears the owner's skin once the panel is skinned", function()
+    -- A new profile leaves the settings panel the client's (the Scope's default); the sample page
+    -- is there to show the skin on a settings page, so this case turns that off first.
+    local NS, _, mock = T.enableAddon()
+    NS.addon:OnSlashCommand("set skin.ignorePanel false")
+    NS.Selector.Pick("obsidian")
+    mock.frames["LibKa0sSkinTesterSamplePanel"]:Show()
+    mock.fireCTimers()
     local cb = widget(mock, "CheckBox", "A checkbox")
     assertTrue(cb ~= nil, "the checkbox rendered")
     local st = mock.LibStub("LibKa0s-Skin-1.0").__ace[cb]
     assertTrue(st ~= nil and st.owner == OWNER, "and it was painted for this addon")
+end)
+
+test("settings: on a new profile the sample page is the client's", function()
+    -- red under: a default that skins the settings panel.
+    local _, _, mock = openSample("obsidian")
+    local cb = widget(mock, "CheckBox", "A checkbox")
+    assertTrue(cb ~= nil, "the checkbox rendered")
+    local st = mock.LibStub("LibKa0s-Skin-1.0").__ace[cb]
+    assertTrue(st == nil or st.owner == nil, "and nothing painted it")
 end)
 
 test("settings: the sample rows stay on their page", function()

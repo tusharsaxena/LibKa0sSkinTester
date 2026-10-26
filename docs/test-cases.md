@@ -273,10 +273,11 @@ Total.
 - values: every sem token has a line
 - values: a skin change redraws them
 
-### test_settings_sample.lua (4)
+### test_settings_sample.lua (5)
 
 - settings: the sample page carries one row of each widget type
-- settings: the sample page wears the owner's skin
+- settings: the sample page wears the owner's skin once the panel is skinned
+- settings: on a new profile the sample page is the client's
 - settings: the sample rows stay on their page
 - settings: no copy button on the sample page
 
@@ -609,7 +610,7 @@ Total.
 | test_showroom.lua | 6 |
 | test_showroom_coverage.lua | 5 |
 | test_showroom_values.lua | 3 |
-| test_settings_sample.lua | 4 |
+| test_settings_sample.lua | 5 |
 | test_panel.lua | 37 |
 | test_profiles.lua | 17 |
 | test_diagnostics.lua | 10 |
@@ -630,4 +631,4 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | Skipped | 1 |
-| **Total** | **484** |
+| **Total** | **485** |
