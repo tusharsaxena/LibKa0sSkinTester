@@ -62,11 +62,6 @@ end
 --
 -- Set BEFORE Kit.expose, which is what makes it stick: expose registers a source only when none is
 -- registered yet, precisely so a runner like this one keeps its own.
---
--- LibKa0s-Compat-1.0 is one of the two rows that ARE a library table: core/Compat.lua wires the library's
--- own members onto NS.Compat rather than building an instance, so its live half is what the live
--- load's LibStub answers for the name (LibKa0s docs/api/Compat/version-1-docs.md, "How a host wires
--- it" -- a runner with a table map has to add the row, or the by-name call cannot resolve it).
 local surfaceNS, surfaceMock = loadAddon()
 Kit.setSurfaceSource{
     ["LibKa0s-DebugLog-1.0"] = surfaceNS.DebugLog,
@@ -77,7 +72,7 @@ Kit.setSurfaceSource{
     -- mirror that instance, not the library table.
     ["LibKa0s-Launcher-1.0"]  = surfaceNS.Launcher,
     ["LibKa0s-Lifecycle-1.0"] = surfaceNS.Lifecycle,
-    -- A library table too, for the same reason: settings/SchemaSetup.lua's HostSchemaStub stands in
+    -- One library table: settings/SchemaSetup.lua's HostSchemaStub stands in
     -- for the LIBRARY (its SplitPath / Read / Write / SameValue / New), so the by-name parity case
     -- compares it against what LibStub answers. The instance-vs-stub pair is the kit's two-table
     -- form and needs no row here (LibKa0s docs/api/Schema/version-2-docs.md, "Pinning it").
@@ -181,8 +176,8 @@ Kit.run{
         { name = "test_eol", dir = "tests/_kit/" },
         -- The US-English prose gate (localization-§5) is the kit's too, since revision 24. It
         -- was declared here as a bare "test_prose", which wired a hand-written copy under
-        -- tests/ and left this one loading zero cases; the copy is gone, and the per-file,
-        -- per-word waivers it carried live in tests/prose_waivers.lua, which this suite reads.
+        -- tests/ and left this one loading zero cases; the copy is gone. This addon needs no
+        -- tests/prose_waivers.lua: nothing it ships spells a word the gate refuses.
         { name = "test_prose", dir = "tests/_kit/" },
         -- The layout-§1 cap gate, new in kit revision 25: every authored .lua file against the
         -- 1500-line cap, held to the census under docs/ARCHITECTURE.md's deviations register.

@@ -8,10 +8,8 @@
 -- WHY IT EXISTS. `documentation-§3` makes *Not applicable* a valid state that MUST be stated rather
 -- than inferred from an empty directory, and that is the right rule — `ls docs/` alone cannot tell
 -- "this addon does not need the page" from "nobody has written it yet". The cost is that the row
--- becomes the only witness, and a wrong row is then worse than a missing page. This repo carried
--- one: `compat-layer.md` read "no addon-specific shim to document separately" against the seven
--- shims in core/Compat.lua, and it read that through every audit, because the register was the
--- thing being read.
+-- becomes the only witness, and a wrong row is then worse than a missing page, read through every
+-- audit because the register is the thing being read.
 --
 -- WHAT IT DELIBERATELY DOES NOT DO: judge whether a trigger has fired. That is prose and
 -- measurement — "beyond what LibKa0s supplies", "of the addon's own" — and it stays a human's to
