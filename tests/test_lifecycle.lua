@@ -151,9 +151,9 @@ test("lifecycle: a login taken in combat registers the panel at combat end", fun
     local park = env.LibStub("LibKa0s-Options-1.0").__parkFrame
     assertTrue(park ~= nil and park.__events.PLAYER_REGEN_ENABLED, "the park listens for combat end")
     park.__fire("OnEvent", "PLAYER_REGEN_ENABLED")
-    assertEqual(#mock.categories, 2, "the category is in the AddOns list once combat ends")
+    assertEqual(#mock.categories, 3, "the category is in the AddOns list once combat ends")
     runCmd(NS, "config")
-    assertEqual(#mock.categories, 2, "and runConfig's fallback call registers nothing more")
+    assertEqual(#mock.categories, 3, "and runConfig's fallback call registers nothing more")
     assertEqual(#mock.openedTo, 1)
 end)
 

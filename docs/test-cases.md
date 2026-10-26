@@ -217,7 +217,7 @@ Total.
 - settings: every color row is followed by its class-color companion, and none is disabled
 - settings: the stored settings are exactly the pinned ones
 
-### test_slash.lua (16)
+### test_slash.lua (19)
 
 - slash: COMMANDS order is the help order, fifteen positional triples
 - slash: every description has an enUS entry
@@ -235,6 +235,48 @@ Total.
 - slash: perf is registered by the addon and answers through the library
 - slash: show toggles the showroom while enabled
 - slash: degraded, the CLI verbs name the missing library and nothing raises
+- slash: /skintester opens the window
+- slash: a foreign /st is reported once and left alone
+- slash: with no foreign /st, nothing is said and both commands stay
+
+### test_selector.lua (7)
+
+- selector: one card per Ka0s skin, in Skins() order
+- selector: clicking a card applies and saves the skin
+- selector: a pick made elsewhere moves the selection
+- selector: the saved skin is applied at load
+- selector: an unknown saved skin falls back to ka0s
+- selector: clicking the current card does nothing
+- selector: no EllesmereUI card and no copy button
+
+### test_showroom.lua (6)
+
+- showroom: the window is painted through the wrapper
+- showroom: Paint answers the primitive's answer and records the name once
+- showroom: sections lay out in registration order, each under its title
+- showroom: a caption is muted text
+- showroom: opened after a skin change, it wears the new skin
+- showroom: a skin change repaints the open window
+
+### test_showroom_coverage.lua (4)
+
+- showroom: every lib.VOCAB name is shown
+- showroom: every section is built and none is empty
+- showroom: the tabs sample moves its selection on a click
+- showroom: the sections build without the library's widgets
+
+### test_showroom_values.lua (3)
+
+- values: every getter is displayed
+- values: every sem token has a line
+- values: a skin change redraws them
+
+### test_settings_sample.lua (4)
+
+- settings: the sample page carries one row of each widget type
+- settings: the sample page wears the owner's skin
+- settings: the sample rows stay on their page
+- settings: no copy button on the sample page
 
 ### test_panel.lua (37)
 
@@ -560,7 +602,12 @@ Total.
 | test_util.lua | 26 |
 | test_database.lua | 11 |
 | test_settings.lua | 53 |
-| test_slash.lua | 16 |
+| test_slash.lua | 19 |
+| test_selector.lua | 7 |
+| test_showroom.lua | 6 |
+| test_showroom_coverage.lua | 4 |
+| test_showroom_values.lua | 3 |
+| test_settings_sample.lua | 4 |
 | test_panel.lua | 37 |
 | test_profiles.lua | 17 |
 | test_diagnostics.lua | 10 |
@@ -581,4 +628,4 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | Skipped | 1 |
-| **Total** | **455** |
+| **Total** | **482** |

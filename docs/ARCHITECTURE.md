@@ -7,15 +7,19 @@ says how this addon meets them.
 
 A skin showroom. `/st` (or `/skintester`) opens one window that shows the elements a Ka0s skin
 (`LibKa0s-Skin-1.0`) can paint, in whichever skin the addon is wearing, so a skin can be judged in one
-place. The addon is a skin owner like any adopter: the skin it wears is chosen on its own General ->
-Appearance tab, and every sample it shows is painted through its own facade (`Skin:For`), so the
-showroom shows exactly what an adopting addon gets. It is a roster addon that is never published on
+place. The addon is a skin owner like any adopter: the skin it wears is chosen from the swatch cards
+across the top of the showroom or on its own General -> Appearance tab, and every sample it shows is
+painted through its own facade (`Skin:For`), through one wrapper that records each primitive used, so
+the showroom shows exactly what an adopting addon gets and a test can prove every primitive is on
+show. It is a roster addon that is never published on
 CurseForge. Purpose, audience and non-goals: [`scope.md`](./scope.md).
 
 ## Module Map
 
-One shell, one window module, the setup files that wire LibKa0s, and the settings pages. Every file,
-its job and its load-order constraint: [`module-map.md`](./module-map.md). The load order itself is
+One shell, the setup files that wire LibKa0s, the swatch selector, the showroom window with its paint
+wrapper and section registry, seven section files (Chrome, Controls, Lists, Text, Panels, Overlays,
+Values), and the settings pages. Every file, its job and its load-order constraint:
+[`module-map.md`](./module-map.md). The load order itself is
 the TOC, where each load-bearing position carries the reason.
 
 ## Settings Schema
@@ -23,23 +27,26 @@ the TOC, where each load-bearing position carries the reason.
 One schema (`settings/Schema.lua`) drives the panel, the `/st list|get|set|reset` CLI and the
 defaults, over one write seam, `NS.SchemaRuntime.Set` (LibKa0s-Schema-1.0, or the host stub in
 `settings/SchemaSetup.lua`). Rows: the composed Master controls (`enabled`, `scale`, `alpha`, the
-session-only `state.debugConsole`, the global `global.minimap.shown`) and the two Appearance rows
-(`skin.source`, `skin.skin`). The one piece of state outside the seam is the showroom window's
+session-only `state.debugConsole`, the global `global.minimap.shown`), the two Appearance rows
+(`skin.source`, `skin.skin`) and the five Sample controls rows (`sample.*`, on their own page and read
+by nothing). The one piece of state outside the seam is the showroom window's
 position, `db.global.windows.LibKa0sSkinTesterShowroom`, written only by `NS.Windows.Save` from the
 window's drag stop and cleared by `NS.Windows.Forget` (Reset position), both in `core/Util.lua`.
 Every path, default and the migration seam: [`schema.md`](./schema.md).
 
 ## Message Bus
 
-None. The addon is one shell and one feature module, and nothing crosses a module boundary as a
-message: below the `architecture-§4` threshold. A skin change reaches the showroom through the skin
-engine's own `OnLooksChanged` notification, not a bus message.
+None. Nothing crosses a module boundary as a message: the sections register with the showroom by
+direct call (`NS.Showroom.AddSection`), below the `architecture-§4` threshold. A skin change reaches
+the showroom, the selector and the Values section through the skin engine's own `OnLooksChanged`
+notification, not a bus message.
 
 ## Slash Commands
 
 `/st` and the alias `/skintester`, dispatched by LibKa0s-Slash-1.0 from the ordered `COMMANDS` table
-in `settings/Slash.lua`: the reserved verbs, plus `show`, the showroom toggle. Every verb and what it
-answers while disabled: [`slash-dispatch.md`](./slash-dispatch.md).
+in `settings/Slash.lua`: the reserved verbs, plus `show`, the showroom toggle. At login a `/st` held
+by another addon is left to it (`NS.CheckSlashCollision`), and this addon keeps `/skintester`. Every
+verb and what it answers while disabled: [`slash-dispatch.md`](./slash-dispatch.md).
 
 ## Event Subscriptions
 
@@ -60,7 +67,9 @@ refused in combat by the library (options-ui-§2), and a page shown in combat is
 - With another installed addon that vendors a newer LibKa0s, LibStub runs that copy's files, so the
   showroom shows that copy's skins. While every Ka0s addon vendors the same tag they are identical.
 - EllesmereUI's paint is one-way: leaving the EllesmereUI source after it painted needs a reload
-  (the library's reload popup says so).
+  (the library's reload popup says so). For the same reason the swatch selector has no EllesmereUI
+  card.
+- After a `/st` collision, the help text and the landing page still name `/st`.
 
 ## Documentation map
 
@@ -75,8 +84,8 @@ generated directories are named once each and never enumerated per run: `docs/au
 | `scope.md` | What the showroom is for, who uses it, and what it deliberately is not |
 | `module-map.md` | Every non-vendored file, its responsibility, and its load-order constraint |
 | `schema.md` | The persisted shape, every default, the window position and the migration seam |
-| `settings-panel.md` | The panel tree, the General page's tabs, and the write seam |
-| `data-flow.md` | A skin pick to a repainted showroom; `/st` to an open window |
+| `settings-panel.md` | The panel tree, the General page's tabs, the Sample controls page, and the write seam |
+| `data-flow.md` | A skin pick (card, tab or `/st set`) to a repainted showroom; `/st` to an open window; login |
 | `common-tasks.md` | Recipes for the changes made most often here |
 
 ### Conditional (documentation-§3, Tier 2)

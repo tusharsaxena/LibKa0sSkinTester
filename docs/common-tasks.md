@@ -17,6 +17,13 @@ Add one positional triple to `COMMANDS` in `settings/Slash.lua`, give its descri
 and add it to [`slash-dispatch.md`](./slash-dispatch.md). Regenerate `docs/test-cases.md` if the
 suite changed.
 
+## Show a new primitive
+
+When LibKa0s adds a name to `lib.VOCAB`, `tests/test_showroom_coverage.lua` goes red naming it. Add a
+sample to the section it belongs in (`modules/Showroom*.lua`): a `g:Add(w, h, caption)` cell from
+`NS.Showroom.Grid`, painted through the build's `paint`, never the facade directly. A getter goes in
+`modules/ShowroomValues.lua` and into `NS.Values.shown`.
+
 ## Check a skin defect
 
 Open the showroom on the skin in question, find the sample by its caption, and note the primitive it

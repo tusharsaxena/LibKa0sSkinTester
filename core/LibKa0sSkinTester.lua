@@ -105,6 +105,10 @@ function Tester:OnEnable()
     -- db.global.minimap, which OnInitialize created. Idempotent in the library.
     if NS.Launcher then NS.Launcher:Register() end
 
+    -- `/st` is two letters, and another addon may hold it. Checked here, once every addon has
+    -- registered: a foreign `/st` keeps it, and this addon answers to `/skintester` alone.
+    if NS.CheckSlashCollision then NS.CheckSlashCollision() end
+
     -- THE LATCH, from the stored path (slash-commands-§7). Last, because everything above has to be
     -- up before the latch can take it back down.
     if NS.Lifecycle then

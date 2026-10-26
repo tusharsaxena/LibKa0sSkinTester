@@ -2,12 +2,17 @@
 
 ## A skin pick
 
-- The player ticks a skin on General -> Appearance (or types `/st set skin.skin obsidian`).
+- The player clicks a card in the showroom's swatch selector, ticks a skin on General -> Appearance,
+  or types `/st set skin.skin obsidian`. A card click is `NS.Selector.Pick`: it applies the Ka0s
+  skin first and saves it only when that was a change, the same order the tab uses.
 - The tab calls `Skin:SetChoice("LibKa0sSkinTester", source, skin)`: the library resolves the skin,
   repaints every frame recorded for this owner, then fires `OnLooksChanged`.
 - The tab writes both halves through `NS.WriteSkinChoice`, which goes through the write seam. Each
   row's `onChange` applies only its own half, so that write is a no-op (core/SkinSetup.lua).
-- `modules/Showroom.lua`'s `OnLooksChanged` handler runs inside the `repaint` bracket.
+- `modules/Showroom.lua`'s `OnLooksChanged` handler runs inside the `repaint` bracket and moves the
+  selector's selection to the applied skin, so all three routes keep it right.
+- A stored skin key no registered skin carries applies Ka0s Default (`NS.ApplySkinChoice`): the
+  library keeps any non-empty string.
 
 ## Opening the showroom
 
@@ -21,4 +26,5 @@
 - File load: the skin owner registers (Ka0s Default, since AceDB does not exist yet).
 - OnInitialize: AceDB, migrations, the profile callbacks, the stored skin applied, the chat
   commands.
-- OnEnable: the settings category, the launcher, then the latch from the stored `enabled`.
+- OnEnable: the settings category, the launcher, the `/st` collision check, then the latch from
+  the stored `enabled`.

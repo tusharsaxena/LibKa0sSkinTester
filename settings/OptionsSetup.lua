@@ -230,7 +230,15 @@ local O = lib:New({
 
     -- One page, so the page key is ignored and every row belongs to it. `filter` (ctx.unit) is
     -- never set: this addon has no per-unit pages.
-    rowsForPage = function() return Settings.Schema end,
+    -- A row with no `page` is the General page's (the skin rows); the Sample controls rows carry
+    -- page = "sample" and draw only there.
+    rowsForPage = function(pageKey)
+        local out = {}
+        for _, row in ipairs(Settings.Schema) do
+            if (row.page or "general") == pageKey then out[#out + 1] = row end
+        end
+        return out
+    end,
     allRows     = function() return Settings.Schema end,
 
     -- Runs once, before the page builders. settings/Schema.lua's own shape check, which PRINTS its
@@ -287,8 +295,8 @@ local O = lib:New({
 -- ---------------------------------------------------------------------------
 --
 -- The library's SetRenderer wires its own OnShow and calls the renderer — and EnsureDefaultsButton
--- — SYNCHRONOUSLY inside it. This addon does not, and the reason is written down at length in
--- docs/midnight-quirks.md: Blizzard's GameMenu / Logout flows can dispatch a settings canvas's OnShow
+-- — SYNCHRONOUSLY inside it. This addon does not, because Blizzard's GameMenu / Logout flows can
+-- dispatch a settings canvas's OnShow
 -- inside a secure-execute chain, and creating AceGUI frames there was tripping
 -- ADDON_ACTION_FORBIDDEN on the Logout button. Keeping OnShow itself a no-op and building on the
 -- next frame moves the work out of the protected context entirely, and `tests/test_panel.lua` has

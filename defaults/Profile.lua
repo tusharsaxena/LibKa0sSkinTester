@@ -13,4 +13,13 @@ NS.C = {
         source = "ka0s",     -- where the look comes from: Ka0s skins, or EllesmereUI
         skin   = "ka0s",     -- the Ka0s skin worn, and so shown in the showroom
     },
+    -- The Sample controls page: one row of each widget type, so the skin can be seen on a settings
+    -- page too. Nothing reads these but the page.
+    sample = {
+        checked = true,
+        size    = 5,         -- 1 .. 10
+        mode    = "medium",
+        color   = { r = 0.2, g = 0.6, b = 1, a = 1 },
+        useClassColor = false,
+    },
 }

@@ -1,14 +1,13 @@
 -- tests/test_surface_parity.lua — every degradation stub carries the whole live surface.
 --
--- LibKa0sSkinTester adopts ten LibKa0s majors. Eight of them carry a degradation stub for the install where
--- libs/LibKa0s is missing, and every one of the eight has a case below:
+-- These seven LibKa0s majors carry a degradation stub for the install where libs/LibKa0s is missing,
+-- and each has a case below:
 --
 --   Core       core/CoreSetup.lua       — the namespace itself, four-argument form
 --   DebugLog   core/DebugLogSetup.lua   — by name, instance
 --   Slash      settings/Slash.lua       — by name, instance
 --   Options    settings/OptionsSetup.lua — by name, instance (Settings.Helpers)
 --   Schema     settings/SchemaSetup.lua — two cases: the instance (two-table form) and the library
---   Compat     core/Compat.lua          — by name, library table
 --   Launcher   core/LauncherSetup.lua   — by name, instance
 --   Lifecycle  core/LifecycleSetup.lua  — by name, instance
 --
@@ -47,7 +46,7 @@
 --
 -- WHERE THE LIVE HALF COMES FROM, and why it is not the obvious place. tests/run.lua registers it
 -- with `Kit.setSurfaceSource`, naming five INSTANCES — what `lib:New(descriptor)` returned — and
--- two library tables (Compat, Schema). It has to: `Kit.expose` auto-wires the mock's LibStub, which
+-- one library table (Schema). It has to: `Kit.expose` auto-wires the mock's LibStub, which
 -- answers the LIBRARY TABLE for a major, and the five instance stubs mirror no library table. Left to the auto-wiring,
 -- "LibKa0s-Options-1.0" resolves a four-member table (LAYOUT, New, PatchAlwaysShowScrollbar,
 -- STRINGS) and this file goes red for three reasons that have nothing to do with any stub.
@@ -222,8 +221,4 @@ test("parity: the Lifecycle stub carries the whole live surface", function()
     local degraded = T.newAddon{ skip = NO_LIBKA0S }
     T.assertSurfaceParity(degraded.Lifecycle, "LibKa0s-Lifecycle-1.0")
 end)
-
--- ---------------------------------------------------------------------------
--- Compat
--- ---------------------------------------------------------------------------
 

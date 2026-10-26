@@ -497,6 +497,7 @@ local function build()
     mock.IsInGroup        = function() return mock.inGroup and true or false end
     mock.InCombatLockdown = function() return mock.combat and true or false end
     mock.UISpecialFrames  = {}
+    mock.SlashCmdList     = {}   -- the client's; AceConsole's fake writes it, and the /st collision reads it
     mock.date             = function(fmt) return os.date(fmt) end
 
     -- The client's own guaranteed face. Present because core/LibKa0sSkinTester.lua's FONT_MONO falls back

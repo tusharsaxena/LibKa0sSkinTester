@@ -10,14 +10,14 @@ its theme, and a retired number is never reused.
 | ID range | Theme | What it covers |
 |---|---|---|
 | INSTALL-1..3 | Install | Load, reload, first run |
-| SLASH-1..3 | Slash commands | `/st`, `/skintester`, help, the disabled refusal |
-| PANEL-1..4 | Settings panel | Landing page, General's tabs, Appearance, Keybindings |
+| SLASH-1..4 | Slash commands | `/st`, `/skintester`, help, the disabled refusal, a foreign `/st` |
+| PANEL-1..5 | Settings panel | Landing page, General's tabs, Appearance, Keybindings, Sample controls |
 | PROFILE-1..2 | Profiles | The Profiles page and the `profile` verb |
 | STATE-1..2 | Enable and disable | The stand-down and its refusal |
 | COMBAT-1..2 | Combat | The showroom and the panel in combat |
 | DIAG-1..2 | Diagnostics | The debug console and the report |
 | DEGRADED-1 | Degraded install | The library-absent load |
-| SHOW-1..4 | Showroom | The window, the skin switch, position and scale |
+| SHOW-1..10 | Showroom | The window, the swatch selector, the sections, position and scale |
 | LOC-1 | Non-English client | Locale-dependent behavior |
 
 ## Before you start
@@ -40,6 +40,9 @@ restart the client: new font and texture files are only seen at client start.
 - **SLASH-2. Alias.** `/skintester show`. → Opens the showroom. Result:
 - **SLASH-3. Disabled refusal.** `/st disable`, then `/st show`. → One tagged line naming
   `/st enable`; nothing opens. `/st enable` afterwards. Result:
+- **SLASH-4. A foreign /st.** With another addon that registers `/st` enabled (any one will do), log
+  in. → One tagged line saying this addon answers only to `/skintester`; `/st` reaches the other
+  addon, and `/skintester show` opens the showroom. With no such addon, no line at all. Result:
 
 ## Settings panel
 
@@ -52,6 +55,10 @@ restart the client: new font and texture files are only seen at client start.
   showroom repaints at once each time; the pick survives a `/reload`. Result:
 - **PANEL-4. Keybindings.** Bind a key on General -> Keybindings, then press it. → The showroom
   toggles; the same key shows under Options -> Keybindings -> Ka0s Skin Tester. Result:
+- **PANEL-5. Sample controls.** Pick Obsidian, then open Settings -> AddOns -> Ka0s Skin Tester ->
+  Sample controls. → One group heading over a checkbox, a slider, a dropdown, a color swatch and Use
+  class color, all in Obsidian; no Appearance tab and no copy button. Pick Glass on General and come
+  back. → The page follows. Result:
 
 ## Profiles
 
@@ -90,12 +97,30 @@ restart the client: new font and texture files are only seen at client start.
 ## Showroom
 
 - **SHOW-1. Window.** `/st show`. → A window titled "Ka0s Skin Tester — Skin showroom", closed by its
-  close button and by Escape. Result:
+  close button and by Escape, with a footer reading "Wearing Ka0s Default" (the skin you wear) and the
+  sections scrolling under the mouse wheel. Result:
 - **SHOW-2. Position.** Drag it by the title bar, `/reload`, reopen. → Same place. Master controls ->
   Reset position centers it. Result:
 - **SHOW-3. Scale and opacity.** Move Master scale and Master opacity. → The window follows. Result:
 - **SHOW-4. Two addons, one copy.** With Ka0s Loot History also installed and on the same skin, open
   both. → Both wear the skin the same way. Result:
+- **SHOW-5. Swatch selector.** `/st show`. → Nine cards across the top, Ka0s Default first, each with
+  its name and four color swatches; the card of the skin you are wearing has its name in the skin's
+  accent. No EllesmereUI card. Result:
+- **SHOW-6. Pick a skin.** Click Obsidian, then `/reload` and reopen. → The window repaints in Obsidian
+  at the click, Obsidian's card reads selected, and after the reload it is still Obsidian. Fail: a
+  card that repaints nothing, or a reload that comes back in Default. Result:
+- **SHOW-7. A pick made elsewhere.** With the showroom open, pick Glass on General -> Appearance. →
+  The window repaints and the Glass card becomes the selected one. Result:
+- **SHOW-8. Every section, every skin.** Click through all nine cards and scroll the whole window on
+  each. → Chrome, Controls, Lists, Text, Panels, Overlays and Values are all legible in every skin.
+  Record an illegible sample as a skin defect (skin, section, caption), not as a showroom failure.
+  Result:
+- **SHOW-9. Live samples.** Hover "Hover me", click the dropdown, click the second and third tabs. →
+  A skinned tooltip, the skinned popup menu, and the tab selection moving. Result:
+- **SHOW-10. Values.** Look at the Values section in Ka0s Default, then Azeroth. → The swatches and the
+  `sem.*` lines change color with the skin, and the body-font line changes face where the skin sets
+  one. Result:
 
 ## Non-English client
 
@@ -112,3 +137,6 @@ restart the client: new font and texture files are only seen at client start.
 | ID | Origin | Why it is owed |
 |---|---|---|
 | INSTALL-1..3, SLASH-1..3, PANEL-1..4, PROFILE-1..2, STATE-1..2, COMBAT-1..2, DIAG-1..2, DEGRADED-1, SHOW-1..4, LOC-1 | v0.1.0 scaffold | No client pass recorded yet |
+| SHOW-5..7 | ST-03, the swatch selector | No client pass recorded yet |
+| SHOW-8..10 | ST-05 + ST-06, the sections | No client pass recorded yet |
+| SLASH-4, PANEL-5 | ST-07, the collision and the sample page | No client pass recorded yet |

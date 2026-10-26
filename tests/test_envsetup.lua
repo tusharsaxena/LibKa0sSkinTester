@@ -113,9 +113,8 @@ end)
 -- ---------------------------------------------------------------------------
 
 test("envsetup: no file inlines its own C_AddOns ladder any more", function()
-    -- Both of this addon's copies were INLINE, at the call site, where no audit of core/Compat.lua
-    -- would ever have found them. A seam that leaves one in place is a second answer nobody
-    -- removed, and the next caller copies whichever one it lands on first — which is how there came
+    -- A copy inlined at the call site is where no audit finds it. A seam that leaves one in place
+    -- is a second answer nobody removed, and the next caller copies whichever one it lands on first — which is how there came
     -- to be eleven of these across nine addons.
     local hits = 0
     for _, path in ipairs({ "settings/Slash.lua", "settings/Panel.lua" }) do

@@ -180,3 +180,49 @@ test("slash: degraded, the CLI verbs name the missing library and nothing raises
     out = run(NS, mock, "enable")
     assertTrue(anyLine(out, "/st enable is unavailable"), "enable takes route (b): the library-absent line")
 end)
+
+
+-- ── the /st collision ────────────────────────────────────────────────────────────────────────
+-- `/st` is two letters and another addon may hold it. The check runs at PLAYER_LOGIN (OnEnable),
+-- once every addon has registered: a foreign `/st` keeps it, this addon keeps `/skintester`, and
+-- one tagged line says so.
+
+local function foreignSt(mock)
+    local calls = 0
+    mock.SlashCmdList.OTHER = function() calls = calls + 1 end
+    mock.SLASH_OTHER1 = "/st"
+    return function() return calls end
+end
+
+test("slash: /skintester opens the window", function()
+    local NS, _, mock = T.enableAddon()
+    local console = mock.__libs["AceConsole-3.0"]
+    mock.SlashCmdList[console.commands["skintester"]]("show")
+    assertTrue(mock.frames["LibKa0sSkinTesterShowroom"]:IsShown(), "opened")
+    local _ = NS
+end)
+
+test("slash: a foreign /st is reported once and left alone", function()
+    local NS, _, mock = T.bootAddon()
+    local calls = foreignSt(mock)
+    local mark = #mock.prints
+    NS.addon:OnEnable()
+    assertEqual(#mock.prints - mark, 1, "one line")
+    assertTrue(mock.prints[#mock.prints]:find("/skintester", 1, true) ~= nil, "naming /skintester")
+    local console = mock.__libs["AceConsole-3.0"]
+    assertTrue(console.commands["st"] == nil, "this addon let go of /st")
+    assertTrue(mock.SlashCmdList.OTHER ~= nil and mock.SLASH_OTHER1 == "/st", "the other addon keeps it")
+    mock.SlashCmdList.OTHER("")
+    assertEqual(calls(), 1, "and /st still reaches it")
+    mock.SlashCmdList[console.commands["skintester"]]("show")
+    assertTrue(mock.frames["LibKa0sSkinTesterShowroom"]:IsShown(), "/skintester still opens the window")
+end)
+
+test("slash: with no foreign /st, nothing is said and both commands stay", function()
+    local NS, _, mock = T.bootAddon()
+    local mark = #mock.prints
+    NS.addon:OnEnable()
+    assertEqual(#mock.prints - mark, 0, "silent")
+    local console = mock.__libs["AceConsole-3.0"]
+    assertTrue(console.commands["st"] ~= nil and console.commands["skintester"] ~= nil)
+end)

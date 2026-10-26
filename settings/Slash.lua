@@ -220,3 +220,24 @@ function Tester:SlashEnabled(on) runEnabled(on and true or false) end
 
 function Tester:OnSlashCommand(input) Sl:OnSlash(input) end
 
+-- ── the /st collision ────────────────────────────────────────────────────────────────────────
+-- AceConsole registers `/st` as SLASH_ACECONSOLE_ST1. Any other SLASH_<NAME><n> global spelling
+-- `/st`, with a live SlashCmdList[<NAME>], is another addon's: this addon lets go of `/st` so the
+-- other keeps it, and says so in one line. Run once, from OnEnable (PLAYER_LOGIN).
+local OWN_ST = "ACECONSOLE_ST"
+
+function NS.CheckSlashCollision()
+    local list = _G.SlashCmdList
+    if type(list) ~= "table" then return false end
+    for key, value in pairs(_G) do
+        if type(key) == "string" and type(value) == "string" and value:lower() == "/st" then
+            local name = key:match("^SLASH_(.-)%d+$")
+            if name and name ~= OWN_ST and list[name] ~= nil then
+                Tester:UnregisterChatCommand("st")
+                NS.Print(L["Another addon already uses /st, so this one answers only to /skintester."])
+                return true
+            end
+        end
+    end
+    return false
+end
