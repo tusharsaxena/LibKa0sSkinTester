@@ -18,7 +18,8 @@ login; each page's body builds on its first show.
   - **Keybindings**, the library's own tab, last: the Show window binding (`NS.BINDINGS`).
 - **Sample controls**: one row of each widget type the renderer draws (a checkbox, a slider, a
   dropdown, a color swatch and its Use class color companion) under one group heading, untabbed. It
-  shows the skin on a settings page; the rows are read by nothing. No Appearance tab and no copy
+  shows the skin on a settings page once Ignore settings panel is off (a new profile has it on, so
+  the page starts in the client's look); the rows are read by nothing. No Appearance tab and no copy
   action: the skin is picked on General.
 - **Profiles**: AceDBOptions' profile controls, last.
 
@@ -29,7 +30,11 @@ A row with no `page` is the General page's; the sample rows carry `page = "sampl
 
 Every control writes through `NS.SchemaRuntime.Set`, the same seam `/st set` uses: the same `[Set]`
 debug line, the same row `onChange`, the same panel refresh. The Appearance tab calls
-`Skin:SetChoice` first and then writes both halves through `NS.WriteSkinChoice`.
+`Skin:SetChoice` first and then writes both halves through `NS.WriteSkinChoice`. A Scope tick calls
+`Skin:SetIgnore` first and then hands the pair to `NS.WriteSkinChoice` as its third argument
+(`{ panel, fonts }`), which writes `skin.ignorePanel` and `skin.ignoreFonts`; their rows'
+`onChange` (`NS.ApplySkinIgnore`, one half each) is then a no-op, and a bare
+`/st set skin.ignoreFonts true` applies live.
 
 ## The launcher
 

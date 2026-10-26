@@ -101,8 +101,8 @@ R.AddSection("controls", L["Controls"], function(body, paint)
     slider:SetMinMaxValues(0, 100)
     slider:SetValue(40)
     -- Drawn the way a host draws its own slider: white textures in the host's tints, which the
-    -- primitive re-tints with SetVertexColor in a skin. Ka0s Default sets no slider token, so it
-    -- leaves these as drawn; blank textures would show nothing there at all.
+    -- primitive re-tints with SetVertexColor in every skin (Ka0s Default sets its slider tokens since
+    -- LibKa0s SkinDefs minor 8); blank textures would show nothing where a skin leaves one alone.
     slider.track = slider:CreateTexture(nil, "BACKGROUND")
     slider.track:SetPoint("LEFT", slider, "LEFT", 0, 0)
     slider.track:SetPoint("RIGHT", slider, "RIGHT", 0, 0)

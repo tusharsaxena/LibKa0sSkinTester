@@ -7,11 +7,14 @@ local addonName, NS = ...
 --                           draws is painted through it.
 --   NS.SkinChoice()         the stored (source, skin) pair, read through the schema runtime;
 --                           "ka0s", "ka0s" before AceDB exists.
---   NS.WriteSkinChoice(s,k) the write seam: each half through the schema runtime's Set, the one seam
---                           `/st set` and the panel write through (architecture-§5).
+--   NS.WriteSkinChoice(s,k,i) the write seam: each half through the schema runtime's Set, the one seam
+--                           `/st set` and the panel write through (architecture-§5); `i`, the Scope's
+--                           `{ panel, fonts }`, writes the two exceptions.
+--   NS.ApplySkinIgnore(p,f) moves the applied Scope with Skin:SetIgnore, live; no argument applies
+--                           the stored pair, a nil half keeps that half.
 --   NS.ApplySkinChoice(s,k) moves the applied skin with Skin:SetChoice, which repaints every frame
 --                           recorded for this owner and then fires OnLooksChanged. No argument applies
---                           the stored pair; a nil half keeps that half. A skin key no registered
+--                           the stored pair and the stored Scope; a nil half keeps that half. A skin key no registered
 --                           skin carries applies Ka0s Default: the library keeps any non-empty
 --                           string, and a hand-edited or stale profile must not wear a skin nobody
 --                           can pick.

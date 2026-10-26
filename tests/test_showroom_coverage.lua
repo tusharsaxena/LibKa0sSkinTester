@@ -48,8 +48,8 @@ test("showroom: the sections build without the library's widgets", function()
     assertTrue(NS.Showroom.Section("controls") ~= nil, "controls still builds")
 end)
 
-test("showroom: the slider sample is visible under Ka0s Default, which sets no slider token", function()
-    -- red under: blank sample textures, which Ka0s Default leaves as drawn, so nothing shows.
+test("showroom: the slider sample is visible under Ka0s Default", function()
+    -- red under: blank sample textures, which show nothing wherever a skin leaves one as drawn.
     local installPaint = dofile("tests/_kit/mock_paint.lua")
     local NS, mock = opened{ mock = function(m) installPaint(m) end }
     local slider = NS.Showroom.Section("controls").slider

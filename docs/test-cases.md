@@ -265,7 +265,7 @@ Total.
 - showroom: every section is built and none is empty
 - showroom: the tabs sample moves its selection on a click
 - showroom: the sections build without the library's widgets
-- showroom: the slider sample is visible under Ka0s Default, which sets no slider token
+- showroom: the slider sample is visible under Ka0s Default
 
 ### test_showroom_values.lua (3)
 
