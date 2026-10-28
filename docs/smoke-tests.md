@@ -161,6 +161,15 @@ restart the client: new font and texture files are only seen at client start.
   short lip, not the flat Blizzard bar. Click Obsidian, then WoW Default. → Their own faces and bars;
   WoW Default is still Friz Quadrata with the Blizzard bar. Fail: a square where a glyph should be,
   or a flat or missing fill. Result:
+- **SHOW-14. Every skin's own bar (ST-02; LibKa0s SO-04).** Fully restart the client (new texture
+  files), clear any Texture override on General → Skin, then `/st show` and scroll to Textures. Click
+  each card in turn → every label reads "Texture: <key>" for that skin and every fill shows it: Ka0s
+  Default: Ka0s Default; Obsidian: Ka0s Matte; Azeroth: Ka0s Parchment; Glass: Ka0s Glass Bar; High
+  Contrast: Ka0s Solid; Ember: Ka0s Forge; WoW Midnight: Ka0s Satin; WoW Forever: Ka0s Classic; WoW
+  Default: Blizzard. The seven new textures are visibly distinct (Parchment mottled, Solid flat, Glass
+  Bar glossy, Classic like the client's bar). Fail: a label and a fill that disagree, a fill left on
+  the previous skin's texture, a white or missing fill, or a visible seam where a texture tiles.
+  Result:
 
 ## First-run skin picker
 
@@ -269,3 +278,4 @@ restart the client: new font and texture files are only seen at client start.
 | PANEL-7..10, SHOW-12, PICKER-6..7 | ST-01, the font and texture overrides and the skin picker (LibKa0s#63, #64) | No client pass recorded yet |
 | PANEL-3, SHOW-13, PICKER-1..5, PICKER-8..12 | ST-01 after PK-02 and SO-06: the "Look" heading, Ka0s Default's Oxanium and bar, the picker's position, title, preview, Apply, Apply to all and one window across addons | Rewritten for PK-02; no client pass recorded yet |
 | PICKER-13..16 | ST-01, the review of PK-02: Apply and close in combat, a pending preview meeting another write or a profile event, Apply's reload popup, a queued picker in combat | Rewritten for PK-03 (PICKER-14 (a) to (c), PICKER-16); no client pass recorded yet |
+| SHOW-14 | ST-02, LibKa0s v1.79.0's bar textures (SO-04) | No client pass recorded yet |
