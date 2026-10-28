@@ -298,7 +298,7 @@ Total.
 - media: Ignore fonts wins over a font override
 - media: without the skin engine the apply is a quiet no-op
 
-### test_skin_picker.lua (22)
+### test_skin_picker.lua (26)
 
 - picker: a fresh profile shows it once the addon is enabled
 - picker: not before login
@@ -317,6 +317,10 @@ Total.
 - picker: /st disable hides it, and the profile stays unseen
 - picker: a switch to a disabled profile hides it, and neither profile is marked
 - picker: a switch to a profile that closed it hides it, and writes nothing
+- picker: a switch to a seen profile under a pending preview wears that profile's skin
+- picker: a switch to an unseen profile under a pending preview opens afresh on it
+- picker: Apply after a switch under a pending preview writes nothing the dropdown did not show
+- picker: a profile copy under a pending preview wears the copied skin
 - picker: behind another Ka0s addon's picker it queues, and shows when that one closes
 - picker: a stand-down while queued takes it out unseen, and nothing shows after
 - picker: another addon's Apply to all marks this profile seen and gives it the skin
@@ -662,7 +666,7 @@ Total.
 | test_showroom_values.lua | 3 |
 | test_showroom_textures.lua | 8 |
 | test_skin_media.lua | 9 |
-| test_skin_picker.lua | 22 |
+| test_skin_picker.lua | 26 |
 | test_settings_sample.lua | 5 |
 | test_panel.lua | 37 |
 | test_profiles.lua | 17 |
@@ -684,4 +688,4 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | Skipped | 1 |
-| **Total** | **526** |
+| **Total** | **530** |

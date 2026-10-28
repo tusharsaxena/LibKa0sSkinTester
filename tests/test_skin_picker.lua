@@ -233,6 +233,72 @@ test("picker: a switch to a profile that closed it hides it, and writes nothing"
     assertFalse(seenIn(NS, "Default"), "Default is still unseen")
 end)
 
+-- ── a profile event meeting a pending preview ─────────────────────────────────────────────────
+-- The incoming profile carries its own skin, so the preview of the old one is stood down before
+-- the incoming skin is applied: the window then opens afresh on the new profile, or not at all.
+
+--- Profile "Alt" storing Obsidian, left seen (`closeIt`) or unseen; then back on Default, whose
+--- picker is up with Ember picked and pending.
+local function emberPendingWithAlt(closeIt)
+    local NS, _, mock = T.enableAddon()
+    NS.addon.db:SetProfile("Alt")
+    NS.WriteSkinChoice("ka0s", "obsidian")
+    if closeIt then NS.addon.Settings.Helpers.HideSkinPicker() else NS.StandDownSkinPicker() end
+    NS.addon.db:SetProfile("Default")
+    assertTrue(shown(mock), "Default's picker is up")
+    pickRow(mock, picker(mock), "ember")
+    assertEqual(applied(mock), "ember", "the preview is worn")
+    return NS, mock
+end
+
+local function dropdownText(mock)
+    return picker(mock).dd.text:GetText()
+end
+
+test("picker: a switch to a seen profile under a pending preview wears that profile's skin", function()
+    -- red under: reloadProfile applying Alt's skin before the picker's revert put back Default's.
+    local NS, mock = emberPendingWithAlt(true)
+    NS.addon.db:SetProfile("Alt")
+    assertFalse(shown(mock), "Alt closed it, so it goes")
+    assertEqual(profileSkin(NS), "obsidian")
+    assertEqual(applied(mock), "obsidian", "the addon wears what Alt stores")
+    assertFalse(seenIn(NS, "Default"), "the switch is not Default's player closing it")
+end)
+
+test("picker: a switch to an unseen profile under a pending preview opens afresh on it", function()
+    -- red under: show() keeping the stale pending pick, so the dropdown read Ember while Obsidian
+    -- was worn, and the close control then put Default's skin back.
+    local NS, mock = emberPendingWithAlt(false)
+    NS.addon.db:SetProfile("Alt")
+    assertTrue(shown(mock), "Alt has not seen it")
+    assertEqual(applied(mock), "obsidian", "the addon wears what Alt stores")
+    local obsidian = mock.LibStub("LibKa0s-Skin-1.0"):GetSkin("obsidian")
+    assertEqual(dropdownText(mock), obsidian.label, "the dropdown names Alt's skin, not the old pick")
+    click(picker(mock).close)
+    assertEqual(profileSkin(NS), "obsidian", "nothing was written")
+    assertEqual(applied(mock), "obsidian", "and the close puts back Alt's skin, not Default's")
+    assertTrue(seen(NS), "Alt's player closed it")
+    assertFalse(seenIn(NS, "Default"), "Default is still unseen")
+end)
+
+test("picker: Apply after a switch under a pending preview writes nothing the dropdown did not show", function()
+    -- red under: the old showing's pending Ember carried over and saved into Alt.
+    local NS, mock = emberPendingWithAlt(false)
+    NS.addon.db:SetProfile("Alt")
+    click(picker(mock).apply)
+    assertEqual(profileSkin(NS), "obsidian", "Alt keeps its own skin")
+    assertEqual(applied(mock), "obsidian")
+    assertTrue(seen(NS))
+end)
+
+test("picker: a profile copy under a pending preview wears the copied skin", function()
+    local NS, mock = emberPendingWithAlt(true)
+    NS.addon.db:CopyProfile("Alt")
+    assertFalse(shown(mock), "the copy brought Alt's seen key")
+    assertEqual(profileSkin(NS), "obsidian")
+    assertEqual(applied(mock), "obsidian")
+end)
+
 -- ── one window across Ka0s addons (PK-02) ─────────────────────────────────────────────────────
 
 local OTHER = "KaosOtherAddon"

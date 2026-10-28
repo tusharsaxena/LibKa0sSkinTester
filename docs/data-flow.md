@@ -45,4 +45,5 @@
 - OnEnable: the settings category, the launcher, the `/st` collision check, the latch from the
   stored `enabled`, then the first-run skin picker when `skin.pickerSeen` is false, the addon is
   enabled and the player is out of combat (`NS.MaybeShowSkinPicker`). A profile switch, copy or reset
-  asks again.
+  takes down a picker that is up or queued first (`NS.StandDownSkinPicker`, nothing written), applies
+  the incoming skin, then asks again.

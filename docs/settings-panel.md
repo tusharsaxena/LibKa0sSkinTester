@@ -72,10 +72,13 @@ the library's queue (`NS.MaybeShowSkinPicker` answers false, "queued") and shows
 closes. Another addon's "Apply to all" dismisses it unshown, through its `onClose`, so the profile
 is marked seen and has the skin.
 
-The addon takes it down itself on the stand-down (`/st disable`, `NS.StandDownSkinPicker`) and on a
-profile event that lands on a disabled profile or one that has seen it. That hide is not a close by
-the player: a window that is up closes with nothing recorded, a picker still waiting leaves the
-queue, and the profile stays unseen.
+The addon takes it down itself on the stand-down (`/st disable`, `NS.StandDownSkinPicker`) and at
+the start of every profile switch, copy or reset, before the incoming skin is applied. That hide is
+not a close by the player: a window that is up puts a pending preview back and closes with nothing
+recorded, a picker still waiting leaves the queue, and the profile stays unseen. The profile event
+then asks again, so an enabled profile that has not seen the picker gets a fresh showing whose
+dropdown names that profile's skin. A pick pending on the old profile is never carried over: it is
+not written into the new profile and does not overwrite the skin the new profile wears.
 
 ## The launcher
 

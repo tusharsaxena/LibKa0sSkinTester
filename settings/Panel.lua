@@ -131,9 +131,12 @@ Helpers.RegisterOptionsPage("general", "General", buildGeneralPage)
 -- the next login or profile event asks again, because the key is still false.
 --
 -- The addon takes it down too, and that is not the player closing it: on the stand-down (`/st
--- disable`, a disabled profile) and on a profile event that lands where it must not show (disabled,
--- or already seen). That hide writes nothing, so the profile it leaves stays unseen: a window up runs
--- onClose under the hostHiding flag, and a queued one leaves the queue with no onClose at all.
+-- disable`, a disabled profile) and at the start of every profile switch, copy or reset, before the
+-- incoming skin is applied (core/LibKa0sSkinTester.lua's reloadProfile). The profile event then asks
+-- again, so a profile that has not seen it gets a fresh showing, its dropdown and the skin a close
+-- puts back both read from the incoming profile. That hide writes nothing, so the profile it leaves
+-- stays unseen: a window up puts a pending preview back and runs onClose under the hostHiding flag,
+-- and a queued one leaves the queue with no onClose at all.
 
 local PICKER_SEEN_PATH = "skin.pickerSeen"
 

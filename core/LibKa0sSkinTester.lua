@@ -27,6 +27,10 @@ end
 -- Switching, copying or resetting a profile replaces every stored value at once, and nothing else
 -- in the addon would notice: no row was written. So the incoming profile is applied here.
 local function reloadProfile(self)
+    -- A pending preview belongs to the profile it was picked on. Stood down first, it is put back
+    -- with no write and no seen mark, so the incoming skin applied below stays on, and the picker
+    -- the last line asks for opens afresh on this profile (settings/Panel.lua).
+    if NS.StandDownSkinPicker then NS.StandDownSkinPicker() end
     self:RunMigrations()
     local S = self.Settings
     local H = S and S.Helpers
