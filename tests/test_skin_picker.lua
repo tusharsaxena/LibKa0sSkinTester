@@ -119,3 +119,43 @@ test("picker: a new profile shows it; one that closed it does not", function()
     assertFalse(shown(mock), "Default closed it")
     assertFalse(NS.MaybeShowSkinPicker(), "and asking again answers false")
 end)
+
+--- The stored key of a named profile, read straight from the saved variables (a profile not in
+--- use holds only what differs from the defaults, so an unseen one reads nil there).
+local function seenIn(_, name)
+    local p = _G.LibKa0sSkinTesterDB.profiles[name]
+    return p and p.skin and p.skin.pickerSeen or false
+end
+
+test("picker: /st disable hides it, and the profile stays unseen", function()
+    -- red under: a stand-down that only closes the showroom, leaving the picker up and working.
+    local NS, _, mock = T.enableAddon()
+    assertTrue(shown(mock))
+    NS.addon:OnSlashCommand("disable")
+    assertFalse(shown(mock), "a disabled addon shows no picker")
+    assertFalse(seen(NS), "the host's hide is not the player closing it")
+end)
+
+test("picker: a switch to a disabled profile hides it, and neither profile is marked", function()
+    local NS, _, mock = T.enableAddon()
+    NS.addon.db:SetProfile("Off")
+    NS.addon.Settings.Helpers.Set("enabled", false)
+    NS.addon.db:SetProfile("Default")
+    assertTrue(shown(mock), "Default is enabled and unseen")
+    NS.addon.db:SetProfile("Off")
+    assertFalse(shown(mock), "the disabled profile shows no picker")
+    assertFalse(seenIn(NS, "Off"), "Off has not seen it")
+    assertFalse(seenIn(NS, "Default"), "nor has Default")
+end)
+
+test("picker: a switch to a profile that closed it hides it, and writes nothing", function()
+    local NS, _, mock = T.enableAddon()
+    NS.addon.db:SetProfile("Alt")
+    NS.addon.Settings.Helpers.HideSkinPicker()
+    NS.addon.db:SetProfile("Default")
+    assertTrue(shown(mock), "Default has not seen it")
+    NS.addon.db:SetProfile("Alt")
+    assertFalse(shown(mock), "Alt closed it, so it goes")
+    assertTrue(seenIn(NS, "Alt"))
+    assertFalse(seenIn(NS, "Default"), "Default is still unseen")
+end)

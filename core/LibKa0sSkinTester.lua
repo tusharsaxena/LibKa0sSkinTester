@@ -125,13 +125,15 @@ end
 -- ── the stand-down (slash-commands-§7) ───────────────────────────────────────────────────────
 --
 -- DISABLED MEANS THE ADDON IS NOT RUNNING. The tester registers no game event and runs no timer, so
--- going down is the showroom closing and refusing to open (modules/Showroom.lua), and nothing else.
+-- going down is the showroom closing and refusing to open (modules/Showroom.lua), and the first-run
+-- skin picker taken down without marking the profile seen (settings/Panel.lua), and nothing else.
 -- What survives is SETUP: the chat command and dispatcher, the settings category, the AceDB handle
 -- and its profile callbacks, the launcher and the skin owner. A disabled addon must stay reachable
 -- by the player who wants to turn it back on. The edges are logged by the library.
 
 function NS.StandDown()
     if NS.Showroom and NS.Showroom.StandDown then NS.Showroom.StandDown() end
+    if NS.StandDownSkinPicker then NS.StandDownSkinPicker() end
 end
 
 -- Rebuilds from CURRENT state, never from a snapshot taken on the way down.

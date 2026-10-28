@@ -122,8 +122,15 @@ Helpers.RegisterOptionsPage("general", "General", buildGeneralPage)
 -- Never in combat and never while the addon is disabled. The addon registers no game event (see
 -- core/LibKa0sSkinTester.lua's stand-down note), so a trigger in combat is skipped, not deferred:
 -- the next login or profile event asks again, because the key is still false.
+--
+-- The addon takes it down too, and that is not the player closing it: on the stand-down (`/st
+-- disable`, a disabled profile) and on a profile event that lands where it must not show (disabled,
+-- or already seen). That hide writes nothing, so the profile it leaves stays unseen.
 
 local PICKER_SEEN_PATH = "skin.pickerSeen"
+
+-- True only while the addon itself hides the picker; onClose then records nothing.
+local hostHiding = false
 
 local PICKER_SPEC = {
     owner     = addonName,
@@ -135,17 +142,32 @@ local PICKER_SPEC = {
     onPreview = function() NS.Showroom.Show() end,
     onClose   = function()
         local S = NS.SchemaRuntime
-        if S and Tester.db then S.Set(PICKER_SEEN_PATH, true) end
+        if hostHiding or not (S and Tester.db) then return end
+        S.Set(PICKER_SEEN_PATH, true)
     end,
     strings   = { PREVIEW_TIP = NS.L["Preview: open the skin showroom"] },
 }
 NS.SKIN_PICKER_SPEC = PICKER_SPEC
 
---- Show the skin picker when this profile has not closed it yet. Answers true when it is up.
+--- Take the picker down for the addon, not the player: the profile is not marked seen. A no-op
+--- when it is not up.
+function NS.StandDownSkinPicker()
+    if type(Helpers.HideSkinPicker) ~= "function" then return end
+    hostHiding = true
+    local ok, err = pcall(Helpers.HideSkinPicker)
+    hostHiding = false
+    if not ok then NS.DebugErrorOnce("Skin", "StandDownSkinPicker", err) end
+end
+
+--- Show the skin picker when this profile has not closed it yet. Answers true when it is up. A
+--- profile that has seen it, or a disabled addon, takes down one that is already up.
 function NS.MaybeShowSkinPicker()
     local S, db = NS.SchemaRuntime, Tester.db
     if not (S and db and db.profile) then return false end
-    if S.Get(PICKER_SEEN_PATH) == true or not db.profile.enabled then return false end
+    if S.Get(PICKER_SEEN_PATH) == true or not db.profile.enabled then
+        NS.StandDownSkinPicker()
+        return false
+    end
     if InCombatLockdown and InCombatLockdown() then return false end
     if type(Helpers.SkinPicker) ~= "function" then return false end
     return Helpers.SkinPicker(PICKER_SPEC) ~= nil

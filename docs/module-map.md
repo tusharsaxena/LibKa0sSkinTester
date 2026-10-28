@@ -35,7 +35,7 @@ LibDataBroker, LibDBIcon, LibKa0s) and `tests/_kit/` are vendored and never edit
 | `settings/SchemaSetup.lua` | `Settings.SchemaLib`: LibKa0s-Schema-1.0 or the host stub | Directly before `settings/Schema.lua` |
 | `settings/Schema.lua` | The rows, the runtime `NS.SchemaRuntime`, defaults, reset | Before OptionsSetup, Panel and Slash |
 | `settings/OptionsSetup.lua` | The LibKa0s-Options-1.0 instance, `Settings.Helpers`, and `rowsForPage`, which hands each page only its own rows | Before `settings/Panel.lua` |
-| `settings/Panel.lua` | The landing spec, the General page and its tabs, the Sample controls page, the first-run skin picker (`NS.MaybeShowSkinPicker`, `NS.SKIN_PICKER_SPEC`), `Settings.Register` | After OptionsSetup |
+| `settings/Panel.lua` | The landing spec, the General page and its tabs, the Sample controls page, the first-run skin picker (`NS.MaybeShowSkinPicker`, `NS.StandDownSkinPicker`, `NS.SKIN_PICKER_SPEC`), `Settings.Register` | After OptionsSetup |
 | `settings/Slash.lua` | `COMMANDS`, the host verbs, the LibKa0s-Slash-1.0 dispatcher, `NS.CheckSlashCollision` | Conventional within `# Settings` |
 | `settings/Profiles.lua` | The Profiles page (AceDBOptions) | Last, so it is the last subcategory |
 

@@ -296,7 +296,7 @@ Total.
 - media: Ignore fonts wins over a font override
 - media: without the skin engine the apply is a quiet no-op
 
-### test_skin_picker.lua (10)
+### test_skin_picker.lua (13)
 
 - picker: a fresh profile shows it once the addon is enabled
 - picker: not before login
@@ -308,6 +308,9 @@ Total.
 - picker: a login in combat skips it, and the next trigger shows it
 - picker: a profile reset shows it again
 - picker: a new profile shows it; one that closed it does not
+- picker: /st disable hides it, and the profile stays unseen
+- picker: a switch to a disabled profile hides it, and neither profile is marked
+- picker: a switch to a profile that closed it hides it, and writes nothing
 
 ### test_settings_sample.lua (5)
 
@@ -648,7 +651,7 @@ Total.
 | test_showroom_values.lua | 3 |
 | test_showroom_textures.lua | 7 |
 | test_skin_media.lua | 9 |
-| test_skin_picker.lua | 10 |
+| test_skin_picker.lua | 13 |
 | test_settings_sample.lua | 5 |
 | test_panel.lua | 37 |
 | test_profiles.lua | 17 |
@@ -670,4 +673,4 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | Skipped | 1 |
-| **Total** | **512** |
+| **Total** | **515** |

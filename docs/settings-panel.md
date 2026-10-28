@@ -51,6 +51,9 @@ and the next one asks again. The window: "Choose a skin", a dropdown of every sk
 and the name in that skin's own face), the eye (the showroom), the gear (the panel, then General's
 Skin tab) and the close control. Closing it by any route sets `skin.pickerSeen` through the schema
 runtime; a pick and the eye leave it up. A new or reset profile starts false, so it shows again.
+The addon takes it down itself on the stand-down (`/st disable`, `NS.StandDownSkinPicker`) and on a
+profile event that lands on a disabled profile or one that has seen it; that hide is not a close by
+the player, so it writes nothing and the profile stays unseen.
 
 ## The launcher
 
