@@ -126,9 +126,14 @@ Helpers.RegisterOptionsPage("general", "General", buildGeneralPage)
 -- addons" dismisses it unshown through its own onClose, which sets the key here too: the player has
 -- chosen this addon's skin.
 --
--- Never in combat and never while the addon is disabled. The addon registers no game event (see
+-- The addon never asks for it in combat or while disabled. It registers no game event (see
 -- core/LibKa0sSkinTester.lua's stand-down note), so a trigger in combat is skipped, not deferred:
--- the next login or profile event asks again, because the key is still false.
+-- the next login or profile event asks again, because the key is still false. One exception is the
+-- library's: a queued picker shows when the one ahead of it closes, with no combat check and no
+-- second look at `enabled` or the key, and the close control and Escape work in combat. So another
+-- addon's picker closed in combat can bring this one up mid-combat, where a pick, Apply and the gear
+-- are refused. The stale checks are safe because the stand-down and every profile event take the
+-- queued entry out first (docs/settings-panel.md, smoke PICKER-16).
 --
 -- The addon takes it down too, and that is not the player closing it: on the stand-down (`/st
 -- disable`, a disabled profile) and at the start of every profile switch, copy or reset, before the

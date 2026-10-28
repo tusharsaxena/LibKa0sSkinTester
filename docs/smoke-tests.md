@@ -18,7 +18,7 @@ its theme, and a retired number is never reused.
 | DIAG-1..2 | Diagnostics | The debug console and the report |
 | DEGRADED-1 | Degraded install | The library-absent load |
 | SHOW-1..13 | Showroom | The window, the swatch selector, the sections, position and scale, the textures, Ka0s Default's face and bar |
-| PICKER-1..12 | First-run skin picker | When and where it shows, its title, preview, Apply, close, the gear, Apply to all, one window across addons, taking it down |
+| PICKER-1..16 | First-run skin picker | When and where it shows, its title, preview, Apply, close, the gear, Apply to all, one window across addons, taking it down, combat, a preview meeting another write, the reload popup |
 | LOC-1 | Non-English client | Locale-dependent behavior |
 
 ## Before you start
@@ -214,10 +214,36 @@ restart the client: new font and texture files are only seen at client start.
   `/reload`. → Neither picker opens again. Result:
 - **PICKER-12. Taken down while waiting.** As PICKER-10, with Loot History's picker up first and the
   tester's waiting behind it, run `/st disable`, then close Loot History's picker. → The tester's
-  picker does not open. `/st enable`, then switch the tester's profile away and back. → Its picker
-  opens: waiting and being taken down did not mark the profile seen. Load order decides which
-  picker comes first: if the tester's is up first, close it, then create a fresh tester profile
-  while Loot History's is up, and continue from there. Result:
+  picker does not open. `/st enable`. → The picker still does not open: enabling is not a trigger.
+  Switch the tester to a profile that has closed its picker (for example the one PICKER-8 applied
+  on), then back to this one. → Its picker opens: waiting and being taken down did not mark the
+  profile seen. Load order decides which picker comes first: if the tester's is up first, close it,
+  then create a fresh tester profile while Loot History's is up, and continue from there. Result:
+- **PICKER-13. Apply and close in combat.** On a fresh profile, pick Ember, then enter combat (a
+  training dummy). Press Apply. → Nothing happens: the window stays up with Ember pending. With
+  Ka0s Loot History installed, "Apply to all Ka0s addons" does the same. Press the close control.
+  → The window closes and the tester goes back to the skin it wore when the window opened; General
+  -> Skin still shows that skin. Repeat on another fresh profile with Escape instead. → The same.
+  Result:
+- **PICKER-14. A pending preview meets another write.** On a fresh profile, pick Ember (keep it
+  pending). Then, in turn on fresh profiles: (a) `/st show` and click the Obsidian card; (b) on
+  General -> Skin pick Obsidian; (c) run `/st set skin.skin obsidian`. Close the picker each time.
+  → The tester wears Obsidian, the skin stored. Then pick Ember on a fresh profile and switch to a
+  profile that has closed its picker and stores another skin (Glass, say). → The picker goes and
+  the tester wears Glass. Switch instead to a fresh profile. → A new showing: the dropdown names
+  that profile's skin, not Ember, and the close control or Apply leaves that skin on and stored.
+  Fail: the tester wearing a skin other than the one General -> Skin shows. Known failure until the
+  library's revert follows the stored choice (LibKa0s PK-02 follow-up): (a), (b) and (c) put back
+  the skin the window opened with. Result:
+- **PICKER-15. Apply's reload popup.** Only where a pick needs a reload (EllesmereUI installed and
+  the tester on the EllesmereUI source, painted by it this session). Pick a skin that needs a
+  reload, then another, then press Apply. → One reload popup naming the tester, once, not one per
+  pick. A pick alone raises none. Result:
+- **PICKER-16. A queued picker in combat.** As PICKER-10, with the tester's picker waiting behind
+  Loot History's. Enter combat and close Loot History's picker with its close control. → Record
+  what happens: the library shows the next picker without a combat check, so the tester's picker
+  is expected to open mid-combat; a pick, Apply and the gear do nothing there, and the close
+  control still closes it. Result:
 
 ## Non-English client
 
@@ -241,3 +267,4 @@ restart the client: new font and texture files are only seen at client start.
 | SHOW-11 | R5-05, the card names | No client pass recorded yet |
 | PANEL-7..10, SHOW-12, PICKER-6..7 | ST-01, the font and texture overrides and the skin picker (LibKa0s#63, #64) | No client pass recorded yet |
 | PANEL-3, SHOW-13, PICKER-1..5, PICKER-8..12 | ST-01 after PK-02 and SO-06: the "Look" heading, Ka0s Default's Oxanium and bar, the picker's position, title, preview, Apply, Apply to all and one window across addons | Rewritten for PK-02; no client pass recorded yet |
+| PICKER-13..16 | ST-01, the review of PK-02: Apply and close in combat, a pending preview meeting another write or a profile event, Apply's reload popup, a queued picker in combat | No client pass recorded yet; PICKER-14 (a) to (c) wait on the LibKa0s revert follow-up |

@@ -13,9 +13,10 @@ login; each page's body builds on its first show.
     settings. No Lock frame, Test mode or General visibility, because the showroom is a window the
     player opens, not a positionable display.
   - **Skin** (the library's own tab, keyed `Appearance` and labeled "Skin"): the skin source, the
-    nine skins under the "Look" heading (the tab's own name is not repeated), "Font and texture" (two dropdowns, each starting with "Skin's own (<key>)", then
-    every LibSharedMedia font or statusbar key), the Scope ("Ignore settings panel", "Ignore
-    fonts"), "Copy to every Ka0s addon..." and the note. A pick repaints the showroom at once; so do
+    nine skins under the "Look" heading (the tab's own name is not repeated), "Font and texture"
+    (two dropdowns, each starting with "Skin's own (<key>)", then every LibSharedMedia font or
+    statusbar key), the Scope ("Ignore settings panel", "Ignore fonts"), "Copy to every Ka0s
+    addon..." and the note. A pick repaints the showroom at once; so do
     the font, the texture and Ignore fonts. Ignore fonts wins over a font override.
   - **Keybindings**, the library's own tab, last: the Show window binding (`NS.BINDINGS`).
 - **Sample controls**: one row of each widget type the renderer draws (a checkbox, a slider, a
@@ -45,9 +46,14 @@ key or false), which writes `skin.font` and `skin.texture` ("" for false); their
 
 The library's `O.SkinPicker` (OptionsSkinPicker minor 1), shown by `NS.MaybeShowSkinPicker`
 (settings/Panel.lua) while the profile's `skin.pickerSeen` is false: once from `OnEnable`, after the
-stored skin is applied, and after every profile switch, copy or reset. Never while the addon is
-disabled and never in combat; the addon registers no game event, so a trigger in combat is skipped
-and the next one asks again.
+stored skin is applied, and after every profile switch, copy or reset. The addon never asks for it
+while disabled or in combat; it registers no game event, so a trigger in combat is skipped and the
+next one asks again. One exception is the library's: a picker waiting behind another addon's shows
+as soon as that one closes, and the close control and Escape still work in combat, so closing
+another addon's picker in combat can bring this one up mid-combat (PICKER-16). A pick, Apply, Apply
+to all and the gear are still refused there. The waiting entry is not checked against `enabled` or
+`skin.pickerSeen` again either, which is safe only because the stand-down and every profile event
+take it out of the queue first.
 
 The window sits with its center 75% of the way up the screen, so the showroom the eye opens does not
 cover it. It holds the title "Choose a skin for Ka0s Skin Tester", a dropdown of every skin (three
