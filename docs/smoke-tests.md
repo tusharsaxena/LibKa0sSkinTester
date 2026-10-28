@@ -18,7 +18,7 @@ its theme, and a retired number is never reused.
 | DIAG-1..2 | Diagnostics | The debug console and the report |
 | DEGRADED-1 | Degraded install | The library-absent load |
 | SHOW-1..12 | Showroom | The window, the swatch selector, the sections, position and scale, the textures |
-| PICKER-1..6 | First-run skin picker | When it shows, its list, the eye, the gear, closing it |
+| PICKER-1..7 | First-run skin picker | When it shows, its list, the eye, the gear, closing it, taking it down |
 | LOC-1 | Non-English client | Locale-dependent behavior |
 
 ## Before you start
@@ -169,8 +169,17 @@ restart the client: new font and texture files are only seen at client start.
   one selected. The picker closes. In combat, the gear does nothing and the picker stays. Result:
 - **PICKER-5. Closed means seen.** On a fresh profile, close the picker with its close control (and
   on another, with Escape), then `/reload`. → It does not open again on that profile. Result:
-- **PICKER-6. After a reset.** Reset the profile (Reset all settings, or the Profiles page). → The
-  picker opens again. Disable the addon and reset again. → It does not open while disabled. Result:
+- **PICKER-6. After a reset, and a disabled profile.** Reset the profile (Reset all settings, or
+  the Profiles page). → The picker opens again. A reset restores `enabled` to on, so it opens even
+  if the addon was disabled before. Now close the picker on profile A, create profile B (the picker
+  opens), run `/st disable` instead of closing it, switch to A, then back to B.
+  → It does not open on B while B is disabled; `/st enable` on B and switch to A and back. → It opens
+  on B, because B never closed it. Result:
+- **PICKER-7. Taken down, not closed.** On a fresh profile with the picker up, run `/st disable`.
+  → The picker goes away with the showroom. `/st enable`, then switch to a profile that has closed it, and back.
+  → It opens again: the addon taking it down did not mark the profile seen. With it up on a profile
+  that has not closed it, switch to one that has. → It goes away, and switching back opens it
+  again. Result:
 
 ## Non-English client
 
@@ -192,4 +201,4 @@ restart the client: new font and texture files are only seen at client start.
 | SLASH-4, PANEL-5 | ST-07, the collision and the sample page | No client pass recorded yet |
 | PANEL-6 | SF-40, SF-43, SF-46: the Scope and its defaults | No client pass recorded yet |
 | SHOW-11 | R5-05, the card names | No client pass recorded yet |
-| PANEL-7..10, SHOW-12, PICKER-1..6 | ST-01, the font and texture overrides and the skin picker (LibKa0s#63, #64) | No client pass recorded yet |
+| PANEL-7..10, SHOW-12, PICKER-1..7 | ST-01, the font and texture overrides and the skin picker (LibKa0s#63, #64) | No client pass recorded yet |
