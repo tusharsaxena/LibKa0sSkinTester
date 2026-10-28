@@ -152,7 +152,7 @@ function NS.MaybeShowSkinPicker()
 end
 
 -- ── Sample controls ──────────────────────────────────────────────────────────────────────────
--- One row of each widget type, untabbed, under its group heading. No Appearance tab and no copy
+-- One row of each widget type, untabbed, under its group heading. No Skin tab and no copy
 -- action: the skin is picked on General, and this page only shows it.
 local function buildSamplePage(parentCategory)
     local ctx = Helpers.CreatePanel("LibKa0sSkinTesterSamplePanel", "Sample controls", {

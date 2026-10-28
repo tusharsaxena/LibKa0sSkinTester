@@ -74,7 +74,8 @@ end
 --
 --   --- Master controls ---   options-ui-§15's canonical block, composed by settings/Panel.lua and
 --                             spliced at the head of this array
---   --- Appearance ---        the library's O.AppearanceTab: the skin source and the skin
+--   --- Skin ---              the library's O.AppearanceTab (keyed "Appearance", labeled "Skin"):
+--                             the skin, its font and texture, the Scope
 --   --- Keybindings ---       the library's host tab, last (options-ui-§20)
 --
 -- `section` is `/st list`'s grouping key; a row's tab is where it is EDITED, its path where it is
@@ -83,11 +84,12 @@ end
 local function add(t) Schema[#Schema + 1] = t end
 
 -- ---------------------------------------------------------------------------
--- Appearance -- the skin this addon wears, and so the skin the showroom shows (skinning-§3)
+-- Skin (the tab keyed "Appearance") -- the skin this addon wears, and so the skin the showroom shows
+-- (skinning-§3)
 -- ---------------------------------------------------------------------------
 --
--- The tab is the library's O.AppearanceTab, which draws both rows as its choice grids, so both
--- carry `skipRender`. They stay schema rows so the defaults resolve, every reset reaches them, and
+-- The tab is the library's O.AppearanceTab, which draws every skin.* row itself, so each carries
+-- `skipRender`. They stay schema rows so the defaults resolve, every reset reaches them, and
 -- `/st get|set skin.skin` validates against `values`. Each onChange applies ONLY its own half
 -- (core/SkinSetup.lua says why).
 

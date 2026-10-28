@@ -32,7 +32,7 @@ local addonName, NS = ...
 -- applies the stored pair, and before settings/Schema.lua, which reads NS.SKIN_OPTIONS at load.
 -- RegisterOwner calls `get` once, here, before AceDB exists, and gets Ka0s Default.
 --
--- WHY A ROW'S onChange PASSES ONE HALF: the Appearance tab, and another addon's "Copy to every Ka0s
+-- WHY A ROW'S onChange PASSES ONE HALF: the Skin tab, and another addon's "Copy to every Ka0s
 -- addon", call Skin:SetChoice first and write the store after, one half at a time. A reaction that
 -- re-applied the whole stored pair would apply a half-written pair in between: a second repaint, to
 -- a skin nobody picked. Applying only the row's own half makes each write a no-op, while a bare

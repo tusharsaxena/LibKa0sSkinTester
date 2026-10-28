@@ -74,5 +74,5 @@ test("settings: no copy button on the sample page", function()
     local copy = mock.findWidget(function(w)
         return (w.text or w.labelText or ""):find("Copy to every", 1, true) ~= nil
     end)
-    assertTrue(copy == nil, "the copy action is the Appearance tab's, not this page's")
+    assertTrue(copy == nil, "the copy action is the Skin tab's, not this page's")
 end)

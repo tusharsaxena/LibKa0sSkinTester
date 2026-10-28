@@ -3,7 +3,7 @@
 ![WoW](https://img.shields.io/badge/WoW-Midnight_12.1.5-purple)
 ![License](https://img.shields.io/badge/License-MIT-orange)
 ![Standard](https://img.shields.io/badge/Ka0s-WoW_Addon_Standard-yellow)
-![Tests](https://img.shields.io/badge/Tests-485%2F485_passing-green)
+![Tests](https://img.shields.io/badge/Tests-512%2F512_passing-green)
 
 Ka0s Skin Tester is a fitting room for the Ka0s skins. Pick a skin and one window shows you what that skin does to buttons, tabs, lists, scrollbars, tooltips and everything else it can paint, so you don't have to open five other addons to see how a scrollbar came out.
 
@@ -17,11 +17,15 @@ None yet.
 
 Type `/st` to open the settings, and `/st show` to open the showroom. `/skintester` works the same way. If another addon already answers to `/st`, the tester tells you once when you log in and leaves `/st` to that addon.
 
-Across the top of the showroom is a row of nine cards, one per Ka0s skin, each with four color swatches. Click one and the window repaints in it. The General page's Appearance tab picks the same thing, and either way the choice is saved with your profile, so a second profile can wear a different skin.
+Across the top of the showroom is a row of nine cards, one per Ka0s skin, each with four color swatches. Click one and the window repaints in it. The General page's Skin tab picks the same thing, and either way the choice is saved with your profile, so a second profile can wear a different skin.
 
-Below the cards, the showroom scrolls through the window chrome, controls, lists, text, panels and overlays, then the skin's raw colors at the bottom. Every sample has a small label under it naming the part it shows.
+The first time a profile runs, a small Choose a skin window opens. Pick a skin from its list (each one shows three of its colors and its name in its own font), press the eye to open the showroom in it, or press the gear to go to the Skin tab. Closing the window, with its close button, the gear or Escape, means you won't see it again on that profile. A new profile, or one you reset, shows it again.
 
-The settings have a Sample controls page too: a checkbox, a slider, a dropdown and a color swatch, so you can see a skin on a settings page. None of them does anything. A new profile keeps the tester's own settings pages in the game's look, so untick Ignore settings panel on the Appearance tab before you judge a skin there. Ignore fonts, next to it, gives every piece of text in the tester back the game's font and leaves the skin's colors on it.
+Below the cards, the showroom scrolls through the window chrome, controls, lists, text, panels and overlays, then the skin's raw colors, then the bar textures at the bottom: three status bars, a bar chart and a stacked bar, each labeled with the texture it is drawn with. Every sample has a small label under it naming the part it shows.
+
+The settings have a Sample controls page too: a checkbox, a slider, a dropdown and a color swatch, so you can see a skin on a settings page. None of them does anything. A new profile keeps the tester's own settings pages in the game's look, so untick Ignore settings panel on the Skin tab before you judge a skin there. Ignore fonts, next to it, gives every piece of text in the tester back the game's font and leaves the skin's colors on it.
+
+The Skin tab's Font and Texture menus put a font, or a bar texture, of your choice over the skin's own. They list what LibSharedMedia knows about, so a media pack adds to them. Texture changes every bar of data, which is what the showroom's Textures section shows. Ignore fonts still wins over a chosen font.
 
 The minimap button opens the settings on a left-click and a small menu on a right-click, where Show window opens the showroom. You can also bind a key to it from the game's Keybindings menu (the Ka0s Skin Tester header) or from the General page's Keybindings tab.
 
@@ -37,9 +41,9 @@ Everything else is in Settings, AddOns, Ka0s Skin Tester, and `/st help` lists t
 
 **Can I compare two skins side by side?** No. You see one skin at a time; switching is instant.
 
-**Does it change my other addons?** Only if you press "Copy to every Ka0s addon" on the Appearance tab. Picking a skin here changes this addon alone.
+**Does it change my other addons?** Only if you press "Copy to every Ka0s addon" on the Skin tab, which copies the skin, the font, the texture and the Ignore boxes. Picking a skin here changes this addon alone.
 
-**Why is EllesmereUI on the Appearance tab?** With EllesmereUI installed, an addon can let it do the painting. Coming back from EllesmereUI needs a `/reload`, because EllesmereUI's painting cannot be undone in place.
+**Why is EllesmereUI on the Skin tab?** With EllesmereUI installed, an addon can let it do the painting. Coming back from EllesmereUI needs a `/reload`, because EllesmereUI's painting cannot be undone in place.
 
 ## Troubleshooting
 

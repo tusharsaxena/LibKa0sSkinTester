@@ -274,6 +274,41 @@ Total.
 - values: every sem token has a line
 - values: a skin change redraws them
 
+### test_showroom_textures.lua (7)
+
+- textures: the section is built with three bars, five rows and five segments
+- textures: the status bars wear the accent, good and bad colors, in the bar texture
+- textures: the chart rows and stacked segments wear the series colors
+- textures: every label names the texture key in effect
+- textures: a skin switch recolors the bars and relabels them
+- textures: a texture override repaints every fill and relabels it, live
+- textures: the section builds without the skin engine
+
+### test_skin_media.lua (9)
+
+- media: a fresh profile stores the skin's own font and texture, and the picker unseen
+- media: the write seam's fourth argument writes both keys, false as the empty string
+- media: another addon's copy reaches the store through WriteChoice
+- media: a row's write applies its own half live
+- media: the stored overrides are applied at load
+- media: a profile switch applies the incoming profile's overrides, and back
+- media: a profile reset clears the overrides
+- media: Ignore fonts wins over a font override
+- media: without the skin engine the apply is a quiet no-op
+
+### test_skin_picker.lua (10)
+
+- picker: a fresh profile shows it once the addon is enabled
+- picker: not before login
+- picker: the spec names this owner's seams, the General page's Skin tab and the eye
+- picker: closing it marks the profile, and the next login does not show it
+- picker: the eye opens the showroom and leaves the picker up
+- picker: the gear closes it and marks the profile
+- picker: not while the addon is disabled
+- picker: a login in combat skips it, and the next trigger shows it
+- picker: a profile reset shows it again
+- picker: a new profile shows it; one that closed it does not
+
 ### test_settings_sample.lua (5)
 
 - settings: the sample page carries one row of each widget type
@@ -314,13 +349,13 @@ Total.
 - panel: a dirty landing page re-renders in place instead of stacking a second copy
 - panel: the landing page is drawn by the library's BuildLandingPage, logo and commands
 - panel: the header Defaults tooltip is the library's Reset all settings wording (WHA-L12)
-- panel: General's strip is Master controls, Appearance, then Keybindings
+- panel: General's strip is Master controls, Skin, then Keybindings
 - panel: Master controls holds only the rows this addon has state for
 - panel: the scale slider commits on release, through the write seam
 - panel: unticking Enable stands the addon down through the row's onChange
 - panel: Defaults raises the confirmation, and confirming restores the profile
 - panel: Reset position forgets the saved point and centers the showroom
-- panel: the Appearance tab is the library's, for this owner, and a pick lands in the profile
+- panel: the Skin tab is the library's, for this owner, and a pick lands in the profile
 
 ### test_profiles.lua (17)
 
@@ -611,6 +646,9 @@ Total.
 | test_showroom.lua | 7 |
 | test_showroom_coverage.lua | 5 |
 | test_showroom_values.lua | 3 |
+| test_showroom_textures.lua | 7 |
+| test_skin_media.lua | 9 |
+| test_skin_picker.lua | 10 |
 | test_settings_sample.lua | 5 |
 | test_panel.lua | 37 |
 | test_profiles.lua | 17 |
@@ -632,4 +670,4 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | Skipped | 1 |
-| **Total** | **486** |
+| **Total** | **512** |

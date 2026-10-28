@@ -4,7 +4,7 @@ local addonName, NS = ...
 -- the showroom in that skin; the selected card's name reads in the skin's accent.
 --
 -- One skin at a time, and only Ka0s skins. EllesmereUI gets no card: its paint is one-way, so a
--- showroom that tried it on could only be taken back with a reload. The Appearance tab still offers
+-- showroom that tried it on could only be taken back with a reload. The Skin tab still offers
 -- the EllesmereUI source, and while it is in force no card reads selected.
 --
 --   NS.Selector.Build(parent)  the row, a frame with .cards[key] and .order (each card .key, .label,
@@ -13,7 +13,7 @@ local addonName, NS = ...
 --                              skin is no change: nothing is applied, saved or repainted.
 --   NS.Selector.Refresh(row)   re-reads the applied skin and moves the selection, and fits each
 --                              card's name to one line in the skin's type. The showroom calls it on
---                              every OnLooksChanged, so a pick made in the Appearance tab or with
+--                              every OnLooksChanged, so a pick made in the Skin tab or with
 --                              `/st set skin.skin` moves it too.
 
 NS.Selector = NS.Selector or {}
