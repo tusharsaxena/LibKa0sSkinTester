@@ -132,6 +132,9 @@ local function build()
     function stubFrame(kind, name, template, parent)
         local f = {
             __kind      = kind or "Frame",
+            -- The kit's paint recorder (tests/_kit/mock_paint.lua, revision 44) keys its StatusBar
+            -- family on the base mock's field name, so the stub carries it too.
+            __frameType = kind or "Frame",
             __name      = name,
             __template  = template,
             __parent    = parent,

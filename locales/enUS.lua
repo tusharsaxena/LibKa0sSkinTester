@@ -53,6 +53,10 @@ L["Text"]                               = "Text"
 L["Panels"]                             = "Panels"
 L["Overlays"]                           = "Overlays"
 L["Values"]                             = "Values"
+L["Textures"]                           = "Textures"
+
+-- The first-run skin picker's eye
+L["Preview: open the skin showroom"]    = "Preview: open the skin showroom"
 L["Another addon already uses /st, so this one answers only to /skintester."] =
     "Another addon already uses /st, so this one answers only to /skintester."
 L["Toggle the skin showroom"]           = "Toggle the skin showroom"

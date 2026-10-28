@@ -2,7 +2,7 @@
 -- showroom, and a click that moves the skin the showroom wears.
 --
 -- The pick is the owner's own choice, Skin:SetChoice on this addon, and is saved through the same write
--- seam the Appearance tab uses. Only Ka0s skins get cards: the showroom shows what a Ka0s skin paints,
+-- seam the Skin tab uses. Only Ka0s skins get cards: the showroom shows what a Ka0s skin paints,
 -- and EllesmereUI's paint is one-way, so a card for it could never be taken back without a reload.
 
 local T = _G.SKINTESTER_TEST
@@ -56,7 +56,7 @@ test("selector: clicking a card applies and saves the skin", function()
 end)
 
 test("selector: a pick made elsewhere moves the selection", function()
-    -- red under: a selection that only follows the selector's own clicks (the Appearance tab and
+    -- red under: a selection that only follows the selector's own clicks (the Skin tab and
     -- `/st set skin.skin` move the skin too).
     local NS, _, sel = opened()
     NS.addon:OnSlashCommand("set skin.skin glass")

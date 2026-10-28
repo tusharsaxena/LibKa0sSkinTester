@@ -518,9 +518,9 @@ end)
 -- The General page, as this addon composes it
 -- ---------------------------------------------------------------------------
 
-test("panel: General's strip is Master controls, Appearance, then Keybindings", function()
+test("panel: General's strip is Master controls, Skin, then Keybindings", function()
     local _, _, mock = openGeneral()
-    for _, label in ipairs({ "Master controls", "Appearance", "Keybindings" }) do
+    for _, label in ipairs({ "Master controls", "Skin", "Keybindings" }) do
         assertTrue(tabButton(mock, label) ~= nil, "a tab labeled " .. label)
     end
     assertNil(tabButton(mock, "Notifications"), "no tab of another addon's")
@@ -577,9 +577,9 @@ test("panel: Reset position forgets the saved point and centers the showroom", f
     assertNil(NS.addon.db.global.windows.LibKa0sSkinTesterShowroom, "the persisted point is gone")
 end)
 
-test("panel: the Appearance tab is the library's, for this owner, and a pick lands in the profile", function()
+test("panel: the Skin tab is the library's, for this owner, and a pick lands in the profile", function()
     local NS, _, mock = openGeneral()
-    selectTab(mock, "Appearance")
+    selectTab(mock, "Skin")
     local cb = mock.findWidget(function(w) return w.type == "CheckBox" and tostring(w.labelText):find("Obsidian", 1, true) ~= nil end)
     assertTrue(cb ~= nil, "the library drew the Obsidian choice")
     cb:Fire("OnValueChanged", true)

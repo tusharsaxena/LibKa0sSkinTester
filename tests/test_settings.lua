@@ -124,6 +124,11 @@ local function readFile(path)
     return body
 end
 
+--- The string rows that hold a LibSharedMedia key rather than one of a fixed set: the Skin tab's font
+--- and texture overrides. Their keys are whatever media packs registered this session, so they carry
+--- no `values`; the library's dropdowns draw them (`skipRender`), and "" is the skin's own.
+local FREE_KEYS = { ["skin.font"] = true, ["skin.texture"] = true }
+
 test("settings: every schema row declares the fields the panel and CLI need", function()
     local NS = T.newAddon()
     for i, def in ipairs(NS.addon.Settings.Schema) do
@@ -138,7 +143,9 @@ test("settings: every schema row declares the fields the panel and CLI need", fu
         -- An enum row is only usable if the panel and the CLI can both enumerate it.
         -- `values` is either a map with a `sorting` order, or an ordered array of { value, text }
         -- (the skin rows' form, which the library orders and validates itself).
-        if def.type == "string" then
+        if def.type == "string" and FREE_KEYS[def.path] then
+            assertTrue(def.skipRender == true and def.values == nil, where .. " is a library-drawn free key")
+        elseif def.type == "string" then
             assertEqual(type(def.values), "table", where .. " values")
             local array = type(def.values[1]) == "table" and def.values[1].value ~= nil
             assertTrue(array or type(def.sorting) == "table", where .. " sorting or an ordered array")
@@ -517,7 +524,7 @@ end)
 --- One page, so one entry. LibKa0sSkinTester registers a single settings sub-page ("general"); every row
 --- carries `section` for `/st list` and `group` for the tab, and no row is hidden.
 local PARTITION = {
-    general = { { "Master controls", 5 }, { "Appearance", 4 } },
+    general = { { "Master controls", 5 }, { "Appearance", 7 } },
 }
 
 test("settings: the page's tabs are the designed ones, in order, at the designed size",
@@ -735,10 +742,13 @@ local STORED_SETTINGS = {
     "sample.size = number|5|1|10|1|sample|false",
     "sample.useClassColor = bool|false|nil|nil|nil|sample|false",
     "scale = number|1|0.5|2|0.05|general|false",
+    "skin.font = string||nil|nil|nil|skin|false",
     "skin.ignoreFonts = bool|false|nil|nil|nil|skin|false",
     "skin.ignorePanel = bool|true|nil|nil|nil|skin|false",
+    "skin.pickerSeen = bool|false|nil|nil|nil|skin|false",
     "skin.skin = string|ka0s|nil|nil|nil|skin|false",
     "skin.source = string|ka0s|nil|nil|nil|skin|false",
+    "skin.texture = string||nil|nil|nil|skin|false",
     "state.debugConsole = bool|false|nil|nil|nil|general|true",
 }
 

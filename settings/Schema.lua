@@ -74,7 +74,8 @@ end
 --
 --   --- Master controls ---   options-ui-§15's canonical block, composed by settings/Panel.lua and
 --                             spliced at the head of this array
---   --- Appearance ---        the library's O.AppearanceTab: the skin source and the skin
+--   --- Skin ---              the library's O.AppearanceTab (keyed "Appearance", labeled "Skin"):
+--                             the skin, its font and texture, the Scope
 --   --- Keybindings ---       the library's host tab, last (options-ui-§20)
 --
 -- `section` is `/st list`'s grouping key; a row's tab is where it is EDITED, its path where it is
@@ -83,11 +84,12 @@ end
 local function add(t) Schema[#Schema + 1] = t end
 
 -- ---------------------------------------------------------------------------
--- Appearance -- the skin this addon wears, and so the skin the showroom shows (skinning-§3)
+-- Skin (the tab keyed "Appearance") -- the skin this addon wears, and so the skin the showroom shows
+-- (skinning-§3)
 -- ---------------------------------------------------------------------------
 --
--- The tab is the library's O.AppearanceTab, which draws both rows as its choice grids, so both
--- carry `skipRender`. They stay schema rows so the defaults resolve, every reset reaches them, and
+-- The tab is the library's O.AppearanceTab, which draws every skin.* row itself, so each carries
+-- `skipRender`. They stay schema rows so the defaults resolve, every reset reaches them, and
 -- `/st get|set skin.skin` validates against `values`. Each onChange applies ONLY its own half
 -- (core/SkinSetup.lua says why).
 
@@ -128,6 +130,37 @@ add{
     tooltip = "Keep every font in this addon as the game draws it. The skin still colors the text.",
     default = C.skin.ignoreFonts,
     onChange = function(v) NS.ApplySkinIgnore(nil, v) end,
+}
+
+-- The font and texture overrides (LibKa0s-Skin-1.0 minor 6), drawn by the same tab as its "Font and
+-- texture" dropdowns. A LibSharedMedia key, or "" for the skin's own; no `values`, because the keys
+-- are whatever media packs registered this session.
+add{
+    section = "skin",  group = "Appearance",
+    path    = "skin.font",  type = "string",  widget = "Dropdown",  skipRender = true,
+    label   = "Font",
+    tooltip = "The font this addon draws its text in, over the skin's own. Empty keeps the skin's.",
+    default = C.skin.font,
+    onChange = function(v) NS.ApplySkinMedia(v, nil) end,
+}
+
+add{
+    section = "skin",  group = "Appearance",
+    path    = "skin.texture",  type = "string",  widget = "Dropdown",  skipRender = true,
+    label   = "Texture",
+    tooltip = "The texture every bar of data is drawn with, over the skin's own. Empty keeps the skin's.",
+    default = C.skin.texture,
+    onChange = function(v) NS.ApplySkinMedia(nil, v) end,
+}
+
+-- The first-run skin picker (LibKa0s OptionsSkinPicker minor 1) shows while this is false; closing
+-- it sets it. A new or reset profile starts false, so it shows again (settings/Panel.lua).
+add{
+    section = "skin",  group = "Appearance",
+    path    = "skin.pickerSeen",  type = "bool",  widget = "CheckBox",  skipRender = true,
+    label   = "Skin picker seen",
+    tooltip = "Whether the skin picker that opens on a fresh profile has been closed.",
+    default = C.skin.pickerSeen,
 }
 
 -- ---------------------------------------------------------------------------

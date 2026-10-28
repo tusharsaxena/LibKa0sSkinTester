@@ -23,9 +23,12 @@ local VENDORED = "Interface\\AddOns\\LibKa0sSkinTester\\libs\\LibKa0s\\media\\"
 --          addonName; and NS.MakeCloseButton (core/CoreSetup.lua), which has no caller today.
 --   copy   the debug console's title bar (libs/LibKa0s/DebugLog.lua, makeIconButton "copy").
 --   clear  the debug console's title bar (libs/LibKa0s/DebugLog.lua, makeIconButton "clear").
+--   eye    the first-run skin picker's preview button (libs/LibKa0s/OptionsSkinPicker.lua,
+--          iconButton "eye"), because settings/Panel.lua passes onPreview.
+--   settings  the skin picker's gear (libs/LibKa0s/OptionsSkinPicker.lua, iconButton "settings").
 -- Not here: info, drawn only by an Options id list's help mark, and this addon builds no id list
 -- (tests/test_libka0s.lua holds that line).
-local LIBRARY_DRAWN = { "clear", "close", "copy" }
+local LIBRARY_DRAWN = { "clear", "close", "copy", "eye", "settings" }
 
 -- The library files that ARE the payload, for the degraded case. Core.lua absent means every other
 -- major returns before LibStub:NewLibrary too, which makes this the whole-library-missing scenario
@@ -300,4 +303,21 @@ function()
     assertEqual(NS.Constants.FONT_MONO, env.STANDARD_TEXT_FONT)
     assertTrue(type(NS.Constants.FONT_MONO) == "string" and NS.Constants.FONT_MONO ~= "",
         "FONT_MONO must never be nil — the console would refuse to build")
+end)
+
+test("mediasetup: Ka0s Default's faces are Oxanium, and the vendored copy ships them", function()
+    -- red under: LibKa0s before SO-06, whose Ka0s Default named Friz Quadrata (no file of ours).
+    local NS, env = T.enableAddon()
+    local body, title = NS.Skin.Token("font.body"), NS.Skin.Token("font.title")
+    assertEqual(body, "Ka0s Oxanium SemiBold")
+    assertEqual(title, "Ka0s Oxanium Bold")
+    local Media = env.LibStub("LibKa0s-Media-1.0", true)
+    for _, face in ipairs({ body, title }) do
+        local entry = Media.FONTS[face]
+        assertTrue(entry ~= nil, face .. " is in the library's catalog")
+        assertEqual(NS.MediaFont(face), VENDORED .. "fonts\\" .. entry.file)
+        local fh = io.open((T.root or ".") .. "/libs/LibKa0s/media/fonts/" .. entry.file, "rb")
+        assertTrue(fh ~= nil, face .. ": the re-vendor shipped " .. entry.file)
+        if fh then fh:close() end
+    end
 end)

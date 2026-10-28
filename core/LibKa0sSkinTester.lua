@@ -27,6 +27,10 @@ end
 -- Switching, copying or resetting a profile replaces every stored value at once, and nothing else
 -- in the addon would notice: no row was written. So the incoming profile is applied here.
 local function reloadProfile(self)
+    -- A pending preview belongs to the profile it was picked on. Stood down first, it is put back
+    -- with no write and no seen mark, so the incoming skin applied below stays on, and the picker
+    -- the last line asks for opens afresh on this profile (settings/Panel.lua).
+    if NS.StandDownSkinPicker then NS.StandDownSkinPicker() end
     self:RunMigrations()
     local S = self.Settings
     local H = S and S.Helpers
@@ -40,6 +44,8 @@ local function reloadProfile(self)
     end
     if NS.ApplySkinChoice then NS.ApplySkinChoice() end
     if NS.Showroom and NS.Showroom.ApplyWindowSettings then NS.Showroom.ApplyWindowSettings() end
+    -- A new or reset profile has not seen the skin picker (settings/Panel.lua).
+    if NS.MaybeShowSkinPicker then NS.MaybeShowSkinPicker() end
 end
 
 -- A profile switch rewrites no row, so its one line is written here (debug-logging-§10). A method,
@@ -114,18 +120,24 @@ function Tester:OnEnable()
     if NS.Lifecycle then
         NS.Lifecycle:Set(NS.HOLD_DISABLED, not (self.db and self.db.profile and self.db.profile.enabled))
     end
+
+    -- The first-run skin picker, once the stored skin is on (OnInitialize applied it) and the latch
+    -- has its answer: it skips a disabled addon and a login in combat (settings/Panel.lua).
+    if NS.MaybeShowSkinPicker then NS.MaybeShowSkinPicker() end
 end
 
 -- ── the stand-down (slash-commands-§7) ───────────────────────────────────────────────────────
 --
 -- DISABLED MEANS THE ADDON IS NOT RUNNING. The tester registers no game event and runs no timer, so
--- going down is the showroom closing and refusing to open (modules/Showroom.lua), and nothing else.
+-- going down is the showroom closing and refusing to open (modules/Showroom.lua), and the first-run
+-- skin picker taken down without marking the profile seen (settings/Panel.lua), and nothing else.
 -- What survives is SETUP: the chat command and dispatcher, the settings category, the AceDB handle
 -- and its profile callbacks, the launcher and the skin owner. A disabled addon must stay reachable
 -- by the player who wants to turn it back on. The edges are logged by the library.
 
 function NS.StandDown()
     if NS.Showroom and NS.Showroom.StandDown then NS.Showroom.StandDown() end
+    if NS.StandDownSkinPicker then NS.StandDownSkinPicker() end
 end
 
 -- Rebuilds from CURRENT state, never from a snapshot taken on the way down.

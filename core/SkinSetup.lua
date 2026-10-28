@@ -7,14 +7,19 @@ local addonName, NS = ...
 --                           draws is painted through it.
 --   NS.SkinChoice()         the stored (source, skin) pair, read through the schema runtime;
 --                           "ka0s", "ka0s" before AceDB exists.
---   NS.WriteSkinChoice(s,k,i) the write seam: each half through the schema runtime's Set, the one seam
---                           `/st set` and the panel write through (architecture-§5); `i`, the Scope's
---                           `{ panel, fonts }`, writes the two exceptions.
+--   NS.WriteSkinChoice(s,k,i,m) the write seam: each half through the schema runtime's Set, the one
+--                           seam `/st set` and the panel write through (architecture-§5); `i`, the
+--                           Scope's `{ panel, fonts }`, writes the two exceptions; `m`, the font and
+--                           texture `{ font, texture }` (a key, or false for the skin's own), writes
+--                           skin.font and skin.texture, "" for false.
+--   NS.ApplySkinMedia(f,t)  moves the applied font and texture overrides with Skin:SetOverride, live;
+--                           no argument applies the stored pair, a nil half keeps that half, ""
+--                           clears it.
 --   NS.ApplySkinIgnore(p,f) moves the applied Scope with Skin:SetIgnore, live; no argument applies
 --                           the stored pair, a nil half keeps that half.
 --   NS.ApplySkinChoice(s,k) moves the applied skin with Skin:SetChoice, which repaints every frame
 --                           recorded for this owner and then fires OnLooksChanged. No argument applies
---                           the stored pair and the stored Scope; a nil half keeps that half. A skin key no registered
+--                           the stored pair, the stored Scope and the stored overrides; a nil half keeps that half. A skin key no registered
 --                           skin carries applies Ka0s Default: the library keeps any non-empty
 --                           string, and a hand-edited or stale profile must not wear a skin nobody
 --                           can pick.
@@ -27,7 +32,7 @@ local addonName, NS = ...
 -- applies the stored pair, and before settings/Schema.lua, which reads NS.SKIN_OPTIONS at load.
 -- RegisterOwner calls `get` once, here, before AceDB exists, and gets Ka0s Default.
 --
--- WHY A ROW'S onChange PASSES ONE HALF: the Appearance tab, and another addon's "Copy to every Ka0s
+-- WHY A ROW'S onChange PASSES ONE HALF: the Skin tab, and another addon's "Copy to every Ka0s
 -- addon", call Skin:SetChoice first and write the store after, one half at a time. A reaction that
 -- re-applied the whole stored pair would apply a half-written pair in between: a second repaint, to
 -- a skin nobody picked. Applying only the row's own half makes each write a no-op, while a bare
@@ -37,6 +42,7 @@ local Skin = LibStub and LibStub("LibKa0s-Skin-1.0", true)
 
 local SOURCE_PATH, SKIN_PATH = "skin.source", "skin.skin"
 local PANEL_PATH, FONTS_PATH = "skin.ignorePanel", "skin.ignoreFonts"
+local FONT_PATH, TEXTURE_PATH = "skin.font", "skin.texture"
 local DEFAULT = "ka0s"
 NS.SKIN_SOURCE_PATH, NS.SKIN_PATH = SOURCE_PATH, SKIN_PATH
 
@@ -61,7 +67,7 @@ function NS.SkinChoice()
     return S.Get(SOURCE_PATH) or DEFAULT, S.Get(SKIN_PATH) or DEFAULT
 end
 
-function NS.WriteSkinChoice(source, skin, ignore)
+function NS.WriteSkinChoice(source, skin, ignore, media)
     local S = runtime()
     if not (NS.addon and NS.addon.db and S) then return end
     if source ~= nil then S.Set(SOURCE_PATH, source) end
@@ -70,6 +76,10 @@ function NS.WriteSkinChoice(source, skin, ignore)
         S.Set(PANEL_PATH, ignore.panel == true)
         S.Set(FONTS_PATH, ignore.fonts == true)
     end
+    if type(media) == "table" then
+        S.Set(FONT_PATH, type(media.font) == "string" and media.font or "")
+        S.Set(TEXTURE_PATH, type(media.texture) == "string" and media.texture or "")
+    end
 end
 
 -- The stored Scope (LibKa0s-Skin-1.0 minor 5), nil-safely: false, false before the store exists.
@@ -77,6 +87,13 @@ local function storedIgnore()
     local S = runtime()
     if not (NS.addon and NS.addon.db and S) then return false, false end
     return S.Get(PANEL_PATH) == true, S.Get(FONTS_PATH) == true
+end
+
+-- The stored overrides (LibKa0s-Skin-1.0 minor 6), nil-safely: "", "" before the store exists.
+local function storedMedia()
+    local S = runtime()
+    if not (NS.addon and NS.addon.db and S) then return "", "" end
+    return S.Get(FONT_PATH) or "", S.Get(TEXTURE_PATH) or ""
 end
 
 -- The vocabulary a degraded facade answers, kept in the library's order; tests/test_surface_parity
@@ -88,6 +105,7 @@ NS.SKIN_VOCAB = {
     "GetAccentColor", "GetPanelColor", "GetFont",
     "TitleBar", "Divider", "Footer", "Card", "Slider", "NavItem", "Drawer", "ListRow", "MenuFrame",
     "Tooltip", "Strip", "Cover", "Text", "ChartStyle", "BarStyle", "IconBorder", "GlowColor",
+    "BarTexture",
 }
 
 if not Skin then
@@ -107,6 +125,7 @@ if not Skin then
     NS.SkinAvailable = false
     function NS.ApplySkinChoice() return false, false end
     function NS.ApplySkinIgnore() return false, false end
+    function NS.ApplySkinMedia() return false end
     function NS.SkinPaintAceTree() return 0 end
     return
 end
@@ -140,14 +159,27 @@ function NS.ApplySkinIgnore(panel, fonts)
     return changed, reload
 end
 
--- No argument applies the stored pair and the stored Scope (load, profile events); a nil half keeps
--- that half and leaves the Scope alone (each Appearance row).
+-- The applied overrides: Skin:SetOverride, live. No argument applies the stored pair; a nil half
+-- keeps it, and "" (the stored "skin's own") clears it.
+function NS.ApplySkinMedia(font, texture)
+    if type(Skin.SetOverride) ~= "function" then return false end
+    if font == nil and texture == nil then font, texture = storedMedia() end
+    if font == "" then font = false end
+    if texture == "" then texture = false end
+    return Skin:SetOverride(addonName, font, texture)
+end
+
+-- No argument applies the stored pair, the stored Scope and the stored overrides (load, profile
+-- events); a nil half keeps that half and leaves the rest alone (each Skin tab row).
 function NS.ApplySkinChoice(source, skin)
     local whole = source == nil and skin == nil
     if whole then source, skin = NS.SkinChoice() end
     if skin ~= nil and not KNOWN[skin] then skin = DEFAULT end
     local changed, reload = Skin:SetChoice(addonName, source, skin)
     if reload and NS.Print then NS.Print(RELOAD_LINE) end
-    if whole then NS.ApplySkinIgnore() end
+    if whole then
+        NS.ApplySkinIgnore()
+        NS.ApplySkinMedia()
+    end
     return changed, reload
 end

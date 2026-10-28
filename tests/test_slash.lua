@@ -79,7 +79,7 @@ test("slash: list groups the rows under their sections, with current values", fu
     H(NS).Set("scale", 1.5)
     local out = run(NS, mock, "list")
     assertTrue(anyLine(out, "[general]"), "the Master controls rows' section")
-    assertTrue(anyLine(out, "[skin]"), "the Appearance rows' section")
+    assertTrue(anyLine(out, "[skin]"), "the Skin tab rows' section")
     assertTrue(anyLine(out, "skin.skin"), "the skin row")
     assertTrue(anyLine(out, "1.5"), "the current scale, not the default")
 end)

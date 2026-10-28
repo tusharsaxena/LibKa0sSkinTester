@@ -76,6 +76,7 @@ modules\ShowroomText.lua
 modules\ShowroomPanels.lua
 modules\ShowroomOverlays.lua
 modules\ShowroomValues.lua
+modules\ShowroomTextures.lua
 modules\Diagnostics.lua
 
 # Settings

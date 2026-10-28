@@ -8,7 +8,7 @@ says how this addon meets them.
 A skin showroom. `/st` (or `/skintester`) opens one window that shows the elements a Ka0s skin
 (`LibKa0s-Skin-1.0`) can paint, in whichever skin the addon is wearing, so a skin can be judged in one
 place. The addon is a skin owner like any adopter: the skin it wears is chosen from the swatch cards
-across the top of the showroom or on its own General -> Appearance tab, and every sample it shows is
+across the top of the showroom, on its own General -> Skin tab or in the first-run skin picker, and every sample it shows is
 painted through its own facade (`Skin:For`), through one wrapper that records each primitive used, so
 the showroom shows exactly what an adopting addon gets and a test can prove every primitive is on
 show. It is a roster addon that is never published on
@@ -17,8 +17,8 @@ CurseForge. Purpose, audience and non-goals: [`scope.md`](./scope.md).
 ## Module Map
 
 One shell, the setup files that wire LibKa0s, the swatch selector, the showroom window with its paint
-wrapper and section registry, seven section files (Chrome, Controls, Lists, Text, Panels, Overlays,
-Values), and the settings pages. Every file, its job and its load-order constraint:
+wrapper and section registry, eight section files (Chrome, Controls, Lists, Text, Panels, Overlays,
+Values, Textures), and the settings pages with the first-run skin picker. Every file, its job and its load-order constraint:
 [`module-map.md`](./module-map.md). The load order itself is
 the TOC, where each load-bearing position carries the reason.
 
@@ -27,8 +27,9 @@ the TOC, where each load-bearing position carries the reason.
 One schema (`settings/Schema.lua`) drives the panel, the `/st list|get|set|reset` CLI and the
 defaults, over one write seam, `NS.SchemaRuntime.Set` (LibKa0s-Schema-1.0, or the host stub in
 `settings/SchemaSetup.lua`). Rows: the composed Master controls (`enabled`, `scale`, `alpha`, the
-session-only `state.debugConsole`, the global `global.minimap.shown`), the four Appearance rows
-(`skin.source`, `skin.skin` and the Scope's `skin.ignorePanel`, `skin.ignoreFonts`) and the five Sample controls rows (`sample.*`, on their own page and read
+session-only `state.debugConsole`, the global `global.minimap.shown`), the seven Skin tab rows
+(`skin.source`, `skin.skin`, the overrides `skin.font` and `skin.texture`, the Scope's `skin.ignorePanel`,
+`skin.ignoreFonts`, and the picker's `skin.pickerSeen`) and the five Sample controls rows (`sample.*`, on their own page and read
 by nothing). The one piece of state outside the seam is the showroom window's
 position, `db.global.windows.LibKa0sSkinTesterShowroom`, written only by `NS.Windows.Save` from the
 window's drag stop and cleared by `NS.Windows.Forget` (Reset position), both in `core/Util.lua`.

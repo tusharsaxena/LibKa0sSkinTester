@@ -13,7 +13,7 @@ Every entry says what needs it and how that is known.
   separate library addon is installed. `## OptionalDeps:` names the vendored libraries for load
   ordering, not as downloads.
 - **EllesmereUI, optional.** Named in `## OptionalDeps:` so it loads first when present; with it, the
-  General -> Appearance tab offers EllesmereUI as a skin source (the library's `SkinEUI.lua` checks
+  General -> Skin tab offers EllesmereUI as a skin source (the library's `SkinEUI.lua` checks
   for it). Without it the source is Ka0s skins only.
 
 ## Development — the contributor toolchain

@@ -91,7 +91,7 @@ Total.
 - parity: the Launcher stub carries the whole live surface
 - parity: the Lifecycle stub carries the whole live surface
 
-### test_mediasetup.lua (12)
+### test_mediasetup.lua (13)
 
 - mediasetup: NS.Icon answers the vendored path, EXTENSIONLESS
 - mediasetup: an icon the library does not ship answers nil
@@ -105,6 +105,7 @@ Total.
 - mediasetup: this addon ships no private copy of the shared art (anti-patterns #63)
 - mediasetup: with no library there is no art and no face, and that is not an error
 - mediasetup: a degraded install still gets a REAL font, never nil and never a dead path
+- mediasetup: Ka0s Default's faces are Oxanium, and the vendored copy ships them
 
 ### test_envsetup.lua (9)
 
@@ -250,7 +251,7 @@ Total.
 - selector: clicking the current card does nothing
 - selector: no EllesmereUI card and no copy button
 
-### test_showroom.lua (7)
+### test_showroom.lua (11)
 
 - showroom: the window is painted through the wrapper
 - showroom: Paint answers the primitive's answer and records the name once
@@ -259,6 +260,10 @@ Total.
 - showroom: opened after a skin change, it wears the new skin
 - showroom: a skin change repaints the open window
 - showroom: a skin card's label keeps to one line under any skin's type size
+- showroom scrollbar: hidden while the sections fit, shown once they overflow
+- showroom scrollbar: the wheel moves the sections and the knob together
+- showroom scrollbar: dragging the knob scrolls the sections, and a sync does not scroll back
+- showroom scrollbar: the corridor and the knob are the skin's
 
 ### test_showroom_coverage.lua (5)
 
@@ -273,6 +278,62 @@ Total.
 - values: every getter is displayed
 - values: every sem token has a line
 - values: a skin change redraws them
+
+### test_showroom_textures.lua (8)
+
+- textures: the section is built with three bars, five rows and five segments
+- textures: the status bars wear the accent, good and bad colors, in the bar texture
+- textures: the chart rows and stacked segments wear the series colors
+- textures: every label names the texture key in effect
+- textures: a skin switch recolors the bars and relabels them
+- textures: a texture override repaints every fill and relabels it, live
+- textures: the section builds without the skin engine
+- textures: Ka0s Default draws its own Ka0s Default bar, shipped in the vendored copy
+
+### test_skin_media.lua (9)
+
+- media: a fresh profile stores the skin's own font and texture, and the picker unseen
+- media: the write seam's fourth argument writes both keys, false as the empty string
+- media: another addon's copy reaches the store through WriteChoice
+- media: a row's write applies its own half live
+- media: the stored overrides are applied at load
+- media: a profile switch applies the incoming profile's overrides, and back
+- media: a profile reset clears the overrides
+- media: Ignore fonts wins over a font override
+- media: without the skin engine the apply is a quiet no-op
+
+### test_skin_picker.lua (30)
+
+- picker: a fresh profile shows it once the addon is enabled
+- picker: not before login
+- picker: the spec names this owner's seams, the General page's Skin tab and the eye
+- picker: closing it marks the profile, and the next login does not show it
+- picker: the eye opens the showroom and leaves the picker up
+- picker: the gear saves the pick, opens the General page itself, and marks the profile
+- picker: a pick previews: the skin moves live, the profile keeps its own and is not marked
+- picker: Apply saves the pick through the schema runtime and marks the profile
+- picker: the close control puts the old skin back, writes nothing, and marks the profile
+- picker: the title names this addon
+- picker: not while the addon is disabled
+- picker: a login in combat skips it, and the next trigger shows it
+- picker: a profile reset shows it again
+- picker: a new profile shows it; one that closed it does not
+- picker: /st disable hides it, and the profile stays unseen
+- picker: a switch to a disabled profile hides it, and neither profile is marked
+- picker: a switch to a profile that closed it hides it, and writes nothing
+- picker: a switch to a seen profile under a pending preview wears that profile's skin
+- picker: a switch to an unseen profile under a pending preview opens afresh on it
+- picker: Apply after a switch under a pending preview writes nothing the dropdown did not show
+- picker: a profile copy under a pending preview wears the copied skin
+- picker: behind another Ka0s addon's picker it queues, and shows when that one closes
+- picker: a stand-down while queued takes it out unseen, and nothing shows after
+- picker: another addon's Apply to all marks this profile seen and gives it the skin
+- picker: this addon's Apply to all saves here and gives the other addon the skin
+- picker: Apply to all is hidden while this addon is the only skin owner
+- picker: a skin General -> Skin stores under a pending preview stays on the close
+- picker: a skin /st set stores under a pending preview stays on the close
+- picker: another addon's picker closed in combat does not bring this one up until combat ends
+- picker: a stand-down while it waits out combat leaves nothing to show after
 
 ### test_settings_sample.lua (5)
 
@@ -314,13 +375,13 @@ Total.
 - panel: a dirty landing page re-renders in place instead of stacking a second copy
 - panel: the landing page is drawn by the library's BuildLandingPage, logo and commands
 - panel: the header Defaults tooltip is the library's Reset all settings wording (WHA-L12)
-- panel: General's strip is Master controls, Appearance, then Keybindings
+- panel: General's strip is Master controls, Skin, then Keybindings
 - panel: Master controls holds only the rows this addon has state for
 - panel: the scale slider commits on release, through the write seam
 - panel: unticking Enable stands the addon down through the row's onChange
 - panel: Defaults raises the confirmation, and confirming restores the profile
 - panel: Reset position forgets the saved point and centers the showroom
-- panel: the Appearance tab is the library's, for this owner, and a pick lands in the profile
+- panel: the Skin tab is the library's, for this owner, and a pick lands in the profile
 
 ### test_profiles.lua (17)
 
@@ -601,16 +662,19 @@ Total.
 | test_harness.lua | 11 |
 | test_libka0s.lua | 55 |
 | test_surface_parity.lua | 8 |
-| test_mediasetup.lua | 12 |
+| test_mediasetup.lua | 13 |
 | test_envsetup.lua | 9 |
 | test_util.lua | 26 |
 | test_database.lua | 11 |
 | test_settings.lua | 53 |
 | test_slash.lua | 19 |
 | test_selector.lua | 8 |
-| test_showroom.lua | 7 |
+| test_showroom.lua | 11 |
 | test_showroom_coverage.lua | 5 |
 | test_showroom_values.lua | 3 |
+| test_showroom_textures.lua | 8 |
+| test_skin_media.lua | 9 |
+| test_skin_picker.lua | 30 |
 | test_settings_sample.lua | 5 |
 | test_panel.lua | 37 |
 | test_profiles.lua | 17 |
@@ -632,4 +696,4 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | Skipped | 1 |
-| **Total** | **486** |
+| **Total** | **538** |

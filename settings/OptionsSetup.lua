@@ -160,13 +160,19 @@ if not lib then
     -- OptionsCompose minor 11's ResetAllTooltip (the v1.77.0 tag moved, LK-95): the General page
     -- header's Reset all tooltip. No page renders here, so it answers an empty string, as above.
     H.ResetAllTooltip      = function() return "" end
-    -- The Appearance tab (LibKa0s v1.78.0, OptionsAppearance minor 1; skinning-§3, hard rule 24b):
+    -- The Skin tab, keyed Appearance (LibKa0s v1.78.0, OptionsAppearance minor 1, labeled "Skin" from
+    -- minor 3; skinning-§3, hard rule 24b):
     -- every Options stub owes both members. No page renders on this path, so the entry draws
     -- nothing and AppearanceRows answers nil, as the live one does when it cannot draw.
     H.AppearanceTab        = function()
-        return { key = "Appearance", label = "Appearance", before = "Keybindings", render = function() end }
+        return { key = "Appearance", label = "Skin", before = "Keybindings", render = function() end }
     end
     H.AppearanceRows       = function() return nil end
+    -- The first-run skin picker (LibKa0s v1.79.0, OptionsSkinPicker minor 1): no window on this
+    -- path, so SkinPicker answers a lone nil (never the live picker's nil, "queued": nothing waits
+    -- here) and HideSkinPicker does nothing.
+    H.SkinPicker           = function() return nil end
+    H.HideSkinPicker       = function() end
     H.SetRenderer          = function() end
     H.RegisterOptionsPage  = function() end
     H.RefreshAllPanels     = function() end
@@ -183,6 +189,7 @@ if not lib then
     H.__panels             = function() return {} end
     H.__panelFor           = function() return nil end
     H.CreateOptionsPanel   = function() sayAtLoad() end
+    -- OpenOptionsPanel(pageKey) (OptionsRegistry minor 4): with no panel, any page says the same.
     H.OpenOptionsPanel     = function() sayOnConfig() end
     -- No ROW_VSPACER / SECTION_HEADING_H / BUTTON_PAIR_REL here, and no CHROME_GAP / TAB_H /
     -- BANNER_H either -- the chrome band's scalars are layout constants like the other four, and

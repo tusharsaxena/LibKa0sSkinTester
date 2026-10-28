@@ -1,6 +1,6 @@
 local addonName, NS = ...
 -- settings/Panel.lua — the settings pages: the landing page's spec, the General page (Master
--- controls, Appearance, Keybindings) and the settings-category registration.
+-- controls, Skin, Keybindings), the first-run skin picker and the settings-category registration.
 --
 -- LOAD-BEARING: after settings/OptionsSetup.lua, whose instance this file calls at file scope
 -- (MasterControls, AppearanceTab, KeybindingsTab, ResetAllTooltip), and after modules/Showroom.lua,
@@ -85,12 +85,13 @@ NS.SchemaRuntime.AddRows(MASTER_ROWS, 1)
 local AFTER_GROUP = {}
 if Helpers.MASTER_GROUP then AFTER_GROUP[Helpers.MASTER_GROUP] = MASTER_TAIL end
 
--- ── the host tabs: Appearance, then Keybindings last ─────────────────────────────────────────
--- Appearance (skinning-§3) is the library's entry: the skin source, the nine skins, "Copy to every
--- Ka0s addon..." and the note. Its `get` and `set` are core/SkinSetup.lua's read and write seams,
--- so a pick lands through the schema runtime like every other setting, and the tab's group is the
--- two skipRender rows of settings/Schema.lua. Keybindings (options-ui-§20) is the library's too,
--- drawing NS.BINDINGS, and stays last.
+-- ── the host tabs: Skin, then Keybindings last ───────────────────────────────────────────────
+-- The Skin tab (skinning-§3; keyed "Appearance", labeled "Skin") is the library's entry: the skin
+-- source, the nine skins, the font and texture, the Scope, "Copy to every Ka0s addon..." and the
+-- note. Its `get` and `set` are core/SkinSetup.lua's read and write seams, so a pick lands through
+-- the schema runtime like every other setting, and the tab's group is the skipRender skin.* rows of
+-- settings/Schema.lua. Keybindings (options-ui-§20) is the library's too, drawing NS.BINDINGS, and
+-- stays last.
 local GENERAL_OPTS = { tabs = {
     Helpers.AppearanceTab({ owner = addonName, get = NS.SkinChoice, set = NS.WriteSkinChoice }),
     Helpers.KeybindingsTab({ bindings = NS.BINDINGS }),
@@ -112,8 +113,88 @@ end
 
 Helpers.RegisterOptionsPage("general", "General", buildGeneralPage)
 
+-- ── the first-run skin picker (LibKa0s OptionsSkinPicker minor 1) ────────────────────────────
+-- A small window that asks for a skin before any settings page is opened. It shows while the
+-- profile's skin.pickerSeen is false: once after login, and after a profile switch, copy or reset
+-- that lands on a profile whose key is false (a new or reset profile starts false). A pick only
+-- previews; Apply and the gear save it through NS.WriteSkinChoice, and the close control and Escape
+-- undo only the preview, putting back the skin the profile stores as it reads at the close. Every one of those routes sets the key; the eye does
+-- not close it.
+--
+-- One window serves every Ka0s addon in the client (the library's lib.__pickerQueue): behind another
+-- addon's picker this one waits, and shows when that one closes. Another addon's "Apply to all Ka0s
+-- addons" dismisses it unshown through its own onClose, which sets the key here too: the player has
+-- chosen this addon's skin.
+--
+-- The addon never asks for it in combat or while disabled. It registers no game event (see
+-- core/LibKa0sSkinTester.lua's stand-down note), so a trigger in combat is skipped, not deferred:
+-- the next login or profile event asks again, because the key is still false. A queued picker shows
+-- when the one ahead of it closes, and never mid-combat: a close in combat leaves the library's
+-- queue waiting for the end of combat (LibKa0s PK-03), and while it waits SkinPicker answers
+-- nil, "queued" here too. The queued entry gets no second look at `enabled` or the key; that is safe
+-- because the stand-down and every profile event take it out first (docs/settings-panel.md, smoke
+-- PICKER-16).
+--
+-- The addon takes it down too, and that is not the player closing it: on the stand-down (`/st
+-- disable`, a disabled profile) and at the start of every profile switch, copy or reset, before the
+-- incoming skin is applied (core/LibKa0sSkinTester.lua's reloadProfile). The profile event then asks
+-- again, so a profile that has not seen it gets a fresh showing, its dropdown and the skin a close
+-- puts back both read from the incoming profile. That hide writes nothing, so the profile it leaves
+-- stays unseen: a window up puts a pending preview back and runs onClose under the hostHiding flag,
+-- and a queued one leaves the queue with no onClose at all.
+
+local PICKER_SEEN_PATH = "skin.pickerSeen"
+
+-- True only while the addon itself hides the picker; onClose then records nothing.
+local hostHiding = false
+
+local PICKER_SPEC = {
+    owner     = addonName,
+    get       = NS.SkinChoice,
+    set       = NS.WriteSkinChoice,
+    page      = "general",
+    tab       = "Appearance",
+    -- The eye: the showroom is this addon's own frames, and it has no test mode.
+    onPreview = function() NS.Showroom.Show() end,
+    onClose   = function()
+        local S = NS.SchemaRuntime
+        if hostHiding or not (S and Tester.db) then return end
+        S.Set(PICKER_SEEN_PATH, true)
+    end,
+    strings   = { PREVIEW_TIP = NS.L["Preview: open the skin showroom"] },
+}
+NS.SKIN_PICKER_SPEC = PICKER_SPEC
+
+--- Take the picker down for the addon, not the player: the profile is not marked seen. A no-op
+--- when it is not up.
+function NS.StandDownSkinPicker()
+    if type(Helpers.HideSkinPicker) ~= "function" then return end
+    hostHiding = true
+    local ok, err = pcall(Helpers.HideSkinPicker)
+    hostHiding = false
+    if not ok then NS.DebugErrorOnce("Skin", "StandDownSkinPicker", err) end
+end
+
+--- Show the skin picker when this profile has not closed it yet. Answers true when it is up, and
+--- false, "queued" when another Ka0s addon's picker is up, or the queue waits out combat, and this
+--- one waits behind it. A profile
+--- that has seen it, or a disabled addon, takes down one that is up or queued.
+function NS.MaybeShowSkinPicker()
+    local S, db = NS.SchemaRuntime, Tester.db
+    if not (S and db and db.profile) then return false end
+    if S.Get(PICKER_SEEN_PATH) == true or not db.profile.enabled then
+        NS.StandDownSkinPicker()
+        return false
+    end
+    if InCombatLockdown and InCombatLockdown() then return false end
+    if type(Helpers.SkinPicker) ~= "function" then return false end
+    local win, state = Helpers.SkinPicker(PICKER_SPEC)
+    if win ~= nil then return true end
+    return false, state
+end
+
 -- ── Sample controls ──────────────────────────────────────────────────────────────────────────
--- One row of each widget type, untabbed, under its group heading. No Appearance tab and no copy
+-- One row of each widget type, untabbed, under its group heading. No Skin tab and no copy
 -- action: the skin is picked on General, and this page only shows it.
 local function buildSamplePage(parentCategory)
     local ctx = Helpers.CreatePanel("LibKa0sSkinTesterSamplePanel", "Sample controls", {
