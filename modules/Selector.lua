@@ -11,14 +11,16 @@ local addonName, NS = ...
 --                              .swatches and .selected); built once, with the showroom.
 --   NS.Selector.Pick(key)      applies that Ka0s skin and saves it; answers changed. The current
 --                              skin is no change: nothing is applied, saved or repainted.
---   NS.Selector.Refresh(row)   re-reads the applied skin and moves the selection. The showroom
---                              calls it on every OnLooksChanged, so a pick made in the Appearance
---                              tab or with `/st set skin.skin` moves it too.
+--   NS.Selector.Refresh(row)   re-reads the applied skin and moves the selection, and fits each
+--                              card's name to one line in the skin's type. The showroom calls it on
+--                              every OnLooksChanged, so a pick made in the Appearance tab or with
+--                              `/st set skin.skin` moves it too.
 
 NS.Selector = NS.Selector or {}
 local M = NS.Selector
 
 local CARD_W, CARD_H, GAP = 98, 56, 6
+local LABEL_W = CARD_W - 12
 local SWATCH_H = 14
 local SOURCE = "ka0s"
 
@@ -39,6 +41,15 @@ local function applied()
     return lib:GetChoice(addonName)
 end
 
+--- One line, always: a name wider than the card (High Contrast's larger type) is scaled down to fit,
+--- and back to full size under a skin whose type fits. The text scale leaves the skin's face alone.
+local function fitLabel(label)
+    if not label.SetTextScale then return end
+    label:SetTextScale(1)
+    local w = label.GetUnboundedStringWidth and label:GetUnboundedStringWidth() or label:GetStringWidth()
+    if type(w) == "number" and w > LABEL_W then label:SetTextScale(LABEL_W / w) end
+end
+
 local function paintSelection(card, on)
     card.selected = on
     S().StateButtonLabel(card, on)
@@ -54,13 +65,15 @@ local function buildCard(row, def, i)
     label:SetPoint("TOPLEFT", card, "TOPLEFT", 6, -6)
     label:SetPoint("TOPRIGHT", card, "TOPRIGHT", -6, -6)
     label:SetJustifyH("LEFT")
+    label:SetWordWrap(false)
+    label:SetMaxLines(1)
     label:SetText(def.label or def.key)
     card.label, card.text = label, label   -- `text` is where the paint looks for a button's label
 
     -- The four swatches are the skin's own preview colors, from its definition: the one place this
     -- addon draws a color it did not read from the skin it is wearing, because it is showing another.
     card.swatches = {}
-    local sw = (CARD_W - 12) / 4
+    local sw = LABEL_W / 4
     for n = 1, 4 do
         local tex = card:CreateTexture(nil, "ARTWORK")
         tex:SetSize(sw, SWATCH_H)
@@ -96,6 +109,7 @@ function M.Refresh(row)
     for _, card in ipairs(row.order) do
         local on = source == SOURCE and card.key == skin
         if card.selected ~= on then paintSelection(card, on) end
+        fitLabel(card.label)
     end
 end
 

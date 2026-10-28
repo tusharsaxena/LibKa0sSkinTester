@@ -17,7 +17,7 @@ its theme, and a retired number is never reused.
 | COMBAT-1..2 | Combat | The showroom and the panel in combat |
 | DIAG-1..2 | Diagnostics | The debug console and the report |
 | DEGRADED-1 | Degraded install | The library-absent load |
-| SHOW-1..10 | Showroom | The window, the swatch selector, the sections, position and scale |
+| SHOW-1..11 | Showroom | The window, the swatch selector, the sections, position and scale |
 | LOC-1 | Non-English client | Locale-dependent behavior |
 
 ## Before you start
@@ -63,8 +63,8 @@ restart the client: new font and texture files are only seen at client start.
 - **PANEL-6. The Scope.** On a fresh profile open General -> Appearance with the showroom open. →
   Ignore settings panel is ticked and Ignore fonts is not; the settings pages are in the client's
   look while the showroom wears the skin. Untick Ignore settings panel. → The settings pages take the
-  skin at once, no reload. Pick Azeroth and tick Ignore fonts. → The showroom's Cinzel titles go back
-  to the game's fonts at once and keep the skin's colors. `/reload`. → Both ticks are as you left them. Result:
+  skin at once, no reload. Pick Azeroth and tick Ignore fonts. → The showroom's Vollkorn text and titles go
+  back to the game's fonts at once and keep the skin's colors. `/reload`. → Both ticks are as you left them. Result:
 
 ## Profiles
 
@@ -127,6 +127,10 @@ restart the client: new font and texture files are only seen at client start.
 - **SHOW-10. Values.** Look at the Values section in Ka0s Default, then Azeroth. → The swatches and the
   `sem.*` lines change color with the skin, and the body-font line changes face where the skin sets
   one. Result:
+- **SHOW-11. Card names on one line (R5-05).** `/st show`, then click High Contrast. → Every card's
+  name stays on one line above its swatches; a long name such as "High Contrast" is drawn a little
+  smaller rather than wrapped or cut. Click Ka0s Default. → The names are back at full size. Fail: a
+  name on two lines, a name cut off with "...", or text over the swatches. Result:
 
 ## Non-English client
 
@@ -147,3 +151,4 @@ restart the client: new font and texture files are only seen at client start.
 | SHOW-8..10 | ST-05 + ST-06, the sections | No client pass recorded yet |
 | SLASH-4, PANEL-5 | ST-07, the collision and the sample page | No client pass recorded yet |
 | PANEL-6 | SF-40, SF-43, SF-46: the Scope and its defaults | No client pass recorded yet |
+| SHOW-11 | R5-05, the card names | No client pass recorded yet |
