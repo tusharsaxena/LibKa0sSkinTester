@@ -155,6 +155,7 @@ Kit.run{
         "test_showroom_values",
         "test_showroom_textures",
         "test_skin_media",
+        "test_skin_picker",
         "test_settings_sample",
         "test_panel",
         "test_profiles",

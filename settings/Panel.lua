@@ -1,6 +1,6 @@
 local addonName, NS = ...
 -- settings/Panel.lua — the settings pages: the landing page's spec, the General page (Master
--- controls, Appearance, Keybindings) and the settings-category registration.
+-- controls, Skin, Keybindings), the first-run skin picker and the settings-category registration.
 --
 -- LOAD-BEARING: after settings/OptionsSetup.lua, whose instance this file calls at file scope
 -- (MasterControls, AppearanceTab, KeybindingsTab, ResetAllTooltip), and after modules/Showroom.lua,
@@ -85,12 +85,13 @@ NS.SchemaRuntime.AddRows(MASTER_ROWS, 1)
 local AFTER_GROUP = {}
 if Helpers.MASTER_GROUP then AFTER_GROUP[Helpers.MASTER_GROUP] = MASTER_TAIL end
 
--- ── the host tabs: Appearance, then Keybindings last ─────────────────────────────────────────
--- Appearance (skinning-§3) is the library's entry: the skin source, the nine skins, "Copy to every
--- Ka0s addon..." and the note. Its `get` and `set` are core/SkinSetup.lua's read and write seams,
--- so a pick lands through the schema runtime like every other setting, and the tab's group is the
--- two skipRender rows of settings/Schema.lua. Keybindings (options-ui-§20) is the library's too,
--- drawing NS.BINDINGS, and stays last.
+-- ── the host tabs: Skin, then Keybindings last ───────────────────────────────────────────────
+-- The Skin tab (skinning-§3; keyed "Appearance", labeled "Skin") is the library's entry: the skin
+-- source, the nine skins, the font and texture, the Scope, "Copy to every Ka0s addon..." and the
+-- note. Its `get` and `set` are core/SkinSetup.lua's read and write seams, so a pick lands through
+-- the schema runtime like every other setting, and the tab's group is the skipRender skin.* rows of
+-- settings/Schema.lua. Keybindings (options-ui-§20) is the library's too, drawing NS.BINDINGS, and
+-- stays last.
 local GENERAL_OPTS = { tabs = {
     Helpers.AppearanceTab({ owner = addonName, get = NS.SkinChoice, set = NS.WriteSkinChoice }),
     Helpers.KeybindingsTab({ bindings = NS.BINDINGS }),
@@ -111,6 +112,44 @@ local function buildGeneralPage(parentCategory)
 end
 
 Helpers.RegisterOptionsPage("general", "General", buildGeneralPage)
+
+-- ── the first-run skin picker (LibKa0s OptionsSkinPicker minor 1) ────────────────────────────
+-- A small window that asks for a skin before any settings page is opened. It shows while the
+-- profile's skin.pickerSeen is false: once after login, and after a profile switch, copy or reset
+-- that lands on a profile whose key is false (a new or reset profile starts false). Closing it, by
+-- its close control, its gear or Escape, sets the key. Picking a skin and the eye do not close it.
+--
+-- Never in combat and never while the addon is disabled. The addon registers no game event (see
+-- core/LibKa0sSkinTester.lua's stand-down note), so a trigger in combat is skipped, not deferred:
+-- the next login or profile event asks again, because the key is still false.
+
+local PICKER_SEEN_PATH = "skin.pickerSeen"
+
+local PICKER_SPEC = {
+    owner     = addonName,
+    get       = NS.SkinChoice,
+    set       = NS.WriteSkinChoice,
+    page      = "general",
+    tab       = "Appearance",
+    -- The eye: the showroom is this addon's own frames, and it has no test mode.
+    onPreview = function() NS.Showroom.Show() end,
+    onClose   = function()
+        local S = NS.SchemaRuntime
+        if S and Tester.db then S.Set(PICKER_SEEN_PATH, true) end
+    end,
+    strings   = { PREVIEW_TIP = NS.L["Preview: open the skin showroom"] },
+}
+NS.SKIN_PICKER_SPEC = PICKER_SPEC
+
+--- Show the skin picker when this profile has not closed it yet. Answers true when it is up.
+function NS.MaybeShowSkinPicker()
+    local S, db = NS.SchemaRuntime, Tester.db
+    if not (S and db and db.profile) then return false end
+    if S.Get(PICKER_SEEN_PATH) == true or not db.profile.enabled then return false end
+    if InCombatLockdown and InCombatLockdown() then return false end
+    if type(Helpers.SkinPicker) ~= "function" then return false end
+    return Helpers.SkinPicker(PICKER_SPEC) ~= nil
+end
 
 -- ── Sample controls ──────────────────────────────────────────────────────────────────────────
 -- One row of each widget type, untabbed, under its group heading. No Appearance tab and no copy

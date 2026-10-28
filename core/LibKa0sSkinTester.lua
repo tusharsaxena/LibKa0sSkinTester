@@ -40,6 +40,8 @@ local function reloadProfile(self)
     end
     if NS.ApplySkinChoice then NS.ApplySkinChoice() end
     if NS.Showroom and NS.Showroom.ApplyWindowSettings then NS.Showroom.ApplyWindowSettings() end
+    -- A new or reset profile has not seen the skin picker (settings/Panel.lua).
+    if NS.MaybeShowSkinPicker then NS.MaybeShowSkinPicker() end
 end
 
 -- A profile switch rewrites no row, so its one line is written here (debug-logging-§10). A method,
@@ -114,6 +116,10 @@ function Tester:OnEnable()
     if NS.Lifecycle then
         NS.Lifecycle:Set(NS.HOLD_DISABLED, not (self.db and self.db.profile and self.db.profile.enabled))
     end
+
+    -- The first-run skin picker, once the stored skin is on (OnInitialize applied it) and the latch
+    -- has its answer: it skips a disabled addon and a login in combat (settings/Panel.lua).
+    if NS.MaybeShowSkinPicker then NS.MaybeShowSkinPicker() end
 end
 
 -- ── the stand-down (slash-commands-§7) ───────────────────────────────────────────────────────
