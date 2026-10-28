@@ -1,0 +1,7 @@
+ST-01 independent review (2026-10-29), master..HEAD (b832aff, 67d5963): no defects found, no fix commit.
+- Vendoring: libs/LibKa0s/ and tests/_kit/ are byte-identical (diff -rq) to git archive of LibKa0s feat/2026-10-29-skinning-rollout at 912f1b4 (LibKa0s/, testkit/), except media/icons pruned to the declared five (close, copy, clear, eye, settings) plus the licence. Provenance line in the branch form; declaration unchanged.
+- Samples: every Addon surfaces sample (owner token st.note, danger Button and caution Card via opts.tokens, TreeGroup via PaintAce, IconBorder fromSkin, SettingsFrameTemplate miniature with opts.stockDefault) goes through R.Paint; R.Paint's LIBRARY_MEMBERS fallback binds the owner for PaintAce only. The TreeGroup is repainted on OnLooksChanged.
+- Tier tokens (the owner's requested extra category): Values shows a 'Quality tiers (q.*)' category beside 'Semantic colors (sem.*)', both under text.heading headings; the six q.* tiers come from lib.SCHEMA in schema order, label and swatch in the tier's color, '<key>: none' muted with a hidden swatch when a skin leaves one unset.
+- Tests: test_showroom_owner.lua (9 cases) and 4 tier cases in test_showroom_values.lua assert the painted colors per skin and across a switch, not just existence.
+- Smoke: SHOW-16 (tiers), SHOW-17, SHOW-18 and the amended SHOW-8 are in docs/smoke-tests.md and under Pending sign-off.
+- Gate (ka0s-bounded): lua tests/run.lua 551 passed, 0 failed, 1 skipped; luacheck . 0 warnings / 0 errors in 71 files; no owned file over 1500 lines; README badge 551/551.
