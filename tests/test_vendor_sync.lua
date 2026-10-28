@@ -19,6 +19,23 @@
 -- A MISSING SIBLING CHECKOUT IS A SKIP, NOT A PASS: when `../LibKa0s` is not there the cases
 -- report SKIP with the reason naming the absent checkout, and the run's exit code stays 0.
 
+-- AN UNRELEASED RE-VENDOR NAMES ITS BRANCH. Between a library change and the tag that ships it, the
+-- provenance line reads `vX.Y.Z (unreleased, branch <name>) (MIT).`; no tag of that name exists yet,
+-- so the gate compares the payload to the tip of the named branch in the sibling checkout instead,
+-- byte for byte, with the same declaration rules. The comparison is not loosened: the branch moving
+-- turns this red exactly as a moved tag would. Re-vendoring the tag rolls the line back to the
+-- plain form and the default pattern.
+
 local VendorSync = dofile("tests/_kit/vendor_sync.lua")
 
-VendorSync.register(_G.SKINTESTER_TEST, {})
+local BRANCH_PATTERN = "[Bb]undles %[LibKa0s%]%b() v[%d%.]+ %(unreleased, branch ([%w%-%./_]+)%)"
+
+local function provenanceOpts()
+    local f = io.open("CLAUDE.md", "rb")
+    local doc = f and f:read("*a") or ""
+    if f then f:close() end
+    if doc:match(BRANCH_PATTERN) then return { provenancePattern = BRANCH_PATTERN } end
+    return {}
+end
+
+VendorSync.register(_G.SKINTESTER_TEST, provenanceOpts())

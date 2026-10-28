@@ -73,5 +73,6 @@ Bugs, feature requests and outstanding work are all tracked at [https://github.c
 The debug console uses [JetBrains Mono](https://www.jetbrains.com/lp/mono/), licensed under the SIL
 Open Font License 1.1. It ships inside the bundled LibKa0s payload, with its license text beside it.
 
-**Open Iconic** icons (the debug console's copy, clear and close marks), by Waybury, MIT license
+**Open Iconic** icons (the debug console's copy, clear and close marks, and the skin picker's eye
+and gear), by Waybury, MIT license
 (<https://github.com/iconic/open-iconic>), with the license beside them in the bundled payload.

@@ -88,6 +88,7 @@ NS.SKIN_VOCAB = {
     "GetAccentColor", "GetPanelColor", "GetFont",
     "TitleBar", "Divider", "Footer", "Card", "Slider", "NavItem", "Drawer", "ListRow", "MenuFrame",
     "Tooltip", "Strip", "Cover", "Text", "ChartStyle", "BarStyle", "IconBorder", "GlowColor",
+    "BarTexture",
 }
 
 if not Skin then

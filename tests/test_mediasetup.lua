@@ -23,9 +23,12 @@ local VENDORED = "Interface\\AddOns\\LibKa0sSkinTester\\libs\\LibKa0s\\media\\"
 --          addonName; and NS.MakeCloseButton (core/CoreSetup.lua), which has no caller today.
 --   copy   the debug console's title bar (libs/LibKa0s/DebugLog.lua, makeIconButton "copy").
 --   clear  the debug console's title bar (libs/LibKa0s/DebugLog.lua, makeIconButton "clear").
+--   eye    the first-run skin picker's preview button (libs/LibKa0s/OptionsSkinPicker.lua,
+--          iconButton "eye"), because settings/Panel.lua passes onPreview.
+--   settings  the skin picker's gear (libs/LibKa0s/OptionsSkinPicker.lua, iconButton "settings").
 -- Not here: info, drawn only by an Options id list's help mark, and this addon builds no id list
 -- (tests/test_libka0s.lua holds that line).
-local LIBRARY_DRAWN = { "clear", "close", "copy" }
+local LIBRARY_DRAWN = { "clear", "close", "copy", "eye", "settings" }
 
 -- The library files that ARE the payload, for the degraded case. Core.lua absent means every other
 -- major returns before LibStub:NewLibrary too, which makes this the whole-library-missing scenario
