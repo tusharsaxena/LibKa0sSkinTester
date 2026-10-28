@@ -130,6 +130,37 @@ add{
     onChange = function(v) NS.ApplySkinIgnore(nil, v) end,
 }
 
+-- The font and texture overrides (LibKa0s-Skin-1.0 minor 6), drawn by the same tab as its "Font and
+-- texture" dropdowns. A LibSharedMedia key, or "" for the skin's own; no `values`, because the keys
+-- are whatever media packs registered this session.
+add{
+    section = "skin",  group = "Appearance",
+    path    = "skin.font",  type = "string",  widget = "Dropdown",  skipRender = true,
+    label   = "Font",
+    tooltip = "The font this addon draws its text in, over the skin's own. Empty keeps the skin's.",
+    default = C.skin.font,
+    onChange = function(v) NS.ApplySkinMedia(v, nil) end,
+}
+
+add{
+    section = "skin",  group = "Appearance",
+    path    = "skin.texture",  type = "string",  widget = "Dropdown",  skipRender = true,
+    label   = "Texture",
+    tooltip = "The texture every bar of data is drawn with, over the skin's own. Empty keeps the skin's.",
+    default = C.skin.texture,
+    onChange = function(v) NS.ApplySkinMedia(nil, v) end,
+}
+
+-- The first-run skin picker (LibKa0s OptionsSkinPicker minor 1) shows while this is false; closing
+-- it sets it. A new or reset profile starts false, so it shows again (settings/Panel.lua).
+add{
+    section = "skin",  group = "Appearance",
+    path    = "skin.pickerSeen",  type = "bool",  widget = "CheckBox",  skipRender = true,
+    label   = "Skin picker seen",
+    tooltip = "Whether the skin picker that opens on a fresh profile has been closed.",
+    default = C.skin.pickerSeen,
+}
+
 -- ---------------------------------------------------------------------------
 -- Sample controls -- a page of its own (settings/Panel.lua): one row of each widget type the
 -- renderer draws, so a skin can be judged on a settings page as well as in the showroom. The rows

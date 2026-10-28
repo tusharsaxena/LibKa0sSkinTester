@@ -14,6 +14,9 @@ NS.C = {
         skin   = "ka0s",     -- the Ka0s skin worn, and so shown in the showroom
         ignorePanel = true,  -- the Scope: leave this addon's settings pages the client's (default on)
         ignoreFonts = false, -- the Scope: leave every font the client's (the skin still colors)
+        font    = "",        -- the font override, a LibSharedMedia key; "" is the skin's own
+        texture = "",        -- the bar texture override, a LibSharedMedia key; "" is the skin's own
+        pickerSeen = false,  -- the first-run skin picker was closed on this profile
     },
     -- The Sample controls page: one row of each widget type, so the skin can be seen on a settings
     -- page too. Nothing reads these but the page.
