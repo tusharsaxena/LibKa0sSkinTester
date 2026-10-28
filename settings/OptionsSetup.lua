@@ -169,7 +169,8 @@ if not lib then
     end
     H.AppearanceRows       = function() return nil end
     -- The first-run skin picker (LibKa0s v1.79.0, OptionsSkinPicker minor 1): no window on this
-    -- path, so SkinPicker answers nil and HideSkinPicker does nothing.
+    -- path, so SkinPicker answers a lone nil (never the live picker's nil, "queued": nothing waits
+    -- here) and HideSkinPicker does nothing.
     H.SkinPicker           = function() return nil end
     H.HideSkinPicker       = function() end
     H.SetRenderer          = function() end
@@ -188,6 +189,7 @@ if not lib then
     H.__panels             = function() return {} end
     H.__panelFor           = function() return nil end
     H.CreateOptionsPanel   = function() sayAtLoad() end
+    -- OpenOptionsPanel(pageKey) (OptionsRegistry minor 4): with no panel, any page says the same.
     H.OpenOptionsPanel     = function() sayOnConfig() end
     -- No ROW_VSPACER / SECTION_HEADING_H / BUTTON_PAIR_REL here, and no CHROME_GAP / TAB_H /
     -- BANNER_H either -- the chrome band's scalars are layout constants like the other four, and

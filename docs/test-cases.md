@@ -91,7 +91,7 @@ Total.
 - parity: the Launcher stub carries the whole live surface
 - parity: the Lifecycle stub carries the whole live surface
 
-### test_mediasetup.lua (12)
+### test_mediasetup.lua (13)
 
 - mediasetup: NS.Icon answers the vendored path, EXTENSIONLESS
 - mediasetup: an icon the library does not ship answers nil
@@ -105,6 +105,7 @@ Total.
 - mediasetup: this addon ships no private copy of the shared art (anti-patterns #63)
 - mediasetup: with no library there is no art and no face, and that is not an error
 - mediasetup: a degraded install still gets a REAL font, never nil and never a dead path
+- mediasetup: Ka0s Default's faces are Oxanium, and the vendored copy ships them
 
 ### test_envsetup.lua (9)
 
@@ -274,7 +275,7 @@ Total.
 - values: every sem token has a line
 - values: a skin change redraws them
 
-### test_showroom_textures.lua (7)
+### test_showroom_textures.lua (8)
 
 - textures: the section is built with three bars, five rows and five segments
 - textures: the status bars wear the accent, good and bad colors, in the bar texture
@@ -283,6 +284,7 @@ Total.
 - textures: a skin switch recolors the bars and relabels them
 - textures: a texture override repaints every fill and relabels it, live
 - textures: the section builds without the skin engine
+- textures: Ka0s Default draws its own Ka0s Default bar, shipped in the vendored copy
 
 ### test_skin_media.lua (9)
 
@@ -296,14 +298,18 @@ Total.
 - media: Ignore fonts wins over a font override
 - media: without the skin engine the apply is a quiet no-op
 
-### test_skin_picker.lua (13)
+### test_skin_picker.lua (22)
 
 - picker: a fresh profile shows it once the addon is enabled
 - picker: not before login
 - picker: the spec names this owner's seams, the General page's Skin tab and the eye
 - picker: closing it marks the profile, and the next login does not show it
 - picker: the eye opens the showroom and leaves the picker up
-- picker: the gear closes it and marks the profile
+- picker: the gear saves the pick, opens the General page itself, and marks the profile
+- picker: a pick previews: the skin moves live, the profile keeps its own and is not marked
+- picker: Apply saves the pick through the schema runtime and marks the profile
+- picker: the close control puts the old skin back, writes nothing, and marks the profile
+- picker: the title names this addon
 - picker: not while the addon is disabled
 - picker: a login in combat skips it, and the next trigger shows it
 - picker: a profile reset shows it again
@@ -311,6 +317,11 @@ Total.
 - picker: /st disable hides it, and the profile stays unseen
 - picker: a switch to a disabled profile hides it, and neither profile is marked
 - picker: a switch to a profile that closed it hides it, and writes nothing
+- picker: behind another Ka0s addon's picker it queues, and shows when that one closes
+- picker: a stand-down while queued takes it out unseen, and nothing shows after
+- picker: another addon's Apply to all marks this profile seen and gives it the skin
+- picker: this addon's Apply to all saves here and gives the other addon the skin
+- picker: Apply to all is hidden while this addon is the only skin owner
 
 ### test_settings_sample.lua (5)
 
@@ -639,7 +650,7 @@ Total.
 | test_harness.lua | 11 |
 | test_libka0s.lua | 55 |
 | test_surface_parity.lua | 8 |
-| test_mediasetup.lua | 12 |
+| test_mediasetup.lua | 13 |
 | test_envsetup.lua | 9 |
 | test_util.lua | 26 |
 | test_database.lua | 11 |
@@ -649,9 +660,9 @@ Total.
 | test_showroom.lua | 7 |
 | test_showroom_coverage.lua | 5 |
 | test_showroom_values.lua | 3 |
-| test_showroom_textures.lua | 7 |
+| test_showroom_textures.lua | 8 |
 | test_skin_media.lua | 9 |
-| test_skin_picker.lua | 13 |
+| test_skin_picker.lua | 22 |
 | test_settings_sample.lua | 5 |
 | test_panel.lua | 37 |
 | test_profiles.lua | 17 |
@@ -673,4 +684,4 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | Skipped | 1 |
-| **Total** | **515** |
+| **Total** | **526** |

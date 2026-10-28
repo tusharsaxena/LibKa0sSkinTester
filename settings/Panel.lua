@@ -116,8 +116,15 @@ Helpers.RegisterOptionsPage("general", "General", buildGeneralPage)
 -- ── the first-run skin picker (LibKa0s OptionsSkinPicker minor 1) ────────────────────────────
 -- A small window that asks for a skin before any settings page is opened. It shows while the
 -- profile's skin.pickerSeen is false: once after login, and after a profile switch, copy or reset
--- that lands on a profile whose key is false (a new or reset profile starts false). Closing it, by
--- its close control, its gear or Escape, sets the key. Picking a skin and the eye do not close it.
+-- that lands on a profile whose key is false (a new or reset profile starts false). A pick only
+-- previews; Apply and the gear save it through NS.WriteSkinChoice, and the close control and Escape
+-- put the skin the window opened with back. Every one of those routes sets the key; the eye does
+-- not close it.
+--
+-- One window serves every Ka0s addon in the client (the library's lib.__pickerQueue): behind another
+-- addon's picker this one waits, and shows when that one closes. Another addon's "Apply to all Ka0s
+-- addons" dismisses it unshown through its own onClose, which sets the key here too: the player has
+-- chosen this addon's skin.
 --
 -- Never in combat and never while the addon is disabled. The addon registers no game event (see
 -- core/LibKa0sSkinTester.lua's stand-down note), so a trigger in combat is skipped, not deferred:
@@ -125,7 +132,8 @@ Helpers.RegisterOptionsPage("general", "General", buildGeneralPage)
 --
 -- The addon takes it down too, and that is not the player closing it: on the stand-down (`/st
 -- disable`, a disabled profile) and on a profile event that lands where it must not show (disabled,
--- or already seen). That hide writes nothing, so the profile it leaves stays unseen.
+-- or already seen). That hide writes nothing, so the profile it leaves stays unseen: a window up runs
+-- onClose under the hostHiding flag, and a queued one leaves the queue with no onClose at all.
 
 local PICKER_SEEN_PATH = "skin.pickerSeen"
 
@@ -159,8 +167,9 @@ function NS.StandDownSkinPicker()
     if not ok then NS.DebugErrorOnce("Skin", "StandDownSkinPicker", err) end
 end
 
---- Show the skin picker when this profile has not closed it yet. Answers true when it is up. A
---- profile that has seen it, or a disabled addon, takes down one that is already up.
+--- Show the skin picker when this profile has not closed it yet. Answers true when it is up, and
+--- false, "queued" when another Ka0s addon's picker is up and this one waits behind it. A profile
+--- that has seen it, or a disabled addon, takes down one that is up or queued.
 function NS.MaybeShowSkinPicker()
     local S, db = NS.SchemaRuntime, Tester.db
     if not (S and db and db.profile) then return false end
@@ -170,7 +179,9 @@ function NS.MaybeShowSkinPicker()
     end
     if InCombatLockdown and InCombatLockdown() then return false end
     if type(Helpers.SkinPicker) ~= "function" then return false end
-    return Helpers.SkinPicker(PICKER_SPEC) ~= nil
+    local win, state = Helpers.SkinPicker(PICKER_SPEC)
+    if win ~= nil then return true end
+    return false, state
 end
 
 -- ── Sample controls ──────────────────────────────────────────────────────────────────────────

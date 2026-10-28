@@ -111,3 +111,21 @@ test("textures: the section builds without the skin engine", function()
     assertTrue(NS.Showroom.Section("textures") ~= nil, "built, painting nothing")
     assertEqual(NS.Textures.labels[1]:GetText(), "Texture: none")
 end)
+
+--- True when the file at `rel` (from the repo root) can be opened.
+local function shipped(rel)
+    local fh = io.open((T.root or ".") .. "/" .. rel, "rb")
+    if fh then fh:close() end
+    return fh ~= nil
+end
+
+test("textures: Ka0s Default draws its own Ka0s Default bar, shipped in the vendored copy", function()
+    -- red under: LibKa0s before SO-06, whose Ka0s Default (and so this section) drew "Blizzard".
+    local NS, mock = opened()
+    assertEqual(NS.Skin.Token("bar.texture"), "Ka0s Default")
+    assertEqual(NS.Textures.labels[1]:GetText(), "Texture: Ka0s Default", "the labels name it")
+    local Media = mock.LibStub("LibKa0s-Media-1.0", true)
+    local entry = Media and Media.TEXTURES["Ka0s Default"]
+    assertTrue(entry ~= nil, "the library's statusbar catalog carries it")
+    assertTrue(shipped("libs/LibKa0s/media/textures/" .. entry.file), "and the re-vendor shipped its file")
+end)

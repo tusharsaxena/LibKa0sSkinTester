@@ -304,3 +304,20 @@ function()
     assertTrue(type(NS.Constants.FONT_MONO) == "string" and NS.Constants.FONT_MONO ~= "",
         "FONT_MONO must never be nil — the console would refuse to build")
 end)
+
+test("mediasetup: Ka0s Default's faces are Oxanium, and the vendored copy ships them", function()
+    -- red under: LibKa0s before SO-06, whose Ka0s Default named Friz Quadrata (no file of ours).
+    local NS, env = T.enableAddon()
+    local body, title = NS.Skin.Token("font.body"), NS.Skin.Token("font.title")
+    assertEqual(body, "Ka0s Oxanium SemiBold")
+    assertEqual(title, "Ka0s Oxanium Bold")
+    local Media = env.LibStub("LibKa0s-Media-1.0", true)
+    for _, face in ipairs({ body, title }) do
+        local entry = Media.FONTS[face]
+        assertTrue(entry ~= nil, face .. " is in the library's catalog")
+        assertEqual(NS.MediaFont(face), VENDORED .. "fonts\\" .. entry.file)
+        local fh = io.open((T.root or ".") .. "/libs/LibKa0s/media/fonts/" .. entry.file, "rb")
+        assertTrue(fh ~= nil, face .. ": the re-vendor shipped " .. entry.file)
+        if fh then fh:close() end
+    end
+end)

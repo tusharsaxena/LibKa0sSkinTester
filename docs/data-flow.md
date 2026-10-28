@@ -2,7 +2,7 @@
 
 ## A skin pick
 
-- The player clicks a card in the showroom's swatch selector, ticks a skin on General -> Skin, picks one in the skin picker,
+- The player clicks a card in the showroom's swatch selector, ticks a skin on General -> Skin, applies one in the skin picker,
   or types `/st set skin.skin obsidian`. A card click is `NS.Selector.Pick`: it applies the Ka0s
   skin first and saves it only when that was a change, the same order the tab uses.
 - The tab calls `Skin:SetChoice("LibKa0sSkinTester", source, skin)`: the library resolves the skin,
@@ -23,6 +23,12 @@
   both halves through `NS.WriteSkinChoice`'s fourth argument; `/st set skin.texture <key>` goes
   through the row's `onChange`, `NS.ApplySkinMedia`. Another addon's copy reaches the same seam
   through `Skin:WriteChoice`.
+- The skin picker splits the two steps: a pick in its list calls `Skin:SetChoice` only (a preview,
+  repainted live, nothing written); Apply or the gear then hands the pending pair to
+  `NS.WriteSkinChoice`, and the close control or Escape calls `Skin:SetChoice` back to the pair the
+  window opened with. Every close then runs the spec's `onClose`, which sets `skin.pickerSeen`.
+  "Apply to all Ka0s addons" (this addon's or another's) reaches every other owner through
+  `Skin:WriteChoice`, as the tab's copy does.
 
 ## Opening the showroom
 

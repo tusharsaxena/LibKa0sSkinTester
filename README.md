@@ -3,7 +3,7 @@
 ![WoW](https://img.shields.io/badge/WoW-Midnight_12.1.5-purple)
 ![License](https://img.shields.io/badge/License-MIT-orange)
 ![Standard](https://img.shields.io/badge/Ka0s-WoW_Addon_Standard-yellow)
-![Tests](https://img.shields.io/badge/Tests-515%2F515_passing-green)
+![Tests](https://img.shields.io/badge/Tests-526%2F526_passing-green)
 
 Ka0s Skin Tester is a fitting room for the Ka0s skins. Pick a skin and one window shows you what that skin does to buttons, tabs, lists, scrollbars, tooltips and everything else it can paint, so you don't have to open five other addons to see how a scrollbar came out.
 
@@ -19,7 +19,9 @@ Type `/st` to open the settings, and `/st show` to open the showroom. `/skintest
 
 Across the top of the showroom is a row of nine cards, one per Ka0s skin, each with four color swatches. Click one and the window repaints in it. The General page's Skin tab picks the same thing, and either way the choice is saved with your profile, so a second profile can wear a different skin.
 
-The first time a profile runs, a small Choose a skin window opens. Pick a skin from its list (each one shows three of its colors and its name in its own font), press the eye to open the showroom in it, or press the gear to go to the Skin tab. Closing the window, with its close button, the gear or Escape, means you won't see it again on that profile. A new profile, or one you reset, shows it again.
+The first time a profile runs, a small "Choose a skin for Ka0s Skin Tester" window opens high on the screen, above where the showroom opens. Pick a skin from its list (each one shows three of its colors and its name in its own font) and the tester wears it at once, as a preview. Press the eye to see it in the showroom, Apply to keep it, or the gear to keep it and go to the Skin tab. The close button and Escape put back the skin you had. With another Ka0s addon loaded, "Apply to all Ka0s addons" gives every one of them the same skin. Whichever way you close the window, you won't see it again on that profile. A new profile, or one you reset, shows it again.
+
+When several Ka0s addons start on new profiles at once, their skin windows come one at a time, and "Apply to all Ka0s addons" answers all of them.
 
 Below the cards, the showroom scrolls through the window chrome, controls, lists, text, panels and overlays, then the skin's raw colors, then the bar textures at the bottom: three status bars, a bar chart and a stacked bar, each labeled with the texture it is drawn with. Every sample has a small label under it naming the part it shows.
 

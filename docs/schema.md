@@ -16,7 +16,7 @@ capture ring, outside AceDB, written only by the harness).
 | `skin.texture` | string | `""` | Skin (Font and texture) | A LibSharedMedia statusbar key for every bar of data; `""` is the skin's own |
 | `skin.ignorePanel` | bool | `true` | Skin (Scope) | Leave this addon's settings pages the client's (`Skin:SetIgnore`) |
 | `skin.ignoreFonts` | bool | `false` | Skin (Scope) | Leave every font the client's; the skin still colors text, and a font override has no effect |
-| `skin.pickerSeen` | bool | `false` | none (skip-render) | The first-run skin picker was closed on this profile; set by its `onClose` |
+| `skin.pickerSeen` | bool | `false` | none (skip-render) | The first-run skin picker was closed on this profile (Apply, the gear, the close control, Escape, or another addon's Apply to all); set by its `onClose` |
 | `sample.checked` | bool | `true` | Sample controls | Shown, read by nothing |
 | `sample.size` | number | `5` | Sample controls | 1 to 10, step 1; read by nothing |
 | `sample.mode` | string | `medium` | Sample controls | `small`, `medium`, `large`; read by nothing |

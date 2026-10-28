@@ -5,7 +5,13 @@
 -- shows (skin.pickerSeen false: after login, after a profile event), when it does not (seen, in
 -- combat, disabled), the spec it hands over (the write seams, the General page's Skin tab, the
 -- eye) and that a close is recorded through the schema runtime.
-
+--
+-- Since PK-02 a pick only previews: Apply (and the gear) save it through this addon's write seam,
+-- and the close control puts the skin the window opened with back. Every one of those routes marks
+-- the profile seen. One window serves every Ka0s addon: behind another addon's picker this one
+-- queues (MaybeShowSkinPicker answers false, "queued"), a stand-down takes it out of the queue
+-- unseen, and another addon's "Apply to all" marks it seen through its own onClose. The second
+-- addon in those cases is a second Options instance and skin owner on the same library tables.
 local T = _G.SKINTESTER_TEST
 local test, assertEqual, assertTrue, assertFalse = T.test, T.assertEqual, T.assertTrue, T.assertFalse
 
@@ -71,12 +77,79 @@ test("picker: the eye opens the showroom and leaves the picker up", function()
     assertFalse(seen(NS))
 end)
 
-test("picker: the gear closes it and marks the profile", function()
+--- The settings category registered under `label`, or nil.
+local function category(mock, label)
+    for _, c in ipairs(mock.categories) do
+        if c.label == label then return c end
+    end
+end
+
+--- Click a control the way the client does.
+local function click(btn) btn:GetScript("OnClick")(btn, "LeftButton") end
+
+--- Open the window's list and click the row for skin `key`. The host mock has no GetChildren, so
+--- the rows are found among every recorded frame by their parent, the list.
+local function pickRow(mock, f, key)
+    click(f.dd)
+    for _, r in ipairs(mock.frames) do
+        if type(r) == "table" and r.__parent == f.list and r.key == key then return click(r) end
+    end
+    error("no row for " .. key)
+end
+
+local function profileSkin(NS) return NS.addon.db.profile.skin.skin end
+local function applied(mock) return select(2, mock.LibStub("LibKa0s-Skin-1.0"):GetChoice("LibKa0sSkinTester")) end
+
+test("picker: the gear saves the pick, opens the General page itself, and marks the profile", function()
+    -- red under: OptionsRegistry minor 3's OpenOptionsPanel(), which opened the parent (landing)
+    -- category whatever page the spec named.
     local NS, _, mock = T.enableAddon()
     local f = picker(mock)
-    f.settings:GetScript("OnClick")(f.settings, "LeftButton")
+    pickRow(mock, f, "ember")
+    local before = #mock.openedTo
+    click(f.settings)
     assertFalse(shown(mock), "the gear closes the picker")
     assertTrue(seen(NS))
+    assertEqual(profileSkin(NS), "ember", "the pending pick is saved first")
+    assertEqual(#mock.openedTo, before + 1, "one category opened")
+    assertEqual(mock.openedTo[#mock.openedTo], category(mock, "General"):GetID(), "the General page, not the landing")
+end)
+
+test("picker: a pick previews: the skin moves live, the profile keeps its own and is not marked", function()
+    local NS, _, mock = T.enableAddon()
+    local f = picker(mock)
+    pickRow(mock, f, "ember")
+    assertEqual(applied(mock), "ember", "the addon wears the preview")
+    assertEqual(profileSkin(NS), "ka0s", "nothing was written")
+    assertTrue(shown(mock), "the window stays")
+    assertFalse(seen(NS))
+end)
+
+test("picker: Apply saves the pick through the schema runtime and marks the profile", function()
+    local NS, _, mock = T.enableAddon()
+    local f = picker(mock)
+    pickRow(mock, f, "obsidian")
+    click(f.apply)
+    assertFalse(shown(mock), "Apply closes the picker")
+    assertEqual(profileSkin(NS), "obsidian", "the pick is stored")
+    assertEqual(applied(mock), "obsidian", "and still worn")
+    assertTrue(seen(NS))
+end)
+
+test("picker: the close control puts the old skin back, writes nothing, and marks the profile", function()
+    local NS, _, mock = T.enableAddon()
+    local f = picker(mock)
+    pickRow(mock, f, "ember")
+    click(f.close)
+    assertFalse(shown(mock))
+    assertEqual(applied(mock), "ka0s", "the preview is put back")
+    assertEqual(profileSkin(NS), "ka0s", "nothing was written")
+    assertTrue(seen(NS), "closing it still counts as seen")
+end)
+
+test("picker: the title names this addon", function()
+    local _, _, mock = T.enableAddon()
+    assertEqual(picker(mock).title:GetText(), "Choose a skin for Ka0s Skin Tester")
 end)
 
 test("picker: not while the addon is disabled", function()
@@ -158,4 +231,101 @@ test("picker: a switch to a profile that closed it hides it, and writes nothing"
     assertFalse(shown(mock), "Alt closed it, so it goes")
     assertTrue(seenIn(NS, "Alt"))
     assertFalse(seenIn(NS, "Default"), "Default is still unseen")
+end)
+
+-- ── one window across Ka0s addons (PK-02) ─────────────────────────────────────────────────────
+
+local OTHER = "KaosOtherAddon"
+
+--- A second Ka0s addon in the same client: a skin owner over `store` and an Options instance of its
+--- own, on the library tables this addon's copy registered. Answers the instance and the store.
+local function otherAddon(mock)
+    local store = { source = "ka0s", skin = "ka0s", closed = 0 }
+    mock.LibStub("LibKa0s-Skin-1.0"):RegisterOwner(OTHER, {
+        label = "Other Addon",
+        get   = function() return store.source, store.skin end,
+        set   = function(src, sk) store.writes = (store.writes or 0) + 1; store.source, store.skin = src, sk end,
+    })
+    local O = mock.LibStub("LibKa0s-Options-1.0"):New({
+        parentTitle = "Other Addon", mainPanelName = "KaosOtherMain", addonName = OTHER,
+        print = function() end,
+        get = function() end, set = function() end, applyDefault = function() end,
+        rowsForPage = function() return {} end, allRows = function() return {} end,
+    })
+    local spec = {
+        owner   = OTHER,
+        get     = function() return store.source, store.skin end,
+        set     = function(src, sk) store.source, store.skin = src, sk end,
+        onClose = function() store.closed = store.closed + 1 end,
+    }
+    return O, store, spec
+end
+
+local function queue(mock) return mock.LibStub("LibKa0s-Options-1.0").__pickerQueue end
+
+--- This addon booted, another addon's picker up first, then this addon's OnEnable.
+local function behindOther()
+    local NS, _, mock = T.bootAddon()
+    local O, store, spec = otherAddon(mock)
+    local other = O.SkinPicker(spec)
+    NS.addon:OnEnable()
+    return NS, mock, other, store
+end
+
+test("picker: behind another Ka0s addon's picker it queues, and shows when that one closes", function()
+    -- red under: MaybeShowSkinPicker's bare `SkinPicker(spec) ~= nil`, which answered a lone false
+    -- for a queued call.
+    local NS, mock, other = behindOther()
+    assertTrue(other:IsShown(), "the other addon's window stays up")
+    assertFalse(shown(mock), "this addon's window is not shown beside it")
+    assertEqual(#queue(mock).waiting, 1, "it waits in the one queue")
+    local up, why = NS.MaybeShowSkinPicker()
+    assertFalse(up, "asking again shows nothing")
+    assertEqual(why, "queued")
+    assertEqual(#queue(mock).waiting, 1, "one entry per owner")
+    assertFalse(seen(NS), "waiting is not seeing")
+    click(other.close)
+    assertTrue(shown(mock), "this addon's picker is up next")
+    assertFalse(seen(NS))
+end)
+
+test("picker: a stand-down while queued takes it out unseen, and nothing shows after", function()
+    -- red under: a host that counted any HideSkinPicker as the player closing it.
+    local NS, mock, other = behindOther()
+    NS.addon:OnSlashCommand("disable")
+    assertEqual(#queue(mock).waiting, 0, "out of the queue")
+    assertTrue(other:IsShown(), "the other addon's window is not this addon's to hide")
+    click(other.close)
+    assertFalse(shown(mock), "this addon does not show after it")
+    assertFalse(seen(NS), "and its profile is still unseen")
+end)
+
+test("picker: another addon's Apply to all marks this profile seen and gives it the skin", function()
+    local NS, mock, other = behindOther()
+    assertTrue(other.applyAll:IsShown(), "Apply to all is offered: this addon is another owner")
+    pickRow(mock, other, "ember")
+    click(other.applyAll)
+    assertFalse(other:IsShown())
+    assertFalse(shown(mock), "this addon's queued picker never shows")
+    assertTrue(seen(NS), "its onClose ran: the profile counts it seen")
+    assertEqual(profileSkin(NS), "ember", "the skin came through this addon's write seam")
+end)
+
+test("picker: this addon's Apply to all saves here and gives the other addon the skin", function()
+    local NS, _, mock = T.bootAddon()
+    local _, store = otherAddon(mock)
+    NS.addon:OnEnable()
+    local f = picker(mock)
+    assertTrue(f.applyAll:IsShown(), "offered while another owner is registered")
+    pickRow(mock, f, "glass")
+    click(f.applyAll)
+    assertFalse(shown(mock))
+    assertTrue(seen(NS))
+    assertEqual(profileSkin(NS), "glass")
+    assertEqual(store.skin, "glass", "the other addon's own setter took the skin")
+end)
+
+test("picker: Apply to all is hidden while this addon is the only skin owner", function()
+    local _, _, mock = T.enableAddon()
+    assertFalse(picker(mock).applyAll:IsShown())
 end)

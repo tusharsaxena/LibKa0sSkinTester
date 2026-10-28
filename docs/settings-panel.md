@@ -13,7 +13,7 @@ login; each page's body builds on its first show.
     settings. No Lock frame, Test mode or General visibility, because the showroom is a window the
     player opens, not a positionable display.
   - **Skin** (the library's own tab, keyed `Appearance` and labeled "Skin"): the skin source, the
-    nine skins, "Font and texture" (two dropdowns, each starting with "Skin's own (<key>)", then
+    nine skins under the "Look" heading (the tab's own name is not repeated), "Font and texture" (two dropdowns, each starting with "Skin's own (<key>)", then
     every LibSharedMedia font or statusbar key), the Scope ("Ignore settings panel", "Ignore
     fonts"), "Copy to every Ka0s addon..." and the note. A pick repaints the showroom at once; so do
     the font, the texture and Ignore fonts. Ignore fonts wins over a font override.
@@ -47,13 +47,35 @@ The library's `O.SkinPicker` (OptionsSkinPicker minor 1), shown by `NS.MaybeShow
 (settings/Panel.lua) while the profile's `skin.pickerSeen` is false: once from `OnEnable`, after the
 stored skin is applied, and after every profile switch, copy or reset. Never while the addon is
 disabled and never in combat; the addon registers no game event, so a trigger in combat is skipped
-and the next one asks again. The window: "Choose a skin", a dropdown of every skin (three swatches
-and the name in that skin's own face), the eye (the showroom), the gear (the panel, then General's
-Skin tab) and the close control. Closing it by any route sets `skin.pickerSeen` through the schema
-runtime; a pick and the eye leave it up. A new or reset profile starts false, so it shows again.
+and the next one asks again.
+
+The window sits with its center 75% of the way up the screen, so the showroom the eye opens does not
+cover it. It holds the title "Choose a skin for Ka0s Skin Tester", a dropdown of every skin (three
+swatches and the name in that skin's own face), the eye (the showroom), the gear, "Apply", "Apply
+to all Ka0s addons" (only while another Ka0s addon is loaded) and the close control.
+
+- A pick previews: the showroom and the addon repaint in it, and nothing is written.
+- **Apply** saves the pick through `NS.WriteSkinChoice`, then closes.
+- **The gear** saves the pick as Apply does, then opens the settings panel on the General page
+  (`O.OpenOptionsPanel("general")`) and selects its Skin tab.
+- **The close control and Escape** put the skin the window opened with back, write nothing, and
+  close.
+- **Apply to all Ka0s addons** saves here, gives every other Ka0s addon the same source and skin
+  (their scope and font and texture overrides are left alone), and closes this window and every
+  picker still waiting.
+
+Each of those closes sets `skin.pickerSeen` through the schema runtime; the eye leaves the window
+up. A new or reset profile starts false, so it shows again.
+
+One window serves every Ka0s addon in the client. Behind another addon's picker this one waits in
+the library's queue (`NS.MaybeShowSkinPicker` answers false, "queued") and shows when that one
+closes. Another addon's "Apply to all" dismisses it unshown, through its `onClose`, so the profile
+is marked seen and has the skin.
+
 The addon takes it down itself on the stand-down (`/st disable`, `NS.StandDownSkinPicker`) and on a
-profile event that lands on a disabled profile or one that has seen it; that hide is not a close by
-the player, so it writes nothing and the profile stays unseen.
+profile event that lands on a disabled profile or one that has seen it. That hide is not a close by
+the player: a window that is up closes with nothing recorded, a picker still waiting leaves the
+queue, and the profile stays unseen.
 
 ## The launcher
 
