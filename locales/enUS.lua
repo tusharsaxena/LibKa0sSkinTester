@@ -52,8 +52,11 @@ L["Lists"]                              = "Lists"
 L["Text"]                               = "Text"
 L["Panels"]                             = "Panels"
 L["Overlays"]                           = "Overlays"
+L["Addon surfaces"]                     = "Addon surfaces"
 L["Values"]                             = "Values"
 L["Textures"]                           = "Textures"
+L["Semantic colors (sem.*)"]            = "Semantic colors (sem.*)"
+L["Quality tiers (q.*)"]                = "Quality tiers (q.*)"
 
 -- The first-run skin picker's eye
 L["Preview: open the skin showroom"]    = "Preview: open the skin showroom"

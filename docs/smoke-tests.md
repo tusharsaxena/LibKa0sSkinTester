@@ -136,7 +136,7 @@ restart the client: new font and texture files are only seen at client start.
 - **SHOW-7. A pick made elsewhere.** With the showroom open, pick Glass on General -> Skin. →
   The window repaints and the Glass card becomes the selected one. Result:
 - **SHOW-8. Every section, every skin.** Click through all nine cards and scroll the whole window on
-  each. → Chrome, Controls, Lists, Text, Panels, Overlays, Values and Textures are all legible in every skin.
+  each. → Chrome, Controls, Lists, Text, Panels, Overlays, Addon surfaces, Values and Textures are all legible in every skin.
   Record an illegible sample as a skin defect (skin, section, caption), not as a showroom failure.
   Result:
 - **SHOW-9. Live samples.** Hover "Hover me", click the dropdown, click the second and third tabs. →
@@ -144,6 +144,13 @@ restart the client: new font and texture files are only seen at client start.
 - **SHOW-10. Values.** Look at the Values section in Ka0s Default, then Azeroth. → The swatches and the
   `sem.*` lines change color with the skin, and the body-font line changes face where the skin sets
   one. Result:
+- **SHOW-16. Quality tiers (ST-01).** Scroll to the Values section in Ka0s Default. → Below the
+  getters, two headings in the heading color, "Semantic colors (sem.*)" over the `sem.*` lines and
+  "Quality tiers (q.*)" over six lines in order: `q.poor` gray, `q.common` white, `q.uncommon` green,
+  `q.rare` blue, `q.epic` purple, `q.legendary` orange, each label and swatch in that tier's color,
+  the client's item colors. Click Obsidian, then Ember. → The tiers keep the client's colors (no
+  shipped skin moves them), and every label is still drawn. Fail: a missing tier, tiers out of order,
+  a label whose color differs from its swatch, or a heading in body text. Result:
 - **SHOW-11. Card names on one line (R5-05).** `/st show`, then click High Contrast. → Every card's
   name stays on one line above its swatches; a long name such as "High Contrast" is drawn a little
   smaller rather than wrapped or cut. Click Ka0s Default. → The names are back at full size. Fail: a
@@ -179,6 +186,28 @@ restart the client: new font and texture files are only seen at client start.
   covers the bar hiding when they fit. Fail: no bar, a knob that does not move with the wheel, a
   drag that leaves the sections still, a bar over the section content, or a bar in another skin's
   colors. Result:
+
+- **SHOW-17. Addon surfaces (ST-01; LibKa0s v1.80.0).** Scroll to the Addon surfaces section in Ka0s
+  Default. → "A note in this addon's own gray" in a mid gray (0.53, darker than the captions); a
+  "Delete run" button on a dark red fill with a red edge and a white label; a "Waiting for the pull"
+  callout on a faint orange wash with an orange edge and an orange title; a question-mark icon with a
+  2px black border; a TreeGroup with General (expanded to Skin), Strings and About, in the client's
+  stock look; and a small window titled "Settings-style window" with the client's settings-window
+  frame and a stock close button, exactly as Blizzard draws them. Click High Contrast. → The
+  note turns a light gray (0.85, the token's own High Contrast value), the button keeps its red edge
+  on the skin's button fill with a red label, the callout takes the skin's card fill with an orange
+  edge and title, the icon border follows the skin, and the small window is now skinned (its frame
+  art faded, the skin's window colors and title). Click Obsidian → the icon border is 1px. Click Ka0s
+  Default → the small window is the client's frame again. Clicking its close button does nothing.
+  Fail: a sample in another skin's colors, a small window skinned under Ka0s Default or left stock
+  under another skin, or an error. Result:
+- **SHOW-18. The TreeGroup follows the Scope (ST-01).** With the showroom open on Addon surfaces,
+  open General -> Skin and clear Scope -> Ignore settings panel. → The TreeGroup sample repaints at
+  once: both panes in the skin's navigation fill and edge, the row labels in the skin's navigation
+  text and body font, the selected row (General) tinted. Click a row → the selection moves and stays
+  tinted. Click Glass → it follows. Set Ignore settings panel again → the TreeGroup is stock again.
+  Fail: a TreeGroup that needs a reload to change, a row that loses its paint after a click, or a
+  stock TreeGroup while the panel is skinned. Result:
 
 ## First-run skin picker
 
@@ -289,3 +318,4 @@ restart the client: new font and texture files are only seen at client start.
 | PICKER-13..16 | ST-01, the review of PK-02: Apply and close in combat, a pending preview meeting another write or a profile event, Apply's reload popup, a queued picker in combat | Rewritten for PK-03 (PICKER-14 (a) to (c), PICKER-16); no client pass recorded yet |
 | SHOW-14 | ST-02, LibKa0s v1.79.0's bar textures (SO-04) | No client pass recorded yet |
 | SHOW-1 (amended), SHOW-15 | ST-03, the showroom's scrollbar | No client pass recorded yet |
+| SHOW-8 (amended), SHOW-16..18 | ST-01 of the skinning rollout (LibKa0s v1.80.0): the Quality tiers category and the Addon surfaces section | No client pass recorded yet |

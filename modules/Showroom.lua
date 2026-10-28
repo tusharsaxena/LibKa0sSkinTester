@@ -11,12 +11,15 @@ local addonName, NS = ...
 -- coverage claim (tests/test_showroom_coverage.lua): a sample painted around the wrapper is one the
 -- claim cannot see.
 --
---   R.Paint(name, target, ...)     the facade's `name`, recorded; answers what it answered
+--   R.Paint(name, target, ...)     the facade's `name`, recorded; answers what it answered. A name
+--                                  the facade lacks but the library carries as an owner-bound member
+--                                  (LIBRARY_MEMBERS: PaintAce) is called as Skin:name(owner, target, ...)
 --   R.AddSection(key, title, fn)   a section, laid out in registration order; fn(body, paint) answers
 --                                  its height, where paint(name, ...) is R.Paint
 --   R.Caption(parent, text)        a FontString in the skin's muted text: a sample's label
 --   R.Section(key)                 a built section's frame (with .title); nil before the first open
---   R.Grid(body)                   a wrapping row layout of captioned cells, for a section's build
+--   R.Grid(body)                   a wrapping row layout of captioned cells, for a section's build;
+--                                  g:Break() starts a new row
 --   R.SampleButton(parent, w, h, text, template)   a Button with its label in .text
 
 NS.Showroom = NS.Showroom or {}
@@ -57,10 +60,16 @@ local function anchorDefault(f)
     f:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
 end
 
+-- The library members a sample paints through that the facade does not carry: each takes the owner
+-- first (Skin:PaintAce(owner, widget)), so the wrapper binds it.
+local LIBRARY_MEMBERS = { PaintAce = true }
+
 function R.Paint(name, target, ...)
     R.used[name] = true
     local fn = S()[name]
     if type(fn) == "function" then return fn(target, ...) end
+    local Skin = LIBRARY_MEMBERS[name] and LibStub and LibStub("LibKa0s-Skin-1.0", true)
+    if Skin and type(Skin[name]) == "function" then return Skin[name](Skin, addonName, target, ...) end
 end
 
 local function paint(name, ...) return R.Paint(name, ...) end
@@ -95,6 +104,9 @@ function R.Grid(body)
         self.x = self.x + span + CELL_GAP
         self.rowH = math.max(self.rowH, h + CAPTION_H)
         return cell
+    end
+    function g:Break()
+        if self.x > 0 then self.x, self.y, self.rowH = 0, self.y + self.rowH + CELL_GAP, 0 end
     end
     function g:Height() return self.y + self.rowH end
     return g

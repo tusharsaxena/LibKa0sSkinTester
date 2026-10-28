@@ -19,8 +19,10 @@ never published on CurseForge.
   General -> Skin, the library's own tab, or in the first-run skin picker a fresh profile opens; the
   showroom repaints at once on a pick. The Skin tab's Font and Texture lay a font and a bar texture
   over the skin's own.
-- Eight sections show every primitive in `lib.VOCAB` and every getter's value, each sample captioned
-  with the primitive and state it shows; a Sample controls settings page shows the skin on the
+- Nine sections show every primitive in `lib.VOCAB`, every getter's value, the semantic colors and
+  quality tiers, and the surfaces an adopting addon gets beyond the vocabulary (its own owner tokens,
+  the `opts.tokens` slot remap, an AceGUI TreeGroup, an icon border that follows the skin, a window
+  kept stock under Ka0s Default), each sample captioned with the primitive and state it shows; a Sample controls settings page shows the skin on the
   settings renderer's widgets, once the Skin tab's Ignore settings panel is off (a new profile
   has it on).
 - Everything is painted through the addon's own skin facade, so what the showroom shows is what an
