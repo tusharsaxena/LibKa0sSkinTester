@@ -17,8 +17,8 @@ its theme, and a retired number is never reused.
 | COMBAT-1..2 | Combat | The showroom and the panel in combat |
 | DIAG-1..2 | Diagnostics | The debug console and the report |
 | DEGRADED-1 | Degraded install | The library-absent load |
-| SHOW-1..12 | Showroom | The window, the swatch selector, the sections, position and scale, the textures |
-| PICKER-1..7 | First-run skin picker | When it shows, its list, the eye, the gear, closing it, taking it down |
+| SHOW-1..13 | Showroom | The window, the swatch selector, the sections, position and scale, the textures, Ka0s Default's face and bar |
+| PICKER-1..12 | First-run skin picker | When and where it shows, its title, preview, Apply, close, the gear, Apply to all, one window across addons, taking it down |
 | LOC-1 | Non-English client | Locale-dependent behavior |
 
 ## Before you start
@@ -52,8 +52,9 @@ restart the client: new font and texture files are only seen at client start.
 - **PANEL-2. General's tabs.** Open General. → Tabs in this order: Master controls, Skin,
   Keybindings. Master controls shows Enable Skin Tester, Master scale, Master opacity, Debug console, Minimap
   button, Reset position, Reset all settings. Result:
-- **PANEL-3. Skin.** On the Skin tab, pick each skin in turn with the showroom open. → The
-  showroom repaints at once each time; the pick survives a `/reload`. Result:
+- **PANEL-3. Skin.** On the Skin tab, pick each skin in turn with the showroom open. → The skins
+  sit under a "Look" heading (not a second "Skin"); the showroom repaints at once each time; the pick
+  survives a `/reload`. Result:
 - **PANEL-4. Keybindings.** Bind a key on General -> Keybindings, then press it. → The showroom
   toggles; the same key shows under Options -> Keybindings -> Ka0s Skin Tester. Result:
 - **PANEL-5. Sample controls.** On General -> Skin untick Ignore settings panel (a new
@@ -153,22 +154,38 @@ restart the client: new font and texture files are only seen at client start.
   over a dark track, and each sample labeled "Texture: <key>". On the switch the colors, the
   texture and the labels change at once. Fail: a flat fill where the skin names a texture, or a label
   naming a key the bars do not show. Result:
+- **SHOW-13. Ka0s Default's face and bar.** Fully restart the client (new font and texture files),
+  then `/st show` in Ka0s Default. → Every title is in Oxanium Bold and the body text in Oxanium
+  SemiBold, a squared techno face, not Friz Quadrata; the Textures section's labels read "Texture:
+  Ka0s Default" and every fill shows that bar, dim at the top with a highlight low on the bar and a
+  short lip, not the flat Blizzard bar. Click Obsidian, then WoW Default. → Their own faces and bars;
+  WoW Default is still Friz Quadrata with the Blizzard bar. Fail: a square where a glyph should be,
+  or a flat or missing fill. Result:
 
 ## First-run skin picker
 
 - **PICKER-1. A fresh profile.** Create a new profile on the Profiles page (or log in on a character
-  that never ran the tester). → A small "Choose a skin" window opens, in the skin worn, with a
-  dropdown showing that skin, an eye, a gear and a close control. Result:
-- **PICKER-2. Its list.** Click the dropdown. → The list opens inside the window, which grows to
-  hold it: every skin, each row three color swatches and the skin's name in that skin's own font and
-  size. Pick Ember. → The window and the showroom repaint in Ember, the list closes and the window
-  stays up. Result:
-- **PICKER-3. The eye.** Click the eye. → The showroom opens in the picked skin; the picker stays up.
-  Result:
-- **PICKER-4. The gear.** Click the gear. → The settings panel opens; on General, the Skin tab is the
-  one selected. The picker closes. In combat, the gear does nothing and the picker stays. Result:
-- **PICKER-5. Closed means seen.** On a fresh profile, close the picker with its close control (and
-  on another, with Escape), then `/reload`. → It does not open again on that profile. Result:
+  that never ran the tester), with no other Ka0s addon loaded. → A small window titled "Choose a skin
+  for Ka0s Skin Tester" opens in the skin worn, its center about three quarters of the way up the
+  screen: a dropdown showing that skin, with the eye and the gear beside it, an Apply button and a
+  close control. No "Apply to all Ka0s addons" button. Fail: a window centered on the screen, or a
+  title that does not name the tester. Result:
+- **PICKER-2. Its list, and a pick previews.** Click the dropdown. → The list opens inside the
+  window, which grows to hold it: every skin, each row three color swatches and the skin's name in
+  that skin's own font and size. Pick Ember. → The window and the showroom repaint in Ember, the
+  list closes, the dropdown reads Ember and the window stays up. Open General -> Skin. → It still
+  shows the skin you had: a pick is only a preview. `/reload`. → The skin you had, and the picker
+  opens again. Result:
+- **PICKER-3. The eye.** Pick Ember, then click the eye. → The showroom opens in Ember, below the
+  picker, which it does not cover; the picker stays up with Ember still pending. Result:
+- **PICKER-4. The gear lands on General -> Skin.** Pick Glass, then click the gear. → The settings
+  panel opens on General (not the Ka0s Skin Tester landing page) with the Skin tab selected, Glass
+  ticked there and worn. The picker closes; `/reload` keeps Glass and does not open it again. In
+  combat, the gear does nothing and the picker stays. Result:
+- **PICKER-5. Close puts the old skin back.** On a fresh profile, pick Ember, then close the picker
+  with its close control. → The tester goes back to the skin it wore when the window opened, and
+  General -> Skin still shows that skin. On another fresh profile, do the same with Escape. → The
+  same. `/reload` on either. → It does not open again on that profile. Result:
 - **PICKER-6. After a reset, and a disabled profile.** Reset the profile (Reset all settings, or
   the Profiles page). → The picker opens again. A reset restores `enabled` to on, so it opens even
   if the addon was disabled before. Now close the picker on profile A, create profile B (the picker
@@ -180,6 +197,27 @@ restart the client: new font and texture files are only seen at client start.
   → It opens again: the addon taking it down did not mark the profile seen. With it up on a profile
   that has not closed it, switch to one that has. → It goes away, and switching back opens it
   again. Result:
+- **PICKER-8. Apply saves.** On a fresh profile, pick Obsidian, then press Apply. → The picker
+  closes and the tester keeps Obsidian; General -> Skin shows it. `/reload`. → Still Obsidian, and
+  the picker does not open. Result:
+- **PICKER-9. Apply to all Ka0s addons.** With Ka0s Loot History installed (on this library
+  branch) and both on profiles that have seen their pickers, create a fresh profile here only. → The
+  picker shows "Apply to all Ka0s addons" beside Apply. Pick Azeroth and press it. → The picker
+  closes, both addons wear Azeroth, and Loot History's Skin tab shows Azeroth with its Scope and its
+  font and texture as they were. If either needs a reload, one popup names it. Result:
+- **PICKER-10. One window at a time.** With Ka0s Loot History installed, give both addons fresh
+  profiles and `/reload`. → One skin picker shows, never two, its title naming one addon. Close it
+  (or press Apply). → The other addon's picker opens, its title naming that addon. Close it. → No
+  third window. `/reload`. → Neither opens again. Result:
+- **PICKER-11. Apply to all ends the queue.** As PICKER-10, but on the first picker pick Glass and
+  press "Apply to all Ka0s addons". → No second picker opens, and both addons wear Glass.
+  `/reload`. → Neither picker opens again. Result:
+- **PICKER-12. Taken down while waiting.** As PICKER-10, with Loot History's picker up first and the
+  tester's waiting behind it, run `/st disable`, then close Loot History's picker. → The tester's
+  picker does not open. `/st enable`, then switch the tester's profile away and back. → Its picker
+  opens: waiting and being taken down did not mark the profile seen. Load order decides which
+  picker comes first: if the tester's is up first, close it, then create a fresh tester profile
+  while Loot History's is up, and continue from there. Result:
 
 ## Non-English client
 
@@ -201,4 +239,5 @@ restart the client: new font and texture files are only seen at client start.
 | SLASH-4, PANEL-5 | ST-07, the collision and the sample page | No client pass recorded yet |
 | PANEL-6 | SF-40, SF-43, SF-46: the Scope and its defaults | No client pass recorded yet |
 | SHOW-11 | R5-05, the card names | No client pass recorded yet |
-| PANEL-7..10, SHOW-12, PICKER-1..7 | ST-01, the font and texture overrides and the skin picker (LibKa0s#63, #64) | No client pass recorded yet |
+| PANEL-7..10, SHOW-12, PICKER-6..7 | ST-01, the font and texture overrides and the skin picker (LibKa0s#63, #64) | No client pass recorded yet |
+| PANEL-3, SHOW-13, PICKER-1..5, PICKER-8..12 | ST-01 after PK-02 and SO-06: the "Look" heading, Ka0s Default's Oxanium and bar, the picker's position, title, preview, Apply, Apply to all and one window across addons | Rewritten for PK-02; no client pass recorded yet |
