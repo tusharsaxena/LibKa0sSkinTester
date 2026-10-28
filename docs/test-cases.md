@@ -251,7 +251,7 @@ Total.
 - selector: clicking the current card does nothing
 - selector: no EllesmereUI card and no copy button
 
-### test_showroom.lua (7)
+### test_showroom.lua (11)
 
 - showroom: the window is painted through the wrapper
 - showroom: Paint answers the primitive's answer and records the name once
@@ -260,6 +260,10 @@ Total.
 - showroom: opened after a skin change, it wears the new skin
 - showroom: a skin change repaints the open window
 - showroom: a skin card's label keeps to one line under any skin's type size
+- showroom scrollbar: hidden while the sections fit, shown once they overflow
+- showroom scrollbar: the wheel moves the sections and the knob together
+- showroom scrollbar: dragging the knob scrolls the sections, and a sync does not scroll back
+- showroom scrollbar: the corridor and the knob are the skin's
 
 ### test_showroom_coverage.lua (5)
 
@@ -665,7 +669,7 @@ Total.
 | test_settings.lua | 53 |
 | test_slash.lua | 19 |
 | test_selector.lua | 8 |
-| test_showroom.lua | 7 |
+| test_showroom.lua | 11 |
 | test_showroom_coverage.lua | 5 |
 | test_showroom_values.lua | 3 |
 | test_showroom_textures.lua | 8 |
@@ -692,4 +696,4 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | Skipped | 1 |
-| **Total** | **534** |
+| **Total** | **538** |

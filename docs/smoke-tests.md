@@ -121,7 +121,7 @@ restart the client: new font and texture files are only seen at client start.
 
 - **SHOW-1. Window.** `/st show`. → A window titled "Ka0s Skin Tester — Skin showroom", closed by its
   close button and by Escape, with a footer reading "Wearing Ka0s Default" (the skin you wear) and the
-  sections scrolling under the mouse wheel. Result:
+  sections scrolling under the mouse wheel and by the scrollbar at the right edge (ST-03). Result:
 - **SHOW-2. Position.** Drag it by the title bar, `/reload`, reopen. → Same place. Master controls ->
   Reset position centers it. Result:
 - **SHOW-3. Scale and opacity.** Move Master scale and Master opacity. → The window follows. Result:
@@ -170,6 +170,15 @@ restart the client: new font and texture files are only seen at client start.
   Bar glossy, Classic like the client's bar). Fail: a label and a fill that disagree, a fill left on
   the previous skin's texture, a white or missing fill, or a visible seam where a texture tiles.
   Result:
+- **SHOW-15. The showroom's scrollbar (ST-03).** `/st show` in Ka0s Default. → A thin scrollbar,
+  a corridor and one knob, runs down the right edge beside the sections, never over them. Roll the
+  wheel over the sections, then over the bar → both scroll, and the knob follows. Drag the knob to
+  the bottom → the Textures section is in view; click the corridor above the knob → the sections
+  move back up. Click Obsidian, then High Contrast → the corridor and knob take each skin's colors.
+  The sections always overflow the fixed window, so the bar is always there; the headless suite
+  covers the bar hiding when they fit. Fail: no bar, a knob that does not move with the wheel, a
+  drag that leaves the sections still, a bar over the section content, or a bar in another skin's
+  colors. Result:
 
 ## First-run skin picker
 
@@ -279,3 +288,4 @@ restart the client: new font and texture files are only seen at client start.
 | PANEL-3, SHOW-13, PICKER-1..5, PICKER-8..12 | ST-01 after PK-02 and SO-06: the "Look" heading, Ka0s Default's Oxanium and bar, the picker's position, title, preview, Apply, Apply to all and one window across addons | Rewritten for PK-02; no client pass recorded yet |
 | PICKER-13..16 | ST-01, the review of PK-02: Apply and close in combat, a pending preview meeting another write or a profile event, Apply's reload popup, a queued picker in combat | Rewritten for PK-03 (PICKER-14 (a) to (c), PICKER-16); no client pass recorded yet |
 | SHOW-14 | ST-02, LibKa0s v1.79.0's bar textures (SO-04) | No client pass recorded yet |
+| SHOW-1 (amended), SHOW-15 | ST-03, the showroom's scrollbar | No client pass recorded yet |

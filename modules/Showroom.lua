@@ -30,6 +30,8 @@ local WIDTH, HEIGHT = 960, 640
 local TITLE_H, FOOTER_H = 28, 22
 local SECTION_TITLE_H, SECTION_GAP = 24, 16
 local SCROLL_STEP = 60
+local BAR_W, BAR_GAP, MIN_THUMB = 8, 6, 24   -- the scrollbar's width, its gap from the sections, its shortest knob
+local SECTIONS_W = WIDTH - 16 - BAR_GAP - BAR_W   -- the body's width less the scrollbar's gutter
 
 R.used = R.used or {}
 local sections = {}      -- { key, title, build }, in registration order
@@ -79,7 +81,7 @@ local CELL_GAP, CELL_MIN_W, CAPTION_H = 14, 150, 18
 --- A section's samples, left to right, wrapping at the body's width. g:Add(w, h, caption) answers a
 --- fresh cell frame of that size with the caption under it; g:Height() is what a build answers.
 function R.Grid(body)
-    local g = { x = 0, y = 0, rowH = 0, width = body:GetWidth() or WIDTH - 16 }
+    local g = { x = 0, y = 0, rowH = 0, width = body:GetWidth() or SECTIONS_W }
     function g:Add(w, h, caption)
         local span = math.max(w, CELL_MIN_W)
         if self.x > 0 and self.x + span > self.width then
@@ -125,11 +127,61 @@ local function refreshFooter()
     if frame then frame.footer.text:SetText(L["Wearing %s"]:format(wornLabel())) end
 end
 
--- Mouse-wheel scrolling over the sections, clamped to the scroll range.
-local function onWheel(scroll, delta)
-    local range = scroll:GetVerticalScrollRange() or 0
-    local y = (scroll:GetVerticalScroll() or 0) - delta * SCROLL_STEP
+-- The scrollbar follows the scroll frame (ST-03): its range and knob match the sections' overflow,
+-- and it shows only while they overflow. `syncing` keeps the bar's own OnValueChanged from scrolling
+-- back while the bar is being set.
+local function syncBar()
+    if not frame then return end
+    local scroll, bar = frame.scroll, frame.scrollBar
+    local range = tonumber(scroll:GetVerticalScrollRange()) or 0
+    local y = tonumber(scroll:GetVerticalScroll()) or 0
+    frame.syncing = true
+    bar:SetMinMaxValues(0, math.max(0, range))
+    bar:SetValue(math.max(0, math.min(range, y)))
+    frame.syncing = false
+    local track, view = tonumber(bar:GetHeight()) or 0, tonumber(scroll:GetHeight()) or 0
+    if range > 0 and track > 0 and view > 0 then
+        frame.thumb:SetHeight(math.max(MIN_THUMB, track * view / (view + range)))
+    end
+    bar:SetShown(range > 0)
+end
+
+-- Mouse-wheel scrolling over the sections or the bar, clamped to the scroll range.
+local function onWheel(_, delta)
+    local scroll = frame.scroll
+    local range = tonumber(scroll:GetVerticalScrollRange()) or 0
+    local y = (tonumber(scroll:GetVerticalScroll()) or 0) - delta * SCROLL_STEP
     scroll:SetVerticalScroll(math.max(0, math.min(range, y)))
+    syncBar()
+end
+
+-- A drag of the knob, or a click on the corridor, scrolls the sections.
+local function onBarValue(_, value)
+    if not frame or frame.syncing then return end
+    frame.scroll:SetVerticalScroll(value)
+end
+
+-- The scrollbar at the body's right edge, beside the sections: a corridor and one knob, painted by
+-- the facade's ScrollBar (the debug console's shape). Hidden until syncBar finds an overflow.
+local function buildScrollBar(f, body)
+    local bar = CreateFrame("Slider", nil, body)
+    bar:SetOrientation("VERTICAL")
+    bar:SetWidth(BAR_W)
+    bar:SetPoint("TOPRIGHT", f.scroll, "TOPRIGHT", BAR_GAP + BAR_W, 0)
+    bar:SetPoint("BOTTOMRIGHT", f.scroll, "BOTTOMRIGHT", BAR_GAP + BAR_W, 0)
+    bar:SetMinMaxValues(0, 0)
+    bar:SetValueStep(1)
+    bar:SetValue(0)
+    bar:EnableMouseWheel(true)
+    bar:SetScript("OnMouseWheel", onWheel)
+    local track = bar:CreateTexture(nil, "BACKGROUND")
+    track:SetAllPoints()
+    local thumb = bar:CreateTexture(nil, "ARTWORK")
+    thumb:SetSize(BAR_W, 36)
+    bar:SetThumbTexture(thumb)
+    bar:SetScript("OnValueChanged", onBarValue)
+    bar:Hide()
+    f.scrollBar, f.track, f.thumb = bar, track, thumb
 end
 
 -- The sections, stacked in a scroll child: each a title in the heading role over a rule, then the
@@ -204,20 +256,25 @@ local function build()
 
     local scroll = CreateFrame("ScrollFrame", nil, body)
     scroll:SetPoint("TOPLEFT", f.selector, "BOTTOMLEFT", 0, -12)
-    scroll:SetPoint("BOTTOMRIGHT", body, "BOTTOMRIGHT", 0, 0)
+    scroll:SetPoint("BOTTOMRIGHT", body, "BOTTOMRIGHT", -(BAR_GAP + BAR_W), 0)
     scroll:EnableMouseWheel(true)
     scroll:SetScript("OnMouseWheel", onWheel)
+    scroll:SetScript("OnScrollRangeChanged", syncBar)
+    scroll:SetScript("OnVerticalScroll", syncBar)
+    scroll:SetScript("OnSizeChanged", syncBar)
     local content = CreateFrame("Frame", nil, scroll)
-    content:SetWidth(WIDTH - 16)
+    content:SetWidth(SECTIONS_W)
     scroll:SetScrollChild(content)
     f.scroll, f.content = scroll, content
+    buildScrollBar(f, body)
 
     frame = f
     R.Paint("Shell", f)
     R.Paint("TitleBar", bar, { text = bar.title })
     if close then R.Paint("CloseButton", close) end
     R.Paint("Footer", footer, { text = footer.text })
-    buildSections(content, WIDTH - 16)
+    R.Paint("ScrollBar", f.scrollBar, { track = f.track, thumb = f.thumb })
+    buildSections(content, SECTIONS_W)
     refreshFooter()
     R.ApplyWindowSettings()
     if t0 then Perf.Note("build", debugprofilestop() - t0) end
@@ -263,6 +320,7 @@ function R.Show()
         table.insert(UISpecialFrames, WINDOW_NAME)
     end
     f:Show()
+    syncBar()
     NS.Debug("Showroom", "shown")
 end
 

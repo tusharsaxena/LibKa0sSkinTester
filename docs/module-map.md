@@ -22,7 +22,7 @@ LibDataBroker, LibDBIcon, LibKa0s) and `tests/_kit/` are vendored and never edit
 | `core/LauncherSetup.lua` | The minimap button and broker row (LibKa0s-Launcher-1.0) | Conventional; registered from OnEnable |
 | `defaults/Profile.lua` | `NS.C`, every default value | Before `settings/Schema.lua` |
 | `modules/Selector.lua` | The swatch selector: one card per Ka0s skin, `Pick` (apply, then save) and `Refresh` | Before `modules/Showroom.lua`, which builds it into the window |
-| `modules/Showroom.lua` | The showroom window, its toggle, the key-binding button and `NS.BINDINGS`; the paint wrapper (`Paint`, which records every primitive in `used`), the section registry (`AddSection`, laid out in a scroll body) and `Caption` | Before `settings/Panel.lua` (group order) |
+| `modules/Showroom.lua` | The showroom window, its toggle, the key-binding button and `NS.BINDINGS`; the paint wrapper (`Paint`, which records every primitive in `used`), the section registry (`AddSection`, laid out in a scroll body with a skinned scrollbar that shows only on overflow) and `Caption` | Before `settings/Panel.lua` (group order) |
 | `modules/ShowroomChrome.lua` | Section: the tab strip (Tab, SetTabSelection); the window itself is the rest of the chrome | After `modules/Showroom.lua` (it calls `AddSection`); the eight section files load in display order |
 | `modules/ShowroomControls.lua` | Section: buttons in every state, paging arrows, an icon button, the library's search box and dropdown, check buttons, a slider | As above |
 | `modules/ShowroomLists.lua` | Section: sort header, a list row in each state, a scroll bar | As above |
