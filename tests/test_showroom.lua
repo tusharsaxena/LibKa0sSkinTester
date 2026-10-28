@@ -94,3 +94,25 @@ test("showroom: a skin change repaints the open window", function()
     assertTrue(window(mock).footer.text:GetText():find("High Contrast", 1, true) ~= nil,
         "the footer names the skin worn")
 end)
+
+test("showroom: a skin card's label keeps to one line under any skin's type size", function()
+    -- The owner's round-5 showroom notes: High Contrast's larger type wrapped two cards' names onto a
+    -- second line, over the swatches. The label never wraps, and a name wider than the card is
+    -- scaled down to fit rather than cut.
+    local NS = painted()
+    NS.Showroom.Show()
+    local sel = NS.Showroom.Selector()
+    local wide, short = sel.cards.contrast.label, sel.cards.glass.label
+    rawset(wide, "GetUnboundedStringWidth", function(self) return 172 * self:GetTextScale() end)
+    rawset(short, "GetUnboundedStringWidth", function(self) return 40 * self:GetTextScale() end)
+    NS.Selector.Pick("contrast")
+    for _, card in ipairs(sel.order) do
+        assertEqual(card.label:CanWordWrap(), false, card.key .. "'s label does not wrap")
+        assertEqual(card.label:GetMaxLines(), 1, card.key .. "'s label is one line")
+    end
+    assertEqual(wide:GetTextScale(), 0.5, "a name twice the card's room is drawn at half size")
+    assertEqual(short:GetTextScale(), 1, "a name that fits keeps its size")
+    rawset(wide, "GetUnboundedStringWidth", function(self) return 60 * self:GetTextScale() end)
+    NS.Selector.Pick("ka0s")
+    assertEqual(wide:GetTextScale(), 1, "and a skin whose type fits puts the full size back")
+end)

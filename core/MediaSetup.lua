@@ -22,5 +22,5 @@ function NS.MediaFont(name)
 end
 
 -- At FILE LOAD, not PLAYER_LOGIN: LibSharedMedia is vendored under libs/ and has already run, and
--- the skins' faces (Barlow, Cinzel, Atkinson) resolve through it.
+-- each skin's face family (Inter, Vollkorn, Nunito and the rest) resolves through it.
 if Media then Media.RegisterLSM(addonName) end
