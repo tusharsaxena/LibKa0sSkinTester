@@ -7,7 +7,8 @@
 -- eye) and that a close is recorded through the schema runtime.
 --
 -- Since PK-02 a pick only previews: Apply (and the gear) save it through this addon's write seam,
--- and the close control puts the skin the window opened with back. Every one of those routes marks
+-- and the close control undoes only the preview (PK-03: the skin stored at the close goes back on,
+-- not the one the window opened with). Every one of those routes marks
 -- the profile seen. One window serves every Ka0s addon: behind another addon's picker this one
 -- queues (MaybeShowSkinPicker answers false, "queued"), a stand-down takes it out of the queue
 -- unseen, and another addon's "Apply to all" marks it seen through its own onClose. The second
@@ -394,4 +395,70 @@ end)
 test("picker: Apply to all is hidden while this addon is the only skin owner", function()
     local _, _, mock = T.enableAddon()
     assertFalse(picker(mock).applyAll:IsShown())
+end)
+
+-- ── a pending preview meeting another write (PK-03) ──────────────────────────────────────────
+-- A dismissal undoes only the unsaved preview: it puts back the skin the profile stores as it
+-- reads at the close (spec.get, NS.SkinChoice), so a skin stored meanwhile stays (smoke PICKER-14).
+
+--- Default's picker up with Ember picked and pending, then `write(NS)` storing another skin.
+local function storedWhilePending(write)
+    local NS, _, mock = T.enableAddon()
+    pickRow(mock, picker(mock), "ember")
+    write(NS)
+    assertEqual(profileSkin(NS), "obsidian", "the other write stored Obsidian")
+    click(picker(mock).close)
+    return NS, mock
+end
+
+test("picker: a skin General -> Skin stores under a pending preview stays on the close", function()
+    -- red under: OptionsSkinPicker's revert to the choice the window opened with (PK-02), which
+    -- put Ka0s back on while the profile stored Obsidian.
+    local NS, mock = storedWhilePending(function(N) N.WriteSkinChoice("ka0s", "obsidian") end)
+    assertFalse(shown(mock))
+    assertEqual(applied(mock), "obsidian", "the addon wears the stored skin")
+    assertEqual(profileSkin(NS), "obsidian", "and the close wrote nothing over it")
+    assertTrue(seen(NS))
+end)
+
+test("picker: a skin /st set stores under a pending preview stays on the close", function()
+    -- red under: the same revert to the choice the window opened with.
+    local NS, mock = storedWhilePending(function(N) N.addon:OnSlashCommand("set skin.skin obsidian") end)
+    assertEqual(applied(mock), "obsidian")
+    assertEqual(profileSkin(NS), "obsidian")
+end)
+
+-- ── a queued picker and combat (PK-03) ───────────────────────────────────────────────────────
+
+--- The end of combat as the client sends it: the library's park frame gets PLAYER_REGEN_ENABLED.
+local function endCombat(mock)
+    mock.combat = false
+    local f = mock.LibStub("LibKa0s-Options-1.0").__parkFrame
+    assertTrue(f ~= nil, "the queue parked on the library's end-of-combat frame")
+    f:GetScript("OnEvent")(f, "PLAYER_REGEN_ENABLED")
+end
+
+test("picker: another addon's picker closed in combat does not bring this one up until combat ends", function()
+    -- red under: OptionsSkinPicker's advance() showing the next owner with no combat check (PK-02).
+    local NS, mock, other = behindOther()
+    mock.combat = true
+    click(other.close)
+    assertFalse(other:IsShown(), "the close control still closes in combat")
+    assertFalse(shown(mock), "this addon's picker waits out combat")
+    assertEqual(#queue(mock).waiting, 1, "still queued")
+    assertFalse(seen(NS), "waiting is not seeing")
+    endCombat(mock)
+    assertTrue(shown(mock), "it shows once combat ends")
+    assertFalse(seen(NS))
+end)
+
+test("picker: a stand-down while it waits out combat leaves nothing to show after", function()
+    local NS, mock, other = behindOther()
+    mock.combat = true
+    click(other.close)
+    NS.addon:OnSlashCommand("disable")
+    assertEqual(#queue(mock).waiting, 0, "out of the queue")
+    endCombat(mock)
+    assertFalse(shown(mock), "a disabled addon shows no picker when combat ends")
+    assertFalse(seen(NS))
 end)

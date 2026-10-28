@@ -48,15 +48,14 @@ The library's `O.SkinPicker` (OptionsSkinPicker minor 1), shown by `NS.MaybeShow
 (settings/Panel.lua) while the profile's `skin.pickerSeen` is false: once from `OnEnable`, after the
 stored skin is applied, and after every profile switch, copy or reset. The addon never asks for it
 while disabled or in combat; it registers no game event, so a trigger in combat is skipped and the
-next one asks again. One exception is the library's: a picker waiting behind another addon's shows
-as soon as that one closes, and the close control and Escape still work in combat, so closing
-another addon's picker in combat can bring this one up mid-combat (PICKER-16). A pick, Apply, Apply
-to all and the gear are still refused there. The waiting entry is not checked against `enabled` or
-`skin.pickerSeen` again either, which is safe only because the stand-down and every profile event
-take it out of the queue first.
+next one asks again. A picker waiting behind another addon's shows when that one closes, but never
+mid-combat: the close control and Escape still work in combat, and a close there leaves the queue
+waiting until combat ends (the library parks it on its end-of-combat frame, PK-03), when this one
+shows (PICKER-16). The waiting entry is not checked against `enabled` or `skin.pickerSeen` again,
+which is safe because the stand-down and every profile event take it out of the queue first.
 
-The window sits with its center 75% of the way up the screen, so the showroom the eye opens does not
-cover it. It holds the title "Choose a skin for Ka0s Skin Tester", a dropdown of every skin (three
+The window sits with its center 75% of the way up the screen, clear of the middle, at DIALOG
+strata and raised after the eye runs, so the showroom the eye opens does not cover it. It holds the title "Choose a skin for Ka0s Skin Tester", a dropdown of every skin (three
 swatches and the name in that skin's own face), the eye (the showroom), the gear, "Apply", "Apply
 to all Ka0s addons" (only while another Ka0s addon is loaded) and the close control.
 
@@ -64,8 +63,9 @@ to all Ka0s addons" (only while another Ka0s addon is loaded) and the close cont
 - **Apply** saves the pick through `NS.WriteSkinChoice`, then closes.
 - **The gear** saves the pick as Apply does, then opens the settings panel on the General page
   (`O.OpenOptionsPanel("general")`) and selects its Skin tab.
-- **The close control and Escape** put the skin the window opened with back, write nothing, and
-  close.
+- **The close control and Escape** undo only the unsaved preview: they put back the skin the
+  profile stores as it reads at the close (`NS.SkinChoice`), so a skin General -> Skin, `/st set`
+  or the showroom stored while the window was up stays (PICKER-14). They write nothing, and close.
 - **Apply to all Ka0s addons** saves here, gives every other Ka0s addon the same source and skin
   (their scope and font and texture overrides are left alone), and closes this window and every
   picker still waiting.

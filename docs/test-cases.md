@@ -298,7 +298,7 @@ Total.
 - media: Ignore fonts wins over a font override
 - media: without the skin engine the apply is a quiet no-op
 
-### test_skin_picker.lua (26)
+### test_skin_picker.lua (30)
 
 - picker: a fresh profile shows it once the addon is enabled
 - picker: not before login
@@ -326,6 +326,10 @@ Total.
 - picker: another addon's Apply to all marks this profile seen and gives it the skin
 - picker: this addon's Apply to all saves here and gives the other addon the skin
 - picker: Apply to all is hidden while this addon is the only skin owner
+- picker: a skin General -> Skin stores under a pending preview stays on the close
+- picker: a skin /st set stores under a pending preview stays on the close
+- picker: another addon's picker closed in combat does not bring this one up until combat ends
+- picker: a stand-down while it waits out combat leaves nothing to show after
 
 ### test_settings_sample.lua (5)
 
@@ -666,7 +670,7 @@ Total.
 | test_showroom_values.lua | 3 |
 | test_showroom_textures.lua | 8 |
 | test_skin_media.lua | 9 |
-| test_skin_picker.lua | 26 |
+| test_skin_picker.lua | 30 |
 | test_settings_sample.lua | 5 |
 | test_panel.lua | 37 |
 | test_profiles.lua | 17 |
@@ -688,4 +692,4 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | Skipped | 1 |
-| **Total** | **530** |
+| **Total** | **534** |

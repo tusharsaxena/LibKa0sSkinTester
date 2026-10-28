@@ -118,7 +118,7 @@ Helpers.RegisterOptionsPage("general", "General", buildGeneralPage)
 -- profile's skin.pickerSeen is false: once after login, and after a profile switch, copy or reset
 -- that lands on a profile whose key is false (a new or reset profile starts false). A pick only
 -- previews; Apply and the gear save it through NS.WriteSkinChoice, and the close control and Escape
--- put the skin the window opened with back. Every one of those routes sets the key; the eye does
+-- undo only the preview, putting back the skin the profile stores as it reads at the close. Every one of those routes sets the key; the eye does
 -- not close it.
 --
 -- One window serves every Ka0s addon in the client (the library's lib.__pickerQueue): behind another
@@ -128,12 +128,12 @@ Helpers.RegisterOptionsPage("general", "General", buildGeneralPage)
 --
 -- The addon never asks for it in combat or while disabled. It registers no game event (see
 -- core/LibKa0sSkinTester.lua's stand-down note), so a trigger in combat is skipped, not deferred:
--- the next login or profile event asks again, because the key is still false. One exception is the
--- library's: a queued picker shows when the one ahead of it closes, with no combat check and no
--- second look at `enabled` or the key, and the close control and Escape work in combat. So another
--- addon's picker closed in combat can bring this one up mid-combat, where a pick, Apply and the gear
--- are refused. The stale checks are safe because the stand-down and every profile event take the
--- queued entry out first (docs/settings-panel.md, smoke PICKER-16).
+-- the next login or profile event asks again, because the key is still false. A queued picker shows
+-- when the one ahead of it closes, and never mid-combat: a close in combat leaves the library's
+-- queue waiting for the end of combat (LibKa0s PK-03), and while it waits SkinPicker answers
+-- nil, "queued" here too. The queued entry gets no second look at `enabled` or the key; that is safe
+-- because the stand-down and every profile event take it out first (docs/settings-panel.md, smoke
+-- PICKER-16).
 --
 -- The addon takes it down too, and that is not the player closing it: on the stand-down (`/st
 -- disable`, a disabled profile) and at the start of every profile switch, copy or reset, before the
@@ -176,7 +176,8 @@ function NS.StandDownSkinPicker()
 end
 
 --- Show the skin picker when this profile has not closed it yet. Answers true when it is up, and
---- false, "queued" when another Ka0s addon's picker is up and this one waits behind it. A profile
+--- false, "queued" when another Ka0s addon's picker is up, or the queue waits out combat, and this
+--- one waits behind it. A profile
 --- that has seen it, or a disabled addon, takes down one that is up or queued.
 function NS.MaybeShowSkinPicker()
     local S, db = NS.SchemaRuntime, Tester.db

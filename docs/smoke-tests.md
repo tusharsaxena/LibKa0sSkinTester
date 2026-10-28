@@ -232,18 +232,19 @@ restart the client: new font and texture files are only seen at client start.
   profile that has closed its picker and stores another skin (Glass, say). → The picker goes and
   the tester wears Glass. Switch instead to a fresh profile. → A new showing: the dropdown names
   that profile's skin, not Ember, and the close control or Apply leaves that skin on and stored.
-  Fail: the tester wearing a skin other than the one General -> Skin shows. Known failure until the
-  library's revert follows the stored choice (LibKa0s PK-02 follow-up): (a), (b) and (c) put back
-  the skin the window opened with. Result:
+  Fail: the tester wearing a skin other than the one General -> Skin shows, or (a), (b) or (c)
+  putting back the skin the window opened with (the close undoes only the unsaved preview, so a
+  skin stored while the window was up stays). Result:
 - **PICKER-15. Apply's reload popup.** Only where a pick needs a reload (EllesmereUI installed and
   the tester on the EllesmereUI source, painted by it this session). Pick a skin that needs a
   reload, then another, then press Apply. → One reload popup naming the tester, once, not one per
   pick. A pick alone raises none. Result:
 - **PICKER-16. A queued picker in combat.** As PICKER-10, with the tester's picker waiting behind
-  Loot History's. Enter combat and close Loot History's picker with its close control. → Record
-  what happens: the library shows the next picker without a combat check, so the tester's picker
-  is expected to open mid-combat; a pick, Apply and the gear do nothing there, and the close
-  control still closes it. Result:
+  Loot History's. Enter combat and close Loot History's picker with its close control. → Loot
+  History's picker closes, and the tester's does not open while combat lasts. Leave combat. → The
+  tester's picker opens, its title naming the tester. Repeat, and run `/st disable` while in
+  combat after the close. → Nothing opens when combat ends. Fail: any picker opening mid-combat.
+  Result:
 
 ## Non-English client
 
@@ -267,4 +268,4 @@ restart the client: new font and texture files are only seen at client start.
 | SHOW-11 | R5-05, the card names | No client pass recorded yet |
 | PANEL-7..10, SHOW-12, PICKER-6..7 | ST-01, the font and texture overrides and the skin picker (LibKa0s#63, #64) | No client pass recorded yet |
 | PANEL-3, SHOW-13, PICKER-1..5, PICKER-8..12 | ST-01 after PK-02 and SO-06: the "Look" heading, Ka0s Default's Oxanium and bar, the picker's position, title, preview, Apply, Apply to all and one window across addons | Rewritten for PK-02; no client pass recorded yet |
-| PICKER-13..16 | ST-01, the review of PK-02: Apply and close in combat, a pending preview meeting another write or a profile event, Apply's reload popup, a queued picker in combat | No client pass recorded yet; PICKER-14 (a) to (c) wait on the LibKa0s revert follow-up |
+| PICKER-13..16 | ST-01, the review of PK-02: Apply and close in combat, a pending preview meeting another write or a profile event, Apply's reload popup, a queued picker in combat | Rewritten for PK-03 (PICKER-14 (a) to (c), PICKER-16); no client pass recorded yet |

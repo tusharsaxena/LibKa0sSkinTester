@@ -26,7 +26,8 @@
 - The skin picker splits the two steps: a pick in its list calls `Skin:SetChoice` only (a preview,
   repainted live, nothing written); Apply or the gear then hands the pending pair to
   `NS.WriteSkinChoice`, and the close control or Escape calls `Skin:SetChoice` back to the pair the
-  window opened with. Every close then runs the spec's `onClose`, which sets `skin.pickerSeen`.
+  profile stores at the close (the spec's `get`, `NS.SkinChoice`), so only the unsaved preview is
+  undone. Every close then runs the spec's `onClose`, which sets `skin.pickerSeen`.
   "Apply to all Ka0s addons" (this addon's or another's) reaches every other owner through
   `Skin:WriteChoice`, as the tab's copy does.
 

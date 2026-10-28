@@ -3,7 +3,7 @@
 ![WoW](https://img.shields.io/badge/WoW-Midnight_12.1.5-purple)
 ![License](https://img.shields.io/badge/License-MIT-orange)
 ![Standard](https://img.shields.io/badge/Ka0s-WoW_Addon_Standard-yellow)
-![Tests](https://img.shields.io/badge/Tests-530%2F530_passing-green)
+![Tests](https://img.shields.io/badge/Tests-534%2F534_passing-green)
 
 Ka0s Skin Tester is a fitting room for the Ka0s skins. Pick a skin and one window shows you what that skin does to buttons, tabs, lists, scrollbars, tooltips and everything else it can paint, so you don't have to open five other addons to see how a scrollbar came out.
 
