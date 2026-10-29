@@ -27,6 +27,10 @@ local addonName, NS = ...
 --   NS.SKIN_SOURCE_OPTIONS  and the source row's. settings/Schema.lua reads both at load.
 --   NS.SkinPaintAceTree(c)  Skin:PaintAceTree with the owner bound, for AceGUI widgets this addon
 --                           acquires itself.
+--   NS.SKIN_OWNER_TOKENS    this addon's own tokens (LibKa0s v1.80.0's owner tokens), handed to
+--                           RegisterOwner: the showroom's Addon surfaces section paints with them.
+--                           Each names its Ka0s Default value and the library role it follows, so
+--                           every other skin draws it in its own palette (`skins` overrides one).
 --
 -- LOAD-BEARING: after core/CoreSetup.lua and before core/LibKa0sSkinTester.lua, whose OnInitialize
 -- applies the stored pair, and before settings/Schema.lua, which reads NS.SKIN_OPTIONS at load.
@@ -49,6 +53,16 @@ NS.SKIN_SOURCE_PATH, NS.SKIN_PATH = SOURCE_PATH, SKIN_PATH
 NS.SKIN_SOURCE_OPTIONS = {
     { value = "ka0s", text = "Ka0s skins" },
     { value = "eui",  text = "EllesmereUI" },
+}
+
+-- Sample values, not a look this addon had before: the showroom shows how an addon's own color
+-- resolves (Ka0s Default answers `default`, a `skins` entry wins in its skin, else the follow token).
+NS.SKIN_OWNER_TOKENS = {
+    ["st.note"]        = { default = { 0.533, 0.533, 0.533, 1 }, follow = "text.muted",
+                           skins = { contrast = { 0.85, 0.85, 0.85, 1 } } },
+    ["st.dangerFill"]  = { default = { 0.45, 0.08, 0.08, 0.9 }, follow = "btn.bg" },
+    ["st.dangerText"]  = { default = { 1, 1, 1, 1 }, follow = "sem.danger" },
+    ["st.cautionFill"] = { default = { 1, 0.5, 0, 0.12 }, follow = "card.bg" },
 }
 
 NS.SKIN_OPTIONS = {}
@@ -136,6 +150,7 @@ Skin:RegisterOwner(addonName, {
     label = NS.BRAND_NAME,
     get   = NS.SkinChoice,
     set   = NS.WriteSkinChoice,
+    tokens = NS.SKIN_OWNER_TOKENS,
 })
 
 -- The one line a reload request earns where no popup of the library's says it (a profile event

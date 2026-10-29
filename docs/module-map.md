@@ -16,20 +16,21 @@ LibDataBroker, LibDBIcon, LibKa0s) and `tests/_kit/` are vendored and never edit
 | `core/LifecycleSetup.lua` | The stand-down latch and `NS.StandDownRefusal` (LibKa0s-Lifecycle-1.0) | Before `core/PerfSetup.lua` |
 | `core/PerfSetup.lua` | `NS.Perf` (LibKa0s-Perf-1.0): the `build` and `repaint` buckets | Before `modules/`, which take it as an upvalue |
 | `core/DebugLogSetup.lua` | `NS.DebugLog`, `NS.Debug` and the gates (LibKa0s-DebugLog-1.0) | After Constants, State and CoreSetup |
-| `core/SkinSetup.lua` | The skin owner: `NS.Skin`, the choice seams, the Scope's `NS.ApplySkinIgnore`, the overrides' `NS.ApplySkinMedia`, `NS.SKIN_OPTIONS` (LibKa0s-Skin-1.0) | Before the entry file and `settings/Schema.lua` |
+| `core/SkinSetup.lua` | The skin owner: `NS.Skin`, the choice seams, the Scope's `NS.ApplySkinIgnore`, the overrides' `NS.ApplySkinMedia`, `NS.SKIN_OPTIONS`, the owner tokens `NS.SKIN_OWNER_TOKENS` handed to `RegisterOwner` (LibKa0s-Skin-1.0) | Before the entry file and `settings/Schema.lua` |
 | `core/LibKa0sSkinTester.lua` | AceAddon registration, initialize and enable, the profile events, the stand-down callbacks, `[Init]` | After the setup files above |
 | `core/Database.lua` | The migration runner | Conventional |
 | `core/LauncherSetup.lua` | The minimap button and broker row (LibKa0s-Launcher-1.0) | Conventional; registered from OnEnable |
 | `defaults/Profile.lua` | `NS.C`, every default value | Before `settings/Schema.lua` |
 | `modules/Selector.lua` | The swatch selector: one card per Ka0s skin, `Pick` (apply, then save) and `Refresh` | Before `modules/Showroom.lua`, which builds it into the window |
-| `modules/Showroom.lua` | The showroom window, its toggle, the key-binding button and `NS.BINDINGS`; the paint wrapper (`Paint`, which records every primitive in `used`), the section registry (`AddSection`, laid out in a scroll body with a skinned scrollbar that shows only on overflow) and `Caption` | Before `settings/Panel.lua` (group order) |
-| `modules/ShowroomChrome.lua` | Section: the tab strip (Tab, SetTabSelection); the window itself is the rest of the chrome | After `modules/Showroom.lua` (it calls `AddSection`); the eight section files load in display order |
+| `modules/Showroom.lua` | The showroom window, its toggle, the key-binding button and `NS.BINDINGS`; the paint wrapper (`Paint`, which records every primitive in `used`, and calls an owner-bound library member such as `PaintAce` the facade does not carry), the section registry (`AddSection`, laid out in a scroll body with a skinned scrollbar that shows only on overflow) and `Caption` | Before `settings/Panel.lua` (group order) |
+| `modules/ShowroomChrome.lua` | Section: the tab strip (Tab, SetTabSelection); the window itself is the rest of the chrome | After `modules/Showroom.lua` (it calls `AddSection`); the nine section files load in display order |
 | `modules/ShowroomControls.lua` | Section: buttons in every state, paging arrows, an icon button, the library's search box and dropdown, check buttons, a slider | As above |
 | `modules/ShowroomLists.lua` | Section: sort header, a list row in each state, a scroll bar | As above |
 | `modules/ShowroomText.lua` | Section: the nine text roles, Font and White | As above |
 | `modules/ShowroomPanels.lua` | Section: Panel, Inset, Card, Divider, Drawer, Strip, Cover, NavItem | As above |
 | `modules/ShowroomOverlays.lua` | Section: a hover tooltip, a standing menu, a confirm-popup miniature, the library's test strip, the two fades beside stock twins, IconBorder, ApplyBarFill | As above |
-| `modules/ShowroomValues.lua` | Section: the six getters' answers and every `sem.*` color, redrawn on each skin change (`NS.Values`) | As above |
+| `modules/ShowroomOwner.lua` | Section: Addon surfaces, LibKa0s v1.80.0's rollout surfaces: a line in the owner token `st.note`, a danger button and a caution callout through `opts.tokens`, an AceGUI TreeGroup through `PaintAce` (repainted on each skin change, so it follows the Scope's settings-panel half), an icon border through `IconBorder`'s `fromSkin`, and a `SettingsFrameTemplate` miniature painted with `opts.stockDefault` | As above |
+| `modules/ShowroomValues.lua` | Section: the six getters' answers, then two token categories under their headings: every `sem.*` color and every `q.*` quality tier, redrawn on each skin change (`NS.Values`) | As above |
 | `modules/ShowroomTextures.lua` | Section: three status bars, a bar chart and a stacked bar, every fill through BarTexture and labeled with `bar.texture` (`NS.Textures`) | Last of the sections |
 | `modules/Diagnostics.lua` | The sections of `/st diagnostics` | Conventional; read at run time |
 | `settings/SchemaSetup.lua` | `Settings.SchemaLib`: LibKa0s-Schema-1.0 or the host stub | Directly before `settings/Schema.lua` |

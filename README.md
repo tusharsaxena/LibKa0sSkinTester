@@ -3,7 +3,7 @@
 ![WoW](https://img.shields.io/badge/WoW-Midnight_12.1.5-purple)
 ![License](https://img.shields.io/badge/License-MIT-orange)
 ![Standard](https://img.shields.io/badge/Ka0s-WoW_Addon_Standard-yellow)
-![Tests](https://img.shields.io/badge/Tests-538%2F538_passing-green)
+![Tests](https://img.shields.io/badge/Tests-551%2F551_passing-green)
 
 Ka0s Skin Tester is a fitting room for the Ka0s skins. Pick a skin and one window shows you what that skin does to buttons, tabs, lists, scrollbars, tooltips and everything else it can paint, so you don't have to open five other addons to see how a scrollbar came out.
 
@@ -23,7 +23,7 @@ The first time a profile runs, a small "Choose a skin for Ka0s Skin Tester" wind
 
 When several Ka0s addons start on new profiles at once, their skin windows come one at a time, and "Apply to all Ka0s addons" answers all of them.
 
-Below the cards, the showroom scrolls through the window chrome, controls, lists, text, panels and overlays, then the skin's raw colors, then the bar textures at the bottom: three status bars, a bar chart and a stacked bar, each labeled with the texture it is drawn with. Every sample has a small label under it naming the part it shows.
+Below the cards, the showroom scrolls through the window chrome, controls, lists, text, panels and overlays, then the extras an addon can ask a skin for (its own colors, a danger button, a caution box, a settings tree, an icon border, a window that keeps the game's look while you wear Ka0s Default), then the skin's raw colors and item quality colors, then the bar textures at the bottom: three status bars, a bar chart and a stacked bar, each labeled with the texture it is drawn with. Every sample has a small label under it naming the part it shows.
 
 The settings have a Sample controls page too: a checkbox, a slider, a dropdown and a color swatch, so you can see a skin on a settings page. None of them does anything. A new profile keeps the tester's own settings pages in the game's look, so untick Ignore settings panel on the Skin tab before you judge a skin there. Ignore fonts, next to it, gives every piece of text in the tester back the game's font and leaves the skin's colors on it.
 

@@ -273,11 +273,15 @@ Total.
 - showroom: the sections build without the library's widgets
 - showroom: the slider sample is visible under Ka0s Default
 
-### test_showroom_values.lua (3)
+### test_showroom_values.lua (7)
 
 - values: every getter is displayed
 - values: every sem token has a line
 - values: a skin change redraws them
+- values: the two token categories each have a heading, in the heading role
+- values: every quality tier in the schema has a line, poor to legendary
+- values: each tier line wears its own color, and follows a skin change
+- values: a tier the skin leaves unset reads none, with no swatch
 
 ### test_showroom_textures.lua (8)
 
@@ -289,6 +293,18 @@ Total.
 - textures: a texture override repaints every fill and relabels it, live
 - textures: the section builds without the skin engine
 - textures: Ka0s Default draws its own Ka0s Default bar, shipped in the vendored copy
+
+### test_showroom_owner.lua (9)
+
+- addon surfaces: the section is built, and every sample went through the wrapper
+- addon surfaces: the owner tokens resolve: default, a skin's own entry, else the follow
+- addon surfaces: the owner token line wears st.note, and follows a skin switch
+- addon surfaces: the danger button paints its fill, edge and label from the named tokens
+- addon surfaces: the caution callout paints its fill, edge and title from the named tokens
+- addon surfaces: the TreeGroup follows the Scope's settings-panel half, live
+- addon surfaces: the icon border draws icon.borderSize edges in icon.border, per skin
+- addon surfaces: the settings-style window is the client's under Ka0s Default
+- addon surfaces: the settings-style window is skinned under another skin, and stock again after
 
 ### test_skin_media.lua (9)
 
@@ -671,8 +687,9 @@ Total.
 | test_selector.lua | 8 |
 | test_showroom.lua | 11 |
 | test_showroom_coverage.lua | 5 |
-| test_showroom_values.lua | 3 |
+| test_showroom_values.lua | 7 |
 | test_showroom_textures.lua | 8 |
+| test_showroom_owner.lua | 9 |
 | test_skin_media.lua | 9 |
 | test_skin_picker.lua | 30 |
 | test_settings_sample.lua | 5 |
@@ -696,4 +713,4 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | Skipped | 1 |
-| **Total** | **538** |
+| **Total** | **551** |

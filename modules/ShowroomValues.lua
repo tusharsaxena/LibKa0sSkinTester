@@ -1,11 +1,15 @@
 local addonName, NS = ...
--- modules/ShowroomValues.lua — the Values section: what the six getters answer, and every semantic
--- color (`sem.*`) of the skin worn, each as a labeled swatch. The getters paint nothing, so they are
--- shown by what they answer: the accent, panel and glow colors as swatches, the body font as a line
--- set in it, the HUD bar style as a sample bar, the chart style as its series.
+-- modules/ShowroomValues.lua — the Values section: what the six getters answer, then two token
+-- categories of the skin worn, each token as a labeled swatch under its category's heading: every
+-- semantic color (`sem.*`) and every item quality tier (`q.*`, poor to legendary). The getters paint
+-- nothing, so they are shown by what they answer: the accent, panel and glow colors as swatches, the
+-- body font as a line set in it, the HUD bar style as a sample bar, the chart style as its series.
 --
 --   NS.Values.shown   the getter names on display; the coverage suite counts them
 --   NS.Values.lines   [sem key] = { swatch, text }, one per `sem.*` token the skin resolves
+--   NS.Values.tiers   [q key] = { swatch, text }, one per `q.*` token in the schema, in its order;
+--                     a tier the skin leaves unset reads "<key>: none" with no swatch
+--   NS.Values.heads   [category] = the heading FontString ("sem", "q")
 --
 -- Everything redraws on OnLooksChanged: these are values read once, not paint the library records.
 
@@ -14,7 +18,7 @@ local BAR = "Interface\\TargetingFrame\\UI-StatusBar"
 local SWATCH = 16
 local SEM_W = 150
 
-NS.Values = { shown = {}, lines = {} }
+NS.Values = { shown = {}, lines = {}, tiers = {}, heads = {} }
 local V = NS.Values
 local draws = {}   -- one redraw per display, run at build and on every skin change
 
@@ -129,6 +133,50 @@ local function semLines(g)
     end
 end
 
+-- The quality tiers, in the schema's order (poor, common, uncommon, rare, epic, legendary): every
+-- tier the schema names, set or not, since a skin may leave the client's colors in place.
+local function tierKeys()
+    local lib, keys = Skin(), {}
+    for _, entry in ipairs(lib and lib.SCHEMA or {}) do
+        if entry.name:find("^q%.") then keys[#keys + 1] = entry.name end
+    end
+    return keys
+end
+
+local function tierLines(g)
+    local order = tierKeys()
+    for _, key in ipairs(order) do
+        local tex, fs = swatchLine(g:Add(SEM_W, SWATCH, ""), key)
+        V.tiers[key] = { swatch = tex, text = fs }
+    end
+    draws[#draws + 1] = function()
+        local lib = Skin()
+        for _, key in ipairs(order) do
+            local tier = V.tiers[key]
+            local r, gg, b, a = lib:Color(addonName, key)
+            setSwatch(tier.swatch, r, gg, b, a)
+            if type(r) == "number" then
+                tier.text:SetText(key)
+                R.Paint("Font", tier.text, r, gg, b)
+            else
+                tier.text:SetText(key .. ": none")
+                R.Paint("Text", tier.text, "muted")
+            end
+        end
+    end
+end
+
+-- A category's heading on a row of its own, in the skin's heading role.
+local function heading(g, key, text)
+    g:Break()
+    local fs = g:Add(SEM_W * 2, 16, ""):CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    fs:SetPoint("LEFT")
+    fs:SetText(text)
+    R.Paint("Text", fs, "heading")
+    V.heads[key] = fs
+    g:Break()
+end
+
 local function redraw()
     for _, draw in ipairs(draws) do draw() end
 end
@@ -141,7 +189,12 @@ R.AddSection("values", L["Values"], function(body)
     fontGetter(g)
     barGetter(g)
     chartGetter(g)
-    if Skin() then semLines(g) end
+    if Skin() then
+        heading(g, "sem", L["Semantic colors (sem.*)"])
+        semLines(g)
+        heading(g, "q", L["Quality tiers (q.*)"])
+        tierLines(g)
+    end
     redraw()
     return g:Height()
 end)

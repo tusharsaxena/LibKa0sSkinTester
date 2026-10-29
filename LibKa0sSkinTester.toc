@@ -75,6 +75,7 @@ modules\ShowroomLists.lua
 modules\ShowroomText.lua
 modules\ShowroomPanels.lua
 modules\ShowroomOverlays.lua
+modules\ShowroomOwner.lua
 modules\ShowroomValues.lua
 modules\ShowroomTextures.lua
 modules\Diagnostics.lua

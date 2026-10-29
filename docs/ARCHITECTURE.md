@@ -17,8 +17,8 @@ CurseForge. Purpose, audience and non-goals: [`scope.md`](./scope.md).
 ## Module Map
 
 One shell, the setup files that wire LibKa0s, the swatch selector, the showroom window with its paint
-wrapper and section registry, eight section files (Chrome, Controls, Lists, Text, Panels, Overlays,
-Values, Textures), and the settings pages with the first-run skin picker. Every file, its job and its load-order constraint:
+wrapper and section registry, nine section files (Chrome, Controls, Lists, Text, Panels, Overlays,
+Addon surfaces, Values, Textures), and the settings pages with the first-run skin picker. Every file, its job and its load-order constraint:
 [`module-map.md`](./module-map.md). The load order itself is
 the TOC, where each load-bearing position carries the reason.
 
@@ -39,8 +39,8 @@ Every path, default and the migration seam: [`schema.md`](./schema.md).
 
 None. Nothing crosses a module boundary as a message: the sections register with the showroom by
 direct call (`NS.Showroom.AddSection`), below the `architecture-§4` threshold. A skin change reaches
-the showroom, the selector and the Values section through the skin engine's own `OnLooksChanged`
-notification, not a bus message.
+the showroom, the selector and the Values, Textures and Addon surfaces sections through the skin
+engine's own `OnLooksChanged` notification, not a bus message.
 
 ## Slash Commands
 
