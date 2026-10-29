@@ -39,8 +39,8 @@ Every path, default and the migration seam: [`schema.md`](./schema.md).
 
 None. Nothing crosses a module boundary as a message: the sections register with the showroom by
 direct call (`NS.Showroom.AddSection`), below the `architecture-§4` threshold. A skin change reaches
-the showroom, the selector and the Values section through the skin engine's own `OnLooksChanged`
-notification, not a bus message.
+the showroom, the selector and the Values, Textures and Addon surfaces sections through the skin
+engine's own `OnLooksChanged` notification, not a bus message.
 
 ## Slash Commands
 
