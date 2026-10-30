@@ -23,11 +23,11 @@ The first time a profile runs, a small "Choose a skin" window, with "Ka0s Skin T
 
 When several Ka0s addons start on new profiles at once, their skin windows come one at a time, and "Apply to all Ka0s addons" answers all of them.
 
-Below the cards, the showroom scrolls through the window chrome, controls, lists, text, panels and overlays, then the extras an addon can ask a skin for (its own colors, a danger button, a caution box, a settings tree, an icon border, a window built on one of the game's own frames), then the library's own widgets (a drag handle with its tooltip, a suggestion list, a line chart, a resize grip, a settings drawer and nav entry, and buttons that open a copy window, the debug console and the skin picker), then the skin's raw colors, item quality colors, tooltip colors and art tints, then the bar textures: three status bars, a bar chart and a stacked bar, each labeled with the texture it is drawn with. Last come the HUD faces: one line in each skin's own HUD font, side by side, and one in the font the skin you wear gives a HUD. Every sample has a small label under it naming the part it shows.
+Below the cards, the showroom scrolls through the window chrome, controls, lists, text, panels and overlays, then the extras an addon can ask a skin for (its own colors, a danger button, a caution box, a settings tree, an icon border, a window built on one of the game's own frames), then the library's own widgets (a drag handle with its tooltip, a suggestion list, a line chart, a resize grip, a settings drawer and nav entry, and buttons that open a copy window, the debug console and the skin picker), then the skin's raw colors, item quality colors, tooltip colors and art tints, then the bar textures: three status bars, a bar chart and a stacked bar, each labeled with the texture it is drawn with. Then the faces and widths: what the Skin tab's Font outline gives this addon's text, and one line per skin in its own body and title fonts, each with how wide its text measures against Ka0s Default (`/st widths` prints the same numbers in chat). Last come the HUD faces: one line in each skin's own HUD font, side by side, and one in the font the skin you wear gives a HUD. Every sample has a small label under it naming the part it shows.
 
 The settings have a Sample controls page too: a checkbox, a slider, a dropdown and a color swatch, so you can see a skin on a settings page. None of them does anything. A new profile keeps the tester's own settings pages in the game's look, so untick Ignore settings panel on the Skin tab before you judge a skin there. Ignore fonts, next to it, gives every piece of text in the tester back the game's font and leaves the skin's colors on it.
 
-The Skin tab's Font and Texture menus put a font, or a bar texture, of your choice over the skin's own. They list what LibSharedMedia knows about, so a media pack adds to them. Texture changes every bar of data, which is what the showroom's Textures section shows. Ignore fonts still wins over a chosen font.
+The Skin tab's Font and Texture menus put a font, or a bar texture, of your choice over the skin's own. They list what LibSharedMedia knows about, so a media pack adds to them. Texture changes every bar of data, which is what the showroom's Textures section shows. Ignore fonts still wins over a chosen font. Choosing another skin puts both back to that skin's own. Font outline, under them, says where the skin outlines text: on all of it (the default), on HUD text only, or nowhere; Ignore fonts wins over it too. `/st skin` opens the skin picker again whenever you want it.
 
 The minimap button opens the settings on a left-click and a small menu on a right-click, where Show window opens the showroom. You can also bind a key to it from the game's Keybindings menu (the Ka0s Skin Tester header) or from the General page's Keybindings tab.
 
@@ -43,7 +43,7 @@ Everything else is in Settings, AddOns, Ka0s Skin Tester, and `/st help` lists t
 
 **Can I compare two skins side by side?** No. You see one skin at a time; switching is instant.
 
-**Does it change my other addons?** Only if you press "Copy to every Ka0s addon" on the Skin tab, which copies the skin, the font, the texture and the Ignore boxes. Picking a skin here changes this addon alone.
+**Does it change my other addons?** Only if you press "Copy to every Ka0s addon" on the Skin tab, which copies the skin, the font, the texture, the font outline and the Ignore boxes. Picking a skin here changes this addon alone.
 
 **Why is EllesmereUI on the Skin tab?** With EllesmereUI installed, an addon can let it do the painting. Coming back from EllesmereUI needs a `/reload`, because EllesmereUI's painting cannot be undone in place.
 
@@ -78,6 +78,24 @@ Bugs, feature requests and outstanding work are all tracked at [https://github.c
 
 The debug console uses [JetBrains Mono](https://www.jetbrains.com/lp/mono/), licensed under the SIL
 Open Font License 1.1. It ships inside the bundled LibKa0s payload, with its license text beside it.
+
+The skins' faces, which the showroom draws, ship in the same payload with each face's terms beside
+it. They are SIL OFL 1.1 except Prototype and Expressway:
+
+- [Nunito](https://github.com/googlefonts/nunito), [Vollkorn](https://github.com/FAlthausen/Vollkorn-Typeface),
+  [Bitter](https://github.com/solmatas/BitterPro), [Philosopher](https://github.com/alexeiva/philosopher)
+  and [Atkinson Hyperlegible](https://www.brailleinstitute.org/freefont/), each by its project's
+  authors.
+- [Fira Sans](https://github.com/mozilla/Fira) Medium and SemiBold, WoW Forever's faces, by The
+  Mozilla Foundation and Telefonica S.A.
+- [Prototype](https://www.dafont.com/prototype.font) v2.0 (2001), Ka0s Default's face. It is not
+  under the OFL: it is "free for personal use, freely distributed with Prototype.txt", and the
+  author's `Prototype.txt` ships beside it unchanged.
+- [Expressway](https://www.dafont.com/expressway.font) Rg Bold 2.100 (2005) by Ray Larabie,
+  Typodermic, Obsidian's face. It is not under the OFL. It ships on the owner's ruling of
+  2026-10-30, against its name table's "Do not distribute" and the Typodermic Desktop EULA 2026,
+  which ship beside it (`Expressway-EULA.pdf`, `Expressway-EULA-Guide.html`) as the record of the
+  terms that ruling overrode. Expressway is a trademark of Typodermic.
 
 **Open Iconic** icons (the debug console's copy, clear and close marks, and the skin picker's eye
 and gear), by Waybury, MIT license

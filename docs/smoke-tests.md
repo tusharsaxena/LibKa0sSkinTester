@@ -10,14 +10,14 @@ its theme, and a retired number is never reused.
 | ID range | Theme | What it covers |
 |---|---|---|
 | INSTALL-1..3 | Install | Load, reload, first run |
-| SLASH-1..4 | Slash commands | `/st`, `/skintester`, help, the disabled refusal, a foreign `/st` |
-| PANEL-1..11 | Settings panel | Landing page, General's tabs, Skin, Keybindings, Sample controls, the Scope, Font and texture, the settings chrome's face and tooltips |
+| SLASH-1..6 | Slash commands | `/st`, `/skintester`, help, the disabled refusal, a foreign `/st`, `/st skin`, `/st widths` |
+| PANEL-1..12 | Settings panel | Landing page, General's tabs, Skin, Keybindings, Sample controls, the Scope, Font and texture, the settings chrome's face and tooltips, the Font outline |
 | PROFILE-1..2 | Profiles | The Profiles page and the `profile` verb |
 | STATE-1..2 | Enable and disable | The stand-down and its refusal |
 | COMBAT-1..2 | Combat | The showroom and the panel in combat |
 | DIAG-1..2 | Diagnostics | The debug console and the report |
 | DEGRADED-1 | Degraded install | The library-absent load |
-| SHOW-1..25 | Showroom | The window, the swatch selector, the sections, position and scale, the textures, Ka0s Default's face and bar, the addon surfaces, the library widgets, the tooltip colors and art tints, the HUD faces |
+| SHOW-1..27 | Showroom | The window, the swatch selector, the sections, position and scale, the textures, Ka0s Default's face and bar, the addon surfaces, the library widgets, the tooltip colors and art tints, the HUD faces, the faces and widths, FontFlags and HudFontSize |
 | PICKER-1..16 | First-run skin picker | When and where it shows, its title, preview, Apply, close, the gear, Apply to all, one window across addons, taking it down, combat, a preview meeting another write, the reload popup |
 | LOC-1 | Non-English client | Locale-dependent behavior |
 
@@ -44,6 +44,21 @@ restart the client: new font and texture files are only seen at client start.
 - **SLASH-4. A foreign /st.** With another addon that registers `/st` enabled (any one will do), log
   in. → One tagged line saying this addon answers only to `/skintester`; `/st` reaches the other
   addon, and `/skintester show` opens the showroom. With no such addon, no line at all. Result: pass (owner-marked 2026-10-30)
+- **SLASH-5. `/st skin` (ST-01; LibKa0s v1.82.0, D-16).** On a profile that has closed the skin
+  picker, `/st help`. → A `skin` row right after `config`, "Choose a skin: open the skin picker".
+  `/st skin`. → The skin picker a new profile shows opens ("Choose a skin", "Ka0s Skin Tester" above
+  the list); a pick previews, Apply saves, the close control puts the skin back. Enter combat and
+  `/st skin` twice. → No picker; a gray "cannot open the skin picker during combat" line each time.
+  Out of combat, `/st disable`, then `/st skin`. → One tagged line naming `/st enable`; no picker.
+  `/st enable` afterwards. Fail: "unknown command", a picker in combat or while disabled, or one gray
+  line for two presses. Result:
+- **SLASH-6. `/st widths` (ST-01; LibKa0s v1.82.0, D-08).** Fully restart the client, clear any Font
+  override on General -> Skin, then `/st widths`. → A header, "Widths of a fixed corpus against Ka0s
+  Default (1.000x is parity):", and nine lines, one per skin, each "<skin>: body <face> <size>
+  <ratio>x, title ..., hud ...". Ka0s Default reads 1.000x on all three. Note every other ratio here
+  (D-08's in-client check: the owner judges how near 1.000x is near enough); a ratio far from 1, say
+  below 0.95 or above 1.05, is a finding for LibKa0s's sizes, not for this addon. Fail: "unmeasured"
+  for a shipped face, or a line missing. Result:
 
 ## Settings panel
 
@@ -89,6 +104,15 @@ restart the client: new font and texture files are only seen at client start.
   hover art and chevron are checked on the showroom's Library widgets samples (SHOW-22), which wear
   the skin whatever Ignore settings panel says. Fail: a title in another skin's color while the panel
   is skinned, or a skinned title while Ignore settings panel is ticked. Result: pass (owner-marked 2026-10-30)
+- **PANEL-12. The Font outline (ST-01; LibKa0s v1.82.0, D-06).** Open General -> Skin. → A "Font
+  outline" dropdown in the Font and texture section, on All text. Open the showroom beside it on
+  Faces and widths and pick HUD text only. → The mode line reads "Font outline: HUD text only. Window
+  text draws "", HUD text "OUTLINE"", and every window string in the showroom (titles, labels, the
+  face lines) loses its dark outline, live; the HUD faces keep theirs. Pick Off. → The HUD faces lose
+  theirs too. `/reload`. → Off is still chosen and still applied. Tick Ignore fonts → the dropdown is
+  grayed and the mode line ends "(Ignore fonts wins)". Pick All text and untick Ignore fonts
+  afterwards. Fail: an outline under Off, a mode that does not survive the reload, or a change that
+  needs a reload. Result:
 
 ## Profiles
 
@@ -169,12 +193,12 @@ restart the client: new font and texture files are only seen at client start.
   texture and the labels change at once. Fail: a flat fill where the skin names a texture, or a label
   naming a key the bars do not show. Result: pass (owner-marked 2026-10-30)
 - **SHOW-13. Ka0s Default's face and bar.** Fully restart the client (new font and texture files),
-  then `/st show` in Ka0s Default. → Every title is in Oxanium Bold and the body text in Oxanium
-  SemiBold, a squared techno face, not Friz Quadrata; the Textures section's labels read "Texture:
+  then `/st show` in Ka0s Default. → Every title and the body text are in Prototype (LibKa0s v1.82.0,
+  D-02; Oxanium before), titles larger than the body, not Friz Quadrata; the Textures section's labels read "Texture:
   Ka0s Default" and every fill shows that bar, dim at the top with a highlight low on the bar and a
   short lip, not the flat Blizzard bar. Click Obsidian, then WoW Default. → Their own faces and bars;
   WoW Default is still Friz Quadrata with the Blizzard bar. Fail: a square where a glyph should be,
-  or a flat or missing fill. Result: pass (owner-marked 2026-10-30)
+  or a flat or missing fill. Result:
 - **SHOW-14. Every skin's own bar (ST-02; LibKa0s SO-04).** Fully restart the client (new texture
   files), clear any Texture override on General → Skin, then `/st show` and scroll to Textures. Click
   each card in turn → every label reads "Texture: <key>" for that skin and every fill shows it: Ka0s
@@ -219,31 +243,31 @@ restart the client: new font and texture files are only seen at client start.
 - **SHOW-19. Every skin's HUD face (ST-01; LibKa0s v1.81.0, LK-04, ruling R-4).** Fully restart the
   client, clear any Font override on General -> Skin, then `/st show` and scroll to HUD faces, the
   last section. → Nine lines, two to a row, each "<skin>  12,345  0:42  98%  (<face>)" in that skin's
-  own face, 12px with a dark outline, whatever skin is worn: Ka0s Default Oxanium SemiBold, Obsidian
-  Inter SemiBold, Azeroth Vollkorn Bold, Glass Nunito SemiBold, High Contrast Atkinson Bold, Ember
+  own face, at its own HUD size (LibKa0s v1.82.0, D-09) with a dark outline, whatever skin is worn:
+  Ka0s Default Prototype, Obsidian Expressway (v1.82.0; Oxanium SemiBold and Inter SemiBold before), Azeroth Vollkorn Bold, Glass Nunito SemiBold, High Contrast Atkinson Bold, Ember
   Bitter Bold, WoW Default Friz Quadrata (the client's own), WoW Midnight Philosopher Bold, WoW
   Forever Fira Sans SemiBold. Judge each face as a HUD face: digits legible under the outline, no
   closed-up counters. The tenth line, under them, is the worn skin's face: click Ember → it reads
   Bitter Bold. Fail: a square where a glyph should be, a line in another skin's face, two skins
   sharing a face (WoW Default's Friz aside), or a face you reject for a HUD (record which skin and
-  why: the owner's call, R-4). Result: pass (owner-marked 2026-10-30)
+  why: the owner's call, R-4). Result:
 - **SHOW-20. Ignore fonts reaches the HUD (ST-01; LibKa0s v1.81.0, LK-01, ruling R-1).** On HUD
   faces in Obsidian, tick Ignore fonts on General -> Skin. → The last line drops to the game's own
   face and reads "(Ignore fonts: the host's own face)" at once; the nine skin lines keep their faces
-  (they show the skins). Untick it. → The last line is Inter SemiBold again. Fail: the last line
-  keeping Inter under Ignore fonts, or a skin line losing its face. Result: pass (owner-marked 2026-10-30)
+  (they show the skins). Untick it. → The last line is Expressway again. Fail: the last line
+  keeping Expressway under Ignore fonts, or a skin line losing its face. Result:
 - **SHOW-21. Library widgets (ST-01; LibKa0s v1.81.0, LK-06a, LK-08).** Scroll to Library widgets in
-  Ka0s Default. → A drag strip "Hover me: a drag handle" with its label in Oxanium, a box with an
+  Ka0s Default. → A drag strip "Hover me: a drag handle" with its label in Prototype (v1.82.0), a box with an
   input, a line chart with two series and its axis labels, a resizable panel, a drawer head with a
   chevron and a nav entry. Hover the strip → the tooltip's title "Drag handle" in gold, the body in
   white, a blank line, then the footer in 0.6 gray. Type "o" in the box → a list of the skins whose
-  name holds an "o", in the body face (Oxanium). Click Azeroth and hover again → the title, body and
+  name holds an "o", in the body face (Prototype). Click Azeroth and hover again → the title, body and
   footer take Azeroth's tooltip colors, the strip's label, the suggestion rows and the chart's axis
   labels take Vollkorn. Also open the Controls section's dropdown → its rows are in the skin's body
   face, and the Overlays test strip's line is in the accent color and the body face. Tick Ignore
   fonts → the strip label, suggestion rows, chart labels, dropdown rows and test strip line go back to
   the game's fonts, live, and their colors stay. Fail: a tooltip in Ka0s Default's gold, white and
-  gray under Azeroth, or any of those strings left in Friz Quadrata under a skin. Result: pass (owner-marked 2026-10-30)
+  gray under Azeroth, or any of those strings left in Friz Quadrata under a skin. Result:
 - **SHOW-22. Hover art and the resize grip (ST-01; LibKa0s v1.81.0, LK-06b, LK-06c).** On Library
   widgets in Ka0s Default, hover the drawer head and the nav entry → the client's own highlight
   wash; the chevron is gold; the grip in the panel's bottom-right corner is the client's own art.
@@ -255,24 +279,42 @@ restart the client: new font and texture files are only seen at client start.
   window" → a copy window in the skin, its resize grip bottom right in the skin's icon tint (the
   client's own art under Ka0s Default and WoW Default). Press "Open the console" → the debug console
   opens; its title-bar labels (the logging toggle, Diagnostics, Copy and Clear where drawn as words)
-  are in the skin's body face, Oxanium under Ka0s Default, and its grip follows the skin as the copy
+  are in the skin's body face, Prototype under Ka0s Default (v1.82.0), and its grip follows the skin as the copy
   window's. Run `/st perf` and follow it until its step panel shows → the panel's step and command columns are
   in the body face too. Tick
   Ignore fonts → those labels go back to the game's fonts, live; untick Ignore settings panel and
   tick it again → the windows keep their skin either way (they are windows). Fail: a label in Friz
-  Quadrata while fonts are not ignored, or a window going stock with Ignore settings panel. Result: pass (owner-marked 2026-10-30)
+  Quadrata while fonts are not ignored, or a window going stock with Ignore settings panel. Result:
 - **SHOW-24. The skin picker's layout (ST-01; LibKa0s v1.81.0, LK-11, ruling R-11).** On Library
   widgets press "Show the picker" (on any profile) → the skin picker titled "Choose a skin", with
   "Ka0s Skin Tester" on its own line in the heading color above the dropdown, whole and never cut off.
   Its rows still preview each skin in its own face, Ignore fonts or not. Close it → the skin worn is
-  unchanged. In combat the button does nothing. Fail: the addon's name in the title, a cut-off owner
-  line, or a picker mid-combat. Result: pass (owner-marked 2026-10-30)
+  unchanged. In combat the button opens nothing and prints the gray "cannot open the skin picker
+  during combat" line, every press (v1.82.0: the button runs `/st skin`'s act). Fail: the addon's
+  name in the title, a cut-off owner line, or a picker mid-combat. Result:
 - **SHOW-25. Tooltip colors and art tints (ST-01; LibKa0s v1.81.0).** Scroll to Values in Ka0s
   Default. → Below Quality tiers, a "Tooltip colors (gtip.*)" heading over one labeled swatch per
   `gtip.*` token, `gtip.footer` a 0.6 gray, and an "Art tints (false: the client's art)" heading over
   `list.hoverArt` and `icon.grip`, each reading ": false, the client's art" in muted text with no
   swatch. Click Obsidian → `gtip.footer` takes `gtip.muted`'s color and both art tints show a swatch
   in their own color. Fail: a missing token, or a swatch under Ka0s Default's art tints. Result: pass (owner-marked 2026-10-30)
+
+- **SHOW-26. Faces and widths (ST-01; LibKa0s v1.82.0, D-02, D-06, D-08).** Fully restart the
+  client (new font files), clear any Font override, then `/st show` and scroll to Faces and widths,
+  just above HUD faces. → The Font outline line, then nine face lines, each a body sample in the
+  skin's body face and size and a title sample in its title face and size, naming both, with a muted
+  "body <ratio>x  title <ratio>x  hud <ratio>x" line under them. Ka0s Default reads Prototype for
+  both and 1.000x; Obsidian Expressway for both; WoW Forever Fira Sans Medium for the body and Fira
+  Sans SemiBold for the title. Look across the nine body samples: they should end at about the same
+  place (width parity). Fail: a square where a glyph should be, a line in another skin's face, Inter
+  or Oxanium anywhere, or a ratio reading "unmeasured". Result:
+- **SHOW-27. FontFlags and HudFontSize (ST-01; LibKa0s v1.82.0, D-07, D-09).** Scroll to Values in
+  Ka0s Default. → After ChartStyle, "HUD OUTLINE   window OUTLINE   picked THICKOUTLINE THICKOUTLINE"
+  (captioned FontFlags) and "12 draws at 12   24 draws at 24" (captioned HudFontSize). Pick HUD text
+  only on the Skin tab's Font outline → the window value reads `""`; Off → both read `""`, the picked
+  flag still THICKOUTLINE. Click Obsidian → HudFontSize shows Obsidian's own sizes for a stored 12 and
+  24. Fail: a From skin value that does not follow the Font outline, or a picked flag that changes.
+  Result:
 
 ## First-run skin picker
 
@@ -376,4 +418,9 @@ work (ST-03, ST-05 to ST-07, SF-40, SF-43, SF-46, R5-05), the skin overrides and
 the skinning rollout (2026-10-29) and the skin library follow-ups (2026-10-30) passed: INSTALL-1..3,
 SLASH-1..4, PANEL-1..11, PROFILE-1..2, STATE-1..2, COMBAT-1..2, DIAG-1..2, DEGRADED-1, SHOW-1..25,
 PICKER-1..16 and LOC-1, each recorded on its `Result:` line as pass (owner-marked 2026-10-30). Nothing
-is owed.
+was owed then.
+
+LibKa0s v1.82.0 (ST-01 of the skin fonts and feedback run, 2026-10-30) adds SLASH-5, SLASH-6,
+PANEL-12, SHOW-26 and SHOW-27, and re-opens SHOW-13, SHOW-19, SHOW-20, SHOW-21, SHOW-23 and SHOW-24,
+whose expected faces (Prototype and Expressway for Oxanium and Inter) or combat behavior changed;
+their `Result:` lines are empty until the owner runs them.
