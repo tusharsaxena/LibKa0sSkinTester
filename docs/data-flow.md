@@ -23,6 +23,10 @@
   both halves through `NS.WriteSkinChoice`'s fourth argument; `/st set skin.texture <key>` goes
   through the row's `onChange`, `NS.ApplySkinMedia`. Another addon's copy reaches the same seam
   through `Skin:WriteChoice`.
+- The Font outline dropdown calls `Skin:SetOutline` (a repaint and `OnLooksChanged`; the Values
+  section's FontFlags line redraws), then writes `media.outline` through `NS.WriteSkinChoice`;
+  `/st set skin.outline <mode>` goes through the row's `onChange`, `NS.ApplySkinOutline`. Load and
+  every profile event apply the stored mode with the pair, the Scope and the overrides.
 - The skin picker splits the two steps: a pick in its list calls `Skin:SetChoice` only (a preview,
   repainted live, nothing written); Apply or the gear then hands the pending pair to
   `NS.WriteSkinChoice`, and the close control or Escape calls `Skin:SetChoice` back to the pair the

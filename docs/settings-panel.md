@@ -41,6 +41,9 @@ debug line, the same row `onChange`, the same panel refresh. The Skin tab calls
 and then hands both halves to `NS.WriteSkinChoice` as its fourth argument (`{ font, texture }`, a
 key or false), which writes `skin.font` and `skin.texture` ("" for false); their rows' `onChange`
 (`NS.ApplySkinMedia`, one half each) is then a no-op, and `/st set skin.texture <key>` applies live.
+The Font outline dropdown (LibKa0s v1.82.0) calls `Skin:SetOutline` first and then passes the mode
+as that fourth argument's `outline`, which writes `skin.outline`; its row's `onChange`
+(`NS.ApplySkinOutline`) is then a no-op, and `/st set skin.outline off` applies live.
 
 ## The first-run skin picker
 

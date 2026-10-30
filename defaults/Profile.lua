@@ -16,6 +16,7 @@ NS.C = {
         ignoreFonts = false, -- the Scope: leave every font the client's (the skin still colors)
         font    = "",        -- the font override, a LibSharedMedia key; "" is the skin's own
         texture = "",        -- the bar texture override, a LibSharedMedia key; "" is the skin's own
+        outline = "all",     -- the Font outline: "all" text, "hud" text only, or "off" (LibKa0s v1.82.0)
         pickerSeen = false,  -- the first-run skin picker was closed on this profile
     },
     -- The Sample controls page: one row of each widget type, so the skin can be seen on a settings

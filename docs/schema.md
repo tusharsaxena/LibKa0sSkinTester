@@ -14,6 +14,7 @@ capture ring, outside AceDB, written only by the harness).
 | `skin.skin` | string | `ka0s` | Skin | Any registered Ka0s skin key; an unregistered one applies Ka0s Default |
 | `skin.font` | string | `""` | Skin (Font and texture) | A LibSharedMedia font key over the skin's own (`Skin:SetOverride`); `""` is the skin's own. No `values`: the keys are whatever media packs registered |
 | `skin.texture` | string | `""` | Skin (Font and texture) | A LibSharedMedia statusbar key for every bar of data; `""` is the skin's own |
+| `skin.outline` | string | `all` | Skin (Font and texture) | The Font outline (`Skin:SetOutline`, LibKa0s v1.82.0): `all` text, `hud` text only, or `off`; Ignore fonts wins |
 | `skin.ignorePanel` | bool | `true` | Skin (Scope) | Leave this addon's settings pages the client's (`Skin:SetIgnore`) |
 | `skin.ignoreFonts` | bool | `false` | Skin (Scope) | Leave every font the client's; the skin still colors text, and a font override has no effect |
 | `skin.pickerSeen` | bool | `false` | none (skip-render) | The first-run skin picker was closed on this profile (Apply, the gear, the close control, Escape, or another addon's Apply to all); set by its `onClose` |

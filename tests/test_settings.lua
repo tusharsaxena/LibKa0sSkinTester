@@ -524,7 +524,7 @@ end)
 --- One page, so one entry. LibKa0sSkinTester registers a single settings sub-page ("general"); every row
 --- carries `section` for `/st list` and `group` for the tab, and no row is hidden.
 local PARTITION = {
-    general = { { "Master controls", 5 }, { "Appearance", 7 } },
+    general = { { "Master controls", 5 }, { "Appearance", 8 } },
 }
 
 test("settings: the page's tabs are the designed ones, in order, at the designed size",
@@ -745,6 +745,7 @@ local STORED_SETTINGS = {
     "skin.font = string||nil|nil|nil|skin|false",
     "skin.ignoreFonts = bool|false|nil|nil|nil|skin|false",
     "skin.ignorePanel = bool|true|nil|nil|nil|skin|false",
+    "skin.outline = string|all|nil|nil|nil|skin|false",
     "skin.pickerSeen = bool|false|nil|nil|nil|skin|false",
     "skin.skin = string|ka0s|nil|nil|nil|skin|false",
     "skin.source = string|ka0s|nil|nil|nil|skin|false",

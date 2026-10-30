@@ -347,6 +347,18 @@ Total.
 - media: Ignore fonts wins over a font override
 - media: without the skin engine the apply is a quiet no-op
 
+### test_skin_outline.lua (9)
+
+- outline: a fresh profile stores All text, the library's default
+- outline: the schema row offers the library's three modes, in its order
+- outline: the write seam stores media.outline, and leaves it alone when it is nil
+- outline: another addon's copy reaches the store through WriteChoice
+- outline: the row's write applies the mode live
+- outline: /st set refuses a mode the library does not know
+- outline: the stored mode is applied at load
+- outline: a profile switch applies the incoming profile's mode, and back
+- outline: without the skin engine the apply is a quiet no-op
+
 ### test_skin_picker.lua (30)
 
 - picker: a fresh profile shows it once the addon is enabled
@@ -722,6 +734,7 @@ Total.
 | test_showroom_hud.lua | 5 |
 | test_showroom_widgets.lua | 12 |
 | test_skin_media.lua | 9 |
+| test_skin_outline.lua | 9 |
 | test_skin_picker.lua | 30 |
 | test_settings_sample.lua | 5 |
 | test_panel.lua | 37 |
@@ -744,4 +757,4 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | Skipped | 1 |
-| **Total** | **574** |
+| **Total** | **583** |

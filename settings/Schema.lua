@@ -153,6 +153,19 @@ add{
     onChange = function(v) NS.ApplySkinMedia(nil, v) end,
 }
 
+-- The font outline (LibKa0s-Skin-1.0 minor 9, ruling D-06), drawn by the same tab as its "Font
+-- outline" dropdown: where the skin outlines this addon's text. The library's three modes, in its
+-- order; `/st set skin.outline` validates against them.
+add{
+    section = "skin",  group = "Appearance",
+    path    = "skin.outline",  type = "string",  widget = "Dropdown",  skipRender = true,
+    label   = "Font outline",
+    tooltip = "Where the skin outlines this addon's text: all of it, its HUD text only, or nowhere.",
+    values  = NS.SKIN_OUTLINE_OPTIONS,
+    default = C.skin.outline,
+    onChange = function(v) NS.ApplySkinOutline(v) end,
+}
+
 -- The first-run skin picker (LibKa0s OptionsSkinPicker minor 1) shows while this is false; closing
 -- it sets it. A new or reset profile starts false, so it shows again (settings/Panel.lua).
 add{
