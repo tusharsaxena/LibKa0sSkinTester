@@ -220,7 +220,7 @@ Total.
 
 ### test_slash.lua (19)
 
-- slash: COMMANDS order is the help order, fifteen positional triples
+- slash: COMMANDS order is the help order, sixteen positional triples
 - slash: every description has an enUS entry
 - slash: the chat command and its alias are registered through AceConsole
 - slash: the help header is the library's, with this addon's alias sentence
@@ -358,6 +358,16 @@ Total.
 - outline: the stored mode is applied at load
 - outline: a profile switch applies the incoming profile's mode, and back
 - outline: without the skin engine the apply is a quiet no-op
+
+### test_skin_verb.lua (7)
+
+- skin verb: the row sits right after config, with the library's help words
+- skin verb: /st skin shows the picker on a profile that has closed it
+- skin verb: NS.RunSkinVerb hands O.SkinVerb this addon's first-run spec
+- skin verb: in combat every call prints the library's gray line and shows nothing
+- skin verb: refused while the addon is disabled, and no picker shows
+- skin verb: without LibKa0s the verb prints the library-absent line
+- skin verb: the showroom's Show the picker goes through O.SkinVerb
 
 ### test_skin_picker.lua (30)
 
@@ -735,6 +745,7 @@ Total.
 | test_showroom_widgets.lua | 12 |
 | test_skin_media.lua | 9 |
 | test_skin_outline.lua | 9 |
+| test_skin_verb.lua | 7 |
 | test_skin_picker.lua | 30 |
 | test_settings_sample.lua | 5 |
 | test_panel.lua | 37 |
@@ -757,4 +768,4 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | Skipped | 1 |
-| **Total** | **583** |
+| **Total** | **590** |

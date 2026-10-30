@@ -159,6 +159,7 @@ Kit.run{
         "test_showroom_widgets",
         "test_skin_media",
         "test_skin_outline",
+        "test_skin_verb",
         "test_skin_picker",
         "test_settings_sample",
         "test_panel",

@@ -23,7 +23,7 @@ local function H(NS) return NS.addon.Settings.Helpers end
 
 -- ── the table ────────────────────────────────────────────────────────────────────────────────
 
-test("slash: COMMANDS order is the help order, fifteen positional triples", function()
+test("slash: COMMANDS order is the help order, sixteen positional triples", function()
     local NS = T.newAddon()
     local names = {}
     for _, c in ipairs(NS.addon.COMMANDS) do
@@ -31,7 +31,7 @@ test("slash: COMMANDS order is the help order, fifteen positional triples", func
         names[#names + 1] = c[1]
     end
     assertEqual(table.concat(names, " "),
-        "help show config enable disable version list get set reset resetall profile debug diagnostics perf")
+        "help show config skin enable disable version list get set reset resetall profile debug diagnostics perf")
 end)
 
 test("slash: every description has an enUS entry", function()

@@ -15,14 +15,16 @@ local ENABLED_PATH = "enabled"
 local CLI_MISSING = NS.LIBKA0S_MISSING .. ", so the settings CLI is unavailable."
 
 local Sl   -- forward-declared: the handlers below reach it at call time
-local runShow, runConfig, runDebug, runReset, runResetAll, runEnabled, runPerf
+local runShow, runConfig, runSkin, runDebug, runReset, runResetAll, runEnabled, runPerf
 
 -- Positional triples {name, desc, fn}, in help order (slash-commands-§3). The reserved verbs mean
--- the same thing in every Ka0s addon (slash-commands-§2); `show` is this addon's one feature verb.
+-- the same thing in every Ka0s addon (slash-commands-§2), `skin` among them (LibKa0s v1.82.0's
+-- O.SkinVerb, ruling D-16); `show` is this addon's feature verb.
 local COMMANDS = {
     {"help",        L["List available commands"],                  function() Sl:PrintHelp() end},
     {"show",        L["Show or hide the skin showroom"],           function() runShow() end},
     {"config",      L["Open the Ka0s Skin Tester settings"],       function() runConfig() end},
+    {"skin",        L["Choose a skin: open the skin picker"],      function() runSkin() end},
     {"enable",      L["Enable the addon"],                         function() runEnabled(true) end},
     {"disable",     L["Disable the addon"],                        function() runEnabled(false) end},
     {"version",     L["Print the addon version"],                  function() Sl:CliVersion() end},
@@ -156,6 +158,10 @@ end
 --- `/st show`: the showroom's one toggle, refused while stood down (the dispatcher's gate refuses
 --- the verb first; the toggle's own refusal serves the launcher and the key binding).
 function runShow() NS.Showroom.Toggle() end
+
+--- `/st skin`: the skin picker a new profile shows, on demand (settings/Panel.lua's NS.RunSkinVerb,
+--- which prints the library-absent line itself). The dispatcher refuses it while disabled.
+function runSkin() NS.RunSkinVerb() end
 
 function Tester:OpenSettings()
     if self.Settings and self.Settings.Register then self.Settings.Register() end

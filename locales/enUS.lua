@@ -19,6 +19,8 @@ L["all settings reset to defaults"] = "all settings reset to defaults"
 L["List available commands"]                 = "List available commands"
 L["Show or hide the skin showroom"]          = "Show or hide the skin showroom"
 L["Open the Ka0s Skin Tester settings"]      = "Open the Ka0s Skin Tester settings"
+-- The reserved `skin` verb's help: LibKa0s's SKIN_PICKER_STRINGS.VERB_HELP, one wording for every host.
+L["Choose a skin: open the skin picker"]     = "Choose a skin: open the skin picker"
 L["Enable the addon"]                        = "Enable the addon"
 L["Disable the addon"]                       = "Disable the addon"
 L["Print the addon version"]                 = "Print the addon version"

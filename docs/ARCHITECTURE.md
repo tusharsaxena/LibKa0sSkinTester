@@ -45,7 +45,7 @@ engine's own `OnLooksChanged` notification, not a bus message.
 ## Slash Commands
 
 `/st` and the alias `/skintester`, dispatched by LibKa0s-Slash-1.0 from the ordered `COMMANDS` table
-in `settings/Slash.lua`: the reserved verbs, plus `show`, the showroom toggle. At login a `/st` held
+in `settings/Slash.lua`: the reserved verbs (`skin` among them), plus `show`, the showroom toggle. At login a `/st` held
 by another addon is left to it (`NS.CheckSlashCollision`), and this addon keeps `/skintester`. Every
 verb and what it answers while disabled: [`slash-dispatch.md`](./slash-dispatch.md).
 
