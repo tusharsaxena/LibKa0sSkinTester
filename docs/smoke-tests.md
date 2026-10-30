@@ -192,15 +192,16 @@ restart the client: new font and texture files are only seen at client start.
   "Delete run" button on a dark red fill with a red edge and a white label; a "Waiting for the pull"
   callout on a faint orange wash with an orange edge and an orange title; a question-mark icon with a
   2px black border; a TreeGroup with General (expanded to Skin), Strings and About, in the client's
-  stock look; and a small window titled "Settings-style window" with the client's settings-window
-  frame and a stock close button, exactly as Blizzard draws them. Click High Contrast. → The
+  stock look; and a small window titled "Settings-style window" in Ka0s Default's window colors and
+  title, the client's settings-window frame art faded (LibKa0s v1.81.0, ruling R-2: Ka0s Default
+  looks like Ka0s Default everywhere). Click High Contrast. → The
   note turns a light gray (0.85, the token's own High Contrast value), the button keeps its red edge
   on the skin's button fill with a red label, the callout takes the skin's card fill with an orange
-  edge and title, the icon border follows the skin, and the small window is now skinned (its frame
-  art faded, the skin's window colors and title). Click Obsidian → the icon border is 1px. Click Ka0s
-  Default → the small window is the client's frame again. Clicking its close button does nothing.
-  Fail: a sample in another skin's colors, a small window skinned under Ka0s Default or left stock
-  under another skin, or an error. Result:
+  edge and title, the icon border follows the skin, and the small window takes High Contrast's window
+  colors and title. Click Obsidian → the icon border is 1px. Click Ka0s Default → the small window
+  is in Ka0s Default's colors again, never the client's frame. Clicking its close button does
+  nothing. Fail: a sample in another skin's colors, the client's settings-window frame showing under
+  any skin, or an error. Result:
 - **SHOW-18. The TreeGroup follows the Scope (ST-01).** With the showroom open on Addon surfaces,
   open General -> Skin and clear Scope -> Ignore settings panel. → The TreeGroup sample repaints at
   once: both panes in the skin's navigation fill and edge, the row labels in the skin's navigation
@@ -212,11 +213,12 @@ restart the client: new font and texture files are only seen at client start.
 ## First-run skin picker
 
 - **PICKER-1. A fresh profile.** Create a new profile on the Profiles page (or log in on a character
-  that never ran the tester), with no other Ka0s addon loaded. → A small window titled "Choose a skin
-  for Ka0s Skin Tester" opens in the skin worn, its center about three quarters of the way up the
-  screen: a dropdown showing that skin, with the eye and the gear beside it, an Apply button and a
-  close control. No "Apply to all Ka0s addons" button. Fail: a window centered on the screen, or a
-  title that does not name the tester. Result:
+  that never ran the tester), with no other Ka0s addon loaded. → A small window titled "Choose a skin"
+  opens in the skin worn, its center about three quarters of the way up the screen: "Ka0s Skin
+  Tester" on a line of its own in the heading color, whole, above a dropdown showing that skin, with
+  the eye and the gear beside it, an Apply button and a close control. No "Apply to all Ka0s addons"
+  button. Fail: a window centered on the screen, a title that still names the addon, or an owner
+  line that is missing, cut off or does not name the tester. Result:
 - **PICKER-2. Its list, and a pick previews.** Click the dropdown. → The list opens inside the
   window, which grows to hold it: every skin, each row three color swatches and the skin's name in
   that skin's own font and size. Pick Ember. → The window and the showroom repaint in Ember, the
@@ -253,8 +255,8 @@ restart the client: new font and texture files are only seen at client start.
   closes, both addons wear Azeroth, and Loot History's Skin tab shows Azeroth with its Scope and its
   font and texture as they were. If either needs a reload, one popup names it. Result:
 - **PICKER-10. One window at a time.** With Ka0s Loot History installed, give both addons fresh
-  profiles and `/reload`. → One skin picker shows, never two, its title naming one addon. Close it
-  (or press Apply). → The other addon's picker opens, its title naming that addon. Close it. → No
+  profiles and `/reload`. → One skin picker shows, never two, its owner line naming one addon. Close
+  it (or press Apply). → The other addon's picker opens, its owner line naming that addon. Close it. → No
   third window. `/reload`. → Neither opens again. Result:
 - **PICKER-11. Apply to all ends the queue.** As PICKER-10, but on the first picker pick Glass and
   press "Apply to all Ka0s addons". → No second picker opens, and both addons wear Glass.
@@ -289,7 +291,7 @@ restart the client: new font and texture files are only seen at client start.
 - **PICKER-16. A queued picker in combat.** As PICKER-10, with the tester's picker waiting behind
   Loot History's. Enter combat and close Loot History's picker with its close control. → Loot
   History's picker closes, and the tester's does not open while combat lasts. Leave combat. → The
-  tester's picker opens, its title naming the tester. Repeat, and run `/st disable` while in
+  tester's picker opens, its owner line naming the tester. Repeat, and run `/st disable` while in
   combat after the close. → Nothing opens when combat ends. Fail: any picker opening mid-combat.
   Result:
 
@@ -319,3 +321,4 @@ restart the client: new font and texture files are only seen at client start.
 | SHOW-14 | ST-02, LibKa0s v1.79.0's bar textures (SO-04) | No client pass recorded yet |
 | SHOW-1 (amended), SHOW-15 | ST-03, the showroom's scrollbar | No client pass recorded yet |
 | SHOW-8 (amended), SHOW-16..18 | ST-01 of the skinning rollout (LibKa0s v1.80.0): the Quality tiers category and the Addon surfaces section | No client pass recorded yet |
+| SHOW-17 (amended), PICKER-1, PICKER-10, PICKER-16 (amended) | ST-01 of the skin library follow-ups (LibKa0s v1.81.0): the settings-style window skinned under Ka0s Default (R-2), the picker's "Choose a skin" title and owner line (R-11) | Rewritten for v1.81.0; no client pass recorded yet |

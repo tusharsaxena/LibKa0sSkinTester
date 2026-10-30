@@ -12,8 +12,10 @@ local _, NS = ...
 --                         painted once it is cleared. PaintAce is asked again on every
 --                         OnLooksChanged, so a Scope change or a skin switch shows at once.
 --   an icon border        IconBorder with opts.fromSkin: icon.borderStyle and icon.borderSize
---   a stock window        a SettingsFrameTemplate miniature painted with opts.stockDefault: the
---                         client's art under Ka0s Default, the skin's under every other skin
+--   a template window     a SettingsFrameTemplate miniature painted like any window: its art faded
+--                         and the skin's drawn under every skin, Ka0s Default included (LibKa0s
+--                         v1.81.0 retired opts.stockDefault, ruling R-2: the client's look is the
+--                         WoW Default skin)
 --
 -- Built only through the sample's own frames: no GameTooltip, no StaticPopup, no Blizzard window.
 
@@ -102,31 +104,32 @@ local function child(f, key)
 end
 
 -- A miniature of a window built to match Blizzard's settings window (Quick Comms' callout popup):
--- SettingsFrameTemplate's NineSlice with the title on it, its Bg and its close button, every call
--- with opts.stockDefault. A client without the template gets a plain frame, painted the same way.
+-- SettingsFrameTemplate's NineSlice with the title on it, its Bg and its close button. Ka0s Default
+-- paints it as every other skin does (R-2). A client without the template gets a plain frame,
+-- painted the same way.
 local function stockWindow(g, paint)
-    local cell = g:Add(240, 90, "Shell, stockDefault (stock in Ka0s Default)")
+    local cell = g:Add(240, 90, "Shell on SettingsFrameTemplate")
     local ok, win = pcall(CreateFrame, "Frame", nil, cell, STOCK_TEMPLATE)
     if not ok then win = CreateFrame("Frame", nil, cell, "BackdropTemplate") end
     win:SetSize(240, 90)
     win:ClearAllPoints()
     win:SetPoint("TOPLEFT", cell, "TOPLEFT", 0, 0)
-    paint("Shell", win, { stockDefault = true, stock = { child(win, "Bg") } })
+    paint("Shell", win, { stock = { child(win, "Bg") } })
     local nine = child(win, "NineSlice")
     if nine then
-        paint("FadeNineSlice", win, { stockDefault = true })
+        paint("FadeNineSlice", win)
         local title = child(nine, "Text")
         if title then
             title:SetText("Settings-style window")
-            paint("TitleBar", nine, { stockDefault = true, text = title, noBg = true })
+            paint("TitleBar", nine, { text = title, noBg = true })
         end
     end
     local close = child(win, "ClosePanelButton")
     if close then
         close:SetScript("OnClick", nil)   -- a sample: its parent is a showroom cell, not a window
-        paint("CloseButton", close, { stockDefault = true })
+        paint("CloseButton", close)
     end
-    local body = line(win, "Stock art under Ka0s Default", "GameFontHighlightSmall")
+    local body = line(win, "The skin's art in every skin", "GameFontHighlightSmall")
     body:SetPoint("CENTER", win, "CENTER", 0, -6)
     paint("Text", body, "body")
     return win

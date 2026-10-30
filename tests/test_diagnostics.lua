@@ -56,7 +56,7 @@ test("diagnostics: the skin section names the engine, the stored and applied ski
     local NS = T.enableAddon()
     NS.addon.Settings.Helpers.Set("skin.skin", "obsidian")
     local lines = report(NS)
-    assertTrue(has(lines, "skin engine=7"), "the skin engine's minor")
+    assertTrue(has(lines, "skin engine=8"), "the skin engine's minor")
     assertTrue(has(lines, "stored=ka0s:obsidian applied=ka0s:obsidian"), "stored and applied agree")
     assertTrue(has(lines, "owner=true pendingReload=false"), "the owner registration")
     assertTrue(has(lines, "obsidian"), "and the skins are listed")

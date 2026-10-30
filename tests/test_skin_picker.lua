@@ -148,9 +148,13 @@ test("picker: the close control puts the old skin back, writes nothing, and mark
     assertTrue(seen(NS), "closing it still counts as seen")
 end)
 
-test("picker: the title names this addon", function()
+test("picker: the title is \"Choose a skin\" and the owner line names this addon", function()
+    -- red under: LibKa0s before LK-11 (v1.81.0), whose title was "Choose a skin for <label>".
     local _, _, mock = T.enableAddon()
-    assertEqual(picker(mock).title:GetText(), "Choose a skin for Ka0s Skin Tester")
+    local f = picker(mock)
+    assertEqual(f.title:GetText(), "Choose a skin")
+    assertTrue(f.ownerLabel ~= nil, "the owner line is built")
+    assertEqual(f.ownerLabel:GetText(), "Ka0s Skin Tester")
 end)
 
 test("picker: not while the addon is disabled", function()

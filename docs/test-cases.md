@@ -303,8 +303,8 @@ Total.
 - addon surfaces: the caution callout paints its fill, edge and title from the named tokens
 - addon surfaces: the TreeGroup follows the Scope's settings-panel half, live
 - addon surfaces: the icon border draws icon.borderSize edges in icon.border, per skin
-- addon surfaces: the settings-style window is the client's under Ka0s Default
-- addon surfaces: the settings-style window is skinned under another skin, and stock again after
+- addon surfaces: the settings-style window wears Ka0s Default under Ka0s Default
+- addon surfaces: the settings-style window follows a skin switch and stays skinned back on Ka0s Default
 
 ### test_skin_media.lua (9)
 
@@ -329,7 +329,7 @@ Total.
 - picker: a pick previews: the skin moves live, the profile keeps its own and is not marked
 - picker: Apply saves the pick through the schema runtime and marks the profile
 - picker: the close control puts the old skin back, writes nothing, and marks the profile
-- picker: the title names this addon
+- picker: the title is "Choose a skin" and the owner line names this addon
 - picker: not while the addon is disabled
 - picker: a login in combat skips it, and the next trigger shows it
 - picker: a profile reset shows it again
