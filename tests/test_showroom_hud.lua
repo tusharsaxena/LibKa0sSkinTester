@@ -50,7 +50,10 @@ test("hud: each skin's line names that skin's own HUD face, all nine of them", f
         assertTrue(fs:GetText():find(face, 1, true) ~= nil, key .. "'s text names its face")
         faces[face] = (faces[face] or 0) + 1
     end
-    assertEqual(NS.Hud.lines.obsidian.faceKey, "Ka0s Inter SemiBold")
+    -- D-02 of docs/2026-10-30-SKIN_FONTS_AND_FEEDBACK (LibKa0s v1.82.0): Prototype for Ka0s Default,
+    -- Expressway for Obsidian. Pinned once here; every other case reads the skin's own token.
+    assertEqual(NS.Hud.lines.ka0s.faceKey, "Ka0s Prototype")
+    assertEqual(NS.Hud.lines.obsidian.faceKey, "Ka0s Expressway")
     assertEqual(NS.Hud.lines.ember.faceKey, "Ka0s Bitter Bold")
     assertEqual(NS.Hud.lines.wow.faceKey, "Friz Quadrata TT", "WoW Default names the client's face")
     local n = 0
@@ -76,25 +79,28 @@ end)
 test("hud: the worn line follows the skin worn, through BarStyle", function()
     local NS, mock = opened()
     assertTrue(NS.Showroom.used.BarStyle == true, "BarStyle went through the wrapper")
-    assertEqual(NS.Hud.worn.faceKey, "Ka0s Oxanium SemiBold", "Ka0s Default's HUD face")
+    local Skin = lib(mock)
+    assertEqual(NS.Hud.worn.faceKey, Skin:ResolveSkin("ka0s")["hud.font"], "Ka0s Default's HUD face")
     NS.Selector.Pick("obsidian")
-    assertEqual(NS.Hud.worn.faceKey, "Ka0s Inter SemiBold", "Obsidian's")
+    assertEqual(NS.Hud.worn.faceKey, Skin:ResolveSkin("obsidian")["hud.font"], "Obsidian's")
     fakeLSM(mock)
     NS.Selector.Pick("ember")
     local font = mock.__paint(NS.Hud.worn).font
-    assertEqual(font[1], "Fonts\\font\\Ka0s Bitter Bold.ttf", "drawn in Ember's face")
+    assertEqual(font[1], ("Fonts\\font\\%s.ttf"):format(Skin:ResolveSkin("ember")["hud.font"]),
+        "drawn in Ember's face")
 end)
 
 test("hud: under Ignore fonts the worn line takes the host's own face, and the skin lines keep theirs", function()
     -- red under: LibKa0s before LK-01 (v1.81.0), whose BarStyle kept the skin's face under Ignore fonts.
     local NS, mock = opened()
+    local face = lib(mock):ResolveSkin("obsidian")["hud.font"]
     NS.Selector.Pick("obsidian")
     NS.ApplySkinIgnore(nil, true)
     assertEqual(NS.Hud.worn.faceKey, nil, "no skin face under Ignore fonts")
     assertTrue(NS.Hud.worn:GetText():find("Ignore fonts", 1, true) ~= nil, "the line says why")
     assertTrue(mock.__paint(NS.Hud.worn).fontObject ~= nil, "the host's own font object")
-    assertEqual(NS.Hud.lines.obsidian.faceKey, "Ka0s Inter SemiBold", "a skin's line still shows its face")
+    assertEqual(NS.Hud.lines.obsidian.faceKey, face, "a skin's line still shows its face")
     NS.ApplySkinIgnore(nil, false)
-    assertEqual(NS.Hud.worn.faceKey, "Ka0s Inter SemiBold", "turning it off gives the skin's face back")
-    assertEqual(lib(mock):Token(OWNER, "hud.font"), "Ka0s Inter SemiBold")
+    assertEqual(NS.Hud.worn.faceKey, face, "turning it off gives the skin's face back")
+    assertEqual(lib(mock):Token(OWNER, "hud.font"), face)
 end)

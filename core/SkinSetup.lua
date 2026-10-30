@@ -119,7 +119,7 @@ NS.SKIN_VOCAB = {
     "GetAccentColor", "GetPanelColor", "GetFont",
     "TitleBar", "Divider", "Footer", "Card", "Slider", "NavItem", "Drawer", "ListRow", "MenuFrame",
     "Tooltip", "Strip", "Cover", "Text", "ChartStyle", "BarStyle", "IconBorder", "GlowColor",
-    "BarTexture",
+    "BarTexture", "FontFlags", "HudFontSize",
 }
 
 if not Skin then
@@ -135,6 +135,18 @@ if not Skin then
     S.OnLooksChanged = function(fn) return fn end   -- the skin never changes without the library
     S.IsEnabled = function() return false end
     S.GetStyle = function() return "ka0s:" .. DEFAULT end
+    -- The two answers a HUD element draws with (LibKa0s v1.82.0, SkinPaintExtras minor 7), never
+    -- nil: a picked flag as stored and "OUTLINE" for From skin or nothing stored (the library's own
+    -- answer while fonts are ignored); a stored size above 0 as is, else 12.
+    S.FontFlags = function(value)
+        if type(value) == "string" and value ~= S.FROM_SKIN then return value end
+        return "OUTLINE"
+    end
+    S.HudFontSize = function(size)
+        local n = tonumber(size)
+        if n and n > 0 then return n end
+        return 12
+    end
     NS.Skin = S
     NS.SkinAvailable = false
     function NS.ApplySkinChoice() return false, false end

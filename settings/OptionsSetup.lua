@@ -173,6 +173,9 @@ if not lib then
     -- here) and HideSkinPicker does nothing.
     H.SkinPicker           = function() return nil end
     H.HideSkinPicker       = function() end
+    -- The reserved `skin` verb (LibKa0s v1.82.0, OptionsSkinPicker minor 3, D-16): no picker on
+    -- this path, so SkinVerb opens nothing and answers nil, "absent".
+    H.SkinVerb             = function() return nil, "absent" end
     H.SetRenderer          = function() end
     H.RegisterOptionsPage  = function() end
     H.RefreshAllPanels     = function() end

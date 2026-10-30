@@ -105,7 +105,7 @@ Total.
 - mediasetup: this addon ships no private copy of the shared art (anti-patterns #63)
 - mediasetup: with no library there is no art and no face, and that is not an error
 - mediasetup: a degraded install still gets a REAL font, never nil and never a dead path
-- mediasetup: Ka0s Default's faces are Oxanium, and the vendored copy ships them
+- mediasetup: Ka0s Default's faces are Ka0s Prototype, and the vendored copy ships them
 
 ### test_envsetup.lua (9)
 
@@ -273,7 +273,7 @@ Total.
 - showroom: the sections build without the library's widgets
 - showroom: the slider sample is visible under Ka0s Default
 
-### test_showroom_values.lua (10)
+### test_showroom_values.lua (13)
 
 - values: every getter is displayed
 - values: every sem token has a line
@@ -285,6 +285,9 @@ Total.
 - values: the tooltip colors category lists every gtip.* token, gtip.footer included
 - values: gtip.footer is Ka0s Default's 0.6 gray and follows gtip.muted under Obsidian
 - values: the art tokens read the client's art under Ka0s Default and a color under Obsidian
+- values: FontFlags shows From skin on a HUD and in a window, and a picked flag winning
+- values: HudFontSize shows a stored 12 and 24 scaled by the worn skin's HUD size
+- values: without the skin engine FontFlags and HudFontSize still answer what SetFont takes
 
 ### test_showroom_textures.lua (8)
 
@@ -713,7 +716,7 @@ Total.
 | test_selector.lua | 8 |
 | test_showroom.lua | 11 |
 | test_showroom_coverage.lua | 5 |
-| test_showroom_values.lua | 10 |
+| test_showroom_values.lua | 13 |
 | test_showroom_textures.lua | 8 |
 | test_showroom_owner.lua | 9 |
 | test_showroom_hud.lua | 5 |
@@ -741,4 +744,4 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | Skipped | 1 |
-| **Total** | **571** |
+| **Total** | **574** |

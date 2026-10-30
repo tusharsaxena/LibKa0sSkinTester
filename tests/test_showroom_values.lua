@@ -7,7 +7,8 @@ local test, assertEqual, assertTrue = T.test, T.assertEqual, T.assertTrue
 
 local OWNER = "LibKa0sSkinTester"
 local installPaint = dofile("tests/_kit/mock_paint.lua")
-local GETTERS = { "GetAccentColor", "GetPanelColor", "GetFont", "GlowColor", "ChartStyle", "BarStyle" }
+local GETTERS = { "GetAccentColor", "GetPanelColor", "GetFont", "GlowColor", "ChartStyle", "BarStyle",
+                  "FontFlags", "HudFontSize" }
 
 local function opened()
     local NS, _, mock = T.enableAddon{ mock = function(m) installPaint(m) end }
@@ -169,4 +170,51 @@ test("values: the art tokens read the client's art under Ka0s Default and a colo
         local got = mock.__paint(line.swatch).color
         assertTrue(near(got[1], r) and near(got[2], g) and near(got[3], b), key .. ": Obsidian's color")
     end
+end)
+
+test("values: FontFlags shows From skin on a HUD and in a window, and a picked flag winning", function()
+    -- red under: LibKa0s before v1.82.0 (SkinPaintExtras minor 7, D-07), which had no FontFlags.
+    local NS, mock = opened()
+    local Skin = mock.LibStub("LibKa0s-Skin-1.0")
+    local text = NS.Values.flags:GetText()
+    assertEqual(text, "HUD OUTLINE   window OUTLINE   picked THICKOUTLINE THICKOUTLINE",
+        "Ka0s Default under the default outline mode, All text")
+    Skin:SetOutline(OWNER, "hud")
+    assertEqual(NS.Values.flags:GetText(), 'HUD OUTLINE   window ""   picked THICKOUTLINE THICKOUTLINE',
+        "HUD text only takes the window text's outline away, live")
+    Skin:SetOutline(OWNER, "off")
+    assertEqual(NS.Values.flags:GetText(), 'HUD ""   window ""   picked THICKOUTLINE THICKOUTLINE',
+        "Off takes both away; a picked flag still wins")
+end)
+
+test("values: HudFontSize shows a stored 12 and 24 scaled by the worn skin's HUD size", function()
+    -- red under: LibKa0s before v1.82.0 (SkinPaintExtras minor 7, D-09), which had no HudFontSize.
+    local NS, mock = opened()
+    local Skin = mock.LibStub("LibKa0s-Skin-1.0")
+    local function want()
+        return ("12 draws at %s   24 draws at %s"):format(
+            tostring(Skin:For(OWNER).HudFontSize(12)), tostring(Skin:For(OWNER).HudFontSize(24)))
+    end
+    assertEqual(NS.Values.hudSize:GetText(), "12 draws at 12   24 draws at 24", "Ka0s Default is the baseline")
+    NS.Selector.Pick("obsidian")
+    assertEqual(NS.Values.hudSize:GetText(), want(), "redrawn for Obsidian")
+    local base = Skin:ResolveSkin("ka0s")["hud.fontSize"]
+    local own = Skin:ResolveSkin("obsidian")["hud.fontSize"]
+    if own ~= base then
+        assertTrue(NS.Values.hudSize:GetText() ~= "12 draws at 12   24 draws at 24", "a skin with its own HUD size scales")
+    end
+end)
+
+test("values: without the skin engine FontFlags and HudFontSize still answer what SetFont takes", function()
+    -- red under: a degradation facade whose FontFlags or HudFontSize is a no-op (nil reaches SetFont).
+    local NS = T.enableAddon{ skip = { "libs/LibKa0s/Skin.lua" } }
+    assertEqual(NS.Skin.FontFlags("@skin"), "OUTLINE", "From skin")
+    assertEqual(NS.Skin.FontFlags(nil), "OUTLINE", "nothing stored")
+    assertEqual(NS.Skin.FontFlags(""), "", "a picked none")
+    assertEqual(NS.Skin.FontFlags("THICKOUTLINE"), "THICKOUTLINE", "a picked flag")
+    assertEqual(NS.Skin.HudFontSize(18), 18, "a stored size as is")
+    assertEqual(NS.Skin.HudFontSize(0), 12, "a zero size is none")
+    assertEqual(NS.Skin.HudFontSize(nil), 12, "no size")
+    NS.Showroom.Show()
+    assertEqual(NS.Values.hudSize:GetText(), "12 draws at 12   24 draws at 24")
 end)
