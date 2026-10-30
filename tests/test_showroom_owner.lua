@@ -2,7 +2,8 @@
 -- docs/2026-10-29-SKINNING_ROLLOUT): LibKa0s v1.80.0's rollout surfaces, each on show and painted
 -- through NS.Showroom.Paint. An owner token this addon registers, a danger button and a caution callout
 -- through opts.tokens, an AceGUI TreeGroup through PaintAce, an icon border that follows
--- icon.borderStyle / icon.borderSize, and a settings-style window kept stock under Ka0s Default.
+-- icon.borderStyle / icon.borderSize, and a settings-style window skinned in every skin (LibKa0s
+-- v1.81.0 retired opts.stockDefault, ruling R-2).
 --
 -- The skin assertions run under the kit's paint recorder (tests/_kit/mock_paint.lua). The
 -- stock-window cases also model SettingsFrameTemplate's anatomy (a NineSlice with the title on it, a
@@ -166,22 +167,23 @@ test("addon surfaces: the icon border draws icon.borderSize edges in icon.border
     assertEqual(edges().edgeTop:GetHeight(), 1, "and the edge follows the switch")
 end)
 
--- ── stock under Ka0s Default ─────────────────────────────────────────────────────────────────
+-- ── a template window, skinned in every skin (R-2) ──────────────────────────────────────────
 
-test("addon surfaces: the settings-style window is the client's under Ka0s Default", function()
+test("addon surfaces: the settings-style window wears Ka0s Default under Ka0s Default", function()
+    -- red under: LibKa0s v1.80.0 with opts.stockDefault, which kept it the client's under Ka0s Default.
     local _, mock, sec = opened{ template = true }
-    local ok, why = isStock(mock, sec.stockWindow)
-    assertTrue(ok, why)
+    local win = sec.stockWindow
+    assertTrue(not isStock(mock, win), "the template's art is faded and the window painted")
+    assertToken(mock, mock.__paint(win.NineSlice.Text).textColor, "title.text", "the title under Ka0s Default")
 end)
 
-test("addon surfaces: the settings-style window is skinned under another skin, and stock again after", function()
-    -- red under: a sample painted without opts.stockDefault (faded under Ka0s Default too).
+test("addon surfaces: the settings-style window follows a skin switch and stays skinned back on Ka0s Default", function()
     local NS, mock, sec = opened{ template = true }
     local win = sec.stockWindow
     NS.Selector.Pick("obsidian")
     assertTrue(not isStock(mock, win), "Obsidian fades the template's art and paints the window")
     assertToken(mock, mock.__paint(win.NineSlice.Text).textColor, "title.text", "the title under Obsidian")
     NS.Selector.Pick("ka0s")
-    local ok, why = isStock(mock, win)
-    assertTrue(ok, "back to Ka0s Default: " .. tostring(why))
+    assertTrue(not isStock(mock, win), "back on Ka0s Default it is still skinned")
+    assertToken(mock, mock.__paint(win.NineSlice.Text).textColor, "title.text", "the title back on Ka0s Default")
 end)

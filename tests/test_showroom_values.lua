@@ -121,3 +121,52 @@ test("values: a tier the skin leaves unset reads none, with no swatch", function
     local got = mock.__paint(tier.text).textColor
     assertTrue(near(got[1], r) and near(got[2], g) and near(got[3], b), "the label is muted text")
 end)
+
+-- ── LibKa0s v1.81.0's tokens (ST-01 of the skin library follow-ups) ─────────────────────────
+
+test("values: the tooltip colors category lists every gtip.* token, gtip.footer included", function()
+    -- red under: a Values section without the gtip.* category, or LibKa0s before LK-08 (no gtip.footer).
+    local NS, mock = opened()
+    local want = {}
+    for _, entry in ipairs(mock.LibStub("LibKa0s-Skin-1.0").SCHEMA) do
+        if entry.name:find("^gtip%.") then want[#want + 1] = entry.name end
+    end
+    assertTrue(#want >= 5, "the schema carries the tooltip tokens")
+    for _, key in ipairs(want) do
+        assertTrue(NS.Values.tips[key] ~= nil, key .. " has a line")
+    end
+    assertTrue(NS.Values.tips["gtip.footer"] ~= nil, "gtip.footer is shown")
+    assertEqual(NS.Values.heads.gtip:GetText(), "Tooltip colors (gtip.*)")
+end)
+
+test("values: gtip.footer is Ka0s Default's 0.6 gray and follows gtip.muted under Obsidian", function()
+    local NS, mock = opened()
+    local line = NS.Values.tips["gtip.footer"]
+    local got = mock.__paint(line.swatch).color
+    assertTrue(near(got[1], 0.6) and near(got[2], 0.6) and near(got[3], 0.6), "Ka0s Default's 0.6 gray")
+    NS.Selector.Pick("obsidian")
+    local r, g, b = mock.LibStub("LibKa0s-Skin-1.0"):Color(OWNER, "gtip.muted")
+    got = mock.__paint(line.swatch).color
+    assertTrue(near(got[1], r) and near(got[2], g) and near(got[3], b), "Obsidian's gtip.muted")
+end)
+
+test("values: the art tokens read the client's art under Ka0s Default and a color under Obsidian", function()
+    -- red under: a Values section without list.hoverArt and icon.grip (LK-06b, LK-06c).
+    local NS, mock = opened()
+    assertEqual(NS.Values.heads.art:GetText(), "Art tints (false: the client's art)")
+    for _, key in ipairs({ "list.hoverArt", "icon.grip" }) do
+        local line = NS.Values.art[key]
+        assertTrue(line ~= nil, key .. " has a line")
+        assertEqual(line.text:GetText(), key .. ": false, the client's art")
+        assertTrue(mock.__paint(line.swatch).shown == false, key .. ": no swatch under Ka0s Default")
+    end
+    NS.Selector.Pick("obsidian")
+    local Skin = mock.LibStub("LibKa0s-Skin-1.0")
+    for _, key in ipairs({ "list.hoverArt", "icon.grip" }) do
+        local line = NS.Values.art[key]
+        local r, g, b = Skin:Color(OWNER, key)
+        assertEqual(line.text:GetText(), key)
+        local got = mock.__paint(line.swatch).color
+        assertTrue(near(got[1], r) and near(got[2], g) and near(got[3], b), key .. ": Obsidian's color")
+    end
+end)

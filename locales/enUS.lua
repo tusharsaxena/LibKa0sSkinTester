@@ -57,6 +57,10 @@ L["Values"]                             = "Values"
 L["Textures"]                           = "Textures"
 L["Semantic colors (sem.*)"]            = "Semantic colors (sem.*)"
 L["Quality tiers (q.*)"]                = "Quality tiers (q.*)"
+L["Tooltip colors (gtip.*)"]            = "Tooltip colors (gtip.*)"
+L["Art tints (false: the client's art)"] = "Art tints (false: the client's art)"
+L["HUD faces"]                          = "HUD faces"
+L["Library widgets"]                    = "Library widgets"
 
 -- The first-run skin picker's eye
 L["Preview: open the skin showroom"]    = "Preview: open the skin showroom"

@@ -1,7 +1,10 @@
 local addonName, NS = ...
--- modules/ShowroomValues.lua — the Values section: what the six getters answer, then two token
+-- modules/ShowroomValues.lua — the Values section: what the six getters answer, then four token
 -- categories of the skin worn, each token as a labeled swatch under its category's heading: every
--- semantic color (`sem.*`) and every item quality tier (`q.*`, poor to legendary). The getters paint
+-- semantic color (`sem.*`), every item quality tier (`q.*`, poor to legendary), every tooltip color
+-- (`gtip.*`, LibKa0s v1.81.0's `gtip.footer` among them) and the two art tints v1.81.0 added
+-- (`list.hoverArt`, `icon.grip`), which read "false, the client's art" where a skin leaves the
+-- client's art as drawn (Ka0s Default, WoW Default). The getters paint
 -- nothing, so they are shown by what they answer: the accent, panel and glow colors as swatches, the
 -- body font as a line set in it, the HUD bar style as a sample bar, the chart style as its series.
 --
@@ -9,7 +12,9 @@ local addonName, NS = ...
 --   NS.Values.lines   [sem key] = { swatch, text }, one per `sem.*` token the skin resolves
 --   NS.Values.tiers   [q key] = { swatch, text }, one per `q.*` token in the schema, in its order;
 --                     a tier the skin leaves unset reads "<key>: none" with no swatch
---   NS.Values.heads   [category] = the heading FontString ("sem", "q")
+--   NS.Values.tips    [gtip key] = { swatch, text }, one per `gtip.*` token in the schema
+--   NS.Values.art     [art key] = { swatch, text }: `list.hoverArt` and `icon.grip`
+--   NS.Values.heads   [category] = the heading FontString ("sem", "q", "gtip", "art")
 --
 -- Everything redraws on OnLooksChanged: these are values read once, not paint the library records.
 
@@ -18,7 +23,7 @@ local BAR = "Interface\\TargetingFrame\\UI-StatusBar"
 local SWATCH = 16
 local SEM_W = 150
 
-NS.Values = { shown = {}, lines = {}, tiers = {}, heads = {} }
+NS.Values = { shown = {}, lines = {}, tiers = {}, tips = {}, art = {}, heads = {} }
 local V = NS.Values
 local draws = {}   -- one redraw per display, run at build and on every skin change
 
@@ -133,38 +138,49 @@ local function semLines(g)
     end
 end
 
--- The quality tiers, in the schema's order (poor, common, uncommon, rare, epic, legendary): every
--- tier the schema names, set or not, since a skin may leave the client's colors in place.
-local function tierKeys()
+-- The schema's names under one prefix, in the schema's order: every one, set or not, since a skin
+-- may leave a token unset (the quality tiers: the client's colors stand).
+local function schemaKeys(pattern)
     local lib, keys = Skin(), {}
     for _, entry in ipairs(lib and lib.SCHEMA or {}) do
-        if entry.name:find("^q%.") then keys[#keys + 1] = entry.name end
+        if entry.name:find(pattern) then keys[#keys + 1] = entry.name end
     end
     return keys
 end
 
-local function tierLines(g)
-    local order = tierKeys()
-    for _, key in ipairs(order) do
+-- One labeled swatch per key into `store`, each label in its own color; a key the skin leaves
+-- without a color reads "<key><none>" in muted text, with no swatch.
+local function colorLines(g, keys, store, none)
+    for _, key in ipairs(keys) do
         local tex, fs = swatchLine(g:Add(SEM_W, SWATCH, ""), key)
-        V.tiers[key] = { swatch = tex, text = fs }
+        store[key] = { swatch = tex, text = fs }
     end
     draws[#draws + 1] = function()
         local lib = Skin()
-        for _, key in ipairs(order) do
-            local tier = V.tiers[key]
+        for _, key in ipairs(keys) do
+            local line = store[key]
             local r, gg, b, a = lib:Color(addonName, key)
-            setSwatch(tier.swatch, r, gg, b, a)
+            setSwatch(line.swatch, r, gg, b, a)
             if type(r) == "number" then
-                tier.text:SetText(key)
-                R.Paint("Font", tier.text, r, gg, b)
+                line.text:SetText(key)
+                R.Paint("Font", line.text, r, gg, b)
             else
-                tier.text:SetText(key .. ": none")
-                R.Paint("Text", tier.text, "muted")
+                line.text:SetText(key .. none)
+                R.Paint("Text", line.text, "muted")
             end
         end
     end
 end
+
+-- The quality tiers, in the schema's order (poor, common, uncommon, rare, epic, legendary).
+local function tierLines(g) colorLines(g, schemaKeys("^q%."), V.tiers, ": none") end
+
+-- The tooltip colors, in the schema's order; gtip.footer (v1.81.0) is the drag handle's footer band.
+local function tipLines(g) colorLines(g, schemaKeys("^gtip%."), V.tips, ": none") end
+
+-- The two art tints v1.81.0 added: `false` leaves the client's art as drawn.
+local ART = { "list.hoverArt", "icon.grip" }
+local function artLines(g) colorLines(g, ART, V.art, ": false, the client's art") end
 
 -- A category's heading on a row of its own, in the skin's heading role.
 local function heading(g, key, text)
@@ -194,6 +210,10 @@ R.AddSection("values", L["Values"], function(body)
         semLines(g)
         heading(g, "q", L["Quality tiers (q.*)"])
         tierLines(g)
+        heading(g, "gtip", L["Tooltip colors (gtip.*)"])
+        tipLines(g)
+        heading(g, "art", L["Art tints (false: the client's art)"])
+        artLines(g)
     end
     redraw()
     return g:Height()

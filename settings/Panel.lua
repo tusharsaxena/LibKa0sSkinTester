@@ -193,6 +193,20 @@ function NS.MaybeShowSkinPicker()
     return false, state
 end
 
+--- The showroom's "Show the picker" (its Library widgets section, LibKa0s v1.81.0's layout): the
+--- picker on demand, whether or not this profile has closed it. Not in combat and not while disabled,
+--- as the first-run trigger; a close marks the profile seen, which it may already be. Answers true
+--- when it is up, else false and the library's state ("queued" behind another addon's picker).
+function NS.ShowSkinPicker()
+    local db = Tester.db
+    if not (db and db.profile and db.profile.enabled) then return false end
+    if InCombatLockdown and InCombatLockdown() then return false end
+    if type(Helpers.SkinPicker) ~= "function" then return false end
+    local win, state = Helpers.SkinPicker(PICKER_SPEC)
+    if win ~= nil then return true end
+    return false, state
+end
+
 -- ── Sample controls ──────────────────────────────────────────────────────────────────────────
 -- One row of each widget type, untabbed, under its group heading. No Skin tab and no copy
 -- action: the skin is picked on General, and this page only shows it.
