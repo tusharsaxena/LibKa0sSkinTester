@@ -21,6 +21,7 @@ L["Show or hide the skin showroom"]          = "Show or hide the skin showroom"
 L["Open the Ka0s Skin Tester settings"]      = "Open the Ka0s Skin Tester settings"
 -- The reserved `skin` verb's help: LibKa0s's SKIN_PICKER_STRINGS.VERB_HELP, one wording for every host.
 L["Choose a skin: open the skin picker"]     = "Choose a skin: open the skin picker"
+L["Print each skin's text widths against Ka0s Default"] = "Print each skin's text widths against Ka0s Default"
 L["Enable the addon"]                        = "Enable the addon"
 L["Disable the addon"]                       = "Disable the addon"
 L["Print the addon version"]                 = "Print the addon version"
@@ -62,6 +63,12 @@ L["Quality tiers (q.*)"]                = "Quality tiers (q.*)"
 L["Tooltip colors (gtip.*)"]            = "Tooltip colors (gtip.*)"
 L["Art tints (false: the client's art)"] = "Art tints (false: the client's art)"
 L["HUD faces"]                          = "HUD faces"
+L["Faces and widths"]                   = "Faces and widths"
+L["faces and width ratios"]             = "faces and width ratios"
+L["The Skin tab's Font outline, this addon's"] = "The Skin tab's Font outline, this addon's"
+L["Widths: the skin engine did not load."] = "Widths: the skin engine did not load."
+L["Widths of a fixed corpus against Ka0s Default (1.000x is parity):"] =
+    "Widths of a fixed corpus against Ka0s Default (1.000x is parity):"
 L["Library widgets"]                    = "Library widgets"
 
 -- The first-run skin picker's eye

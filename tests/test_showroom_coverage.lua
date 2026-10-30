@@ -28,7 +28,7 @@ end)
 test("showroom: every section is built and none is empty", function()
     local NS = opened()
     for _, key in ipairs({ "chrome", "controls", "lists", "text", "panels", "overlays", "addon", "widgets", "values",
-                         "textures", "hud" }) do
+                         "textures", "fonts", "hud" }) do
         local sec = NS.Showroom.Section(key)
         assertTrue(sec ~= nil, key .. " is built")
         assertTrue((sec:GetHeight() or 0) > 0, key .. " has a height")

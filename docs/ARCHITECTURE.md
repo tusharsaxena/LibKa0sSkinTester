@@ -17,8 +17,8 @@ CurseForge. Purpose, audience and non-goals: [`scope.md`](./scope.md).
 ## Module Map
 
 One shell, the setup files that wire LibKa0s, the swatch selector, the showroom window with its paint
-wrapper and section registry, eleven section files (Chrome, Controls, Lists, Text, Panels, Overlays,
-Addon surfaces, Library widgets, Values, Textures, HUD faces), and the settings pages with the first-run skin picker. Every file, its job and its load-order constraint:
+wrapper and section registry, twelve section files (Chrome, Controls, Lists, Text, Panels, Overlays,
+Addon surfaces, Library widgets, Values, Textures, Faces and widths, HUD faces), and the settings pages with the first-run skin picker. Every file, its job and its load-order constraint:
 [`module-map.md`](./module-map.md). The load order itself is
 the TOC, where each load-bearing position carries the reason.
 
@@ -45,7 +45,7 @@ engine's own `OnLooksChanged` notification, not a bus message.
 ## Slash Commands
 
 `/st` and the alias `/skintester`, dispatched by LibKa0s-Slash-1.0 from the ordered `COMMANDS` table
-in `settings/Slash.lua`: the reserved verbs (`skin` among them), plus `show`, the showroom toggle. At login a `/st` held
+in `settings/Slash.lua`: the reserved verbs (`skin` among them), plus `show`, the showroom toggle, and `widths`, the width probe. At login a `/st` held
 by another addon is left to it (`NS.CheckSlashCollision`), and this addon keeps `/skintester`. Every
 verb and what it answers while disabled: [`slash-dispatch.md`](./slash-dispatch.md).
 

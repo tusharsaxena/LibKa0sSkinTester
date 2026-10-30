@@ -19,10 +19,13 @@ local runShow, runConfig, runSkin, runDebug, runReset, runResetAll, runEnabled, 
 
 -- Positional triples {name, desc, fn}, in help order (slash-commands-§3). The reserved verbs mean
 -- the same thing in every Ka0s addon (slash-commands-§2), `skin` among them (LibKa0s v1.82.0's
--- O.SkinVerb, ruling D-16); `show` is this addon's feature verb.
+-- O.SkinVerb, ruling D-16); `show` and `widths` (D-08's in-client width check) are this addon's
+-- feature verbs.
 local COMMANDS = {
     {"help",        L["List available commands"],                  function() Sl:PrintHelp() end},
     {"show",        L["Show or hide the skin showroom"],           function() runShow() end},
+    {"widths",      L["Print each skin's text widths against Ka0s Default"],
+        function() NS.Fonts.PrintWidths() end},
     {"config",      L["Open the Ka0s Skin Tester settings"],       function() runConfig() end},
     {"skin",        L["Choose a skin: open the skin picker"],      function() runSkin() end},
     {"enable",      L["Enable the addon"],                         function() runEnabled(true) end},

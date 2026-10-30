@@ -79,6 +79,7 @@ modules\ShowroomOwner.lua
 modules\ShowroomWidgets.lua
 modules\ShowroomValues.lua
 modules\ShowroomTextures.lua
+modules\ShowroomFonts.lua
 modules\ShowroomHud.lua
 modules\Diagnostics.lua
 

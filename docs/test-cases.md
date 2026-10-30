@@ -220,7 +220,7 @@ Total.
 
 ### test_slash.lua (19)
 
-- slash: COMMANDS order is the help order, sixteen positional triples
+- slash: COMMANDS order is the help order, seventeen positional triples
 - slash: every description has an enUS entry
 - slash: the chat command and its alias are registered through AceConsole
 - slash: the help header is the library's, with this addon's alias sentence
@@ -311,6 +311,18 @@ Total.
 - addon surfaces: the icon border draws icon.borderSize edges in icon.border, per skin
 - addon surfaces: the settings-style window wears Ka0s Default under Ka0s Default
 - addon surfaces: the settings-style window follows a skin switch and stays skinned back on Ka0s Default
+
+### test_showroom_fonts.lua (9)
+
+- fonts: the section is built, one face line per skin, in the library's order
+- fonts: each line names its skin's body and title faces, the new faces among them
+- fonts: the lines draw in each face at its size, under this addon's Font outline
+- fonts: the outline line follows the Font outline and says Ignore fonts wins
+- fonts: Measure gives every skin a width per role and Ka0s Default a ratio of 1
+- fonts: /st widths prints a header and one line per skin against Ka0s Default
+- fonts: a face the client cannot resolve reads unmeasured, and nothing raises
+- fonts: /st widths is refused while the addon is disabled
+- fonts: without the skin engine the section builds and the probe says why
 
 ### test_showroom_hud.lua (5)
 
@@ -741,6 +753,7 @@ Total.
 | test_showroom_values.lua | 13 |
 | test_showroom_textures.lua | 8 |
 | test_showroom_owner.lua | 9 |
+| test_showroom_fonts.lua | 9 |
 | test_showroom_hud.lua | 5 |
 | test_showroom_widgets.lua | 12 |
 | test_skin_media.lua | 9 |
@@ -768,4 +781,4 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | Skipped | 1 |
-| **Total** | **590** |
+| **Total** | **599** |

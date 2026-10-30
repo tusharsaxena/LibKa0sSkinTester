@@ -7,6 +7,7 @@ table in `settings/Slash.lua`. Bare `/st` opens the settings panel.
 |---|---|---|
 | `help` | Lists the commands | answers |
 | `show` | Shows or hides the skin showroom | refused with the disabled line |
+| `widths` | Prints each skin's measured widths of a fixed corpus per role (body, title, HUD) against Ka0s Default (`NS.Fonts.PrintWidths`, D-08's in-client check) | refused with the disabled line |
 | `config` | Opens the settings panel | answers |
 | `skin` | Opens the skin picker a new profile shows, whatever `skin.pickerSeen` says (`NS.RunSkinVerb`, LibKa0s's `O.SkinVerb`); in combat a gray line on every call | refused with the disabled line |
 | `enable` / `disable` | Writes `enabled` through the write seam | answers |
@@ -22,7 +23,8 @@ table in `settings/Slash.lua`. Bare `/st` opens the settings panel.
 | `perf` | The guided performance run | answers |
 
 The reserved verbs mean the same in every Ka0s addon (slash-commands-§2), `skin` among them (LibKa0s
-v1.82.0, ruling D-16); `show` is this addon's feature verb. The dispatcher's own refusals land in the debug console as `[Cmd]` lines.
+v1.82.0, ruling D-16); `show` and `widths` are this addon's
+feature verbs. The dispatcher's own refusals land in the debug console as `[Cmd]` lines.
 
 ## When another addon holds `/st`
 
