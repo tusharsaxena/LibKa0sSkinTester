@@ -273,7 +273,7 @@ Total.
 - showroom: the sections build without the library's widgets
 - showroom: the slider sample is visible under Ka0s Default
 
-### test_showroom_values.lua (7)
+### test_showroom_values.lua (10)
 
 - values: every getter is displayed
 - values: every sem token has a line
@@ -282,6 +282,9 @@ Total.
 - values: every quality tier in the schema has a line, poor to legendary
 - values: each tier line wears its own color, and follows a skin change
 - values: a tier the skin leaves unset reads none, with no swatch
+- values: the tooltip colors category lists every gtip.* token, gtip.footer included
+- values: gtip.footer is Ka0s Default's 0.6 gray and follows gtip.muted under Obsidian
+- values: the art tokens read the client's art under Ka0s Default and a color under Obsidian
 
 ### test_showroom_textures.lua (8)
 
@@ -305,6 +308,26 @@ Total.
 - addon surfaces: the icon border draws icon.borderSize edges in icon.border, per skin
 - addon surfaces: the settings-style window wears Ka0s Default under Ka0s Default
 - addon surfaces: the settings-style window follows a skin switch and stays skinned back on Ka0s Default
+
+### test_showroom_hud.lua (5)
+
+- hud: the section is built, one line per skin, in the library's order
+- hud: each skin's line names that skin's own HUD face, all nine of them
+- hud: each skin's line is drawn in its face, at its hud.fontSize, under its hud.outline
+- hud: the worn line follows the skin worn, through BarStyle
+- hud: under Ignore fonts the worn line takes the host's own face, and the skin lines keep theirs
+
+### test_showroom_widgets.lua (9)
+
+- widgets: the section is built with every sample
+- widgets: the drag handle's tooltip draws gtip.title, gtip.value and gtip.footer, per skin
+- widgets: the drag handle, chart and autocomplete are owned by this addon, off the panel
+- widgets: the resize grip is the client's art under Ka0s Default and icon.grip under Obsidian
+- widgets: the drawer and nav hover art is the client's under Ka0s Default and list.hoverArt under Glass
+- widgets: the copy window opens owned by this addon
+- widgets: the console button opens the debug console
+- widgets: the picker button shows the skin picker on a profile that has closed it
+- widgets: the picker button does nothing in combat
 
 ### test_skin_media.lua (9)
 
@@ -687,9 +710,11 @@ Total.
 | test_selector.lua | 8 |
 | test_showroom.lua | 11 |
 | test_showroom_coverage.lua | 5 |
-| test_showroom_values.lua | 7 |
+| test_showroom_values.lua | 10 |
 | test_showroom_textures.lua | 8 |
 | test_showroom_owner.lua | 9 |
+| test_showroom_hud.lua | 5 |
+| test_showroom_widgets.lua | 9 |
 | test_skin_media.lua | 9 |
 | test_skin_picker.lua | 30 |
 | test_settings_sample.lua | 5 |
@@ -713,4 +738,4 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | Skipped | 1 |
-| **Total** | **551** |
+| **Total** | **568** |

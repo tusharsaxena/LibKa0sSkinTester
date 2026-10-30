@@ -19,8 +19,11 @@ never published on CurseForge.
   General -> Skin, the library's own tab, or in the first-run skin picker a fresh profile opens; the
   showroom repaints at once on a pick. The Skin tab's Font and Texture lay a font and a bar texture
   over the skin's own.
-- Nine sections show every primitive in `lib.VOCAB`, every getter's value, the semantic colors and
-  quality tiers, and the surfaces an adopting addon gets beyond the vocabulary (its own owner tokens,
+- Eleven sections show every primitive in `lib.VOCAB`, every getter's value, the semantic colors,
+  quality tiers, tooltip colors and art tints, every skin's HUD face, the library's own custom
+  widgets as an owned window draws them (a drag handle and its tooltip, an autocomplete, a line
+  chart, a resize grip, a drawer head and nav entry with their hover art, a copy window, the debug
+  console and the skin picker), and the surfaces an adopting addon gets beyond the vocabulary (its own owner tokens,
   the `opts.tokens` slot remap, an AceGUI TreeGroup, an icon border that follows the skin, a window
   built on a Blizzard template and skinned in every skin), each sample captioned with the primitive and state it shows; a Sample controls settings page shows the skin on the
   settings renderer's widgets, once the Skin tab's Ignore settings panel is off (a new profile

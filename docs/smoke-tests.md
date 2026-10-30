@@ -11,13 +11,13 @@ its theme, and a retired number is never reused.
 |---|---|---|
 | INSTALL-1..3 | Install | Load, reload, first run |
 | SLASH-1..4 | Slash commands | `/st`, `/skintester`, help, the disabled refusal, a foreign `/st` |
-| PANEL-1..10 | Settings panel | Landing page, General's tabs, Skin, Keybindings, Sample controls, the Scope, Font and texture |
+| PANEL-1..11 | Settings panel | Landing page, General's tabs, Skin, Keybindings, Sample controls, the Scope, Font and texture, the settings chrome's face and tooltips |
 | PROFILE-1..2 | Profiles | The Profiles page and the `profile` verb |
 | STATE-1..2 | Enable and disable | The stand-down and its refusal |
 | COMBAT-1..2 | Combat | The showroom and the panel in combat |
 | DIAG-1..2 | Diagnostics | The debug console and the report |
 | DEGRADED-1 | Degraded install | The library-absent load |
-| SHOW-1..13 | Showroom | The window, the swatch selector, the sections, position and scale, the textures, Ka0s Default's face and bar |
+| SHOW-1..25 | Showroom | The window, the swatch selector, the sections, position and scale, the textures, Ka0s Default's face and bar, the addon surfaces, the library widgets, the tooltip colors and art tints, the HUD faces |
 | PICKER-1..16 | First-run skin picker | When and where it shows, its title, preview, Apply, close, the gear, Apply to all, one window across addons, taking it down, combat, a preview meeting another write, the reload popup |
 | LOC-1 | Non-English client | Locale-dependent behavior |
 
@@ -82,6 +82,15 @@ restart the client: new font and texture files are only seen at client start.
 - **PANEL-10. The copy carries them.** With Ka0s Loot History installed, choose a font and a texture
   here, press "Copy to every Ka0s addon..." and confirm. → Loot History's Skin tab shows the same
   skin, font, texture and Scope, and its window wears them. Result:
+- **PANEL-11. The settings chrome's face, hover art and tooltips (ST-01; LibKa0s v1.81.0, LK-06c,
+  LK-06d).** On General -> Skin untick Ignore settings panel and pick Glass. → The nav rail's entries
+  and any drawer head on the pages show a hover wash in Glass's accent under the pointer, a drawer's
+  chevron in Glass's arrow color and its label in Glass's body face; hover a row's label → its tooltip
+  title is white (`gtip.value`). Pick Ka0s Default. → The hover art is the client's own highlight wash
+  (`list.hoverArt` is false) and drawer labels are Oxanium, not Friz Quadrata. Tick Ignore settings
+  panel. → Every one of those is the client's again, the drawer labels in Friz Quadrata. Fail: a
+  hover wash or chevron in another skin's color, a drawer label in Friz Quadrata while the panel is
+  skinned, or a skinned piece while Ignore settings panel is ticked. Result:
 
 ## Profiles
 
@@ -136,7 +145,7 @@ restart the client: new font and texture files are only seen at client start.
 - **SHOW-7. A pick made elsewhere.** With the showroom open, pick Glass on General -> Skin. →
   The window repaints and the Glass card becomes the selected one. Result:
 - **SHOW-8. Every section, every skin.** Click through all nine cards and scroll the whole window on
-  each. → Chrome, Controls, Lists, Text, Panels, Overlays, Addon surfaces, Values and Textures are all legible in every skin.
+  each. → Chrome, Controls, Lists, Text, Panels, Overlays, Addon surfaces, Library widgets, Values, Textures and HUD faces are all legible in every skin.
   Record an illegible sample as a skin defect (skin, section, caption), not as a showroom failure.
   Result:
 - **SHOW-9. Live samples.** Hover "Hover me", click the dropdown, click the second and third tabs. →
@@ -209,6 +218,63 @@ restart the client: new font and texture files are only seen at client start.
   tinted. Click Glass → it follows. Set Ignore settings panel again → the TreeGroup is stock again.
   Fail: a TreeGroup that needs a reload to change, a row that loses its paint after a click, or a
   stock TreeGroup while the panel is skinned. Result:
+- **SHOW-19. Every skin's HUD face (ST-01; LibKa0s v1.81.0, LK-04, ruling R-4).** Fully restart the
+  client, clear any Font override on General -> Skin, then `/st show` and scroll to HUD faces, the
+  last section. → Nine lines, two to a row, each "<skin>  12,345  0:42  98%  (<face>)" in that skin's
+  own face, 12px with a dark outline, whatever skin is worn: Ka0s Default Oxanium SemiBold, Obsidian
+  Inter SemiBold, Azeroth Vollkorn Bold, Glass Nunito SemiBold, High Contrast Atkinson Bold, Ember
+  Bitter Bold, WoW Default Friz Quadrata (the client's own), WoW Midnight Philosopher Bold, WoW
+  Forever Fira Sans SemiBold. Judge each face as a HUD face: digits legible under the outline, no
+  closed-up counters. The tenth line, under them, is the worn skin's face: click Ember → it reads
+  Bitter Bold. Fail: a square where a glyph should be, a line in another skin's face, two skins
+  sharing a face (WoW Default's Friz aside), or a face you reject for a HUD (record which skin and
+  why: the owner's call, R-4). Result:
+- **SHOW-20. Ignore fonts reaches the HUD (ST-01; LibKa0s v1.81.0, LK-01, ruling R-1).** On HUD
+  faces in Obsidian, tick Ignore fonts on General -> Skin. → The last line drops to the game's own
+  face and reads "(Ignore fonts: the host's own face)" at once; the nine skin lines keep their faces
+  (they show the skins). Untick it. → The last line is Inter SemiBold again. Fail: the last line
+  keeping Inter under Ignore fonts, or a skin line losing its face. Result:
+- **SHOW-21. Library widgets (ST-01; LibKa0s v1.81.0, LK-06a, LK-08).** Scroll to Library widgets in
+  Ka0s Default. → A drag strip "Hover me: a drag handle" with its label in Oxanium, a box with an
+  input, a line chart with two series and its axis labels, a resizable panel, a drawer head with a
+  chevron and a nav entry. Hover the strip → the tooltip's title "Drag handle" in gold, the body in
+  white, a blank line, then the footer in 0.6 gray. Type "o" in the box → a list of the skins whose
+  name holds an "o", in the body face (Oxanium). Click Azeroth and hover again → the title, body and
+  footer take Azeroth's tooltip colors, the strip's label, the suggestion rows and the chart's axis
+  labels take Vollkorn. Also open the Controls section's dropdown → its rows are in the skin's body
+  face, and the Overlays test strip's line is in the accent color and the body face. Tick Ignore
+  fonts → the strip label, suggestion rows, chart labels, dropdown rows and test strip line go back to
+  the game's fonts, live, and their colors stay. Fail: a tooltip in Ka0s Default's gold, white and
+  gray under Azeroth, or any of those strings left in Friz Quadrata under a skin. Result:
+- **SHOW-22. Hover art and the resize grip (ST-01; LibKa0s v1.81.0, LK-06b, LK-06c).** On Library
+  widgets in Ka0s Default, hover the drawer head and the nav entry → the client's own highlight
+  wash; the chevron is gold; the grip in the panel's bottom-right corner is the client's own art.
+  Click Glass → the hover washes take Glass's accent, the chevron its arrow color and the grip its
+  icon tint, each desaturated first. Click WoW Default → the client's art again. Drag the grip → the
+  panel resizes. Fail: a tinted wash or grip under Ka0s Default or WoW Default, or the client's own
+  colors under Glass. Result:
+- **SHOW-23. Tool windows (ST-01; LibKa0s v1.81.0, LK-06b).** On Library widgets press "Open a copy
+  window" → a copy window in the skin, its resize grip bottom right in the skin's icon tint (the
+  client's own art under Ka0s Default and WoW Default). Press "Open the console" → the debug console
+  opens; its title-bar labels (the logging toggle, Diagnostics, Copy and Clear where drawn as words)
+  are in the skin's body face, Oxanium under Ka0s Default, and its grip follows the skin as the copy
+  window's. Run `/st perf` and follow it until its step panel shows → the panel's step and command columns are
+  in the body face too. Tick
+  Ignore fonts → those labels go back to the game's fonts, live; untick Ignore settings panel and
+  tick it again → the windows keep their skin either way (they are windows). Fail: a label in Friz
+  Quadrata while fonts are not ignored, or a window going stock with Ignore settings panel. Result:
+- **SHOW-24. The skin picker's layout (ST-01; LibKa0s v1.81.0, LK-11, ruling R-11).** On Library
+  widgets press "Show the picker" (on any profile) → the skin picker titled "Choose a skin", with
+  "Ka0s Skin Tester" on its own line in the heading color above the dropdown, whole and never cut off.
+  Its rows still preview each skin in its own face, Ignore fonts or not. Close it → the skin worn is
+  unchanged. In combat the button does nothing. Fail: the addon's name in the title, a cut-off owner
+  line, or a picker mid-combat. Result:
+- **SHOW-25. Tooltip colors and art tints (ST-01; LibKa0s v1.81.0).** Scroll to Values in Ka0s
+  Default. → Below Quality tiers, a "Tooltip colors (gtip.*)" heading over one labeled swatch per
+  `gtip.*` token, `gtip.footer` a 0.6 gray, and an "Art tints (false: the client's art)" heading over
+  `list.hoverArt` and `icon.grip`, each reading ": false, the client's art" in muted text with no
+  swatch. Click Obsidian → `gtip.footer` takes `gtip.muted`'s color and both art tints show a swatch
+  in their own color. Fail: a missing token, or a swatch under Ka0s Default's art tints. Result:
 
 ## First-run skin picker
 
@@ -322,3 +388,4 @@ restart the client: new font and texture files are only seen at client start.
 | SHOW-1 (amended), SHOW-15 | ST-03, the showroom's scrollbar | No client pass recorded yet |
 | SHOW-8 (amended), SHOW-16..18 | ST-01 of the skinning rollout (LibKa0s v1.80.0): the Quality tiers category and the Addon surfaces section | No client pass recorded yet |
 | SHOW-17 (amended), PICKER-1, PICKER-10, PICKER-16 (amended) | ST-01 of the skin library follow-ups (LibKa0s v1.81.0): the settings-style window skinned under Ka0s Default (R-2), the picker's "Choose a skin" title and owner line (R-11) | Rewritten for v1.81.0; no client pass recorded yet |
+| SHOW-8 (amended), SHOW-19..25, PANEL-11 | ST-01 of the skin library follow-ups (LibKa0s v1.81.0): the HUD faces (R-4, R-1), the library widgets, tool windows, hover art and grip (R-5, LK-06a..d, LK-08), the picker's layout (R-11), the tooltip colors and art tints | No client pass recorded yet |
