@@ -34,8 +34,32 @@ local function modelButtonArt(m)
     end
 end
 
+--- A FontString made from a template answers that template as its font object until something
+--- sets a face, as the client's does. The base mock answers nil, so a face the skin put on could not
+--- be handed back, and Ignore fonts would look like it did nothing.
+local function modelTemplateFonts(m)
+    local create = m.CreateFrame
+    m.CreateFrame = function(...)
+        local f = create(...)
+        local make = rawget(f, "CreateFontString")
+        if make then
+            rawset(f, "CreateFontString", function(self, name, layer, template)
+                local fs = make(self, name, layer, template)
+                local get = fs.GetFontObject
+                rawset(fs, "GetFontObject", function(s)
+                    local obj = get(s)
+                    if obj == nil and rawget(s, "__font") == nil then return template end
+                    return obj
+                end)
+                return fs
+            end)
+        end
+        return f
+    end
+end
+
 local function opened()
-    local NS, _, mock = T.enableAddon{ mock = function(m) installPaint(m); modelButtonArt(m) end }
+    local NS, _, mock = T.enableAddon{ mock = function(m) installPaint(m); modelButtonArt(m); modelTemplateFonts(m) end }
     NS.Showroom.Show()
     return NS, mock, NS.Showroom.Section("widgets")
 end
@@ -135,6 +159,89 @@ test("widgets: the drawer and nav hover art is the client's under Ka0s Default a
     end
     local arrow = lib(mock):Token(OWNER, "icon.arrow")
     assertTrue(sameColor(mock.__paint(sec.drawerChevron).vertex, arrow), "the chevron is icon.arrow")
+end)
+
+--- A LibSharedMedia stand-in: every font key fetches as a path named after it, so a skin's face
+--- resolves in the harness (P.font gives the template back when no path resolves).
+local function fakeLSM(mock)
+    local LSM = mock.LibStub:NewLibrary("LibSharedMedia-3.0", 1) or mock.LibStub("LibSharedMedia-3.0")
+    LSM.Fetch = function(_, kind, key) return ("Fonts\\%s\\%s.ttf"):format(kind, tostring(key)) end
+end
+
+--- The tick labels the chart drew and the rows the autocomplete shows for "o".
+local function fontedStrings(sec)
+    local out = {}
+    for i, fs in ipairs(sec.chart.__labelPool) do
+        if fs:IsShown() then out[#out + 1] = { "chart label " .. i, fs, "GameFontDisableSmall" } end
+    end
+    sec.complete.__box:SetText("o")
+    sec.complete:Refresh()
+    for i, row in ipairs(sec.complete.__rows) do
+        if row:IsShown() then out[#out + 1] = { "autocomplete row " .. i, row.label, "GameFontHighlightSmall" } end
+    end
+    return out
+end
+
+local function bodyFace(mock, fs)
+    local obj = mock.__paint(fs).fontObject
+    local name = type(obj) == "table" and obj.GetName and obj:GetName()
+    return type(name) == "string" and name:find("^LibKa0sSkin_LibKa0sSkinTester_body") ~= nil
+end
+
+test("widgets: the chart's tick labels and the autocomplete rows are in this addon's body face", function()
+    -- red under: LibKa0s before LK-06a (v1.81.0), or W.LineChart / W.Autocomplete without opts.owner.
+    local NS, mock, sec = opened()
+    fakeLSM(mock)
+    NS.Selector.Pick("glass")
+    local Skin = lib(mock)
+    local seen = fontedStrings(sec)
+    local chart, rows = 0, 0
+    for _, e in ipairs(seen) do
+        if e[1]:find("^chart") then chart = chart + 1 else rows = rows + 1 end
+        local rec = Skin.painted[e[2]]
+        assertTrue(rec ~= nil and rec.owner == OWNER, e[1] .. ": a font paint owned by this addon")
+        assertTrue(rec.calls.Font ~= nil, e[1] .. ": through S.Font")
+        assertTrue(bodyFace(mock, e[2]), e[1] .. ": in the skin's body face")
+    end
+    assertTrue(chart >= 2 and rows >= 1, "tick labels and suggestion rows were drawn")
+end)
+
+test("widgets: Ignore fonts gives the chart's tick labels and the autocomplete rows their template face", function()
+    -- red under: a face the library cannot hand back (LK-06a's __skinFont give-back).
+    local NS, mock, sec = opened()
+    fakeLSM(mock)
+    NS.Selector.Pick("glass")
+    local seen = fontedStrings(sec)
+    NS.ApplySkinIgnore(nil, true)
+    sec.complete:Refresh()
+    for _, e in ipairs(seen) do
+        assertEqual(mock.__paint(e[2]).fontObject, e[3], e[1] .. ": its template under Ignore fonts")
+    end
+    NS.ApplySkinIgnore(nil, false)
+    sec.complete:Refresh()
+    for _, e in ipairs(seen) do
+        assertTrue(bodyFace(mock, e[2]), e[1] .. ": the body face again")
+    end
+end)
+
+test("widgets: Ignore settings panel leaves the section skinned (a window, decision D-01)", function()
+    -- red under: a sample that passes `panel`, or a wrapper that reads the panel half of the Scope.
+    local NS, mock, sec = opened()
+    fakeLSM(mock)
+    NS.ApplySkinIgnore(true, nil)
+    NS.Selector.Pick("glass")
+    local Skin = lib(mock)
+    local hover = Skin:Token(OWNER, "list.hoverArt")
+    for _, key in ipairs({ "drawerHover", "navHover" }) do
+        assertTrue(mock.__paint(sec[key]).desaturated == true, key .. ": desaturated")
+        assertTrue(sameColor(mock.__paint(sec[key]).vertex, hover), key .. ": tinted list.hoverArt")
+    end
+    local grip = mock.__paint(sec.gripBox.resizeGrip:GetNormalTexture())
+    assertTrue(grip.desaturated == true, "the grip is desaturated")
+    assertTrue(sameColor(grip.vertex, Skin:Token(OWNER, "icon.grip")), "the grip is tinted icon.grip")
+    for _, e in ipairs(fontedStrings(sec)) do
+        assertTrue(bodyFace(mock, e[2]), e[1] .. ": still in the body face")
+    end
 end)
 
 test("widgets: the copy window opens owned by this addon", function()

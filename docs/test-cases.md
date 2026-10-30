@@ -317,13 +317,16 @@ Total.
 - hud: the worn line follows the skin worn, through BarStyle
 - hud: under Ignore fonts the worn line takes the host's own face, and the skin lines keep theirs
 
-### test_showroom_widgets.lua (9)
+### test_showroom_widgets.lua (12)
 
 - widgets: the section is built with every sample
 - widgets: the drag handle's tooltip draws gtip.title, gtip.value and gtip.footer, per skin
 - widgets: the drag handle, chart and autocomplete are owned by this addon, off the panel
 - widgets: the resize grip is the client's art under Ka0s Default and icon.grip under Obsidian
 - widgets: the drawer and nav hover art is the client's under Ka0s Default and list.hoverArt under Glass
+- widgets: the chart's tick labels and the autocomplete rows are in this addon's body face
+- widgets: Ignore fonts gives the chart's tick labels and the autocomplete rows their template face
+- widgets: Ignore settings panel leaves the section skinned (a window, decision D-01)
 - widgets: the copy window opens owned by this addon
 - widgets: the console button opens the debug console
 - widgets: the picker button shows the skin picker on a profile that has closed it
@@ -714,7 +717,7 @@ Total.
 | test_showroom_textures.lua | 8 |
 | test_showroom_owner.lua | 9 |
 | test_showroom_hud.lua | 5 |
-| test_showroom_widgets.lua | 9 |
+| test_showroom_widgets.lua | 12 |
 | test_skin_media.lua | 9 |
 | test_skin_picker.lua | 30 |
 | test_settings_sample.lua | 5 |
@@ -738,4 +741,4 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | Skipped | 1 |
-| **Total** | **568** |
+| **Total** | **571** |
