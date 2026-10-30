@@ -82,15 +82,13 @@ restart the client: new font and texture files are only seen at client start.
 - **PANEL-10. The copy carries them.** With Ka0s Loot History installed, choose a font and a texture
   here, press "Copy to every Ka0s addon..." and confirm. → Loot History's Skin tab shows the same
   skin, font, texture and Scope, and its window wears them. Result:
-- **PANEL-11. The settings chrome's face, hover art and tooltips (ST-01; LibKa0s v1.81.0, LK-06c,
-  LK-06d).** On General -> Skin untick Ignore settings panel and pick Glass. → The nav rail's entries
-  and any drawer head on the pages show a hover wash in Glass's accent under the pointer, a drawer's
-  chevron in Glass's arrow color and its label in Glass's body face; hover a row's label → its tooltip
-  title is white (`gtip.value`). Pick Ka0s Default. → The hover art is the client's own highlight wash
-  (`list.hoverArt` is false) and drawer labels are Oxanium, not Friz Quadrata. Tick Ignore settings
-  panel. → Every one of those is the client's again, the drawer labels in Friz Quadrata. Fail: a
-  hover wash or chevron in another skin's color, a drawer label in Friz Quadrata while the panel is
-  skinned, or a skinned piece while Ignore settings panel is ticked. Result:
+- **PANEL-11. The settings rows' tooltips (ST-01; LibKa0s v1.81.0, LK-06d).** On General -> Skin
+  untick Ignore settings panel and pick Glass. Hover a row's label on any of the tester's pages → its
+  tooltip title is white, Glass's `gtip.value`. Tick Ignore settings panel and hover it again → the
+  client's own tooltip title color. The tester's pages draw no nav rail and no drawer, so LK-06c's
+  hover art and chevron are checked on the showroom's Library widgets samples (SHOW-22), which wear
+  the skin whatever Ignore settings panel says. Fail: a title in another skin's color while the panel
+  is skinned, or a skinned title while Ignore settings panel is ticked. Result:
 
 ## Profiles
 
