@@ -305,8 +305,9 @@ restart the client: new font and texture files are only seen at client start.
   skin's body face and size and a title sample in its title face and size, naming both, with a muted
   "body <ratio>x  title <ratio>x  hud <ratio>x" line under them. Ka0s Default reads Prototype for
   both and 1.000x; Obsidian Expressway for both; WoW Forever Fira Sans Medium for the body and Fira
-  Sans SemiBold for the title. Look across the nine body samples: they should end at about the same
-  place (width parity). Fail: a square where a glyph should be, a line in another skin's face, Inter
+  Sans SemiBold for the title. Judge width parity by the ratio lines, not by where the samples end
+  (each sample is followed by its own face name and size, so the line ends differ by design): every
+  ratio should read close to 1.000x. Fail: a square where a glyph should be, a line in another skin's face, Inter
   or Oxanium anywhere, or a ratio reading "unmeasured". Result:
 - **SHOW-27. FontFlags and HudFontSize (ST-01; LibKa0s v1.82.0, D-07, D-09).** Scroll to Values in
   Ka0s Default. → After ChartStyle, "HUD OUTLINE   window OUTLINE   picked THICKOUTLINE THICKOUTLINE"

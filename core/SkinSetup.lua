@@ -149,11 +149,12 @@ if not Skin then
     S.IsEnabled = function() return false end
     S.GetStyle = function() return "ka0s:" .. DEFAULT end
     -- The two answers a HUD element draws with (LibKa0s v1.82.0, SkinPaintExtras minor 7), never
-    -- nil: a picked flag as stored and "OUTLINE" for From skin or nothing stored (the library's own
-    -- answer while fonts are ignored); a stored size above 0 as is, else 12.
-    S.FontFlags = function(value)
+    -- nil: a picked flag as stored, and for From skin or nothing stored the library's own answer
+    -- while fonts are ignored, "OUTLINE" for HUD text and "" (stock flags) with where == "window";
+    -- a stored size above 0 as is, else 12.
+    S.FontFlags = function(value, where)
         if type(value) == "string" and value ~= S.FROM_SKIN then return value end
-        return "OUTLINE"
+        return where == "window" and "" or "OUTLINE"
     end
     S.HudFontSize = function(size)
         local n = tonumber(size)

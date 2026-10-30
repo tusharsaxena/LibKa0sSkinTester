@@ -70,12 +70,14 @@ local function stringWidth(fs)
     return fs:GetStringWidth() or 0
 end
 
---- The corpus's summed width in `face` at `size` under `outline`; nil where the face does not resolve.
+--- The corpus's summed width in `face` at `size` under `outline`; nil where the face does not resolve
+--- or the client refuses it. The probe is shared across every skin and role, so a refused SetFont
+--- (false) would leave the previous face in place and its width read as this one's.
 function F.Width(face, size, outline)
     local path = fontPath(face)
     if not path then return nil end
     local fs = F.Probe()
-    fs:SetFont(path, tonumber(size) or 12, outline or "")
+    if fs:SetFont(path, tonumber(size) or 12, outline or "") == false then return nil end
     local w = 0
     for _, line in ipairs(F.CORPUS) do
         fs:SetText(line)
@@ -144,8 +146,11 @@ local function outlineMode()
     return lib and type(lib.GetOutline) == "function" and lib:GetOutline(addonName) or "all"
 end
 
---- Window text's flags under this addon's Font outline, for the skin's stated `font.outline`.
+--- Window text's flags under this addon's Font outline, for the skin's stated `font.outline`: ""
+--- (window text's stock flags) while this addon ignores fonts, as the library's FontFlags answers.
 local function windowFlags(t)
+    local lib = Skin()
+    if lib and type(lib.GetIgnore) == "function" and select(2, lib:GetIgnore(addonName)) then return "" end
     if outlineMode() ~= "all" then return "" end
     return t["font.outline"] or ""
 end

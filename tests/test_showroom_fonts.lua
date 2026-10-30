@@ -79,6 +79,17 @@ test("fonts: the lines draw in each face at its size, under this addon's Font ou
     assertTrue(NS.Fonts.outline:GetText():find("HUD text only", 1, true) ~= nil, "the mode line says so")
 end)
 
+test("fonts: with Ignore fonts ticked the face lines draw window text's stock flags, as the mode line says", function()
+    -- red under: windowFlags reading only the Font outline (OUTLINE under All text, Ignore fonts or not).
+    local NS, mock = opened()
+    fakeLSM(mock)
+    NS.ApplySkinIgnore(nil, true)
+    NS.Selector.Pick("azeroth")   -- a skin change redraws the section
+    local font = mock.__paint(NS.Fonts.lines.obsidian.body).font
+    assertEqual(font[3], "", "Ignore fonts wins over All text")
+    assertTrue(NS.Fonts.outline:GetText():find('Window text draws ""', 1, true) ~= nil, NS.Fonts.outline:GetText())
+end)
+
 test("fonts: the outline line follows the Font outline and says Ignore fonts wins", function()
     local NS, mock = opened()
     assertTrue(NS.Fonts.outline:GetText():find('Font outline: All text. Window text draws "OUTLINE", HUD text "OUTLINE"',
@@ -128,6 +139,19 @@ test("fonts: a face the client cannot resolve reads unmeasured, and nothing rais
     local NS = opened()
     local lines = NS.Fonts.Lines()
     assertTrue(lines[2]:find("unmeasured", 1, true) ~= nil, "no LibSharedMedia: nothing measured")
+end)
+
+test("fonts: a face the client refuses reads unmeasured, never the previous face's width", function()
+    -- red under: F.Width ignoring SetFont's answer (the shared probe keeps the last face that took).
+    local NS, mock = opened()
+    fakeLSM(mock)
+    local fs = armProbe(NS, mock)
+    rawset(fs, "SetFont", function() return false end)
+    for _, row in ipairs(NS.Fonts.Measure()) do
+        assertEqual(row.body.width, nil, row.key .. "'s body")
+        assertEqual(row.hud.ratio, nil, row.key .. "'s HUD ratio")
+    end
+    assertTrue(NS.Fonts.Lines()[2]:find("unmeasured", 1, true) ~= nil)
 end)
 
 test("fonts: /st widths is refused while the addon is disabled", function()

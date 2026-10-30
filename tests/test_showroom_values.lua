@@ -210,6 +210,9 @@ test("values: without the skin engine FontFlags and HudFontSize still answer wha
     local NS = T.enableAddon{ skip = { "libs/LibKa0s/Skin.lua" } }
     assertEqual(NS.Skin.FontFlags("@skin"), "OUTLINE", "From skin")
     assertEqual(NS.Skin.FontFlags(nil), "OUTLINE", "nothing stored")
+    assertEqual(NS.Skin.FontFlags("@skin", "window"), "", "From skin in a window: its stock flags")
+    assertEqual(NS.Skin.FontFlags(nil, "window"), "", "nothing stored in a window")
+    assertEqual(NS.Skin.FontFlags("OUTLINE", "window"), "OUTLINE", "a picked flag in a window")
     assertEqual(NS.Skin.FontFlags(""), "", "a picked none")
     assertEqual(NS.Skin.FontFlags("THICKOUTLINE"), "THICKOUTLINE", "a picked flag")
     assertEqual(NS.Skin.HudFontSize(18), 18, "a stored size as is")
