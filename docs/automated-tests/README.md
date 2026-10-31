@@ -22,7 +22,7 @@ edit `tests/_kit/`: a kit fix goes upstream and is re-vendored.
 
 | Suite | Command | Gates the run and the commit? | Gates the tag? |
 |---|---|---|---|
-| `lint` | `luacheck .` | **yes** | **yes**: must be `pass` |
+| `lint` | `~/.claude/dev-copilot/bin/ka0s-bounded luacheck .` | **yes** | **yes**: must be `pass` |
 | `tests` | `lua tests/run.lua` | **yes** | **yes**: must be `pass` |
 | `perf` | `lua tests/perf.lua` | no, recorded only | **yes**: must be `pass`; a `skip` is not evaluated |
 | `complexity` | the runner's `--suite complexity` (lizard over the kit's sighted shadow, with function-count parity; raw `lizard` is blind in Lua) | no, recorded only | **yes**: `pass`, zero functions above CCN 15 and `blindFiles` 0 |
