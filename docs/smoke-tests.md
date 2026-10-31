@@ -347,6 +347,12 @@ restart the client: new font and texture files are only seen at client start.
   edge. Fail: a dropdown that stays put, a gold button or client text holder showing under the skin
   on either of the first two (record the state: idle, hover or open), one that needs a reload to
   change, or an empty cell. Result:
+- **SHOW-29. The resize sample stays in its cell (ST-D2).** On Library widgets drag the "Drag the
+  corner" box's grip to make it larger. → It resizes and its top left stays put. Roll the wheel → it
+  scrolls with its caption. Drag it again, then move the window by its title bar → it stays with the
+  section. Close the showroom and reopen it → the box is back at its first size, in its cell. Close
+  with Escape in the middle of a drag, then reopen → the same, and the grip still works. Fail: a box
+  that stays put while the section scrolls, or a size that survives a close. Result:
 
 ## First-run skin picker
 

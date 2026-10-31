@@ -346,12 +346,14 @@ Total.
 - hud: the worn line follows the skin worn, through BarStyle
 - hud: under Ignore fonts the worn line takes the host's own face, and the skin lines keep theirs
 
-### test_showroom_widgets.lua (12)
+### test_showroom_widgets.lua (14)
 
 - widgets: the section is built with every sample
 - widgets: the drag handle's tooltip draws gtip.title, gtip.value and gtip.footer, per skin
 - widgets: the drag handle, chart and autocomplete are owned by this addon, off the panel
 - widgets: the resize grip is the client's art under Ka0s Default and icon.grip under Obsidian
+- widgets: a dragged resize grip leaves the box on its cell, at its new size
+- widgets: closing the showroom forgets a drag, and ends one under way
 - widgets: the drawer and nav hover art is the client's under Ka0s Default and list.hoverArt under Glass
 - widgets: the chart's tick labels and the autocomplete rows are in this addon's body face
 - widgets: Ignore fonts gives the chart's tick labels and the autocomplete rows their template face
@@ -774,7 +776,7 @@ Total.
 | test_showroom_owner.lua | 9 |
 | test_showroom_fonts.lua | 11 |
 | test_showroom_hud.lua | 5 |
-| test_showroom_widgets.lua | 12 |
+| test_showroom_widgets.lua | 14 |
 | test_skin_media.lua | 9 |
 | test_skin_outline.lua | 9 |
 | test_skin_verb.lua | 7 |
@@ -800,4 +802,4 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | Skipped | 1 |
-| **Total** | **614** |
+| **Total** | **616** |
