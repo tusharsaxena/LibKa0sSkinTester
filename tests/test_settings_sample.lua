@@ -31,8 +31,75 @@ test("settings: the sample page carries one row of each widget type", function()
     end
     assertEqual(kinds.bool, 2, "a checkbox, and the color swatch's class-color companion")
     assertEqual(kinds.number, 1, "a slider")
-    assertEqual(kinds.string, 1, "a dropdown")
+    assertEqual(kinds.string, 6, "a dropdown and the five media pickers")
     assertEqual(kinds.color, 1, "a color swatch")
+end)
+
+-- The five media pickers (LibKa0s v1.83.0, OptionsMedia minor 1, D-08; options-ui-§23): one of each
+-- kind, named by the library's own type, so the owner can judge each preview on a settings page.
+local PICKERS = {
+    { path = "sample.font",       control = "Ka0sMedia_Font",       kind = "font",       label = "A font picker" },
+    { path = "sample.statusbar",  control = "Ka0sMedia_Statusbar",  kind = "statusbar",  label = "A bar texture picker" },
+    { path = "sample.border",     control = "Ka0sMedia_Border",     kind = "border",     label = "A border picker" },
+    { path = "sample.background", control = "Ka0sMedia_Background", kind = "background", label = "A background picker" },
+    { path = "sample.sound",      control = "Ka0sMedia_Sound",      kind = "sound",      label = "A sound picker" },
+}
+
+local function rowAt(NS, path)
+    for _, row in ipairs(NS.addon.Settings.Schema) do
+        if row.path == path then return row end
+    end
+end
+
+--- A LibSharedMedia stand-in whose keys name their kind: the real one is not loaded headlessly.
+local function fakeLSM(mock)
+    local LSM = mock.LibStub:NewLibrary("LibSharedMedia-3.0", 1) or mock.LibStub("LibSharedMedia-3.0")
+    LSM.HashTable = function(_, kind) return { [kind .. " one"] = "path", [kind .. " two"] = "path" } end
+    LSM.Fetch = function(_, kind, key) return ("Media\\%s\\%s"):format(kind, tostring(key)) end
+    return LSM
+end
+
+test("settings: the sample page carries one picker of each media kind, on the library's own types", function()
+    -- red under: a sample row drawn as a plain Dropdown over media keys (anti-patterns #109).
+    local NS = T.newAddon()
+    for _, want in ipairs(PICKERS) do
+        local row = rowAt(NS, want.path)
+        assertTrue(row ~= nil, want.path .. " is a row")
+        assertEqual(row.page, "sample", want.path .. " stays on its page")
+        assertEqual(row.dialogControl, want.control, want.path .. "'s type")
+        assertEqual(row.label, want.label, want.path .. "'s label")
+        assertEqual(type(row.values), "function", want.path .. " asks for its keys at call time")
+    end
+end)
+
+test("settings: each sample picker lists what LibSharedMedia holds of its kind", function()
+    -- red under: a descriptor with no getLSM, whose LSMValues answers the one "no media" row.
+    local NS, _, mock = T.enableAddon()
+    fakeLSM(mock)
+    for _, want in ipairs(PICKERS) do
+        local values = rowAt(NS, want.path).values()
+        assertEqual(values[want.kind .. " one"], want.kind .. " one", want.path)
+        assertEqual(values[want.kind .. " two"], want.kind .. " two", want.path)
+    end
+end)
+
+test("settings: each sample picker draws on the page, and with no media library it still opens", function()
+    -- The kit's AceGUI has no stock Dropdown to build on, so __MediaWidgetType answers nil and the
+    -- row draws the plain Dropdown a client without the picker draws. Which type a real client gets
+    -- is pinned by the row's dialogControl above and by LibKa0s's own tests/test_options_media.lua.
+    local _, _, mock = openSample()
+    for _, want in ipairs(PICKERS) do
+        assertTrue(widget(mock, "Dropdown", want.label) ~= nil, want.label .. " rendered")
+    end
+end)
+
+test("settings: /st set takes a media key the sample picker lists, and refuses one it does not", function()
+    local NS, _, mock = T.enableAddon()
+    fakeLSM(mock)
+    NS.addon:OnSlashCommand("set sample.font font two")
+    assertEqual(NS.addon.db.profile.sample.font, "font two")
+    NS.addon:OnSlashCommand("set sample.font not a font")
+    assertEqual(NS.addon.db.profile.sample.font, "font two", "an unknown key changes nothing")
 end)
 
 test("settings: the sample page wears the owner's skin once the panel is skinned", function()

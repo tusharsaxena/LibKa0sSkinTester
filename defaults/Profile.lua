@@ -16,16 +16,22 @@ NS.C = {
         ignoreFonts = false, -- the Scope: leave every font the client's (the skin still colors)
         font    = "",        -- the font override, a LibSharedMedia key; "" is the skin's own
         texture = "",        -- the bar texture override, a LibSharedMedia key; "" is the skin's own
-        outline = "all",     -- the Font outline: "all" text, "hud" text only, or "off" (LibKa0s v1.82.0)
+        outline = "hud",     -- the Font outline: "hud" text only, "all" text, or "off" (LibKa0s v1.83.0)
         pickerSeen = false,  -- the first-run skin picker was closed on this profile
     },
-    -- The Sample controls page: one row of each widget type, so the skin can be seen on a settings
-    -- page too. Nothing reads these but the page.
+    -- The Sample controls page: one row of each widget type and one picker of each media kind, so
+    -- the skin can be seen on a settings page too. Nothing reads these but the page.
     sample = {
         checked = true,
         size    = 5,         -- 1 .. 10
         mode    = "medium",
         color   = { r = 0.2, g = 0.6, b = 1, a = 1 },
         useClassColor = false,
+        -- LibSharedMedia keys: the shipped face, and the library's own stock entries of each kind.
+        font       = "Ka0s Prototype",
+        statusbar  = "Blizzard",
+        border     = "Blizzard Tooltip",
+        background = "Blizzard Tooltip",
+        sound      = "None",
     },
 }

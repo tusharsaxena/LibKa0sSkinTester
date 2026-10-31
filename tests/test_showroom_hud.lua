@@ -54,8 +54,8 @@ test("hud: each skin's line names that skin's own HUD face, all nine of them", f
     -- Expressway for Obsidian. Pinned once here; every other case reads the skin's own token.
     assertEqual(NS.Hud.lines.ka0s.faceKey, "Ka0s Prototype")
     assertEqual(NS.Hud.lines.obsidian.faceKey, "Ka0s Expressway")
-    assertEqual(NS.Hud.lines.ember.faceKey, "Ka0s Bitter Bold")
-    assertEqual(NS.Hud.lines.wow.faceKey, "Friz Quadrata TT", "WoW Default names the client's face")
+    assertEqual(NS.Hud.lines.ember.faceKey, "Ka0s Emblem")
+    assertEqual(NS.Hud.lines.wow.faceKey, "Ka0s Friz Quadrata TT", "WoW Default names the shipped face (D-01)")
     local n = 0
     for _ in pairs(faces) do n = n + 1 end
     assertEqual(n, 9, "nine skins, nine faces")

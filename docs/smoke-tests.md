@@ -11,7 +11,7 @@ its theme, and a retired number is never reused.
 |---|---|---|
 | INSTALL-1..3 | Install | Load, reload, first run |
 | SLASH-1..6 | Slash commands | `/st`, `/skintester`, help, the disabled refusal, a foreign `/st`, `/st skin`, `/st widths` |
-| PANEL-1..12 | Settings panel | Landing page, General's tabs, Skin, Keybindings, Sample controls, the Scope, Font and texture, the settings chrome's face and tooltips, the Font outline |
+| PANEL-1..13 | Settings panel | Landing page, General's tabs, Skin, Keybindings, Sample controls, the Scope, Font and texture, the settings chrome's face and tooltips, the Font outline, the media pickers |
 | PROFILE-1..2 | Profiles | The Profiles page and the `profile` verb |
 | STATE-1..2 | Enable and disable | The stand-down and its refusal |
 | COMBAT-1..2 | Combat | The showroom and the panel in combat |
@@ -75,18 +75,18 @@ restart the client: new font and texture files are only seen at client start.
 - **PANEL-5. Sample controls.** On General -> Skin untick Ignore settings panel (a new
   profile has it ticked, and the page is then the client's), pick Obsidian, then open Settings ->
   AddOns -> Ka0s Skin Tester -> Sample controls. → One group heading over a checkbox, a slider, a dropdown, a color swatch and Use
-  class color, all in Obsidian; no Skin tab and no copy button. Pick Glass on General and come
-  back. → The page follows. Result: pass (owner-marked 2026-10-30)
+  class color, then the five media pickers (PANEL-13), all in Obsidian; no Skin tab and no copy button. Pick Glass on General and come
+  back. → The page follows. Result:
 - **PANEL-6. The Scope.** On a fresh profile open General -> Skin with the showroom open. →
   Ignore settings panel is ticked and Ignore fonts is not; the settings pages are in the client's
   look while the showroom wears the skin. Untick Ignore settings panel. → The settings pages take the
-  skin at once, no reload. Pick Azeroth and tick Ignore fonts. → The showroom's Vollkorn text and titles go
-  back to the game's fonts at once and keep the skin's colors. `/reload`. → Both ticks are as you left them. Result: pass (owner-marked 2026-10-30)
+  skin at once, no reload. Pick Azeroth and tick Ignore fonts. → The showroom's Open Sans text and titles go
+  back to the game's fonts at once and keep the skin's colors. `/reload`. → Both ticks are as you left them. Result:
 - **PANEL-7. Font and texture rows.** Open General -> Skin. → A "Font and texture" section between
-  the skins and the Scope, with a Font and a Texture dropdown. Each list starts with "Skin's own
+  the skins and the Scope, with a Font and a Texture dropdown. Each list starts with "Skin's default
   (<key>)" naming the current skin's own font or texture, then every font or statusbar texture
-  LibSharedMedia knows, sorted. Pick another skin. → Both "Skin's own" entries name the new skin's
-  keys. Result: pass (owner-marked 2026-10-30)
+  LibSharedMedia knows, sorted, each shown in its face or with its bar, the leading row too. Pick another skin. → Both "Skin's default" entries name the new skin's
+  keys. Result:
 - **PANEL-8. The override applies live.** With the showroom open, pick a font in Font, then a
   texture in Texture (any media pack's). → The showroom's text takes the font at once, its monospace
   text keeps its own face, and every bar in the Textures section takes the texture at once, its
@@ -105,14 +105,27 @@ restart the client: new font and texture files are only seen at client start.
   the skin whatever Ignore settings panel says. Fail: a title in another skin's color while the panel
   is skinned, or a skinned title while Ignore settings panel is ticked. Result: pass (owner-marked 2026-10-30)
 - **PANEL-12. The Font outline (ST-01; LibKa0s v1.82.0, D-06).** Open General -> Skin. → A "Font
-  outline" dropdown in the Font and texture section, on All text. Open the showroom beside it on
-  Faces and widths and pick HUD text only. → The mode line reads "Font outline: HUD text only. Window
-  text draws "", HUD text "OUTLINE"", and every window string in the showroom (titles, labels, the
-  face lines) loses its dark outline, live; the HUD faces keep theirs. Pick Off. → The HUD faces lose
+  outline" dropdown in the Font and texture section, on HUD text only (the default since v1.83.0). Open the showroom beside it on
+  Faces and widths. → The mode line reads "Font outline: HUD text only. Window
+  text draws "", HUD text "OUTLINE"", and window strings in the showroom (titles, labels, the
+  face lines) have no dark outline; the HUD faces keep theirs. Pick All text. → Every window string
+  takes the outline, live. Pick Off. → The HUD faces lose
   theirs too. `/reload`. → Off is still chosen and still applied. Tick Ignore fonts → the dropdown is
-  grayed and the mode line ends "(Ignore fonts wins)". Pick All text and untick Ignore fonts
+  grayed and the mode line ends "(Ignore fonts wins)". Pick HUD text only and untick Ignore fonts
   afterwards. Fail: an outline under Off, a mode that does not survive the reload, or a change that
   needs a reload. Result:
+- **PANEL-13. The media pickers (ST-F01; LibKa0s v1.83.0, LK-F03, D-08, D-09).** Fully restart the
+  client (new font files), untick Ignore settings panel on General -> Skin, pick Obsidian and open
+  Sample controls. → Five pickers under the color swatch: A font picker on Ka0s Prototype, drawn in
+  Prototype; A bar texture picker on Blizzard, beside its bar; A border picker and A background
+  picker on Blizzard Tooltip, each beside its swatch; A sound picker on None. Open each. → The
+  pull-out wears Obsidian, and every row shows what it offers: fonts each in their own face (the
+  thirteen new Ka0s faces among them), bars, borders and backgrounds each with their art. Sounds
+  need a media pack: with one loaded, a row's play button plays it, and without one the list holds
+  None alone. Pick an entry in each. → The closed row shows it, it survives a `/reload`, and nothing
+  else changes. Tick Ignore fonts. → The font rows keep their own faces. Fail: a list of plain
+  names, a blank row, a stock (unskinned) pull-out with the panel skinned, or a list reading only
+  the no-media entry. Result:
 
 ## Profiles
 
@@ -194,10 +207,10 @@ restart the client: new font and texture files are only seen at client start.
   naming a key the bars do not show. Result: pass (owner-marked 2026-10-30)
 - **SHOW-13. Ka0s Default's face and bar.** Fully restart the client (new font and texture files),
   then `/st show` in Ka0s Default. → Every title and the body text are in Prototype (LibKa0s v1.82.0,
-  D-02; Oxanium before), titles larger than the body, not Friz Quadrata; the Textures section's labels read "Texture:
+  D-02; Oxanium before), titles larger than the body, not Ka0s Friz Quadrata TT; the Textures section's labels read "Texture:
   Ka0s Default" and every fill shows that bar, dim at the top with a highlight low on the bar and a
   short lip, not the flat Blizzard bar. Click Obsidian, then WoW Default. → Their own faces and bars;
-  WoW Default is still Friz Quadrata with the Blizzard bar. Fail: a square where a glyph should be,
+  WoW Default is the shipped Ka0s Friz Quadrata TT (v1.83.0, D-01), visibly unlike Prototype, with the Blizzard bar. Fail: a square where a glyph should be,
   or a flat or missing fill. Result:
 - **SHOW-14. Every skin's own bar (ST-02; LibKa0s SO-04).** Fully restart the client (new texture
   files), clear any Texture override on General → Skin, then `/st show` and scroll to Textures. Click
@@ -244,12 +257,12 @@ restart the client: new font and texture files are only seen at client start.
   client, clear any Font override on General -> Skin, then `/st show` and scroll to HUD faces, the
   last section. → Nine lines, two to a row, each "<skin>  12,345  0:42  98%  (<face>)" in that skin's
   own face, at its own HUD size (LibKa0s v1.82.0, D-09) with a dark outline, whatever skin is worn:
-  Ka0s Default Prototype, Obsidian Expressway (v1.82.0; Oxanium SemiBold and Inter SemiBold before), Azeroth Vollkorn Bold, Glass Nunito SemiBold, High Contrast Atkinson Bold, Ember
-  Bitter Bold, WoW Default Friz Quadrata (the client's own), WoW Midnight Philosopher Bold, WoW
+  Ka0s Default Prototype, Obsidian Expressway (v1.82.0; Oxanium SemiBold and Inter SemiBold before), Azeroth Open Sans Semibold, Glass Avant Garde, High Contrast Doris PP, Ember
+  Emblem, WoW Default Ka0s Friz Quadrata TT (v1.83.0), WoW Midnight Segoe UI Semibold, WoW
   Forever Fira Sans SemiBold. Judge each face as a HUD face: digits legible under the outline, no
   closed-up counters. The tenth line, under them, is the worn skin's face: click Ember → it reads
-  Bitter Bold. Fail: a square where a glyph should be, a line in another skin's face, two skins
-  sharing a face (WoW Default's Friz aside), or a face you reject for a HUD (record which skin and
+  Emblem. Fail: a square where a glyph should be, a line in another skin's face, two skins
+  sharing a face, or a face you reject for a HUD (record which skin and
   why: the owner's call, R-4). Result:
 - **SHOW-20. Ignore fonts reaches the HUD (ST-01; LibKa0s v1.81.0, LK-01, ruling R-1).** On HUD
   faces in Obsidian, tick Ignore fonts on General -> Skin. → The last line drops to the game's own
@@ -263,7 +276,7 @@ restart the client: new font and texture files are only seen at client start.
   white, a blank line, then the footer in 0.6 gray. Type "o" in the box → a list of the skins whose
   name holds an "o", in the body face (Prototype). Click Azeroth and hover again → the title, body and
   footer take Azeroth's tooltip colors, the strip's label, the suggestion rows and the chart's axis
-  labels take Vollkorn. Also open the Controls section's dropdown → its rows are in the skin's body
+  labels take Open Sans. Also open the Controls section's dropdown → its rows are in the skin's body
   face, and the Overlays test strip's line is in the accent color and the body face. Tick Ignore
   fonts → the strip label, suggestion rows, chart labels, dropdown rows and test strip line go back to
   the game's fonts, live, and their colors stay. Fail: a tooltip in Ka0s Default's gold, white and
@@ -310,9 +323,9 @@ restart the client: new font and texture files are only seen at client start.
   ratio should read close to 1.000x. Fail: a square where a glyph should be, a line in another skin's face, Inter
   or Oxanium anywhere, or a ratio reading "unmeasured". Result:
 - **SHOW-27. FontFlags and HudFontSize (ST-01; LibKa0s v1.82.0, D-07, D-09).** Scroll to Values in
-  Ka0s Default. → After ChartStyle, "HUD OUTLINE   window OUTLINE   picked THICKOUTLINE THICKOUTLINE"
-  (captioned FontFlags) and "12 draws at 12   24 draws at 24" (captioned HudFontSize). Pick HUD text
-  only on the Skin tab's Font outline → the window value reads `""`; Off → both read `""`, the picked
+  Ka0s Default. → After ChartStyle, "HUD OUTLINE   window ""   picked THICKOUTLINE THICKOUTLINE"
+  (captioned FontFlags, under the default HUD text only) and "12 draws at 12   24 draws at 24" (captioned HudFontSize). Pick All
+  text on the Skin tab's Font outline → the window value reads OUTLINE; Off → both read `""`, the picked
   flag still THICKOUTLINE. Click Obsidian → HudFontSize shows Obsidian's own sizes for a stored 12 and
   24. Fail: a From skin value that does not follow the Font outline, or a picked flag that changes.
   Result:
@@ -425,3 +438,8 @@ LibKa0s v1.82.0 (ST-01 of the skin fonts and feedback run, 2026-10-30) adds SLAS
 PANEL-12, SHOW-26 and SHOW-27, and re-opens SHOW-13, SHOW-19, SHOW-20, SHOW-21, SHOW-23 and SHOW-24,
 whose expected faces (Prototype and Expressway for Oxanium and Inter) or combat behavior changed;
 their `Result:` lines are empty until the owner runs them.
+
+LibKa0s v1.83.0 (ST-F01 of the font pickers and skin faces run, 2026-10-31) adds PANEL-13 and
+re-opens PANEL-5, PANEL-6 and PANEL-7, whose expected rows, faces or wording changed; SHOW-13,
+SHOW-19, SHOW-21, PANEL-12, SHOW-26 and SHOW-27 stay open and now state v1.83.0's faces and the HUD
+text only default.

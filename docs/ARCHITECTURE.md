@@ -29,7 +29,7 @@ defaults, over one write seam, `NS.SchemaRuntime.Set` (LibKa0s-Schema-1.0, or th
 `settings/SchemaSetup.lua`). Rows: the composed Master controls (`enabled`, `scale`, `alpha`, the
 session-only `state.debugConsole`, the global `global.minimap.shown`), the eight Skin tab rows
 (`skin.source`, `skin.skin`, the overrides `skin.font` and `skin.texture`, the font outline `skin.outline`, the Scope's `skin.ignorePanel`,
-`skin.ignoreFonts`, and the picker's `skin.pickerSeen`) and the five Sample controls rows (`sample.*`, on their own page and read
+`skin.ignoreFonts`, and the picker's `skin.pickerSeen`) and the ten Sample controls rows (`sample.*`, on their own page and read
 by nothing). The one piece of state outside the seam is the showroom window's
 position, `db.global.windows.LibKa0sSkinTesterShowroom`, written only by `NS.Windows.Save` from the
 window's drag stop and cleared by `NS.Windows.Forget` (Reset position), both in `core/Util.lua`.

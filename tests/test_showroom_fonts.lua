@@ -72,10 +72,13 @@ test("fonts: the lines draw in each face at its size, under this addon's Font ou
     local font = mock.__paint(NS.Fonts.lines.obsidian.body).font
     assertEqual(font[1], ("Fonts\\font\\%s.ttf"):format(t["font.body"]))
     assertEqual(font[2], t["font.bodySize"])
-    assertEqual(font[3], "OUTLINE", "All text, the default")
+    assertEqual(font[3], "", "HUD text only, the default, leaves window text unoutlined")
+    lib(mock):SetOutline(OWNER, "all")
+    font = mock.__paint(NS.Fonts.lines.obsidian.title).font
+    assertEqual(font[3], "OUTLINE", "All text gives window text its outline, live")
     lib(mock):SetOutline(OWNER, "hud")
     font = mock.__paint(NS.Fonts.lines.obsidian.title).font
-    assertEqual(font[3], "", "HUD text only takes window text's outline, live")
+    assertEqual(font[3], "", "HUD text only takes it away again, live")
     assertTrue(NS.Fonts.outline:GetText():find("HUD text only", 1, true) ~= nil, "the mode line says so")
 end)
 
@@ -92,6 +95,9 @@ end)
 
 test("fonts: the outline line follows the Font outline and says Ignore fonts wins", function()
     local NS, mock = opened()
+    assertTrue(NS.Fonts.outline:GetText():find('Font outline: HUD text only. Window text draws "", HUD text "OUTLINE"',
+        1, true) ~= nil, NS.Fonts.outline:GetText())
+    lib(mock):SetOutline(OWNER, "all")
     assertTrue(NS.Fonts.outline:GetText():find('Font outline: All text. Window text draws "OUTLINE", HUD text "OUTLINE"',
         1, true) ~= nil, NS.Fonts.outline:GetText())
     lib(mock):SetOutline(OWNER, "off")

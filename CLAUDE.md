@@ -37,5 +37,5 @@ Green gate before every commit: `lua tests/run.lua` and `~/.claude/dev-copilot/b
 (0/0). The kit bounds the suite on load; `luacheck` loads no kit, so it runs through the bounded runner
 (testing-§15). Never auto-stage/commit/push and never bump the version without an explicit instruction.
 
-Bundles [LibKa0s](https://github.com/tusharsaxena/LibKa0s) v1.82.0 (MIT).
+Bundles [LibKa0s](https://github.com/tusharsaxena/LibKa0s) v1.83.0 (MIT).
 LibKa0s icons: close, copy, clear, eye, settings.

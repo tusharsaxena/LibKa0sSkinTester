@@ -14,13 +14,15 @@ login; each page's body builds on its first show.
     player opens, not a positionable display.
   - **Skin** (the library's own tab, keyed `Appearance` and labeled "Skin"): the skin source, the
     nine skins under the "Look" heading (the tab's own name is not repeated), "Font and texture"
-    (two dropdowns, each starting with "Skin's own (<key>)", then every LibSharedMedia font or
+    (two pickers, each starting with "Skin's default (<key>)", then every LibSharedMedia font or
     statusbar key), the Scope ("Ignore settings panel", "Ignore fonts"), "Copy to every Ka0s
     addon..." and the note. A pick repaints the showroom at once; so do
     the font, the texture and Ignore fonts. Ignore fonts wins over a font override.
   - **Keybindings**, the library's own tab, last: the Show window binding (`NS.BINDINGS`).
 - **Sample controls**: one row of each widget type the renderer draws (a checkbox, a slider, a
-  dropdown, a color swatch and its Use class color companion) under one group heading, untabbed. It
+  dropdown, a color swatch and its Use class color companion) and one `Ka0sMedia_*` picker of each
+  media kind (font, bar texture, border, background, sound; LibKa0s v1.83.0, options-ui-§23), under
+  one group heading, untabbed. The descriptor's `getLSM` feeds the pickers' lists. It
   shows the skin on a settings page once Ignore settings panel is off (a new profile has it on, so
   the page starts in the client's look); the rows are read by nothing. No Skin tab and no copy
   action: the skin is picked on General.

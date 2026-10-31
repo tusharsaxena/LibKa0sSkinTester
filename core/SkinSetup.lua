@@ -212,7 +212,7 @@ function NS.ApplySkinMedia(font, texture)
 end
 
 -- The applied font outline: Skin:SetOutline, live. No argument applies the stored mode; the library
--- reads an unknown mode as "all".
+-- reads an unknown mode as "hud".
 function NS.ApplySkinOutline(mode)
     if type(Skin.SetOutline) ~= "function" then return false end
     if mode == nil then

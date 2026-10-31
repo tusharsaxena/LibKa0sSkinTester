@@ -177,11 +177,11 @@ test("values: FontFlags shows From skin on a HUD and in a window, and a picked f
     local NS, mock = opened()
     local Skin = mock.LibStub("LibKa0s-Skin-1.0")
     local text = NS.Values.flags:GetText()
-    assertEqual(text, "HUD OUTLINE   window OUTLINE   picked THICKOUTLINE THICKOUTLINE",
-        "Ka0s Default under the default outline mode, All text")
-    Skin:SetOutline(OWNER, "hud")
-    assertEqual(NS.Values.flags:GetText(), 'HUD OUTLINE   window ""   picked THICKOUTLINE THICKOUTLINE',
-        "HUD text only takes the window text's outline away, live")
+    assertEqual(text, 'HUD OUTLINE   window ""   picked THICKOUTLINE THICKOUTLINE',
+        "Ka0s Default under the default outline mode, HUD text only")
+    Skin:SetOutline(OWNER, "all")
+    assertEqual(NS.Values.flags:GetText(), "HUD OUTLINE   window OUTLINE   picked THICKOUTLINE THICKOUTLINE",
+        "All text gives the window text its outline, live")
     Skin:SetOutline(OWNER, "off")
     assertEqual(NS.Values.flags:GetText(), 'HUD ""   window ""   picked THICKOUTLINE THICKOUTLINE',
         "Off takes both away; a picked flag still wins")

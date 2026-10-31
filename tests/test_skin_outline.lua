@@ -1,6 +1,6 @@
 -- tests/test_skin_outline.lua — the font outline (LibKa0s v1.82.0, Skin minor 9; ST-01 of
 -- Ka0sAddonsCommonTasks docs/2026-10-30-SKIN_FONTS_AND_FEEDBACK, ruling D-06): stored as skin.outline
--- ("all", the default, "hud", "off"), written only through the skin write seam (NS.WriteSkinChoice's
+-- ("hud", the default since v1.83.0, "all", "off"), written only through the skin write seam (NS.WriteSkinChoice's
 -- `media.outline`), and applied with Skin:SetOutline at load, on every profile event and on the row's
 -- own write.
 
@@ -12,11 +12,11 @@ local OWNER = "LibKa0sSkinTester"
 local function lib(mock) return mock.LibStub("LibKa0s-Skin-1.0") end
 local function profileSkin(NS) return NS.addon.db.profile.skin end
 
-test("outline: a fresh profile stores All text, the library's default", function()
+test("outline: a fresh profile stores HUD text only, the library's default", function()
     local NS, _, mock = T.bootAddon()
-    assertEqual(profileSkin(NS).outline, "all")
+    assertEqual(profileSkin(NS).outline, "hud")
     assertEqual(profileSkin(NS).outline, lib(mock).OUTLINE_DEFAULT)
-    assertEqual(lib(mock):GetOutline(OWNER), "all")
+    assertEqual(lib(mock):GetOutline(OWNER), "hud")
 end)
 
 test("outline: the schema row offers the library's three modes, in its order", function()
@@ -65,7 +65,7 @@ end)
 test("outline: /st set refuses a mode the library does not know", function()
     local NS = T.bootAddon()
     NS.addon:OnSlashCommand("set skin.outline thick")
-    assertEqual(profileSkin(NS).outline, "all")
+    assertEqual(profileSkin(NS).outline, "hud")
 end)
 
 test("outline: the stored mode is applied at load", function()
@@ -81,11 +81,11 @@ end)
 
 test("outline: a profile switch applies the incoming profile's mode, and back", function()
     local NS, _, mock = T.bootAddon()
-    NS.addon.Settings.Helpers.Set("skin.outline", "hud")
+    NS.addon.Settings.Helpers.Set("skin.outline", "off")
     NS.addon.db:SetProfile("Alt")
-    assertEqual(lib(mock):GetOutline(OWNER), "all", "Alt keeps the default")
+    assertEqual(lib(mock):GetOutline(OWNER), "hud", "Alt keeps the default")
     NS.addon.db:SetProfile("Default")
-    assertEqual(lib(mock):GetOutline(OWNER), "hud", "Default's is back")
+    assertEqual(lib(mock):GetOutline(OWNER), "off", "Default's is back")
 end)
 
 test("outline: without the skin engine the apply is a quiet no-op", function()

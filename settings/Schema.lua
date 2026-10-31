@@ -178,8 +178,9 @@ add{
 
 -- ---------------------------------------------------------------------------
 -- Sample controls -- a page of its own (settings/Panel.lua): one row of each widget type the
--- renderer draws, so a skin can be judged on a settings page as well as in the showroom. The rows
--- do nothing; the page wears the owner's skin like every Ka0s settings page.
+-- renderer draws and one picker of each media kind (LibKa0s v1.83.0, options-ui-§23), so a skin and
+-- the previews can be judged on a settings page as well as in the showroom. The rows do nothing;
+-- the page wears the owner's skin like every Ka0s settings page.
 -- ---------------------------------------------------------------------------
 
 local SAMPLE = { section = "sample", page = "sample", group = "Sample controls" }
@@ -219,6 +220,46 @@ sample{
     path = "sample.useClassColor", type = "bool", label = "Use class color", classColorSource = "player",
     tooltip = "The class-color companion every color swatch carries. It changes nothing here.",
     default = C.sample.useClassColor,
+}
+
+-- The library's own picker for each LibSharedMedia kind. This addon has no SharedMediaWidgets, so
+-- the rows name Ka0sMedia_* directly. `values` asks at call time: the keys are whatever media packs
+-- registered, and Settings.Helpers is the library instance only once settings/OptionsSetup.lua ran.
+local function mediaValues(kind)
+    return function() return Settings.Helpers.LSMValues(kind)() end
+end
+
+local function mediaSample(t)
+    t.type, t.widget = "string", "Dropdown"
+    t.values = mediaValues(t.kind)
+    t.kind = nil
+    sample(t)
+end
+
+mediaSample{
+    path = "sample.font", kind = "font", dialogControl = "Ka0sMedia_Font", label = "A font picker", startsLine = true,
+    tooltip = "Every font LibSharedMedia knows, each drawn in its own face. It changes nothing.",
+    default = C.sample.font,
+}
+mediaSample{
+    path = "sample.statusbar", kind = "statusbar", dialogControl = "Ka0sMedia_Statusbar", label = "A bar texture picker",
+    tooltip = "Every bar texture LibSharedMedia knows, each with its bar. It changes nothing.",
+    default = C.sample.statusbar,
+}
+mediaSample{
+    path = "sample.border", kind = "border", dialogControl = "Ka0sMedia_Border", label = "A border picker",
+    tooltip = "Every border LibSharedMedia knows, each with its swatch. It changes nothing.",
+    default = C.sample.border,
+}
+mediaSample{
+    path = "sample.background", kind = "background", dialogControl = "Ka0sMedia_Background", label = "A background picker",
+    tooltip = "Every background LibSharedMedia knows, each with its swatch. It changes nothing.",
+    default = C.sample.background,
+}
+mediaSample{
+    path = "sample.sound", kind = "sound", dialogControl = "Ka0sMedia_Sound", label = "A sound picker",
+    tooltip = "Every sound LibSharedMedia knows, each with a play button. It changes nothing.",
+    default = C.sample.sound,
 }
 
 -- ---------------------------------------------------------------------------

@@ -145,6 +145,9 @@ test("settings: every schema row declares the fields the panel and CLI need", fu
         -- (the skin rows' form, which the library orders and validates itself).
         if def.type == "string" and FREE_KEYS[def.path] then
             assertTrue(def.skipRender == true and def.values == nil, where .. " is a library-drawn free key")
+        elseif def.type == "string" and def.dialogControl and def.dialogControl:find("^Ka0sMedia_") then
+            -- A media picker's keys are whatever media packs registered: a closure, asked at call time.
+            assertEqual(type(def.values), "function", where .. " values")
         elseif def.type == "string" then
             assertEqual(type(def.values), "table", where .. " values")
             local array = type(def.values[1]) == "table" and def.values[1].value ~= nil
@@ -736,16 +739,21 @@ local STORED_SETTINGS = {
     "alpha = number|1|0|1|0.05|general|false",
     "enabled = bool|true|nil|nil|nil|general|false",
     "global.minimap.shown = bool|true|nil|nil|nil|general|false",
+    "sample.background = string|Blizzard Tooltip|nil|nil|nil|sample|false",
+    "sample.border = string|Blizzard Tooltip|nil|nil|nil|sample|false",
     "sample.checked = bool|true|nil|nil|nil|sample|false",
     "sample.color = color|0.2,0.6,1,1|nil|nil|nil|sample|false",
+    "sample.font = string|Ka0s Prototype|nil|nil|nil|sample|false",
     "sample.mode = string|medium|nil|nil|nil|sample|false",
     "sample.size = number|5|1|10|1|sample|false",
+    "sample.sound = string|None|nil|nil|nil|sample|false",
+    "sample.statusbar = string|Blizzard|nil|nil|nil|sample|false",
     "sample.useClassColor = bool|false|nil|nil|nil|sample|false",
     "scale = number|1|0.5|2|0.05|general|false",
     "skin.font = string||nil|nil|nil|skin|false",
     "skin.ignoreFonts = bool|false|nil|nil|nil|skin|false",
     "skin.ignorePanel = bool|true|nil|nil|nil|skin|false",
-    "skin.outline = string|all|nil|nil|nil|skin|false",
+    "skin.outline = string|hud|nil|nil|nil|skin|false",
     "skin.pickerSeen = bool|false|nil|nil|nil|skin|false",
     "skin.skin = string|ka0s|nil|nil|nil|skin|false",
     "skin.source = string|ka0s|nil|nil|nil|skin|false",

@@ -143,7 +143,7 @@ end
 
 local function outlineMode()
     local lib = Skin()
-    return lib and type(lib.GetOutline) == "function" and lib:GetOutline(addonName) or "all"
+    return lib and type(lib.GetOutline) == "function" and lib:GetOutline(addonName) or "hud"
 end
 
 --- Window text's flags under this addon's Font outline, for the skin's stated `font.outline`: ""

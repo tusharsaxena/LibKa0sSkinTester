@@ -251,6 +251,10 @@ local O = lib:New({
     end,
     allRows     = function() return Settings.Schema end,
 
+    -- For LSMValues (the Sample controls page's five media pickers) and the font preload every
+    -- panel show runs, which a font picker's rows rely on to draw their faces first time.
+    getLSM      = function() return LibStub and LibStub("LibSharedMedia-3.0", true) end,
+
     -- Runs once, before the page builders. settings/Schema.lua's own shape check, which PRINTS its
     -- errors rather than raising — a broken row is an addon-author bug, and the right user-visible
     -- behavior is "the option you wanted is missing AND a chat error tells you why".
@@ -291,8 +295,8 @@ local O = lib:New({
     --
     --   colorDecode / colorEncode — the schema is bool and number only, so there is no stored
     --     color shape to declare.
-    --   getLSM / scheduleTimer    — no media pickers and no color pickers, and the one slider is
-    --     release-only, so nothing reaches either.
+    --   scheduleTimer             — no color pickers, and the one slider is release-only, so
+    --     nothing reaches it.
     --   afterRestoreAll — the global reset is host-owned (see below), so the library's
     --     RestoreAllDefaults is not on the path, and nothing sits outside both the profile and
     --     the schema for a hook to restore.

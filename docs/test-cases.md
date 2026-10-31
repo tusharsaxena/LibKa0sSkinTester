@@ -363,7 +363,7 @@ Total.
 
 ### test_skin_outline.lua (9)
 
-- outline: a fresh profile stores All text, the library's default
+- outline: a fresh profile stores HUD text only, the library's default
 - outline: the schema row offers the library's three modes, in its order
 - outline: the write seam stores media.outline, and leaves it alone when it is nil
 - outline: another addon's copy reaches the store through WriteChoice
@@ -416,9 +416,13 @@ Total.
 - picker: another addon's picker closed in combat does not bring this one up until combat ends
 - picker: a stand-down while it waits out combat leaves nothing to show after
 
-### test_settings_sample.lua (5)
+### test_settings_sample.lua (9)
 
 - settings: the sample page carries one row of each widget type
+- settings: the sample page carries one picker of each media kind, on the library's own types
+- settings: each sample picker lists what LibSharedMedia holds of its kind
+- settings: each sample picker draws on the page, and with no media library it still opens
+- settings: /st set takes a media key the sample picker lists, and refuses one it does not
 - settings: the sample page wears the owner's skin once the panel is skinned
 - settings: on a new profile the sample page is the client's
 - settings: the sample rows stay on their page
@@ -762,7 +766,7 @@ Total.
 | test_skin_outline.lua | 9 |
 | test_skin_verb.lua | 7 |
 | test_skin_picker.lua | 30 |
-| test_settings_sample.lua | 5 |
+| test_settings_sample.lua | 9 |
 | test_panel.lua | 37 |
 | test_profiles.lua | 17 |
 | test_diagnostics.lua | 10 |
@@ -783,4 +787,4 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | Skipped | 1 |
-| **Total** | **601** |
+| **Total** | **605** |
