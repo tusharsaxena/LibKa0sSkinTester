@@ -195,20 +195,20 @@ NS.Showroom.Hide()
 -- The toggle and the reapply change no string and build no table, so they must allocate nothing:
 -- those ceilings are hard (the toggle's over the mock's own flip, measured above). The repaint is
 -- pinned, in bytes and in API calls, at the figure measured on 2026-11-01 with the collector stopped
--- (206043.5 bytes, 1085 calls, identical on three runs). It is not derived from this run: a ceiling
+-- (206995.8 bytes, 1092 calls). It is not derived from this run: a ceiling
 -- computed from its own measurement cannot fail, and skinRepaint read that way while it rose from 12
 -- to 1083 API calls per change.
 --
 -- Why that much is justified. The API count tracks the sections: 430 at the first showroom, 544, 614,
 -- 756, 826, 1034, then 1083 across the merges, each adding samples, then 1085 at the LibKa0s v1.84.0
 -- re-vendor: WidgetsDragHandle minor 10 clears the measurer's text and sets its host's scale on each
--- fit, and the showroom's one strip re-fits after every repaint. About 87% of the bytes are
+-- fit, and the showroom's one strip re-fits after every repaint; then 1092 with the dropdown samples (ST-D1). About 87% of the bytes are
 -- the library's Skin:Repaint walking every recorded frame; the addon's own OnLooksChanged redraws are
 -- about 20 KB. A skin change is one click, not a per-frame path.
 --
 -- Raise a ceiling only by re-measuring and saying why; a rise IS the finding. A LibKa0s re-vendor or a
 -- new sample moves the repaint's figures, so that is the moment to re-measure and re-pin them.
-local REPAINT_MAX_BYTES, REPAINT_MAX_API = 206068, 1085
+local REPAINT_MAX_BYTES, REPAINT_MAX_API = 207020, 1092
 assert_(repaint.apiPerIter <= REPAINT_MAX_API,
     ("skinRepaint made %.1f API calls, over its pinned %d"):format(repaint.apiPerIter, REPAINT_MAX_API))
 local CEILINGS = {
