@@ -178,8 +178,8 @@ add{
 
 -- ---------------------------------------------------------------------------
 -- Sample controls -- a page of its own (settings/Panel.lua): one row of each widget type the
--- renderer draws and one picker of each media kind (LibKa0s v1.83.0, options-ui-§23), so a skin and
--- the previews can be judged on a settings page as well as in the showroom. The rows do nothing;
+-- renderer draws, bar the dim `note` row (declined, docs/revendor/2026-10-31-v1.84.0), and one picker
+-- of each media kind (LibKa0s v1.83.0, options-ui-§23), so a skin and the previews can be judged on a settings page as well as in the showroom. The rows do nothing;
 -- the page wears the owner's skin like every Ka0s settings page.
 -- ---------------------------------------------------------------------------
 

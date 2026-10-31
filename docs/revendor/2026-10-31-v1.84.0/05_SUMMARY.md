@@ -9,5 +9,6 @@
 - **Refresh file:** none.
 - **Adopted:** nothing. **Declined:** five candidates, in `03_DECISIONS.md`, with no issue filed, per the brief.
 - **LibKa0s#67:** none. **LibKa0s#68:** fits by computation.
-- **Gate after the copy:** `lua tests/run.lua` 606 passed, 0 failed, 1 skipped, 607 total; `luacheck` 0 warnings / 0 errors in 79 files.
+- **Gate after the copy:** `lua tests/run.lua` 606 passed, 0 failed, 1 skipped, 607 total; `luacheck` 0 warnings / 0 errors in 79 files. That gate does not run `tests/perf.lua`.
+- **Perf, added after review (XX-RV):** the copy turned `lua tests/perf.lua` red: `skinRepaint` read 1085 API calls against its pin of 1083, on three runs. WidgetsDragHandle minor 10 adds two calls per fit (`host:SetScale` and `fs:SetText("")`), and an export with those two lines removed reads 1083. Bytes fell to 206043.5. The pins moved to 206068 bytes and 1085 calls in `tests/perf.lua`, with the reason beside them, and the suite passes.
 - **Owner's smoke:** DIAG-3 added, `Result:` empty.
