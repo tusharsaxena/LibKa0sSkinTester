@@ -274,6 +274,17 @@ Total.
 - showroom: the sections build without the library's widgets
 - showroom: the slider sample is visible under Ka0s Default
 
+### test_showroom_dropdowns.lua (8)
+
+- controls: the library's dropdown row is drawn, sized, labeled and in its cell
+- controls: AceGUI's Dropdown is in its cell and follows the Scope's panel half, live
+- controls: the media pickers are the library's types, painted and handed back like the Dropdown
+- controls: a media picker this client lacks is the plain Dropdown, and says so
+- controls: an LSM30 sample shows stock when registered and a label when it is not
+- controls: the Blizzard dropdown drops the template's art and wears the skin
+- controls: the Blizzard dropdown's menu offers both choices and marks the pick
+- controls: a client without the Blizzard template shows a label in its cell
+
 ### test_showroom_values.lua (13)
 
 - values: every getter is displayed
@@ -757,6 +768,7 @@ Total.
 | test_selector.lua | 8 |
 | test_showroom.lua | 11 |
 | test_showroom_coverage.lua | 5 |
+| test_showroom_dropdowns.lua | 8 |
 | test_showroom_values.lua | 13 |
 | test_showroom_textures.lua | 8 |
 | test_showroom_owner.lua | 9 |
@@ -788,4 +800,4 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | Skipped | 1 |
-| **Total** | **606** |
+| **Total** | **614** |

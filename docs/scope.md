@@ -21,7 +21,7 @@ never published on CurseForge.
   brings back; the showroom repaints at once on a pick. Font and Texture, on the tab and in the
   picker, lay a font and a bar texture over the skin's own, and Font outline says where the skin
   outlines text.
-- Twelve sections show every primitive in `lib.VOCAB`, every getter's value, the semantic colors,
+- Twelve sections show every primitive in `lib.VOCAB`, every dropdown kind the collection draws (the library's own, AceGUI's, the media pickers and a Blizzard template), every getter's value, the semantic colors,
   quality tiers, tooltip colors and art tints, every skin's body, title and HUD faces with its
   measured width against Ka0s Default, the library's own custom
   widgets as an owned window draws them (a drag handle and its tooltip, an autocomplete, a line
