@@ -293,15 +293,15 @@ local O = lib:New({
     -- Deliberately NOT passed, each for a reason worth writing down rather than leaving as an
     -- absence:
     --
-    --   colorDecode / colorEncode — the schema is bool and number only, so there is no stored
-    --     color shape to declare.
-    --   scheduleTimer             — no color pickers, and the one slider is release-only, so
-    --     nothing reaches it.
+    --   colorDecode / colorEncode — the one color row, sample.color, stores the library's default
+    --     {r,g,b,a} shape, so there is no other shape to declare.
+    --   scheduleTimer             — the sliders are release-only, and the color drag it would
+    --     throttle only writes sample.color, which changes nothing.
     --   afterRestoreAll — the global reset is host-owned (see below), so the library's
     --     RestoreAllDefaults is not on the path, and nothing sits outside both the profile and
     --     the schema for a hook to restore.
-    --   onAceGUI                  — settings/Panel.lua reads O.AceGUI off this instance at call
-    --     time instead, which is the same handle without a second LibStub lookup.
+    --   onAceGUI                  — nothing here keeps the handle: settings/Profiles.lua and
+    --     modules/ShowroomOwner.lua look AceGUI up through LibStub where they use it.
 })
 
 -- ---------------------------------------------------------------------------
