@@ -18,7 +18,7 @@ its theme, and a retired number is never reused.
 | DIAG-1..2 | Diagnostics | The debug console and the report |
 | DEGRADED-1 | Degraded install | The library-absent load |
 | SHOW-1..27 | Showroom | The window, the swatch selector, the sections, position and scale, the textures, Ka0s Default's face and bar, the addon surfaces, the library widgets, the tooltip colors and art tints, the HUD faces, the faces and widths, FontFlags and HudFontSize |
-| PICKER-1..16 | First-run skin picker | When and where it shows, its title, preview, Apply, close, the gear, Apply to all, one window across addons, taking it down, combat, a preview meeting another write, the reload popup |
+| PICKER-1..23 | First-run skin picker | When and where it shows, its title, preview, Apply, close, the gear, Apply to all, one window across addons, taking it down, combat, a preview meeting another write, the reload popup |
 | LOC-1 | Non-English client | Locale-dependent behavior |
 
 ## Before you start
@@ -339,8 +339,8 @@ restart the client: new font and texture files are only seen at client start.
   the eye and the gear beside it, an Apply button and a close control. No "Apply to all Ka0s addons"
   button. Fail: a window centered on the screen, a title that still names the addon, or an owner
   line that is missing, cut off or does not name the tester. Result: pass (owner-marked 2026-10-30)
-- **PICKER-2. Its list, and a pick previews.** Click the dropdown. → The list opens inside the
-  window, which grows to hold it: every skin, each row three color swatches and the skin's name in
+- **PICKER-2. Its list, and a pick previews.** Click the dropdown. → The list opens over the
+  window's rows, which stay where they are (LK-A3): every skin, each row three color swatches and the skin's name in
   that skin's own font and size. Pick Ember. → The window and the showroom repaint in Ember, the
   list closes, the dropdown reads Ember and the window stays up. Open General -> Skin. → It still
   shows the skin you had: a pick is only a preview. `/reload`. → The skin you had, and the picker
@@ -414,6 +414,32 @@ restart the client: new font and texture files are only seen at client start.
   tester's picker opens, its owner line naming the tester. Repeat, and run `/st disable` while in
   combat after the close. → Nothing opens when combat ends. Fail: any picker opening mid-combat.
   Result: pass (owner-marked 2026-10-30)
+- **PICKER-17. The Skin tab's rows (LibKa0s v1.83.0, LK-A3).** `/st skin`. → Under the skin dropdown:
+  Font and Texture, each with a small refresh-arrow button at its right; Font outline; Scope, with
+  Ignore settings panel and Ignore fonts side by side; then Apply to all and Apply. Nothing cut off
+  or wrapped, in every skin; the window is about 10% wider than it was and taller. Check the arrow
+  draws at all: it is the client's own art, in a size the harness cannot judge. Fail: a blank
+  reset button, a wrapped check box label, or rows without the skin. Result:
+- **PICKER-18. Rows and pull-outs over the window.** Open the skin list. → It lays over the rows and
+  the buttons, on top, and may hang below the window. Open Font. → Every row in its own face,
+  "Skin's default (X)" first; the list opens over the window and is not hidden behind any of it.
+  Open Texture. → Each row beside its bar. Fail: a list behind a row, or a blank face on the second
+  open. Result:
+- **PICKER-19. Preview, Apply, close.** Pick a font, a texture, All text and Ignore fonts. → The
+  showroom follows each one, and Font outline grays with Ignore fonts on. Close with the X. →
+  Everything is back. Do it again and press Apply; `/reload`. → All four kept. Fail: a change that
+  saves without Apply, or one that survives the X. Result:
+- **PICKER-20. Another skin clears the font and texture.** With a font override in force, pick
+  another skin. → Font and Texture read "Skin's default (X)", naming the new skin's face. Pick the
+  first skin back. → The override returns. A reset button is gray while its row is on the skin's
+  default, and live otherwise. Result:
+- **PICKER-21. Apply to all carries them,** with a second Ka0s addon loaded. Pick a skin, font,
+  texture, outline and scope, then Apply to all. → The second addon wears all of them, and its Skin
+  tab shows them after a `/reload`. Result:
+- **PICKER-22. Ignore settings panel on.** Tick it in the picker. → The picker's own rows keep the
+  skin, as the window does; the settings pages go to the game's look. Result:
+- **PICKER-23. Combat.** Start combat with the picker up, then change a row. → Refused, the row reads
+  what is worn, one gray line. A picker raised in combat draws its rows disabled. Result:
 
 ## Non-English client
 
