@@ -100,6 +100,17 @@ test("harness: the addon is a named AceAddon the kit can look up", function()
     assertEqual(mock.LibStub("AceAddon-3.0"):GetAddon("LibKa0sSkinTester"), NS.addon)
 end)
 
+test("harness: an undefined frame method reads as one cached stub, not a fresh closure", function()
+    -- A closure minted per read charged tests/perf.lua with bytes only the mock allocates.
+    local _, _, mock = T.bootAddon()
+    local f = mock.__stubFrame("Frame")
+    local stub = f.SomeUndefinedMethod
+    assertEqual(type(stub), "function", "a PascalCase miss answers a stub")
+    assertEqual(f.SomeUndefinedMethod, stub, "the second read is the same function")
+    assertEqual(rawget(f, "SomeUndefinedMethod"), nil, "the frame itself stays free of the key")
+    assertEqual(stub(), f, "the stub answers its frame")
+end)
+
 test("harness: a registration naming a method the addon lacks is refused", function()
     -- The kit's fidelity rule 1: a registration the client refuses must not pass headlessly.
     local NS = T.bootAddon()

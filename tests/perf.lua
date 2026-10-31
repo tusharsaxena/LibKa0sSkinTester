@@ -106,7 +106,9 @@ local function assert_(cond, msg)
 end
 
 -- Two passes over the same closure, and the second one is the honest byte figure. Every scenario
--- here alternates between two states, so running it twice changes no conclusion.
+-- here alternates between two states, so running it twice changes no conclusion. The collector is
+-- stopped across the byte pass: a heavy scenario otherwise triggers collections mid-pass, and what
+-- it reports is wherever the sawtooth stopped (skinRepaint read 9 KB to 47 KB across commits).
 local function measure(name, iterations, fn)
     countingEnabled(true)
     collectgarbage("collect")
@@ -118,11 +120,13 @@ local function measure(name, iterations, fn)
     countingEnabled(false)
     collectgarbage("collect")
     collectgarbage("collect")
+    collectgarbage("stop")
     local kbBefore = collectgarbage("count")
     local t0 = os.clock()
     for i = 1, iterations do fn(i) end
     local elapsed = os.clock() - t0
     local kbAfter = collectgarbage("count")
+    collectgarbage("restart")
     countingEnabled(true)
 
     local r = {
@@ -150,9 +154,11 @@ do
     local f = mock.frames["LibKa0sSkinTesterShowroom"]
     collectgarbage("collect")
     collectgarbage("collect")
+    collectgarbage("stop")
     local kb = collectgarbage("count")
     for i = 1, N do if i % 2 == 0 then f:Hide() else f:Show() end end
     mockFlipBytes = ((collectgarbage("count") - kb) * 1024) / N
+    collectgarbage("restart")
     f:Hide()
 end
 
@@ -187,13 +193,25 @@ NS.Showroom.Hide()
 -- ── ceilings ────────────────────────────────────────────────────────────────────────────────
 --
 -- The toggle and the reapply change no string and build no table, so they must allocate nothing:
--- those ceilings are hard (the toggle's over the mock's own flip, measured above). The repaint walks the library's paint over every sample and is pinned at
--- its measured figure instead, so the next run compares against a number. Raise a ceiling only by
--- re-measuring and saying why; a rise IS the finding.
-local function ceil(r) return math.floor(r.bytesPerIter + 0.5) + 24 end
+-- those ceilings are hard (the toggle's over the mock's own flip, measured above). The repaint is
+-- pinned, in bytes and in API calls, at the figure measured on 2026-10-31 with the collector stopped
+-- (206138.6 bytes, 1083 calls, identical on three runs). It is not derived from this run: a ceiling
+-- computed from its own measurement cannot fail, and skinRepaint read that way while it rose from 12
+-- to 1083 API calls per change.
+--
+-- Why that much is justified. The API count tracks the sections: 430 at the first showroom, 544, 614,
+-- 756, 826, 1034, then 1083 across the merges, each adding samples. About 87% of the bytes are
+-- the library's Skin:Repaint walking every recorded frame; the addon's own OnLooksChanged redraws are
+-- about 20 KB. A skin change is one click, not a per-frame path.
+--
+-- Raise a ceiling only by re-measuring and saying why; a rise IS the finding. A LibKa0s re-vendor or a
+-- new sample moves the repaint's figures, so that is the moment to re-measure and re-pin them.
+local REPAINT_MAX_BYTES, REPAINT_MAX_API = 206163, 1083
+assert_(repaint.apiPerIter <= REPAINT_MAX_API,
+    ("skinRepaint made %.1f API calls, over its pinned %d"):format(repaint.apiPerIter, REPAINT_MAX_API))
 local CEILINGS = {
     showroomToggle = math.floor(mockFlipBytes + 0.5) + 24,
-    skinRepaint    = ceil(repaint),
+    skinRepaint    = REPAINT_MAX_BYTES,
     applyScale     = 24,
     applyAlpha     = 24,
 }

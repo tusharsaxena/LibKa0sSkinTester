@@ -351,8 +351,13 @@ local function build()
                 if v ~= nil then return v end
                 -- WoW frame methods are always PascalCase; anything else must miss through to nil
                 -- so `f.customField` stays assignable.
+                -- Cached in `api`, not minted per read: a fresh closure on every read charged the
+                -- addon's offline perf figures with bytes only this stub allocates, and `api` rather
+                -- than the frame so `f` itself stays free of keys a suite never set.
                 if type(k) == "string" and k:match("^%u") then
-                    return function() return f end
+                    local fallback = function() return f end
+                    api[k] = fallback
+                    return fallback
                 end
                 return nil
             end,

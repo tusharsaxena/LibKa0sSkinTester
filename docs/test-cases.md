@@ -8,7 +8,7 @@ Total.
 
 **Generated — do not hand-edit.** Regenerate with `lua tests/run.lua --list > docs/test-cases.md`.
 
-### test_harness.lua (11)
+### test_harness.lua (12)
 
 - harness: the runner is on the shared kit and reports its revision
 - harness: the addon's load list is DERIVED from the TOC, in TOC order (testing-§9)
@@ -18,6 +18,7 @@ Total.
 - harness: every LibKa0s file the runner loads exists on disk
 - harness: the libraries load BEFORE the addon's own files
 - harness: the addon is a named AceAddon the kit can look up
+- harness: an undefined frame method reads as one cached stub, not a fresh closure
 - harness: a registration naming a method the addon lacks is refused
 - harness: the addon's AceTimer handles are the kit's, on the kit's queue
 - events: the [Init] summary carries no rejected clause when every name registered
@@ -744,7 +745,7 @@ Total.
 
 | Suite | Cases |
 |-------|------:|
-| test_harness.lua | 11 |
+| test_harness.lua | 12 |
 | test_libka0s.lua | 55 |
 | test_surface_parity.lua | 8 |
 | test_mediasetup.lua | 13 |
@@ -787,4 +788,4 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | Skipped | 1 |
-| **Total** | **605** |
+| **Total** | **606** |
