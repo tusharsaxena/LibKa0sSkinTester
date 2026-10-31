@@ -46,7 +46,11 @@ end)
 
 test("picker: the spec names this owner's seams, the General page's Skin tab and the eye", function()
     local NS = T.enableAddon()
-    local spec = NS.SKIN_PICKER_SPEC
+    local H, spec = NS.addon.Settings.Helpers, nil
+    local live = H.SkinVerb
+    H.SkinVerb = function(given) spec = given end
+    NS.RunSkinVerb()
+    H.SkinVerb = live
     assertEqual(spec.owner, "LibKa0sSkinTester")
     assertTrue(spec.get == NS.SkinChoice, "get is the read seam")
     assertTrue(spec.set == NS.WriteSkinChoice, "set is the write seam")
