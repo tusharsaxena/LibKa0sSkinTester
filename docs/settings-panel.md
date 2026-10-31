@@ -12,12 +12,15 @@ login; each page's body builds on its first show.
     opacity (the showroom's); Debug console and Minimap button; Reset position and Reset all
     settings. No Lock frame, Test mode or General visibility, because the showroom is a window the
     player opens, not a positionable display.
-  - **Skin** (the library's own tab, keyed `Appearance` and labeled "Skin"): the skin source, the
-    nine skins under the "Look" heading (the tab's own name is not repeated), "Font and texture"
-    (two pickers, each starting with "Skin's default (<key>)", then every LibSharedMedia font or
-    statusbar key), the Scope ("Ignore settings panel", "Ignore fonts"), "Copy to every Ka0s
-    addon..." and the note. A pick repaints the showroom at once; so do
-    the font, the texture and Ignore fonts. Ignore fonts wins over a font override.
+  - **Skin** (the library's own tab, keyed `Appearance` and labeled "Skin"): the skin source;
+    "Look", with the library's note and the nine skins (the tab's own name is not repeated); "Font
+    and texture" (two preview pickers, each row in its face or beside its bar, each list led by
+    "Skin's default (<key>)" and then every LibSharedMedia font or statusbar key; "Reset font" and
+    "Reset texture" under them, disabled while that half is the skin's own; then the Font outline
+    dropdown, All text, HUD text only or Off); the Scope ("Ignore settings panel", "Ignore fonts");
+    "Other Ka0s addons" ("Copy to every Ka0s addon..."). A pick repaints the showroom at once; so
+    do the font, the texture, the outline and Ignore fonts. Ignore fonts wins over a font override
+    and disables the Font outline.
   - **Keybindings**, the library's own tab, last: the Show window binding (`NS.BINDINGS`).
 - **Sample controls**: one row of each widget type the renderer draws (a checkbox, a slider, a
   dropdown, a color swatch and its Use class color companion) and one `Ka0sMedia_*` picker of each
@@ -49,7 +52,7 @@ as that fourth argument's `outline`, which writes `skin.outline`; its row's `onC
 
 ## The first-run skin picker
 
-The library's `O.SkinPicker` (OptionsSkinPicker minor 1), shown by `NS.MaybeShowSkinPicker`
+The library's `O.SkinPicker` (OptionsSkinPicker minor 4), shown by `NS.MaybeShowSkinPicker`
 (settings/Panel.lua) while the profile's `skin.pickerSeen` is false: once from `OnEnable`, after the
 stored skin is applied, and after every profile switch, copy or reset. The addon never asks for it
 while disabled or in combat; it registers no game event, so a trigger in combat is skipped and the
@@ -59,21 +62,34 @@ waiting until combat ends (the library parks it on its end-of-combat frame, PK-0
 shows (PICKER-16). The waiting entry is not checked against `enabled` or `skin.pickerSeen` again,
 which is safe because the stand-down and every profile event take it out of the queue first.
 
-The window sits with its center 75% of the way up the screen, clear of the middle, at DIALOG
-strata and raised after the eye runs, so the showroom the eye opens does not cover it. It holds the title "Choose a skin for Ka0s Skin Tester", a dropdown of every skin (three
-swatches and the name in that skin's own face), the eye (the showroom), the gear, "Apply", "Apply
-to all Ka0s addons" (only while another Ka0s addon is loaded) and the close control.
+`/st skin` and the showroom's "Show the picker" button show the same window on demand, whatever
+`skin.pickerSeen` says (`NS.RunSkinVerb`, the library's `O.SkinVerb`). In combat `/st skin` shows
+nothing and prints a gray line on every call; while the addon is disabled the dispatcher refuses it.
 
-- A pick previews: the showroom and the addon repaint in it, and nothing is written.
-- **Apply** saves the pick through `NS.WriteSkinChoice`, then closes.
+The window sits with its center 75% of the way up the screen, clear of the middle, at DIALOG
+strata and raised after the eye runs, so the showroom the eye opens does not cover it. It holds the title "Choose a skin", the addon's label on a line of its own, a
+dropdown of every skin (three swatches and the name in that skin's own face), the eye (the
+showroom), the gear, the Skin tab's rows ("Font and texture": Font and Texture, each a full-width
+picker with a reset icon, then Font outline; "Scope": Ignore settings panel and Ignore fonts),
+"Apply", "Apply to all Ka0s addons" (only while another Ka0s addon is loaded) and the close control.
+
+- A pick previews: the showroom and the addon repaint in it, and nothing is written. A pick of a
+  look other than the one the window opened with previews with the font and texture overrides
+  cleared; a pick back to it restores them.
+- The rows preview the same way, through `Skin:SetOverride`, `Skin:SetOutline` and `Skin:SetIgnore`,
+  and write nothing.
+- **Apply** saves the pick, then whatever the rows moved, through `NS.WriteSkinChoice`, then closes.
 - **The gear** saves the pick as Apply does, then opens the settings panel on the General page
   (`O.OpenOptionsPanel("general")`) and selects its Skin tab.
 - **The close control and Escape** undo only the unsaved preview: they put back the skin the
   profile stores as it reads at the close (`NS.SkinChoice`), so a skin General -> Skin, `/st set`
-  or the showroom stored while the window was up stays (PICKER-14). They write nothing, and close.
-- **Apply to all Ka0s addons** saves here, gives every other Ka0s addon the same source and skin
-  (their scope and font and texture overrides are left alone), and closes this window and every
-  picker still waiting.
+  or the showroom stored while the window was up stays (PICKER-14), and they put back what the rows
+  previewed. They write nothing, and close.
+- **Apply to all Ka0s addons** saves here, gives every other Ka0s addon the same source, skin,
+  scope, font, texture and font outline, and closes this window and every picker still waiting.
+
+A write on the Skin tab while the window is up first drops a preview left unapplied here, so the
+profile never stores what the picker only previewed.
 
 Each of those closes sets `skin.pickerSeen` through the schema runtime; the eye leaves the window
 up. A new or reset profile starts false, so it shows again.

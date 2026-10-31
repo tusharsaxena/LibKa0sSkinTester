@@ -19,21 +19,24 @@
   `onChange`, `NS.ApplySkinIgnore`, one half at a time.
 - A Font or Texture pick on the Skin tab calls `Skin:SetOverride`, which lays the key over the
   owner's tokens (`font.body`, `font.title`, `hud.font`; `bar.texture`), repaints every recorded
-  frame and fires `OnLooksChanged` (the showroom's Values and Textures sections redraw, and Addon surfaces repaints its TreeGroup), then writes
+  frame and fires `OnLooksChanged` (the showroom's Values, Textures, Faces and widths and HUD faces sections redraw, and Addon surfaces repaints its TreeGroup), then writes
   both halves through `NS.WriteSkinChoice`'s fourth argument; `/st set skin.texture <key>` goes
   through the row's `onChange`, `NS.ApplySkinMedia`. Another addon's copy reaches the same seam
   through `Skin:WriteChoice`.
 - The Font outline dropdown calls `Skin:SetOutline` (a repaint and `OnLooksChanged`; the Values
-  section's FontFlags line redraws), then writes `media.outline` through `NS.WriteSkinChoice`;
+  section's FontFlags line and the Faces and widths section redraw), then writes `media.outline` through `NS.WriteSkinChoice`;
   `/st set skin.outline <mode>` goes through the row's `onChange`, `NS.ApplySkinOutline`. Load and
   every profile event apply the stored mode with the pair, the Scope and the overrides.
-- The skin picker splits the two steps: a pick in its list calls `Skin:SetChoice` only (a preview,
-  repainted live, nothing written); Apply or the gear then hands the pending pair to
-  `NS.WriteSkinChoice`, and the close control or Escape calls `Skin:SetChoice` back to the pair the
-  profile stores at the close (the spec's `get`, `NS.SkinChoice`), so only the unsaved preview is
-  undone. Every close then runs the spec's `onClose`, which sets `skin.pickerSeen`.
+- The skin picker splits the two steps: a pick in its list calls `Skin:SetChoice` only, and its
+  Font, Texture, Font outline and Scope rows call `Skin:SetOverride`, `Skin:SetOutline` and
+  `Skin:SetIgnore` only (previews, repainted live, nothing written). A pick of another look
+  previews with the overrides cleared. Apply or the gear then hands what moved to
+  `NS.WriteSkinChoice`, and the close control or Escape puts the rows back and calls
+  `Skin:SetChoice` back to the pair the profile stores at the close (the spec's `get`,
+  `NS.SkinChoice`), so only the unsaved preview is undone. Every close then runs the spec's `onClose`, which sets `skin.pickerSeen`.
   "Apply to all Ka0s addons" (this addon's or another's) reaches every other owner through
-  `Skin:WriteChoice`, as the tab's copy does.
+  `Skin:WriteChoice`, as the tab's copy does, and carries the same source, skin, Scope, font,
+  texture and Font outline.
 
 ## Opening the showroom
 
@@ -45,8 +48,8 @@
 ## Login
 
 - File load: the skin owner registers (Ka0s Default, since AceDB does not exist yet).
-- OnInitialize: AceDB, migrations, the profile callbacks, the stored skin, its Scope and its font
-  and texture overrides applied (`NS.ApplySkinChoice` with no argument), the chat commands.
+- OnInitialize: AceDB, migrations, the profile callbacks, the stored skin, its Scope, its font
+  and texture overrides and its Font outline applied (`NS.ApplySkinChoice` with no argument), the chat commands.
 - OnEnable: the settings category, the launcher, the `/st` collision check, the latch from the
   stored `enabled`, then the first-run skin picker when `skin.pickerSeen` is false, the addon is
   enabled and the player is out of combat (`NS.MaybeShowSkinPicker`). A profile switch, copy or reset

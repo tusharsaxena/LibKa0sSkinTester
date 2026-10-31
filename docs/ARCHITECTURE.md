@@ -5,7 +5,7 @@ says how this addon meets them.
 
 ## Overview
 
-A skin showroom. `/st` (or `/skintester`) opens one window that shows the elements a Ka0s skin
+A skin showroom. `/st show` (or `/skintester show`) opens one window that shows the elements a Ka0s skin
 (`LibKa0s-Skin-1.0`) can paint, in whichever skin the addon is wearing, so a skin can be judged in one
 place. The addon is a skin owner like any adopter: the skin it wears is chosen from the swatch cards
 across the top of the showroom, on its own General -> Skin tab or in the first-run skin picker, and every sample it shows is
@@ -39,8 +39,8 @@ Every path, default and the migration seam: [`schema.md`](./schema.md).
 
 None. Nothing crosses a module boundary as a message: the sections register with the showroom by
 direct call (`NS.Showroom.AddSection`), below the `architecture-§4` threshold. A skin change reaches
-the showroom, the selector and the Values, Textures and Addon surfaces sections through the skin
-engine's own `OnLooksChanged` notification, not a bus message.
+the showroom, the selector and the Values, Textures, Faces and widths, HUD faces and Addon surfaces
+sections through the skin engine's own `OnLooksChanged` notification, not a bus message.
 
 ## Slash Commands
 
@@ -93,7 +93,7 @@ generated directories are named once each and never enumerated per run: `docs/au
 
 | Doc | Status | Trigger |
 |---|---|---|
-| `slash-dispatch.md` | Present | 15 commands in `COMMANDS`, over the eight-command threshold |
+| `slash-dispatch.md` | Present | 17 commands in `COMMANDS`, over the eight-command threshold |
 | `debug.md` | Present | The diagnostics report (`/st diagnostics`, debug-logging-§14); never Not applicable |
 | `profiles.md` | Present | The Profiles sub-page (`settings/Profiles.lua`) is a profile control in the options UI |
 | `perf-analysis/README.md` | Present | The performance harness is wired (`core/PerfSetup.lua`) |
