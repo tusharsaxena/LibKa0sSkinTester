@@ -222,8 +222,8 @@ sample{
     default = C.sample.useClassColor,
 }
 
--- The library's own picker for each LibSharedMedia kind. This addon has no SharedMediaWidgets, so
--- the rows name Ka0sMedia_* directly. `values` asks at call time: the keys are whatever media packs
+-- The library's own picker for each LibSharedMedia kind: Ka0sMedia_*, the collection's only media
+-- picker. `values` asks at call time: the keys are whatever media packs
 -- registered, and Settings.Helpers is the library instance only once settings/OptionsSetup.lua ran.
 local function mediaValues(kind)
     return function() return Settings.Helpers.LSMValues(kind)() end

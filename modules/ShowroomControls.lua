@@ -12,9 +12,9 @@ local addonName, NS = ...
 --   AceGUI Dropdown       acquired here and handed to PaintAce; a settings-panel surface, so stock
 --   Ka0sMedia_Font,       while the Scope leaves the panel the client's (the default), and repainted
 --   Ka0sMedia_Statusbar   on every OnLooksChanged, as the TreeGroup is. The pickers are the ones the
---                         settings renderer draws; their faces load on the first open
---   LSM30_Font,           AceGUI-SharedMediaWidgets, drawn when another addon registered them. The
---   LSM30_Statusbar       library has no painter for them (SkinAce's non-goals): stock, and captioned
+--                         settings renderer draws, each showing a real key; their faces load on the
+--                         first open. The only media picker in the collection (the owner's ruling
+--                         of 2026-11-01), so no other kind has a cell
 --   WowStyle1Dropdown...  a Blizzard DropdownButton as PremadeGroupsFilterExtension's panel draws
 --                         one: a window's, painted with S.Dropdown. S.Dropdown's own list knows
 --                         neither of the template's textures, and its Arrow is the whole gold button,
@@ -28,7 +28,7 @@ local ICON = "Interface\\Icons\\INV_Misc_QuestionMark"
 local CHEVRON = "Interface\\ChatFrame\\ChatFrameExpandArrow"   -- points right; the sample turns it down
 local BLIZZ_TEMPLATE = "WowStyle1DropdownTemplate"
 local CHOICES = { "First choice", "Second choice" }
-local ACE_W, ACE_H, LSM30_H = 200, 26, 44
+local ACE_W, ACE_H = 200, 26
 local CELL_W = 270   -- a dropdown's cell: wider than the dropdown, so its caption clears the next one
 local FONT_KEY, BAR_KEY = "Ka0s Prototype", "Blizzard"
 
@@ -120,20 +120,6 @@ local function mediaPicker(g, paint, kind, wtype, key)
     return w
 end
 
--- Never painted: PaintAce has no painter for these and answers false. Not in aceSamples, for that
--- reason. The cell says so, in every skin.
-local function lsm30Picker(g, kind, wtype, key)
-    local cell = g:Add(CELL_W, LSM30_H, wtype .. " (no painter: always stock)")
-    local AceGUI, LSM = aceGUI(), LibStub("LibSharedMedia-3.0", true)
-    if not (AceGUI and LSM and AceGUI:GetWidgetVersion(wtype)) then
-        return unavailable(cell, ACE_W, ACE_H, wtype .. " not loaded")
-    end
-    local w = seat(cell, AceGUI:Create(wtype), ACE_W)
-    w:SetList(LSM:HashTable(kind))
-    w:SetValue(key)
-    return w
-end
-
 local function blizzardDropdown(g, paint)
     local cell = g:Add(CELL_W, ACE_H, BLIZZ_TEMPLATE .. " (its list: stock)")
     local ok, dd = pcall(CreateFrame, "DropdownButton", nil, cell, BLIZZ_TEMPLATE)
@@ -168,9 +154,6 @@ local function dropdownRow(g, body, paint)
     g:Break()
     body.fontPicker = mediaPicker(g, paint, "font", "Ka0sMedia_Font", FONT_KEY)
     body.barPicker = mediaPicker(g, paint, "statusbar", "Ka0sMedia_Statusbar", BAR_KEY)
-    g:Break()
-    body.lsmFont = lsm30Picker(g, "font", "LSM30_Font", FONT_KEY)
-    body.lsmBar = lsm30Picker(g, "statusbar", "LSM30_Statusbar", BAR_KEY)
     g:Break()
 end
 

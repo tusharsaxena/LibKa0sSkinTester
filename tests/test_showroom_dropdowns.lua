@@ -2,8 +2,7 @@
 -- Ka0sAddonsCommonTasks docs/2026-10-31-FINDINGS_REMEDIATION): every dropdown kind the collection
 -- draws, each in its cell through the route an addon uses. The library's W.Dropdown; AceGUI's
 -- Dropdown and the library's Ka0sMedia_* pickers through PaintAce, following the Scope's panel half;
--- LSM30_*, which nothing paints, labeled so; and a Blizzard DropdownButton as
--- PremadeGroupsFilterExtension's panel draws one.
+-- and a Blizzard DropdownButton as PremadeGroupsFilterExtension's panel draws one.
 --
 -- The kit's AceGUI has no stock Dropdown, so the picker cases name the type themselves, and
 -- WowStyle1DropdownTemplate's anatomy (Background, Arrow, Text) is modeled here: the base mock builds
@@ -116,19 +115,13 @@ test("controls: a media picker this client lacks is the plain Dropdown, and says
     assertEqual(sec.fontPicker.list["Ka0s Prototype"], "Plain Dropdown: no picker here")
 end)
 
-test("controls: an LSM30 sample shows stock when registered and a label when it is not", function()
-    -- red under: a cell left empty without SharedMediaWidgets, or a stock sample claimed as painted.
-    local _, _, bare = opened()
-    assertEqual(bare.lsmFont.text:GetText(), "LSM30_Font not loaded")
-    local NS, mock, sec = opened{ prepare = function(m)
-        m.__libs["AceGUI-3.0"].__widgetVersions.LSM30_Font = 1
-        m.__libs["LibSharedMedia-3.0"] = { HashTable = function() return { ["Ka0s Prototype"] = "path" } end }
-    end }
-    local w = sec.lsmFont
-    assertEqual(w.type, "LSM30_Font")
-    assertInCell(w.frame, "the LSM30 sample", sec)
-    NS.ApplySkinIgnore(false, nil)
-    assertTrue(not owned(mock, w), "nothing paints it, whatever the Scope says")
+test("controls: each media picker reads a real key, and no other media kind has a cell", function()
+    -- red under: a sample built with no value, which reads blank until the first pick, or a cell for a
+    -- second media widget, which the owner ruled out on 2026-11-01.
+    local _, _, sec = opened{ prepare = withPickers }
+    assertEqual(sec.fontPicker.value, "Ka0s Prototype")
+    assertEqual(sec.barPicker.value, "Blizzard")
+    assertTrue(sec.lsmFont == nil and sec.lsmBar == nil, "Ka0sMedia_* is the only media picker")
 end)
 
 test("controls: the Blizzard dropdown drops the template's art and wears the skin", function()

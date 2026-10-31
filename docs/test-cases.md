@@ -280,7 +280,7 @@ Total.
 - controls: AceGUI's Dropdown is in its cell and follows the Scope's panel half, live
 - controls: the media pickers are the library's types, painted and handed back like the Dropdown
 - controls: a media picker this client lacks is the plain Dropdown, and says so
-- controls: an LSM30 sample shows stock when registered and a label when it is not
+- controls: each media picker reads a real key, and no other media kind has a cell
 - controls: the Blizzard dropdown drops the template's art and wears the skin
 - controls: the Blizzard dropdown's menu offers both choices and marks the pick
 - controls: a client without the Blizzard template shows a label in its cell

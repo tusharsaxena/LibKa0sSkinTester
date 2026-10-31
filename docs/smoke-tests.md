@@ -126,6 +126,13 @@ restart the client: new font and texture files are only seen at client start.
   else changes. Tick Ignore fonts. → The font rows keep their own faces. Fail: a list of plain
   names, a blank row, a stock (unskinned) pull-out with the panel skinned, or a list reading only
   the no-media entry. Result: Owner reported pass, 2026-10-31
+- **PANEL-14. A font row and a border row are the pickers (M3-MEDIA; LibKa0s v1.84.0, the owner's
+  ruling of 2026-11-01).** Untick Ignore settings panel on General -> Skin, pick Obsidian and open
+  Sample controls. → A font picker reads a font name in that face, and A border picker reads a border
+  name beside its swatch, both lined up with the rows around them, with no extra tile to the
+  left. Open each. → Both pull-outs wear Obsidian, with a preview on every row. Pick Glass on General
+  and open them again. → Both follow. Fail: a stock pull-out on either row, a blank closed row, or a
+  border row sitting further right than the rows around it. Result:
 
 ## Profiles
 
@@ -333,7 +340,8 @@ restart the client: new font and texture files are only seen at client start.
   Result: Owner reported pass, 2026-10-31
 - **SHOW-28. Every dropdown kind (ST-D1).** `/st show` in Obsidian and scroll to the dropdown rows of
   Controls. → Five dropdowns, each captioned: Dropdown (click: MenuFrame), WowStyle1DropdownTemplate,
-  AceGUI Dropdown, Ka0sMedia_Font and Ka0sMedia_Statusbar, then the two LSM30 cells. The first two wear
+  AceGUI Dropdown, Ka0sMedia_Font and Ka0sMedia_Statusbar, the last two reading a real key (Ka0s
+  Prototype, Blizzard), and no LSM30 cell anywhere. The first two wear
   Obsidian's input fill and edge, with a small down arrow in its arrow color and no gold button; hover
   and open the WowStyle1 one → it stays that way, and its list is the client's own, as its caption
   says. AceGUI Dropdown and the two pickers are the client's stock look. Open General -> Skin and clear
@@ -341,9 +349,7 @@ restart the client: new font and texture files are only seen at client start.
   no client art behind them; open each → the list wears the skin, the font picker's rows in their own
   faces, the bar picker's rows with their swatches. Click Glass → all five follow. Set Ignore settings
   panel again → those three are stock again and the first two stay skinned. Tick Ignore fonts → the
-  first two go to the game's fonts. Each LSM30 cell shows the stock widget if another loaded addon
-  registered it, else a disabled "LSM30_Font not loaded" label; the stock widget never takes the skin,
-  as its caption says. Scroll the section → every dropdown moves with it and clips at the window's
+  first two go to the game's fonts. Scroll the section → every dropdown moves with it and clips at the window's
   edge. Fail: a dropdown that stays put, a gold button or client text holder showing under the skin
   on either of the first two (record the state: idle, hover or open), one that needs a reload to
   change, or an empty cell. Result:
@@ -505,3 +511,6 @@ sat on a floor wider than its title.
 
 ST-D1 and ST-D2 (2026-11-01) add SHOW-28 and SHOW-29; their `Result:` lines are empty until the owner
 runs them.
+
+M3-MEDIA (2026-11-01) removes the two LSM30 cells from SHOW-28 and adds PANEL-14, whose `Result:` line
+is empty until the owner runs it.
