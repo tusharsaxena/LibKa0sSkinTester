@@ -1,0 +1,1 @@
+Independent review of the font pickers and skin faces run, 2026-10-31, over 339b847 (ST-F01 re-vendor of LibKa0s v1.83.0). One finding verified and fixed in this commit: PANEL-8 named the retired "Skin's own" row. Gate: 605 passed, 0 failed, 1 skipped; luacheck 0/0. Smoke results untouched. Not pushed.
