@@ -10,7 +10,7 @@ local addonName, NS = ...
 --   an autocomplete      type in the box: the suggestion rows in menu.text and the body face (LK-06a)
 --   a line chart         its tick labels in text.disabled and the body face (LK-06a)
 --   a resize grip        Core.MakeResizable with opts.owner: icon.grip, the client's art where a
---                        skin leaves it false (LK-06b)
+--                        skin leaves it false (LK-06b); back on its cell after a drag (ST-D2)
 --   a drawer head        its chevron in icon.arrow, its label and summary in the body face, and its
 --                        hover art in list.hoverArt (LK-06c)
 --   a nav entry          its hover art in list.hoverArt (LK-06c)
@@ -27,6 +27,7 @@ local CHEVRON = "Interface\\ChatFrame\\ChatFrameExpandArrow"
 local HOVER = "Interface\\QuestFrame\\UI-QuestLogTitleHighlight"
 local COPY_NAME = "LibKa0sSkinTesterSampleCopy"
 local DAY = 86400
+local GRIP_W, GRIP_H = 160, 60
 
 local function widgets() return LibStub and LibStub("LibKa0s-Widgets-1.0", true) end
 local function core() return LibStub and LibStub("LibKa0s-Core-1.0", true) end
@@ -122,13 +123,30 @@ local function lineChart(g, body)
     body.chart = chart
 end
 
+-- The client's StartSizing takes a sized frame off its anchors and leaves it on a screen position,
+-- and MakeResizable, written for windows, puts the user-placed flag back but not the anchors. A
+-- window wants that; this box lives in a scrolling cell, so it goes back on its cell when a drag ends
+-- (or it stops scrolling). The window is only ever hidden, so nothing else would undo a drag either:
+-- closing puts the size back too, and a close in the middle of a drag ends the drag.
 local function resizeGrip(g, body, paint)
-    local box = boxed(g:Add(160, 60, "MakeResizable, opts.owner (icon.grip)"), 160, 60)
+    local cell = g:Add(GRIP_W, GRIP_H, "MakeResizable, opts.owner (icon.grip)")
+    local box = boxed(cell, GRIP_W, GRIP_H)
     paint("Panel", box)
     paint("Text", label(box, "Drag the corner"), "body")
+    body.gripBox, body.gripCell = box, cell
     local C = core()
-    if C and C.MakeResizable then C.MakeResizable(box, { owner = addonName }) end
-    body.gripBox = box
+    if not (C and C.MakeResizable) then return end
+    local function seat()
+        box:ClearAllPoints()
+        box:SetPoint("TOPLEFT", cell, "TOPLEFT", 0, 0)
+    end
+    C.MakeResizable(box, { owner = addonName, onResizeStop = seat })
+    box:HookScript("OnHide", function()
+        box:StopMovingOrSizing()
+        box:SetUserPlaced(false)
+        box:SetSize(GRIP_W, GRIP_H)
+        seat()
+    end)
 end
 
 local function drawerHead(g, body, paint)

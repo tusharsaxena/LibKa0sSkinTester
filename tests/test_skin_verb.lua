@@ -67,13 +67,17 @@ test("skin verb: /st skin shows the picker on a profile that has closed it", fun
 end)
 
 test("skin verb: NS.RunSkinVerb hands O.SkinVerb this addon's first-run spec", function()
-    local NS = seenProfile()
+    local NS = T.bootAddon()
     local H = NS.addon.Settings.Helpers
+    local livePicker, first = H.SkinPicker, nil
+    H.SkinPicker = function(spec) first = spec; return livePicker(spec) end
+    NS.addon:OnEnable()
+    H.SkinPicker = livePicker
     local live, seen = H.SkinVerb, nil
     H.SkinVerb = function(spec) seen = spec; return nil, "queued" end
     local ok, why = NS.RunSkinVerb()
     H.SkinVerb = live
-    assertTrue(seen == NS.SKIN_PICKER_SPEC, "the spec the first-run start builds")
+    assertTrue(first ~= nil and seen == first, "the spec the first-run start builds")
     assertFalse(ok, "nothing shown")
     assertEqual(why, "queued", "the library's reason, passed on")
 end)

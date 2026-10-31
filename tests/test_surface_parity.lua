@@ -87,7 +87,7 @@ end)
 -- ---------------------------------------------------------------------------
 
 test("parity: the DebugLog stub carries the whole live surface", function()
-    -- The live half is the LibKa0s-DebugLog-1.0 instance core/DebugLogSetup.lua:142 builds, which
+    -- The live half is the LibKa0s-DebugLog-1.0 instance core/DebugLogSetup.lua:96 builds, which
     -- tests/run.lua registers under that name. Read off the built instance rather than off the
     -- library file, which is the same list as
     --   grep -nE "^function log[.:]|^ *log\.[A-Za-z]" libs/LibKa0s/DebugLog.lua
@@ -107,7 +107,7 @@ end)
 -- ---------------------------------------------------------------------------
 
 test("parity: the Slash stub carries the whole live surface", function()
-    -- The live half is the LibKa0s-Slash-1.0 instance settings/Slash.lua:249 builds, registered
+    -- The live half is the LibKa0s-Slash-1.0 instance settings/Slash.lua:128 builds, registered
     -- under that name by tests/run.lua.
     --
     -- Nothing is ignored, and the empty list is the assertion: slash-commands-§1 keeps every
@@ -122,7 +122,7 @@ end)
 -- ---------------------------------------------------------------------------
 
 test("parity: the Options helpers stub carries the whole live surface", function()
-    -- The live half is the LibKa0s-Options-1.0 instance settings/OptionsSetup.lua:187 builds and
+    -- The live half is the LibKa0s-Options-1.0 instance settings/OptionsSetup.lua:219 builds and
     -- publishes as Settings.Helpers with the host's data seams copied onto it, registered under
     -- that name by tests/run.lua.
     --   grep -n "Helpers\.[A-Za-z_]" core modules settings   names the addon's call sites.
@@ -138,8 +138,8 @@ test("parity: the Options helpers stub carries the whole live surface", function
         -- or live.
         "PADDING_X", "ROW_VSPACER", "SECTION_HEADING_H", "BUTTON_PAIR_REL",
         "CHROME_GAP", "TAB_H", "BANNER_H",
-        -- The widget factory itself. settings/Panel.lua:43 and :175 read it and return early when
-        -- it is nil, and both sites only run inside the page builder, which never runs degraded.
+        -- The widget factory itself. No file of this addon reads it: the library's own page
+        -- builders do, and those never run degraded.
         "AceGUI",
         -- Library-internal renderers this addon never calls: it builds its landing page from its
         -- own settings/Panel.lua and has no TextRow call site, and `RestoreDefaults` on the

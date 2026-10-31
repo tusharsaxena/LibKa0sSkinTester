@@ -15,7 +15,7 @@ its theme, and a retired number is never reused.
 | PROFILE-1..2 | Profiles | The Profiles page and the `profile` verb |
 | STATE-1..2 | Enable and disable | The stand-down and its refusal |
 | COMBAT-1..2 | Combat | The showroom and the panel in combat |
-| DIAG-1..2 | Diagnostics | The debug console and the report |
+| DIAG-1..3 | Diagnostics | The debug console and the report |
 | DEGRADED-1 | Degraded install | The library-absent load |
 | SHOW-1..27 | Showroom | The window, the swatch selector, the sections, position and scale, the textures, Ka0s Default's face and bar, the addon surfaces, the library widgets, the tooltip colors and art tints, the HUD faces, the faces and widths, FontFlags and HudFontSize |
 | PICKER-1..23 | First-run skin picker | When and where it shows, its title, preview, Apply, close, the gear, Apply to all, one window across addons, taking it down, combat, a preview meeting another write, the reload popup |
@@ -51,14 +51,14 @@ restart the client: new font and texture files are only seen at client start.
   `/st skin` twice. → No picker; a gray "cannot open the skin picker during combat" line each time.
   Out of combat, `/st disable`, then `/st skin`. → One tagged line naming `/st enable`; no picker.
   `/st enable` afterwards. Fail: "unknown command", a picker in combat or while disabled, or one gray
-  line for two presses. Result:
+  line for two presses. Result: Owner reported pass, 2026-10-31
 - **SLASH-6. `/st widths` (ST-01; LibKa0s v1.82.0, D-08).** Fully restart the client, clear any Font
   override on General -> Skin, then `/st widths`. → A header, "Widths of a fixed corpus against Ka0s
   Default (1.000x is parity):", and nine lines, one per skin, each "<skin>: body <face> <size>
   <ratio>x, title ..., hud ...". Ka0s Default reads 1.000x on all three. Note every other ratio here
   (D-08's in-client check: the owner judges how near 1.000x is near enough); a ratio far from 1, say
   below 0.95 or above 1.05, is a finding for LibKa0s's sizes, not for this addon. Fail: "unmeasured"
-  for a shipped face, or a line missing. Result:
+  for a shipped face, or a line missing. Result: Owner reported pass, 2026-10-31
 
 ## Settings panel
 
@@ -76,17 +76,17 @@ restart the client: new font and texture files are only seen at client start.
   profile has it ticked, and the page is then the client's), pick Obsidian, then open Settings ->
   AddOns -> Ka0s Skin Tester -> Sample controls. → One group heading over a checkbox, a slider, a dropdown, a color swatch and Use
   class color, then the five media pickers (PANEL-13), all in Obsidian; no Skin tab and no copy button. Pick Glass on General and come
-  back. → The page follows. Result:
+  back. → The page follows. Result: Owner reported pass, 2026-10-31
 - **PANEL-6. The Scope.** On a fresh profile open General -> Skin with the showroom open. →
   Ignore settings panel is ticked and Ignore fonts is not; the settings pages are in the client's
   look while the showroom wears the skin. Untick Ignore settings panel. → The settings pages take the
   skin at once, no reload. Pick Azeroth and tick Ignore fonts. → The showroom's Open Sans text and titles go
-  back to the game's fonts at once and keep the skin's colors. `/reload`. → Both ticks are as you left them. Result:
+  back to the game's fonts at once and keep the skin's colors. `/reload`. → Both ticks are as you left them. Result: Owner reported pass, 2026-10-31
 - **PANEL-7. Font and texture rows.** Open General -> Skin. → A "Font and texture" section between
   the skins and the Scope, with a Font and a Texture dropdown. Each list starts with "Skin's default
   (<key>)" naming the current skin's own font or texture, then every font or statusbar texture
   LibSharedMedia knows, sorted, each shown in its face or with its bar, the leading row too. Pick another skin. → Both "Skin's default" entries name the new skin's
-  keys. Result:
+  keys. Result: Owner reported pass, 2026-10-31
 - **PANEL-8. The override applies live.** With the showroom open, pick a font in Font, then a
   texture in Texture (any media pack's). → The showroom's text takes the font at once, its monospace
   text keeps its own face, and every bar in the Textures section takes the texture at once, its
@@ -113,7 +113,7 @@ restart the client: new font and texture files are only seen at client start.
   theirs too. `/reload`. → Off is still chosen and still applied. Tick Ignore fonts → the dropdown is
   grayed and the mode line ends "(Ignore fonts wins)". Pick HUD text only and untick Ignore fonts
   afterwards. Fail: an outline under Off, a mode that does not survive the reload, or a change that
-  needs a reload. Result:
+  needs a reload. Result: Owner reported pass, 2026-10-31
 - **PANEL-13. The media pickers (ST-F01; LibKa0s v1.83.0, LK-F03, D-08, D-09).** Fully restart the
   client (new font files), untick Ignore settings panel on General -> Skin, pick Obsidian and open
   Sample controls. → Five pickers under the color swatch: A font picker on Ka0s Prototype, drawn in
@@ -125,7 +125,14 @@ restart the client: new font and texture files are only seen at client start.
   None alone. Pick an entry in each. → The closed row shows it, it survives a `/reload`, and nothing
   else changes. Tick Ignore fonts. → The font rows keep their own faces. Fail: a list of plain
   names, a blank row, a stock (unskinned) pull-out with the panel skinned, or a list reading only
-  the no-media entry. Result:
+  the no-media entry. Result: Owner reported pass, 2026-10-31
+- **PANEL-14. A font row and a border row are the pickers (M3-MEDIA; LibKa0s v1.84.0, the owner's
+  ruling of 2026-11-01).** Untick Ignore settings panel on General -> Skin, pick Obsidian and open
+  Sample controls. → A font picker reads a font name in that face, and A border picker reads a border
+  name beside its swatch, both lined up with the rows around them, with no extra tile to the
+  left. Open each. → Both pull-outs wear Obsidian, with a preview on every row. Pick Glass on General
+  and open them again. → Both follow. Fail: a stock pull-out on either row, a blank closed row, or a
+  border row sitting further right than the rows around it. Result:
 
 ## Profiles
 
@@ -154,6 +161,8 @@ restart the client: new font and texture files are only seen at client start.
   for built, shown and hidden. Result: pass (owner-marked 2026-10-30)
 - **DIAG-2. Report.** `/st diagnostics`. → The report in the console, with the `skin` section naming
   the stored and applied skin. Result: pass (owner-marked 2026-10-30)
+- **DIAG-3. Charts in the report.** `/st diagnostics`. → The identity header lists Charts between
+  Toast and Media, in the same `File minor` form as its neighbors. Result:
 
 ## Degraded install
 
@@ -211,7 +220,7 @@ restart the client: new font and texture files are only seen at client start.
   Ka0s Default" and every fill shows that bar, dim at the top with a highlight low on the bar and a
   short lip, not the flat Blizzard bar. Click Obsidian, then WoW Default. → Their own faces and bars;
   WoW Default is the shipped Ka0s Friz Quadrata TT (v1.83.0, D-01), visibly unlike Prototype, with the Blizzard bar. Fail: a square where a glyph should be,
-  or a flat or missing fill. Result:
+  or a flat or missing fill. Result: Owner reported pass, 2026-10-31
 - **SHOW-14. Every skin's own bar (ST-02; LibKa0s SO-04).** Fully restart the client (new texture
   files), clear any Texture override on General → Skin, then `/st show` and scroll to Textures. Click
   each card in turn → every label reads "Texture: <key>" for that skin and every fill shows it: Ka0s
@@ -263,12 +272,12 @@ restart the client: new font and texture files are only seen at client start.
   closed-up counters. The tenth line, under them, is the worn skin's face: click Ember → it reads
   Emblem. Fail: a square where a glyph should be, a line in another skin's face, two skins
   sharing a face, or a face you reject for a HUD (record which skin and
-  why: the owner's call, R-4). Result:
+  why: the owner's call, R-4). Result: Owner reported pass, 2026-10-31
 - **SHOW-20. Ignore fonts reaches the HUD (ST-01; LibKa0s v1.81.0, LK-01, ruling R-1).** On HUD
   faces in Obsidian, tick Ignore fonts on General -> Skin. → The last line drops to the game's own
   face and reads "(Ignore fonts: the host's own face)" at once; the nine skin lines keep their faces
   (they show the skins). Untick it. → The last line is Expressway again. Fail: the last line
-  keeping Expressway under Ignore fonts, or a skin line losing its face. Result:
+  keeping Expressway under Ignore fonts, or a skin line losing its face. Result: Owner reported pass, 2026-10-31
 - **SHOW-21. Library widgets (ST-01; LibKa0s v1.81.0, LK-06a, LK-08).** Scroll to Library widgets in
   Ka0s Default. → A drag strip "Hover me: a drag handle" with its label in Prototype (v1.82.0), a box with an
   input, a line chart with two series and its axis labels, a resizable panel, a drawer head with a
@@ -280,7 +289,7 @@ restart the client: new font and texture files are only seen at client start.
   face, and the Overlays test strip's line is in the accent color and the body face. Tick Ignore
   fonts → the strip label, suggestion rows, chart labels, dropdown rows and test strip line go back to
   the game's fonts, live, and their colors stay. Fail: a tooltip in Ka0s Default's gold, white and
-  gray under Azeroth, or any of those strings left in Friz Quadrata under a skin. Result:
+  gray under Azeroth, or any of those strings left in Friz Quadrata under a skin. Result: Owner reported pass, 2026-10-31
 - **SHOW-22. Hover art and the resize grip (ST-01; LibKa0s v1.81.0, LK-06b, LK-06c).** On Library
   widgets in Ka0s Default, hover the drawer head and the nav entry → the client's own highlight
   wash; the chevron is gold; the grip in the panel's bottom-right corner is the client's own art.
@@ -297,14 +306,14 @@ restart the client: new font and texture files are only seen at client start.
   in the body face too. Tick
   Ignore fonts → those labels go back to the game's fonts, live; untick Ignore settings panel and
   tick it again → the windows keep their skin either way (they are windows). Fail: a label in Friz
-  Quadrata while fonts are not ignored, or a window going stock with Ignore settings panel. Result:
+  Quadrata while fonts are not ignored, or a window going stock with Ignore settings panel. Result: Owner reported pass, 2026-10-31
 - **SHOW-24. The skin picker's layout (ST-01; LibKa0s v1.81.0, LK-11, ruling R-11).** On Library
   widgets press "Show the picker" (on any profile) → the skin picker titled "Choose a skin", with
   "Ka0s Skin Tester" on its own line in the heading color above the dropdown, whole and never cut off.
   Its rows still preview each skin in its own face, Ignore fonts or not. Close it → the skin worn is
   unchanged. In combat the button opens nothing and prints the gray "cannot open the skin picker
   during combat" line, every press (v1.82.0: the button runs `/st skin`'s act). Fail: the addon's
-  name in the title, a cut-off owner line, or a picker mid-combat. Result:
+  name in the title, a cut-off owner line, or a picker mid-combat. Result: Owner reported pass, 2026-10-31
 - **SHOW-25. Tooltip colors and art tints (ST-01; LibKa0s v1.81.0).** Scroll to Values in Ka0s
   Default. → Below Quality tiers, a "Tooltip colors (gtip.*)" heading over one labeled swatch per
   `gtip.*` token, `gtip.footer` a 0.6 gray, and an "Art tints (false: the client's art)" heading over
@@ -321,14 +330,35 @@ restart the client: new font and texture files are only seen at client start.
   Sans SemiBold for the title. Judge width parity by the ratio lines, not by where the samples end
   (each sample is followed by its own face name and size, so the line ends differ by design): every
   ratio should read close to 1.000x. Fail: a square where a glyph should be, a line in another skin's face, Inter
-  or Oxanium anywhere, or a ratio reading "unmeasured". Result:
+  or Oxanium anywhere, or a ratio reading "unmeasured". Result: Owner reported pass, 2026-10-31
 - **SHOW-27. FontFlags and HudFontSize (ST-01; LibKa0s v1.82.0, D-07, D-09).** Scroll to Values in
   Ka0s Default. → After ChartStyle, "HUD OUTLINE   window ""   picked THICKOUTLINE THICKOUTLINE"
   (captioned FontFlags, under the default HUD text only) and "12 draws at 12   24 draws at 24" (captioned HudFontSize). Pick All
   text on the Skin tab's Font outline → the window value reads OUTLINE; Off → both read `""`, the picked
   flag still THICKOUTLINE. Click Obsidian → HudFontSize shows Obsidian's own sizes for a stored 12 and
   24. Fail: a From skin value that does not follow the Font outline, or a picked flag that changes.
-  Result:
+  Result: Owner reported pass, 2026-10-31
+- **SHOW-28. Every dropdown kind (ST-D1).** `/st show` in Obsidian and scroll to the dropdown rows of
+  Controls. → Five dropdowns, each captioned: Dropdown (click: MenuFrame), WowStyle1DropdownTemplate,
+  AceGUI Dropdown, Ka0sMedia_Font and Ka0sMedia_Statusbar, the last two reading a real key (Ka0s
+  Prototype, Blizzard), and no LSM30 cell anywhere. The first two wear
+  Obsidian's input fill and edge, with a small down arrow in its arrow color and no gold button; hover
+  and open the WowStyle1 one → it stays that way, and its list is the client's own, as its caption
+  says. AceGUI Dropdown and the two pickers are the client's stock look. Open General -> Skin and clear
+  Scope -> Ignore settings panel. → Those three repaint at once in the skin's input fill and edge, with
+  no client art behind them; open each → the list wears the skin, the font picker's rows in their own
+  faces, the bar picker's rows with their swatches. Click Glass → all five follow. Set Ignore settings
+  panel again → those three are stock again and the first two stay skinned. Tick Ignore fonts → the
+  first two go to the game's fonts. Scroll the section → every dropdown moves with it and clips at the window's
+  edge. Fail: a dropdown that stays put, a gold button or client text holder showing under the skin
+  on either of the first two (record the state: idle, hover or open), one that needs a reload to
+  change, or an empty cell. Result:
+- **SHOW-29. The resize sample stays in its cell (ST-D2).** On Library widgets drag the "Drag the
+  corner" box's grip to make it larger. → It resizes and its top left stays put. Roll the wheel → it
+  scrolls with its caption. Drag it again, then move the window by its title bar → it stays with the
+  section. Close the showroom and reopen it → the box is back at its first size, in its cell. Close
+  with Escape in the middle of a drag, then reopen → the same, and the grip still works. Fail: a box
+  that stays put while the section scrolls, or a size that survives a close. Result:
 
 ## First-run skin picker
 
@@ -419,27 +449,27 @@ restart the client: new font and texture files are only seen at client start.
   Ignore settings panel and Ignore fonts side by side; then Apply to all and Apply. Nothing cut off
   or wrapped, in every skin; the window is about 10% wider than it was and taller. Check the arrow
   draws at all: it is the client's own art, in a size the harness cannot judge. Fail: a blank
-  reset button, a wrapped check box label, or rows without the skin. Result:
+  reset button, a wrapped check box label, or rows without the skin. Result: Owner reported pass, 2026-10-31
 - **PICKER-18. Rows and pull-outs over the window.** Open the skin list. → It lays over the rows and
   the buttons, on top, and may hang below the window. Open Font. → Every row in its own face,
   "Skin's default (X)" first; the list opens over the window and is not hidden behind any of it.
   Open Texture. → Each row beside its bar. Fail: a list behind a row, or a blank face on the second
-  open. Result:
+  open. Result: Owner reported pass, 2026-10-31
 - **PICKER-19. Preview, Apply, close.** Pick a font, a texture, All text and Ignore fonts. → The
   showroom follows each one, and Font outline grays with Ignore fonts on. Close with the X. →
   Everything is back. Do it again and press Apply; `/reload`. → All four kept. Fail: a change that
-  saves without Apply, or one that survives the X. Result:
+  saves without Apply, or one that survives the X. Result: Owner reported pass, 2026-10-31
 - **PICKER-20. Another skin clears the font and texture.** With a font override in force, pick
   another skin. → Font and Texture read "Skin's default (X)", naming the new skin's face. Pick the
   first skin back. → The override returns. A reset button is gray while its row is on the skin's
-  default, and live otherwise. Result:
+  default, and live otherwise. Result: Owner reported pass, 2026-10-31
 - **PICKER-21. Apply to all carries them,** with a second Ka0s addon loaded. Pick a skin, font,
   texture, outline and scope, then Apply to all. → The second addon wears all of them, and its Skin
-  tab shows them after a `/reload`. Result:
+  tab shows them after a `/reload`. Result: Owner reported pass, 2026-10-31
 - **PICKER-22. Ignore settings panel on.** Tick it in the picker. → The picker's own rows keep the
-  skin, as the window does; the settings pages go to the game's look. Result:
+  skin, as the window does; the settings pages go to the game's look. Result: Owner reported pass, 2026-10-31
 - **PICKER-23. Combat.** Start combat with the picker up, then change a row. → Refused, the row reads
-  what is worn, one gray line. A picker raised in combat draws its rows disabled. Result:
+  what is worn, one gray line. A picker raised in combat draws its rows disabled. Result: Owner reported pass, 2026-10-31
 
 ## Non-English client
 
@@ -469,3 +499,18 @@ LibKa0s v1.83.0 (ST-F01 of the font pickers and skin faces run, 2026-10-31) adds
 re-opens PANEL-5, PANEL-6 and PANEL-7, whose expected rows, faces or wording changed; SHOW-13,
 SHOW-19, SHOW-21, PANEL-12, SHOW-26 and SHOW-27 stay open and now state v1.83.0's faces and the HUD
 text only default.
+
+The owner reported the 2026-10-30 and 2026-10-31 runs' lists passed on 2026-10-31
+("everythings works as expected"), recorded here line by line by the findings remediation
+(FX-ST-DOCS). That remediation changed nothing a player sees: its perf fix is in the test mock and
+`tests/perf.lua`, and the export it removed was read only by tests. So it adds no check.
+
+LibKa0s v1.84.0 (XX-RV of the findings remediation, M2, 2026-10-31) adds DIAG-3. Its other changes
+to this addon draw what they drew: the peels are pure moves, and the showroom's drag handle already
+sat on a floor wider than its title.
+
+ST-D1 and ST-D2 (2026-11-01) add SHOW-28 and SHOW-29; their `Result:` lines are empty until the owner
+runs them.
+
+M3-MEDIA (2026-11-01) removes the two LSM30 cells from SHOW-28 and adds PANEL-14, whose `Result:` line
+is empty until the owner runs it.

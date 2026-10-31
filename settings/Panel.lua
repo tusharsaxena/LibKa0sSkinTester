@@ -163,7 +163,6 @@ local PICKER_SPEC = {
     end,
     strings   = { PREVIEW_TIP = NS.L["Preview: open the skin showroom"] },
 }
-NS.SKIN_PICKER_SPEC = PICKER_SPEC
 
 --- Take the picker down for the addon, not the player: the profile is not marked seen. A no-op
 --- when it is not up.

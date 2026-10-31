@@ -143,6 +143,60 @@ test("widgets: the resize grip is the client's art under Ka0s Default and icon.g
     assertTrue(sameColor(mock.__paint(art).vertex, want), "tinted icon.grip")
 end)
 
+--- StartSizing as the client does it: the frame leaves its anchors for a screen position.
+local function modelSizing(mock, box)
+    rawset(box, "StartSizing", function(self)
+        self:ClearAllPoints()
+        self:SetPoint("TOPLEFT", mock.UIParent, "BOTTOMLEFT", 300, 400)
+    end)
+end
+
+local function drag(box, w, h)
+    local grip = box.resizeGrip
+    grip:GetScript("OnMouseDown")(grip, "LeftButton")
+    box:SetSize(w, h)
+    grip:GetScript("OnMouseUp")(grip, "LeftButton")
+end
+
+local function assertOnCell(sec)
+    local point, relativeTo, relativePoint, x, y = sec.gripBox:GetPoint(1)
+    assertEqual(sec.gripBox:GetNumPoints(), 1, "one anchor")
+    assertEqual(point, "TOPLEFT")
+    assertTrue(relativeTo == sec.gripCell, "anchored to its cell, so it scrolls with the section")
+    assertEqual(relativePoint, "TOPLEFT")
+    assertEqual(x, 0)
+    assertEqual(y, 0)
+end
+
+test("widgets: a dragged resize grip leaves the box on its cell, at its new size", function()
+    -- red under: MakeResizable with no onResizeStop: the box stays where StartSizing left it, on the
+    -- screen, and stops scrolling (ST-D2).
+    local _, mock, sec = opened()
+    modelSizing(mock, sec.gripBox)
+    drag(sec.gripBox, 300, 120)
+    assertOnCell(sec)
+    assertEqual(sec.gripBox:GetWidth(), 300, "the drag's width stands while the window stays open")
+    assertEqual(sec.gripBox:GetHeight(), 120)
+end)
+
+test("widgets: closing the showroom forgets a drag, and ends one under way", function()
+    -- red under: no OnHide: the window is only hidden, so the drag's size came back on the next open.
+    local NS, mock, sec = opened()
+    local box = sec.gripBox
+    modelSizing(mock, box)
+    drag(box, 300, 120)
+    box.__fire("OnHide")
+    NS.Showroom.Hide()
+    NS.Showroom.Show()
+    assertEqual(box:GetWidth(), 160, "the sample's width")
+    assertEqual(box:GetHeight(), 60, "the sample's height")
+    assertOnCell(sec)
+    local grip = box.resizeGrip
+    grip:GetScript("OnMouseDown")(grip, "LeftButton")
+    box.__fire("OnHide")
+    assertOnCell(sec)
+end)
+
 test("widgets: the drawer and nav hover art is the client's under Ka0s Default and list.hoverArt under Glass", function()
     -- red under: S.Drawer / S.NavItem without opts.hover (LK-06c).
     local NS, mock, sec = opened()

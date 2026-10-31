@@ -30,13 +30,14 @@ With capture off each bracket costs one upvalue read, one field read and one boo
 ## Offline scenarios (`lua tests/perf.lua`)
 
 Outside the green gate (performance-§9), asserting only deterministic quantities: API calls on the
-addon's own frames and bytes allocated per iteration. Run through the automated-test runner; its
-output lands in that run's bundle.
+addon's own frames and bytes allocated per iteration, with the collector stopped across the byte
+pass so a collection cannot hide allocation. Run through the automated-test runner; its output lands
+in that run's bundle.
 
 | Scenario | What it drives | Ceiling |
 |---|---|---|
 | `showroomToggle` | `NS.Showroom.Toggle` on the built window | The mock's own Show/Hide record plus 24 bytes: the addon allocates nothing |
-| `skinRepaint` | `NS.ApplySkinChoice` alternating two skins with the window open, the `repaint` path | Its measured figure plus 24 bytes |
+| `skinRepaint` | `NS.ApplySkinChoice` alternating two skins with the window open, the `repaint` path | Pinned at 206068 bytes and 1085 API calls, measured 2026-11-01 at LibKa0s v1.84.0; re-pin with the reason beside it in `tests/perf.lua` after a re-vendor or a new sample |
 | `applyScale`, `applyAlpha` | `NS.Showroom.ApplyWindowSettings` after a slider write | 24 bytes and at most 2 API calls (`SetScale`, `SetAlpha`) |
 
 The one-off build is not measured: it runs once per session, before the first scenario.

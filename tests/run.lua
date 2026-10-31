@@ -152,6 +152,7 @@ Kit.run{
         "test_selector",
         "test_showroom",
         "test_showroom_coverage",
+        "test_showroom_dropdowns",
         "test_showroom_values",
         "test_showroom_textures",
         "test_showroom_owner",

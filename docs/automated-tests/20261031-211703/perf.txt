@@ -1,0 +1,10 @@
+Ka0s Skin Tester — offline perf  (v0.1.0, label 'findings-remediation')
+
+scenario                iters     ms/iter  api/iter  bytes/iter
+showroomToggle           2000     0.00092       1.0        64.0
+skinRepaint               500     3.66550    1083.0    206134.2
+applyScale               2000     0.00050       2.0         0.0
+applyAlpha               2000     0.00029       2.0         0.0
+
+timings are for orientation only — compare scenarios within a run, never across machines
+wrote docs/automated-tests/20261031-211703/perf.json
