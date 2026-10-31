@@ -176,6 +176,9 @@ if not lib then
     -- The reserved `skin` verb (LibKa0s v1.82.0, OptionsSkinPicker minor 3, D-16): no picker on
     -- this path, so SkinVerb opens nothing and answers nil, "absent".
     H.SkinVerb             = function() return nil, "absent" end
+    -- The Position block (LibKa0s v1.84.0, OptionsCompose minor 15): no rows and no hook on this
+    -- path, the hollow composer's answer.
+    H.PositionBlock        = function() return {}, nil end
     H.SetRenderer          = function() end
     H.RegisterOptionsPage  = function() end
     H.RefreshAllPanels     = function() end

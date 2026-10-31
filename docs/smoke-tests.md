@@ -15,7 +15,7 @@ its theme, and a retired number is never reused.
 | PROFILE-1..2 | Profiles | The Profiles page and the `profile` verb |
 | STATE-1..2 | Enable and disable | The stand-down and its refusal |
 | COMBAT-1..2 | Combat | The showroom and the panel in combat |
-| DIAG-1..2 | Diagnostics | The debug console and the report |
+| DIAG-1..3 | Diagnostics | The debug console and the report |
 | DEGRADED-1 | Degraded install | The library-absent load |
 | SHOW-1..27 | Showroom | The window, the swatch selector, the sections, position and scale, the textures, Ka0s Default's face and bar, the addon surfaces, the library widgets, the tooltip colors and art tints, the HUD faces, the faces and widths, FontFlags and HudFontSize |
 | PICKER-1..23 | First-run skin picker | When and where it shows, its title, preview, Apply, close, the gear, Apply to all, one window across addons, taking it down, combat, a preview meeting another write, the reload popup |
@@ -154,6 +154,8 @@ restart the client: new font and texture files are only seen at client start.
   for built, shown and hidden. Result: pass (owner-marked 2026-10-30)
 - **DIAG-2. Report.** `/st diagnostics`. → The report in the console, with the `skin` section naming
   the stored and applied skin. Result: pass (owner-marked 2026-10-30)
+- **DIAG-3. Charts in the report.** `/st diagnostics`. → The identity header lists Charts between
+  Toast and Media, in the same `File minor` form as its neighbors. Result:
 
 ## Degraded install
 
@@ -474,3 +476,7 @@ The owner reported the 2026-10-30 and 2026-10-31 runs' lists passed on 2026-10-3
 ("everythings works as expected"), recorded here line by line by the findings remediation
 (FX-ST-DOCS). That remediation changed nothing a player sees: its perf fix is in the test mock and
 `tests/perf.lua`, and the export it removed was read only by tests. So it adds no check.
+
+LibKa0s v1.84.0 (XX-RV of the findings remediation, M2, 2026-10-31) adds DIAG-3. Its other changes
+to this addon draw what they drew: the peels are pure moves, and the showroom's drag handle already
+sat on a floor wider than its title.
