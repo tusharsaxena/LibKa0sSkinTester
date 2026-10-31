@@ -35,8 +35,8 @@ v1.83.0
 
 ## The commits that carried them
 
-- v1.78.0: `50bf43b` the scaffold, then eight commits taking the tag's re-cuts, `3eed31f` to
-  `ce468f9`.
+- v1.78.0: `50bf43b` the scaffold, then ten commits changing the payload for the tag's re-cuts,
+  `3eed31f` to `ce468f9`: eight re-vendors, plus `4f2b793` (SF-40) and `792d1cf` (SF-46).
 - v1.79.0: `81fe27b`, two branch-head re-vendors `b31f021` and `4540e17`, then the tag at `6e2a0af`.
 - v1.80.0: `b832aff`.
 - v1.81.0: `15cc034`.
@@ -52,21 +52,24 @@ Per-file minors, v1.78.0 -> v1.83.0, new files marked:
 
 | File | Minor | File | Minor |
 |---|---|---|---|
+| `Core.lua` | 13 -> 14 | `OptionsWidgets.lua` | 35 -> 38 |
 | `DebugLogDiagnostics.lua` | 4 -> 5 | `PerfPanel.lua` | 10 -> 11 |
 | `DebugLogWindow.lua` | 1 -> 2 | `SimPanel.lua` | 7 -> 8 |
-| `OptionsAppearance.lua` | 2 -> 5 | `SkinAce.lua` | 3 -> 5 |
-| `OptionsCompose.lua` | 12 -> 14 | `SkinDefs.lua` | 13 -> 18 |
-| `OptionsDrawer.lua` | 2 -> 3 | `SkinEUI.lua` | 1 -> 2 |
-| `OptionsIdList.lua` | 6 -> 7 | `SkinPaint.lua` | 10 -> 13 |
-| `OptionsIds.lua` | 4 -> 5 | `SkinPaintControls.lua` | 8 -> 11 |
-| `OptionsKeybinds.lua` | 5 -> 6 | `SkinPaintExtras.lua` | 3 -> 7 |
-| `OptionsMedia.lua` | new, 1 | `WidgetsAutocomplete.lua` | 4 -> 5 |
-| `OptionsNav.lua` | 3 -> 4 | `WidgetsCopyWindow.lua` | 1 -> 2 |
-| `OptionsRegistry.lua` | 3 -> 4 | `WidgetsDragHandle.lua` | 6 -> 8 |
-| `OptionsScroll.lua` | 8 -> 9 | `WidgetsLineChart.lua` | 4 -> 5 |
-| `OptionsSkinPicker.lua` | new, 4 | `WidgetsReorder.lua` | 2 -> 3 |
-| `OptionsSwitch.lua` | new, 1 | `OptionsTabs.lua` | 10 -> 11 |
-| `OptionsWidgets.lua` | 35 -> 38 | | |
+| `Media.lua` | 8 -> 11 | `Skin.lua` | 5 -> 10 |
+| `Options.lua` | 33 -> 34 | `SkinAce.lua` | 3 -> 5 |
+| `OptionsAppearance.lua` | 2 -> 5 | `SkinDefs.lua` | 13 -> 18 |
+| `OptionsCompose.lua` | 12 -> 14 | `SkinEUI.lua` | 1 -> 2 |
+| `OptionsDrawer.lua` | 2 -> 3 | `SkinPaint.lua` | 10 -> 13 |
+| `OptionsIdList.lua` | 6 -> 7 | `SkinPaintControls.lua` | 8 -> 11 |
+| `OptionsIds.lua` | 4 -> 5 | `SkinPaintExtras.lua` | 3 -> 7 |
+| `OptionsKeybinds.lua` | 5 -> 6 | `Toast.lua` | new, 1 |
+| `OptionsMedia.lua` | new, 1 | `Widgets.lua` | 16 -> 17 |
+| `OptionsNav.lua` | 3 -> 4 | `WidgetsAutocomplete.lua` | 4 -> 5 |
+| `OptionsRegistry.lua` | 3 -> 4 | `WidgetsCopyWindow.lua` | 1 -> 2 |
+| `OptionsScroll.lua` | 8 -> 9 | `WidgetsDragHandle.lua` | 6 -> 8 |
+| `OptionsSkinPicker.lua` | new, 4 | `WidgetsLineChart.lua` | 4 -> 5 |
+| `OptionsSwitch.lua` | new, 1 | `WidgetsReorder.lua` | 2 -> 3 |
+| `OptionsTabs.lua` | 10 -> 11 | | |
 
 There is no earlier bundle, so no base needs correcting. v1.78.0 is the base because it is the first
 tag this addon carried.
