@@ -14,13 +14,16 @@ never published on CurseForge.
 
 ## What it does
 
-- `/st` or `/skintester` opens the showroom; so do the minimap button's menu and a key binding.
+- `/st show` or `/skintester show` opens the showroom; so do the minimap button's menu and a key
+  binding. Bare `/st` opens the settings.
 - The skin is chosen from the swatch cards across the top of the showroom (Ka0s skins only), on
-  General -> Skin, the library's own tab, or in the first-run skin picker a fresh profile opens; the
-  showroom repaints at once on a pick. The Skin tab's Font and Texture lay a font and a bar texture
-  over the skin's own.
-- Eleven sections show every primitive in `lib.VOCAB`, every getter's value, the semantic colors,
-  quality tiers, tooltip colors and art tints, every skin's HUD face, the library's own custom
+  General -> Skin, the library's own tab, or in the skin picker a fresh profile opens and `/st skin`
+  brings back; the showroom repaints at once on a pick. Font and Texture, on the tab and in the
+  picker, lay a font and a bar texture over the skin's own, and Font outline says where the skin
+  outlines text.
+- Twelve sections show every primitive in `lib.VOCAB`, every getter's value, the semantic colors,
+  quality tiers, tooltip colors and art tints, every skin's body, title and HUD faces with its
+  measured width against Ka0s Default, the library's own custom
   widgets as an owned window draws them (a drag handle and its tooltip, an autocomplete, a line
   chart, a resize grip, a drawer head and nav entry with their hover art, a copy window, the debug
   console and the skin picker), and the surfaces an adopting addon gets beyond the vocabulary (its own owner tokens,

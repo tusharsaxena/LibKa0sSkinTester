@@ -32,22 +32,23 @@ archaeology, for the same reason a skip is never a pass (`automated-tests-§4`).
 
 | Run | Commit | Tree | Version | Lint w/e | Files | Tests | Perf | NLOC | Funcs | Avg NLOC | Avg CCN | Max CCN | CCN warn | Verdict |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| [`20261031-202019`](20261031-202019/) | `1fab9f1` | clean | 0.1.0 | 0/0 | 79 | 605/1/606 | fail | 11088 | 1563 | 6.5 | 2.0 | 14 | 0 | **amber** |
 | [`20261026-163042`](20261026-163042/) | `50bf43b` | clean | 0.1.0 | 0/0 | 53 | 455/1/456 | pass | 7288 | 1082 | 6.2 | 1.9 | 13 | 0 | **green** |
 
 ## Test suite
 
-**456 cases** — 455 passed, 0 failed, 1 skipped. The generated inventory
-[`20261026-163042/test-cases.md`](20261026-163042/test-cases.md) is the authority on which cases existed at this run;
+**606 cases** — 605 passed, 0 failed, 1 skipped. The generated inventory
+[`20261031-202019/test-cases.md`](20261031-202019/test-cases.md) is the authority on which cases existed at this run;
 `docs/test-cases.md` is that same list at HEAD.
 
-This is the first recorded run, so there is no trend to read yet.
+Moved **456 → 606** since the previous run.
 
 **1 case(s) reported a `skip`.** A skip is counted in the total and never in `passed`, and at
 the release gate it is NOT EVALUATED rather than passed (`automated-tests-§3`).
 
 ## Lint
 
-**0 warnings / 0 errors over 53 files** (`luacheck .`).
+**0 warnings / 0 errors over 79 files** (`luacheck .`).
 
 Read that figure with its scope attached: `.luacheckrc` excludes 6 path(s) from it — `libs/`, `docs/audits/`, `docs/reviews/`, `docs/revendor/`, `_dev/`, `tests/_kit/` —
 so nothing under them is in the count above. A `0/0` that never moves is partly a statement about
@@ -57,21 +58,21 @@ to whoever thinks to open `.luacheckrc`.
 ## Perf
 
 **4 scenarios** from `tests/perf.lua`; the measurements are in
-[`20261026-163042/perf.json`](20261026-163042/perf.json).
+[`20261031-202019/perf.json`](20261031-202019/perf.json).
 
 | `scenario` | `iters` | `ms/iter` | `api/iter` | `bytes/iter` |
 |---|---|---|---|---|
-| `showroomToggle` | 2000 | 0.00052 | 1.0 | 64.0 |
-| `skinRepaint` | 500 | 0.07010 | 12.0 | 8501.7 |
-| `applyScale` | 2000 | 0.00025 | 2.0 | 0.0 |
-| `applyAlpha` | 2000 | 0.00025 | 2.0 | 0.0 |
+| `showroomToggle` | 2000 | 0.00196 | 1.0 | 160.0 |
+| `skinRepaint` | 500 | 4.55230 | 1083.0 | 41794.7 |
+| `applyScale` | 2000 | 0.00027 | 2.0 | 0.0 |
+| `applyAlpha` | 2000 | 0.00030 | 2.0 | 0.0 |
 
 `perf` never fails a run and never blocks a commit — it is recorded, read and compared, not
 thresholded (`performance-§9`). It does gate the **tag** (`automated-tests-§3`).
 
 ## Complexity watch list
 
-Current as of [`20261026-163042`](20261026-163042/) — **this run's measurement, not its diff.** Max CCN **13** across 1082
+Current as of [`20261031-202019`](20261031-202019/) — **this run's measurement, not its diff.** Max CCN **14** across 1563
 functions, **0** of them warned on; 1 file(s) in the 1000–1500 band and 0 over the 1500 cap
 (`layout-§1`).
 
@@ -91,7 +92,7 @@ None.
 
 | Band | File | LOC | Disposition |
 |---|---|---|---|
-| 1000–1500 (on notice) | `tests/test_libka0s.lua` | 1037 | Accepted: the LibKa0s adoption characterization suite, carried from the scaffold. Split by library major if it nears the cap. |
+| 1000–1500 (on notice) | `tests/test_libka0s.lua` | 1038 | Accepted: the LibKa0s adoption characterization suite, carried from the scaffold. Split by library major if it nears the cap. |
 
 `lizard` counts every `and`/`or` short-circuit as a decision, so in Lua a run of
 `t.k = rec.k or D.k` defaulting lines scores high with no visible branching at all: a large CCN

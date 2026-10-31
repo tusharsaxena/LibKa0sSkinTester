@@ -406,12 +406,13 @@ test("options: the panel body still builds on the NEXT frame, not inside OnShow"
     -- red under: drop the C_Timer.After wrappers in settings/OptionsSetup.lua.
     local _, _, mock = T.enableAddon()
     local panel = mock.frames["LibKa0sSkinTesterGeneralPanel"]
+    local picker = #mock.aceWidgets
     panel:Show()
-    assertEqual(#mock.aceWidgets, 0,
+    assertEqual(#mock.aceWidgets, picker,
         "OnShow built nothing — not the page body and not the Defaults button")
     assertTrue(#mock.timers > 0, "a next-frame hop is queued instead")
     mock.fireCTimers()
-    assertTrue(#mock.aceWidgets > 0, "and the widgets appear on the next frame")
+    assertTrue(#mock.aceWidgets > picker, "and the widgets appear on the next frame")
 end)
 
 -- ---------------------------------------------------------------------------

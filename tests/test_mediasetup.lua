@@ -305,12 +305,16 @@ function()
         "FONT_MONO must never be nil — the console would refuse to build")
 end)
 
-test("mediasetup: Ka0s Default's faces are Oxanium, and the vendored copy ships them", function()
+test("mediasetup: Ka0s Default's faces are Ka0s Prototype, and the vendored copy ships them", function()
     -- red under: LibKa0s before SO-06, whose Ka0s Default named Friz Quadrata (no file of ours).
+    -- D-02 of docs/2026-10-30-SKIN_FONTS_AND_FEEDBACK (LibKa0s v1.82.0): Prototype for body and titles.
     local NS, env = T.enableAddon()
     local body, title = NS.Skin.Token("font.body"), NS.Skin.Token("font.title")
-    assertEqual(body, "Ka0s Oxanium SemiBold")
-    assertEqual(title, "Ka0s Oxanium Bold")
+    local def = env.LibStub("LibKa0s-Skin-1.0"):ResolveSkin("ka0s")
+    assertEqual(body, def["font.body"], "the worn body face is Ka0s Default's")
+    assertEqual(title, def["font.title"], "the worn title face is Ka0s Default's")
+    assertEqual(body, "Ka0s Prototype")
+    assertEqual(title, "Ka0s Prototype")
     local Media = env.LibStub("LibKa0s-Media-1.0", true)
     for _, face in ipairs({ body, title }) do
         local entry = Media.FONTS[face]

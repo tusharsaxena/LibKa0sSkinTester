@@ -1,0 +1,13 @@
+Ka0s Skin Tester — offline perf  (v0.1.0, label 'pre-merge')
+
+scenario                iters     ms/iter  api/iter  bytes/iter
+showroomToggle           2000     0.00196       1.0       160.0
+skinRepaint               500     4.55230    1083.0     41794.7
+applyScale               2000     0.00027       2.0         0.0
+applyAlpha               2000     0.00030       2.0         0.0
+
+timings are for orientation only — compare scenarios within a run, never across machines
+
+1 assertion FAILED:
+  - showroomToggle allocated 160.0 bytes/iter, over its 88-byte ceiling
+wrote docs/automated-tests/20261031-202019/perf.json

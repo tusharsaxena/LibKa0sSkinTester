@@ -105,7 +105,7 @@ Total.
 - mediasetup: this addon ships no private copy of the shared art (anti-patterns #63)
 - mediasetup: with no library there is no art and no face, and that is not an error
 - mediasetup: a degraded install still gets a REAL font, never nil and never a dead path
-- mediasetup: Ka0s Default's faces are Oxanium, and the vendored copy ships them
+- mediasetup: Ka0s Default's faces are Ka0s Prototype, and the vendored copy ships them
 
 ### test_envsetup.lua (9)
 
@@ -220,7 +220,7 @@ Total.
 
 ### test_slash.lua (19)
 
-- slash: COMMANDS order is the help order, fifteen positional triples
+- slash: COMMANDS order is the help order, seventeen positional triples
 - slash: every description has an enUS entry
 - slash: the chat command and its alias are registered through AceConsole
 - slash: the help header is the library's, with this addon's alias sentence
@@ -273,7 +273,7 @@ Total.
 - showroom: the sections build without the library's widgets
 - showroom: the slider sample is visible under Ka0s Default
 
-### test_showroom_values.lua (10)
+### test_showroom_values.lua (13)
 
 - values: every getter is displayed
 - values: every sem token has a line
@@ -285,6 +285,9 @@ Total.
 - values: the tooltip colors category lists every gtip.* token, gtip.footer included
 - values: gtip.footer is Ka0s Default's 0.6 gray and follows gtip.muted under Obsidian
 - values: the art tokens read the client's art under Ka0s Default and a color under Obsidian
+- values: FontFlags shows From skin on a HUD and in a window, and a picked flag winning
+- values: HudFontSize shows a stored 12 and 24 scaled by the worn skin's HUD size
+- values: without the skin engine FontFlags and HudFontSize still answer what SetFont takes
 
 ### test_showroom_textures.lua (8)
 
@@ -308,6 +311,20 @@ Total.
 - addon surfaces: the icon border draws icon.borderSize edges in icon.border, per skin
 - addon surfaces: the settings-style window wears Ka0s Default under Ka0s Default
 - addon surfaces: the settings-style window follows a skin switch and stays skinned back on Ka0s Default
+
+### test_showroom_fonts.lua (11)
+
+- fonts: the section is built, one face line per skin, in the library's order
+- fonts: each line names its skin's body and title faces, the new faces among them
+- fonts: the lines draw in each face at its size, under this addon's Font outline
+- fonts: with Ignore fonts ticked the face lines draw window text's stock flags, as the mode line says
+- fonts: the outline line follows the Font outline and says Ignore fonts wins
+- fonts: Measure gives every skin a width per role and Ka0s Default a ratio of 1
+- fonts: /st widths prints a header and one line per skin against Ka0s Default
+- fonts: a face the client cannot resolve reads unmeasured, and nothing raises
+- fonts: a face the client refuses reads unmeasured, never the previous face's width
+- fonts: /st widths is refused while the addon is disabled
+- fonts: without the skin engine the section builds and the probe says why
 
 ### test_showroom_hud.lua (5)
 
@@ -344,6 +361,28 @@ Total.
 - media: Ignore fonts wins over a font override
 - media: without the skin engine the apply is a quiet no-op
 
+### test_skin_outline.lua (9)
+
+- outline: a fresh profile stores HUD text only, the library's default
+- outline: the schema row offers the library's three modes, in its order
+- outline: the write seam stores media.outline, and leaves it alone when it is nil
+- outline: another addon's copy reaches the store through WriteChoice
+- outline: the row's write applies the mode live
+- outline: /st set refuses a mode the library does not know
+- outline: the stored mode is applied at load
+- outline: a profile switch applies the incoming profile's mode, and back
+- outline: without the skin engine the apply is a quiet no-op
+
+### test_skin_verb.lua (7)
+
+- skin verb: the row sits right after config, with the library's help words
+- skin verb: /st skin shows the picker on a profile that has closed it
+- skin verb: NS.RunSkinVerb hands O.SkinVerb this addon's first-run spec
+- skin verb: in combat every call prints the library's gray line and shows nothing
+- skin verb: refused while the addon is disabled, and no picker shows
+- skin verb: without LibKa0s the verb prints the library-absent line
+- skin verb: the showroom's Show the picker goes through O.SkinVerb
+
 ### test_skin_picker.lua (30)
 
 - picker: a fresh profile shows it once the addon is enabled
@@ -377,9 +416,13 @@ Total.
 - picker: another addon's picker closed in combat does not bring this one up until combat ends
 - picker: a stand-down while it waits out combat leaves nothing to show after
 
-### test_settings_sample.lua (5)
+### test_settings_sample.lua (9)
 
 - settings: the sample page carries one row of each widget type
+- settings: the sample page carries one picker of each media kind, on the library's own types
+- settings: each sample picker lists what LibSharedMedia holds of its kind
+- settings: each sample picker draws on the page, and with no media library it still opens
+- settings: /st set takes a media key the sample picker lists, and refuses one it does not
 - settings: the sample page wears the owner's skin once the panel is skinned
 - settings: on a new profile the sample page is the client's
 - settings: the sample rows stay on their page
@@ -713,14 +756,17 @@ Total.
 | test_selector.lua | 8 |
 | test_showroom.lua | 11 |
 | test_showroom_coverage.lua | 5 |
-| test_showroom_values.lua | 10 |
+| test_showroom_values.lua | 13 |
 | test_showroom_textures.lua | 8 |
 | test_showroom_owner.lua | 9 |
+| test_showroom_fonts.lua | 11 |
 | test_showroom_hud.lua | 5 |
 | test_showroom_widgets.lua | 12 |
 | test_skin_media.lua | 9 |
+| test_skin_outline.lua | 9 |
+| test_skin_verb.lua | 7 |
 | test_skin_picker.lua | 30 |
-| test_settings_sample.lua | 5 |
+| test_settings_sample.lua | 9 |
 | test_panel.lua | 37 |
 | test_profiles.lua | 17 |
 | test_diagnostics.lua | 10 |
@@ -741,4 +787,4 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | Skipped | 1 |
-| **Total** | **571** |
+| **Total** | **605** |

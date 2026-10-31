@@ -193,18 +193,31 @@ function NS.MaybeShowSkinPicker()
     return false, state
 end
 
---- The showroom's "Show the picker" (its Library widgets section, LibKa0s v1.81.0's layout): the
---- picker on demand, whether or not this profile has closed it. Not in combat and not while disabled,
---- as the first-run trigger; a close marks the profile seen, which it may already be. Answers true
---- when it is up, else false and the library's state ("queued" behind another addon's picker).
+--- The reserved `/st skin` verb's act (LibKa0s v1.82.0, OptionsSkinPicker minor 3, ruling D-16):
+--- O.SkinVerb with the spec the first-run start builds, so it shows the picker a new profile shows
+--- whatever skin.pickerSeen says. The library prints its own lines (combat on every call, queued,
+--- unavailable); without LibKa0s the stub answers nil, "absent" and this prints the library-absent
+--- line. Answers the picker's frame, or nil and the reason.
+function NS.RunSkinVerb()
+    local verb = type(Helpers.SkinVerb) == "function" and Helpers.SkinVerb
+    local win, why
+    if verb then win, why = verb(PICKER_SPEC) else why = "absent" end
+    if win == nil and why == "absent" then
+        NS.Print(NS.L["%s is unavailable: the LibKa0s library did not load."]:format("/st skin"))
+    end
+    return win, why
+end
+
+--- The showroom's "Show the picker" (its Library widgets section): `/st skin`'s act, the same
+--- O.SkinVerb route, not while disabled (the verb's dispatcher gate refuses that; a button has none).
+--- A close marks the profile seen, which it may already be. Answers true when it is up, else false
+--- and the library's reason ("combat", "queued", "unavailable").
 function NS.ShowSkinPicker()
     local db = Tester.db
     if not (db and db.profile and db.profile.enabled) then return false end
-    if InCombatLockdown and InCombatLockdown() then return false end
-    if type(Helpers.SkinPicker) ~= "function" then return false end
-    local win, state = Helpers.SkinPicker(PICKER_SPEC)
+    local win, why = NS.RunSkinVerb()
     if win ~= nil then return true end
-    return false, state
+    return false, why
 end
 
 -- ── Sample controls ──────────────────────────────────────────────────────────────────────────

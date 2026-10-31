@@ -5,7 +5,7 @@ says how this addon meets them.
 
 ## Overview
 
-A skin showroom. `/st` (or `/skintester`) opens one window that shows the elements a Ka0s skin
+A skin showroom. `/st show` (or `/skintester show`) opens one window that shows the elements a Ka0s skin
 (`LibKa0s-Skin-1.0`) can paint, in whichever skin the addon is wearing, so a skin can be judged in one
 place. The addon is a skin owner like any adopter: the skin it wears is chosen from the swatch cards
 across the top of the showroom, on its own General -> Skin tab or in the first-run skin picker, and every sample it shows is
@@ -17,8 +17,8 @@ CurseForge. Purpose, audience and non-goals: [`scope.md`](./scope.md).
 ## Module Map
 
 One shell, the setup files that wire LibKa0s, the swatch selector, the showroom window with its paint
-wrapper and section registry, eleven section files (Chrome, Controls, Lists, Text, Panels, Overlays,
-Addon surfaces, Library widgets, Values, Textures, HUD faces), and the settings pages with the first-run skin picker. Every file, its job and its load-order constraint:
+wrapper and section registry, twelve section files (Chrome, Controls, Lists, Text, Panels, Overlays,
+Addon surfaces, Library widgets, Values, Textures, Faces and widths, HUD faces), and the settings pages with the first-run skin picker. Every file, its job and its load-order constraint:
 [`module-map.md`](./module-map.md). The load order itself is
 the TOC, where each load-bearing position carries the reason.
 
@@ -27,9 +27,9 @@ the TOC, where each load-bearing position carries the reason.
 One schema (`settings/Schema.lua`) drives the panel, the `/st list|get|set|reset` CLI and the
 defaults, over one write seam, `NS.SchemaRuntime.Set` (LibKa0s-Schema-1.0, or the host stub in
 `settings/SchemaSetup.lua`). Rows: the composed Master controls (`enabled`, `scale`, `alpha`, the
-session-only `state.debugConsole`, the global `global.minimap.shown`), the seven Skin tab rows
-(`skin.source`, `skin.skin`, the overrides `skin.font` and `skin.texture`, the Scope's `skin.ignorePanel`,
-`skin.ignoreFonts`, and the picker's `skin.pickerSeen`) and the five Sample controls rows (`sample.*`, on their own page and read
+session-only `state.debugConsole`, the global `global.minimap.shown`), the eight Skin tab rows
+(`skin.source`, `skin.skin`, the overrides `skin.font` and `skin.texture`, the font outline `skin.outline`, the Scope's `skin.ignorePanel`,
+`skin.ignoreFonts`, and the picker's `skin.pickerSeen`) and the ten Sample controls rows (`sample.*`, on their own page and read
 by nothing). The one piece of state outside the seam is the showroom window's
 position, `db.global.windows.LibKa0sSkinTesterShowroom`, written only by `NS.Windows.Save` from the
 window's drag stop and cleared by `NS.Windows.Forget` (Reset position), both in `core/Util.lua`.
@@ -39,13 +39,13 @@ Every path, default and the migration seam: [`schema.md`](./schema.md).
 
 None. Nothing crosses a module boundary as a message: the sections register with the showroom by
 direct call (`NS.Showroom.AddSection`), below the `architecture-§4` threshold. A skin change reaches
-the showroom, the selector and the Values, Textures and Addon surfaces sections through the skin
-engine's own `OnLooksChanged` notification, not a bus message.
+the showroom, the selector and the Values, Textures, Faces and widths, HUD faces and Addon surfaces
+sections through the skin engine's own `OnLooksChanged` notification, not a bus message.
 
 ## Slash Commands
 
 `/st` and the alias `/skintester`, dispatched by LibKa0s-Slash-1.0 from the ordered `COMMANDS` table
-in `settings/Slash.lua`: the reserved verbs, plus `show`, the showroom toggle. At login a `/st` held
+in `settings/Slash.lua`: the reserved verbs (`skin` among them), plus `show`, the showroom toggle, and `widths`, the width probe. At login a `/st` held
 by another addon is left to it (`NS.CheckSlashCollision`), and this addon keeps `/skintester`. Every
 verb and what it answers while disabled: [`slash-dispatch.md`](./slash-dispatch.md).
 
@@ -93,7 +93,7 @@ generated directories are named once each and never enumerated per run: `docs/au
 
 | Doc | Status | Trigger |
 |---|---|---|
-| `slash-dispatch.md` | Present | 15 commands in `COMMANDS`, over the eight-command threshold |
+| `slash-dispatch.md` | Present | 17 commands in `COMMANDS`, over the eight-command threshold |
 | `debug.md` | Present | The diagnostics report (`/st diagnostics`, debug-logging-§14); never Not applicable |
 | `profiles.md` | Present | The Profiles sub-page (`settings/Profiles.lua`) is a profile control in the options UI |
 | `perf-analysis/README.md` | Present | The performance harness is wired (`core/PerfSetup.lua`) |

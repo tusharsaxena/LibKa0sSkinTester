@@ -21,7 +21,7 @@ Every entry says what needs it and how that is known.
 | Tool | Version | Needed for | Evidence |
 |---|---|---|---|
 | `lua5.1` (+ `luac`) | **5.1 exactly** | the headless suite, `lua tests/run.lua` | `tests/_kit/loader.lua` uses `setfenv` |
-| `luacheck` | any recent | `luacheck .`, the other half of the green gate | `.luacheckrc` at the repo root |
+| `luacheck` | any recent | `ka0s-bounded luacheck .`, the other half of the green gate | `.luacheckrc` at the repo root |
 | `lizard` | any recent | the `complexity` suite of `tests/_kit/run-automated-tests.sh`, which runs it over a sanitized shadow and checks function-count parity, because `lizard` alone is blind in Lua (automated-tests-§3) | `lizard --version` |
 | `git` | any recent | vendoring, the vendor gate, the git-based suites | library-stack-§7, `tests/test_vendor_sync.lua` |
 | POSIX shell | any | the commands in this file and in `docs/testing.md` | — |

@@ -1,5 +1,5 @@
 local addonName, NS = ...
--- modules/ShowroomValues.lua — the Values section: what the six getters answer, then four token
+-- modules/ShowroomValues.lua — the Values section: what the eight getters answer, then four token
 -- categories of the skin worn, each token as a labeled swatch under its category's heading: every
 -- semantic color (`sem.*`), every item quality tier (`q.*`, poor to legendary), every tooltip color
 -- (`gtip.*`, LibKa0s v1.81.0's `gtip.footer` among them) and the two art tints v1.81.0 added
@@ -112,6 +112,38 @@ local function chartGetter(g)
     end
 end
 
+--- FontFlags and HudFontSize (LibKa0s v1.82.0, SkinPaintExtras minor 7: D-07 and D-09 of
+--- Ka0sAddonsCommonTasks docs/2026-10-30-SKIN_FONTS_AND_FEEDBACK) paint nothing either, so each is
+--- a line of what it answers: the flags a stored "From skin" draws with on a HUD and in a window, and
+--- that a picked flag wins; the size a HUD element stored at 12 and at 24 draws at in the skin worn.
+local function quoted(v) return v == "" and '""' or tostring(v) end
+
+local function flagsGetter(g)
+    local fs = g:Add(440, 16, "FontFlags (From skin: HUD, window; a picked flag)")
+        :CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    fs:SetPoint("LEFT")
+    V.shown.FontFlags = true
+    V.flags = fs
+    draws[#draws + 1] = function()
+        local from = NS.Skin and NS.Skin.FROM_SKIN or "@skin"
+        fs:SetText(("HUD %s   window %s   picked THICKOUTLINE %s"):format(
+            quoted(R.Paint("FontFlags", from)), quoted(R.Paint("FontFlags", from, "window")),
+            quoted(R.Paint("FontFlags", "THICKOUTLINE"))))
+    end
+end
+
+local function hudSizeGetter(g)
+    local fs = g:Add(300, 16, "HudFontSize (stored 12, stored 24)")
+        :CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    fs:SetPoint("LEFT")
+    V.shown.HudFontSize = true
+    V.hudSize = fs
+    draws[#draws + 1] = function()
+        fs:SetText(("12 draws at %s   24 draws at %s"):format(
+            tostring(R.Paint("HudFontSize", 12)), tostring(R.Paint("HudFontSize", 24))))
+    end
+end
+
 local function semKeys()
     local lib, keys = Skin(), {}
     if not lib then return keys end
@@ -205,6 +237,8 @@ R.AddSection("values", L["Values"], function(body)
     fontGetter(g)
     barGetter(g)
     chartGetter(g)
+    flagsGetter(g)
+    hudSizeGetter(g)
     if Skin() then
         heading(g, "sem", L["Semantic colors (sem.*)"])
         semLines(g)

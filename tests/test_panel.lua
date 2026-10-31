@@ -160,18 +160,20 @@ end)
 
 test("panel: registration creates no AceGUI widgets", function()
     local _, _, mock = T.enableAddon()
-    assertEqual(#mock.aceWidgets, 0,
-        "nothing is built at PLAYER_LOGIN — not even the Defaults button")
+    -- The five are the first-run skin picker's rows (LibKa0s v1.83.0); a fresh profile shows it at login.
+    assertEqual(#mock.aceWidgets, 5,
+        "no settings page is built at PLAYER_LOGIN — not even the Defaults button")
 end)
 
 test("panel: OnShow itself builds nothing; the deferred hop does", function()
     local _, _, mock = T.enableAddon()
     local _, general = panels(mock)
+    local picker = #mock.aceWidgets
     general.__fire("OnShow")
-    assertEqual(#mock.aceWidgets, 0, "the synchronous OnShow body stays a no-op")
+    assertEqual(#mock.aceWidgets, picker, "the synchronous OnShow body stays a no-op")
     assertTrue(#mock.timers > 0, "a next-frame hop is queued instead")
     mock.fireCTimers()
-    assertTrue(#mock.aceWidgets > 0, "the widgets appear on the next frame")
+    assertTrue(#mock.aceWidgets > picker, "the widgets appear on the next frame")
 end)
 
 test("panel: the build is one-shot across repeated shows", function()
