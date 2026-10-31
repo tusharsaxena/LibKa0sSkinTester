@@ -90,7 +90,7 @@ restart the client: new font and texture files are only seen at client start.
 - **PANEL-8. The override applies live.** With the showroom open, pick a font in Font, then a
   texture in Texture (any media pack's). → The showroom's text takes the font at once, its monospace
   text keeps its own face, and every bar in the Textures section takes the texture at once, its
-  labels naming the key. Pick "Skin's own" in both. → Both go back. `/reload` after a pick. → The
+  labels naming the key. Pick "Skin's default (<key>)" in both. → Both go back. `/reload` after a pick. → The
   pick is still applied. Result: pass (owner-marked 2026-10-30)
 - **PANEL-9. Ignore fonts wins.** With a font chosen in Font, tick Ignore fonts. → Every string goes
   back to the game's font; the Font dropdown keeps your pick. Untick it. → Your font is back. Result: pass (owner-marked 2026-10-30)
