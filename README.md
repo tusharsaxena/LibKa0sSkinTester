@@ -76,6 +76,6 @@ Bugs, feature requests and outstanding work are all tracked at [https://github.c
 
 ## Credits
 
-**Open Iconic** icons (the debug console's copy, clear and close marks, and the skin picker's eye
-and gear), by Waybury, MIT license
+**Open Iconic** icons (the debug console's copy, clear and close marks, the skin picker's eye and
+gear, and the small marks LibKa0s draws beside skinned controls), by Waybury, MIT license
 (<https://github.com/iconic/open-iconic>), with the license beside them in the bundled payload.

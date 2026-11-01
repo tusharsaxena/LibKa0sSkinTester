@@ -2,13 +2,14 @@ local addonName, NS = ...
 -- modules/ShowroomOverlays.lua — the Overlays section: a tooltip on hover (a tooltip frame of this
 -- addon's, never GameTooltip), a standing menu, a confirm popup as a miniature (a plain frame painted
 -- Shell and Button, never a StaticPopup), the library's test strip, the fades beside an unfaded twin,
--- an icon border and a bar fill.
+-- an icon border and a bar fill, and a small mark on a texture (S.Mark) and in a line (S.MarkText).
 
 local R, L = NS.Showroom, NS.L
 local ICON = "Interface\\Icons\\INV_Misc_QuestionMark"
 local BAR = "Interface\\TargetingFrame\\UI-StatusBar"
 
 local tooltip   -- built with the section, painted once, reused on every hover
+local drawMarkLine   -- writes the MarkText line, set when the section is built
 
 local function widgets() return LibStub and LibStub("LibKa0s-Widgets-1.0", true) end
 
@@ -75,6 +76,28 @@ local function testStrip(cell, paint)
     paint("Strip", strip, { kind = "test" })
 end
 
+-- S.Mark tints on its own after a skin change; a string cannot be repainted, so MarkText is written
+-- again by the redraw below the section. NS.Icon answers nil with the library absent.
+local function marks(cell, paint)
+    local info = NS.Icon("info")
+    local mark = cell:CreateTexture(nil, "ARTWORK")
+    mark:SetSize(16, 16)
+    mark:SetPoint("LEFT")
+    paint("Mark", mark, { art = info })
+    local good = cell:CreateTexture(nil, "ARTWORK")
+    good:SetSize(16, 16)
+    good:SetPoint("LEFT", mark, "RIGHT", 6, 0)
+    paint("Mark", good, { art = NS.Icon("confirm"), token = "sem.good" })
+    local line = cell:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+    line:SetPoint("LEFT", good, "RIGHT", 6, 0)
+    paint("Text", line, "body")
+    drawMarkLine = function()
+        line:SetText(("%s in a line"):format(info and R.Paint("MarkText", info, 14) or ""))
+    end
+    drawMarkLine()
+    return mark, good, line
+end
+
 R.AddSection("overlays", L["Overlays"], function(body, paint)
     local g = R.Grid(body)
 
@@ -110,5 +133,13 @@ R.AddSection("overlays", L["Overlays"], function(body, paint)
     bar:SetValue(0.6)
     paint("ApplyBarFill", bar)
 
+    body.mark, body.markGood, body.markLine = marks(g:Add(160, 16, "Mark (tint, sem.good), MarkText"), paint)
+
     return g:Height()
 end)
+
+if NS.Skin and NS.Skin.OnLooksChanged then
+    NS.Skin.OnLooksChanged(function()
+        if drawMarkLine then drawMarkLine() end
+    end)
+end

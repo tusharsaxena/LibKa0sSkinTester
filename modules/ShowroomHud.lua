@@ -5,11 +5,14 @@ local _, NS = ...
 -- `hud.outline` and naming the face, so the nine can be judged side by side whatever skin is worn.
 -- Like the picker's rows, these show the skins, so Ignore fonts leaves them alone. Under them, one
 -- line in the face the worn skin hands a HUD element (S.BarStyle), which Ignore fonts gives back to
--- the host's own face, live.
+-- the host's own face, live. Then the HUD's own primitives (LibKa0s v1.85.0) as a host draws them: a
+-- string through S.HudFont in S.HudTextColor, a label in S.HudLabelColor, a line of what S.HudShadow
+-- answers, and a bar in S.BarFillColor with S.BarGloss on it.
 --
 --   NS.Hud.order   the skin keys, in the library's order
 --   NS.Hud.lines   [skin key] = its FontString, .faceKey the face it names
 --   NS.Hud.worn    the BarStyle line, .faceKey the face it wears (nil under Ignore fonts)
+--   NS.Hud.surface { text, label, shadow, bar }, the v1.85.0 samples
 --
 -- Values read from the skins, not paint the library records: everything redraws on OnLooksChanged.
 
@@ -18,6 +21,7 @@ local R, L = NS.Showroom, NS.L
 NS.Hud = { order = {}, lines = {} }
 local H = NS.Hud
 
+local BAR = "Interface\\TargetingFrame\\UI-StatusBar"
 local LINE_W, LINE_H = 440, 18
 local SAMPLE = "12,345  0:42  98%"
 
@@ -62,12 +66,59 @@ local function drawWorn()
     end
 end
 
+-- S.HudShadow's three answers, in words: numbers, false for a skin that draws none, nil while the
+-- owner ignores fonts.
+local function shadowWords()
+    local x, y = R.Paint("HudShadow")
+    if x == false then return "HudShadow: none in this skin" end
+    if x == nil then return "HudShadow: nil, the host's own stands" end
+    return ("HudShadow: %s, %s"):format(tostring(x), tostring(y))
+end
+
+local function setColor(fs, r, g, b, a)
+    if r then fs:SetTextColor(r, g, b, a) end
+end
+
+local function drawSurface()
+    local s, st = H.surface, R.Paint("BarStyle") or {}
+    for _, fs in ipairs({ s.text, s.label, s.shadow }) do
+        R.Paint("HudFont", fs, { size = st.fontSize, flags = NS.Skin.FROM_SKIN })
+    end
+    setColor(s.text, R.Paint("HudTextColor"))
+    setColor(s.label, R.Paint("HudLabelColor"))
+    setColor(s.shadow, R.Paint("HudTextColor"))
+    s.shadow:SetText(shadowWords())
+    s.bar:SetStatusBarTexture(st.texture or BAR)
+    local r, g, b, a = R.Paint("BarFillColor")
+    if r then s.bar:SetStatusBarColor(r, g, b, a) end
+    R.Paint("BarGloss", s.bar)
+end
+
+local function surfaceSamples(g)
+    local cell = g:Add(LINE_W, LINE_H * 3, "HudFont: HudTextColor, HudLabelColor, HudShadow")
+    local s = { text = cell:CreateFontString(nil, "OVERLAY", "GameFontHighlight"),
+                label = cell:CreateFontString(nil, "OVERLAY", "GameFontNormal"),
+                shadow = cell:CreateFontString(nil, "OVERLAY", "GameFontHighlight") }
+    s.text:SetPoint("TOPLEFT")
+    s.text:SetText(SAMPLE)
+    s.label:SetPoint("TOPLEFT", 0, -LINE_H)
+    s.label:SetText("A HUD label")
+    s.shadow:SetPoint("TOPLEFT", 0, -2 * LINE_H)
+    s.bar = CreateFrame("StatusBar", nil, g:Add(LINE_W, 16, "BarFillColor, BarGloss"))
+    s.bar:SetSize(LINE_W, 16)
+    s.bar:SetPoint("TOPLEFT")
+    s.bar:SetMinMaxValues(0, 1)
+    s.bar:SetValue(0.6)
+    H.surface = s
+end
+
 local labels = {}   -- [skin key] = its label
 
 local function redraw()
     if not H.worn then return end
     for _, key in ipairs(H.order) do drawSkin(key, labels[key]) end
     drawWorn()
+    drawSurface()
 end
 
 R.AddSection("hud", L["HUD faces"], function(body)
@@ -80,6 +131,8 @@ R.AddSection("hud", L["HUD faces"], function(body)
     end
     g:Break()
     H.worn = newLine(g, "BarStyle (the skin worn; Ignore fonts gives the host's face back)")
+    g:Break()
+    surfaceSamples(g)
     redraw()
     return g:Height()
 end)

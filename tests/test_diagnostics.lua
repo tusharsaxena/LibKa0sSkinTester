@@ -53,10 +53,10 @@ test("diagnostics: the always rows print at default, and a changed row prints wi
 end)
 
 test("diagnostics: the skin section names the engine, the stored and applied skin, and the skins", function()
-    local NS = T.enableAddon()
+    local NS, _, mock = T.enableAddon()
     NS.addon.Settings.Helpers.Set("skin.skin", "obsidian")
     local lines = report(NS)
-    assertTrue(has(lines, "skin engine=11"), "the skin engine's minor")
+    assertTrue(has(lines, "skin engine=" .. mock.LibStub("LibKa0s-Skin-1.0").MINOR), "the skin engine's minor")
     assertTrue(has(lines, "stored=ka0s:obsidian applied=ka0s:obsidian"), "stored and applied agree")
     assertTrue(has(lines, "owner=true pendingReload=false"), "the owner registration")
     assertTrue(has(lines, "obsidian"), "and the skins are listed")

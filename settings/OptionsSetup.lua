@@ -147,6 +147,9 @@ if not lib then
     H.NavRail              = function() end
     -- Drawer, new at LibKa0s v1.73.0 (OptionsDrawer minor 1): no call site here, so inert for the shape reason.
     H.Drawer               = function() end
+    -- A label's font (LibKa0s v1.85.0, OptionsWidgets minor 43), owed by every Options stub. No
+    -- library, no widget to set it on.
+    H.LabelFont            = function() end
     -- LibKa0s v1.77.0's four instance members: OptionsKeybinds minor 2's KeybindingsTab, KeybindRows
     -- and KEYBINDS_UNCHANGED, and OptionsCompose minor 8's StrataTooltip. The library's "What a
     -- consumer owes" list for v1.77.0 names them, and tests/test_surface_parity.lua holds the stub to

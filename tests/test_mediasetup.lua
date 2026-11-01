@@ -26,9 +26,11 @@ local VENDORED = "Interface\\AddOns\\LibKa0sSkinTester\\libs\\LibKa0s\\media\\"
 --   eye    the first-run skin picker's preview button (libs/LibKa0s/OptionsSkinPicker.lua,
 --          iconButton "eye"), because settings/Panel.lua passes onPreview.
 --   settings  the skin picker's gear (libs/LibKa0s/OptionsSkinPicker.lua, iconButton "settings").
--- Not here: info, drawn only by an Options id list's help mark, and this addon builds no id list
--- (tests/test_libka0s.lua holds that line).
-local LIBRARY_DRAWN = { "clear", "close", "copy", "eye", "settings" }
+--   chevron-down, chevron-up, confirm, info, move, reset, volume-high  owed from v1.85.0: the marks
+--          the library draws beside skinned controls (LibKa0s docs/releasing.md, Step 8 for v1.85.0).
+--          modules/ShowroomOverlays.lua's S.Mark sample also draws info and confirm.
+local LIBRARY_DRAWN = { "chevron-down", "chevron-up", "clear", "close", "confirm", "copy", "eye", "info",
+                        "move", "reset", "settings", "volume-high" }
 
 -- The library files that ARE the payload, for the degraded case. Core.lua absent means every other
 -- major returns before LibStub:NewLibrary too, which makes this the whole-library-missing scenario
