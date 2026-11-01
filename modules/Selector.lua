@@ -27,7 +27,7 @@ local CARD_W, CARD_H, GAP = 98, 56, 6
 local LABEL_W = CARD_W - 12
 local SWATCH_H = 14
 local SOURCE = "ka0s"
-local SOURCE_W = 130
+local SOURCE_W, SOURCE_H = 130, 26   -- the Source dropdown sits on its own row under the cards (SF-FIX)
 local function widgets() return LibStub and LibStub("LibKa0s-Widgets-1.0", true) end
 
 local function S() return NS.Skin end
@@ -113,12 +113,12 @@ function M.Build(parent)
             for i, opt in ipairs(NS.SKIN_SOURCE_OPTIONS) do o[i] = { value = opt.value, label = opt.text } end
             return o
         end)())
-        dd:SetPoint("TOPLEFT", row, "TOPLEFT", #row.order * (CARD_W + GAP), 0)
+        dd:SetPoint("TOPLEFT", row, "TOPLEFT", 0, -(CARD_H + GAP))
         dd.onSelect = function(value) M.PickSource(value) end
         row.source = dd
-        extra = GAP + SOURCE_W
+        extra = GAP + SOURCE_H
     end
-    row:SetSize(math.max(1, #row.order) * (CARD_W + GAP) - GAP + extra, CARD_H)
+    row:SetSize(math.max(1, #row.order) * (CARD_W + GAP) - GAP, CARD_H + extra)
     M.Refresh(row)
     return row
 end

@@ -417,6 +417,8 @@ restart the client: new font and texture files are only seen at client start.
   Click through every card with the Textures, Values and Panels sections in view. → Each non-default
   skin's bar track, GlowColor swatch and Cover dim are its own, from its palette; Ka0s Default's are what
   they were. Fail: two skins sharing all three, or Ka0s Default's moving. Result:
+- **SHOW-37. The Source dropdown on its own row (SF-FIX, not run).**
+  Open the showroom: the Source dropdown sits under the skin cards, inside the window's right edge, and still switches between Ka0s and EllesmereUI skins.
 
 ## First-run skin picker
 
@@ -581,4 +583,4 @@ starts in the slider tokens, which S.Slider paints over, so no expected result m
 pass mark goes: the bar tracks SHOW-12 names stay dark on both its skins.
 
 Owed: PANEL-5, PANEL-13, PANEL-14, PANEL-15, PROFILE-3, SHOW-9, SHOW-28, SHOW-29, SHOW-30, SHOW-31,
-SHOW-32, SHOW-33, SHOW-34, SHOW-35, SHOW-36.
+SHOW-32, SHOW-33, SHOW-34, SHOW-35, SHOW-36, SHOW-37.
