@@ -80,11 +80,15 @@ local function shadowWords()
     return ("HudShadow: %s, %s"):format(tostring(x), tostring(y))
 end
 
+-- One table, refilled: S.HudFont keeps nothing of it, and this runs on every skin change.
+local fontOpts = {}
+
 local function drawSurface()
     local s, st = H.surface, R.Paint("BarStyle") or {}
-    for _, fs in ipairs({ s.text, s.label, s.shadow }) do
-        R.Paint("HudFont", fs, { size = st.fontSize, flags = NS.Skin.FROM_SKIN })
-    end
+    fontOpts.size, fontOpts.flags = st.fontSize, NS.Skin.FROM_SKIN
+    R.Paint("HudFont", s.text, fontOpts)
+    R.Paint("HudFont", s.label, fontOpts)
+    R.Paint("HudFont", s.shadow, fontOpts)
     setColor(s.text, R.Paint("HudTextColor"))
     setColor(s.label, R.Paint("HudLabelColor"))
     setColor(s.shadow, R.Paint("HudTextColor"))
