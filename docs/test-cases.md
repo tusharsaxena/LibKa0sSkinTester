@@ -253,7 +253,7 @@ Total.
 - selector: clicking the current card does nothing
 - selector: no EllesmereUI card and no copy button
 
-### test_showroom.lua (19)
+### test_showroom.lua (20)
 
 - showroom: the window is painted through the wrapper
 - showroom: Paint answers the primitive's answer and records the name once
@@ -272,6 +272,7 @@ Total.
 - a5: every IconBorder sample asks for the skin's own edge
 - a5: the slider's own track is handed over and a selected nav entry has a fill to tint
 - a5: the window's title bar stands at title.height
+- a5: the scrollbar stands at scroll.width
 - a5: every readout line is painted body text
 - a5: the BarStyle sample's fill is colored from the skin
 
@@ -347,7 +348,7 @@ Total.
 - fonts: /st widths is refused while the addon is disabled
 - fonts: without the skin engine the section builds and the probe says why
 
-### test_showroom_hud.lua (9)
+### test_showroom_hud.lua (10)
 
 - hud: the section is built, one line per skin, in the library's order
 - hud: each skin's line names that skin's own HUD face, all nine of them
@@ -355,7 +356,8 @@ Total.
 - hud: the worn line follows the skin worn, through BarStyle
 - hud: under Ignore fonts the worn line takes the host's own face, and the skin lines keep theirs
 - hud: the v1.85.0 samples redraw on a skin change, through the drawing setters
-- hud: HudShadow reads as its three answers, and each string goes through HudFont
+- hud: HudShadow reads as its three answers, and both primitives are shown
+- hud: a skin change redraws each string's font object, the shadow behind the cache included
 - hud: BarGloss shows under a skin with gloss and only there
 - overlays: S.Mark tints its marks and the MarkText line is written again
 
@@ -783,14 +785,14 @@ Total.
 | test_settings.lua | 53 |
 | test_slash.lua | 19 |
 | test_selector.lua | 8 |
-| test_showroom.lua | 19 |
+| test_showroom.lua | 20 |
 | test_showroom_coverage.lua | 5 |
 | test_showroom_dropdowns.lua | 8 |
 | test_showroom_values.lua | 13 |
 | test_showroom_textures.lua | 8 |
 | test_showroom_owner.lua | 9 |
 | test_showroom_fonts.lua | 11 |
-| test_showroom_hud.lua | 9 |
+| test_showroom_hud.lua | 10 |
 | test_showroom_widgets.lua | 14 |
 | test_skin_media.lua | 9 |
 | test_skin_outline.lua | 9 |
@@ -817,4 +819,4 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | Skipped | 1 |
-| **Total** | **631** |
+| **Total** | **633** |
