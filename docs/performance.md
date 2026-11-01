@@ -37,7 +37,7 @@ in that run's bundle.
 | Scenario | What it drives | Ceiling |
 |---|---|---|
 | `showroomToggle` | `NS.Showroom.Toggle` on the built window | The mock's own Show/Hide record plus 24 bytes: the addon allocates nothing |
-| `skinRepaint` | `NS.ApplySkinChoice` alternating two skins with the window open, the `repaint` path | Pinned at 221310 bytes and 1160 API calls, measured 2026-11-01 at LibKa0s v1.85.0; re-pin with the reason beside it in `tests/perf.lua` after a re-vendor or a new sample |
+| `skinRepaint` | `NS.ApplySkinChoice` alternating two skins with the window open, the `repaint` path | Pinned at 221880 bytes and 1360 API calls, measured 2026-11-02 (SF-ST-2) at LibKa0s v1.85.0; re-pin with the reason beside it in `tests/perf.lua` after a re-vendor or a new sample |
 | `applyScale`, `applyAlpha` | `NS.Showroom.ApplyWindowSettings` after a slider write | 24 bytes and at most 2 API calls (`SetScale`, `SetAlpha`) |
 
 The one-off build is not measured: it runs once per session, before the first scenario.

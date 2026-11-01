@@ -119,6 +119,16 @@ test("widgets: the drag handle's tooltip draws gtip.title, gtip.value and gtip.f
     check("azeroth")
 end)
 
+test("widgets: the chart sample fills the area under its first series (#70)", function()
+    -- red under: a sample with no series[1].fill, whose line count is the lines and grid alone.
+    local _, _, sec = opened()
+    local chart = sec.chart
+    local filled = chart.__lineUsed
+    chart.__data.series[1].fill = nil
+    chart:Render(260, 110)
+    assertTrue(filled > chart.__lineUsed + 10, "the fill adds a column of lines under the first series")
+end)
+
 test("widgets: the drag handle, chart and autocomplete are owned by this addon, off the panel", function()
     local _, _, sec = opened()
     assertEqual(sec.handleSpec.owner, OWNER)

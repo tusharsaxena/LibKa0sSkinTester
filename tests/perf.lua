@@ -195,7 +195,7 @@ NS.Showroom.Hide()
 -- The toggle and the reapply change no string and build no table, so they must allocate nothing:
 -- those ceilings are hard (the toggle's over the mock's own flip, measured above). The repaint is
 -- pinned, in bytes and in API calls, at the figure measured on 2026-11-01 with the collector stopped
--- (221285.9 bytes, 1160 calls, SF-FIX). It is not derived from this run: a ceiling
+-- (221860.8 bytes, 1360 calls, SF-ST-2: +200 calls and +575 bytes over the 1160 and 221285.9 of SF-FIX, measured at SF-FIX and at SF-ST-2, the Blizzard dropdown painted by the library's own WowStyle1 path in place of the sample's stock list and glyph). It is not derived from this run: a ceiling
 -- computed from its own measurement cannot fail, and skinRepaint read that way while it rose from 12
 -- to 1083 API calls per change.
 --
@@ -208,7 +208,7 @@ NS.Showroom.Hide()
 --
 -- Raise a ceiling only by re-measuring and saying why; a rise IS the finding. A LibKa0s re-vendor or a
 -- new sample moves the repaint's figures, so that is the moment to re-measure and re-pin them.
-local REPAINT_MAX_BYTES, REPAINT_MAX_API = 221310, 1160
+local REPAINT_MAX_BYTES, REPAINT_MAX_API = 221880, 1360
 assert_(repaint.apiPerIter <= REPAINT_MAX_API,
     ("skinRepaint made %.1f API calls, over its pinned %d"):format(repaint.apiPerIter, REPAINT_MAX_API))
 local CEILINGS = {

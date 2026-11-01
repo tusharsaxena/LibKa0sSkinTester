@@ -125,23 +125,18 @@ test("controls: each media picker reads a real key, and no other media kind has 
 end)
 
 test("controls: the Blizzard dropdown drops the template's art and wears the skin", function()
-    -- red under: S.Dropdown with no opts.stock: its list knows no Background, and the template's Arrow
-    -- is the whole gold button, so it would be tinted in place of faded.
-    local NS, mock, sec = opened()
+    -- LibKa0s minor 16 (#71): the library fades Background and the whole-button Arrow itself, with no
+    -- opts.stock and no glyph of the sample's own; red under the old sample, which drew its own.
+    local NS, _, sec = opened()
     local dd = sec.blizzDropdown
     assertInCell(dd, "the Blizzard dropdown", sec)
     assertEqual(dd.Background:GetAlpha(), 0, "the text holder is faded")
     assertEqual(dd.Arrow:GetAlpha(), 0, "the gold button is faded")
-    assertTrue(not rawequal(dd.arrow, dd.Arrow), "the glyph is the sample's own texture")
-    local function checkArrow(skin)
-        local want, got = lib(mock):ResolveSkin(skin)["icon.arrow"], mock.__paint(dd.arrow).vertex
-        assertEqual(type(want), "table", skin .. " has an arrow color")
-        for i = 1, 3 do assertTrue(math.abs(got[i] - want[i]) < 1e-3, skin .. ": the glyph wears icon.arrow") end
-    end
+    assertTrue(rawget(dd, "arrow") == nil, "the sample draws no glyph of its own")
     NS.Selector.Pick("obsidian")
-    checkArrow("obsidian")
+    assertEqual(dd.Arrow:GetAlpha(), 0, "still faded under Obsidian")
     NS.Selector.Pick("ember")
-    checkArrow("ember")
+    assertEqual(dd.Background:GetAlpha(), 0, "still faded under Ember")
     NS.ApplySkinIgnore(true, nil)
     assertEqual(dd.Background:GetAlpha(), 0, "a window's: the panel half of the Scope leaves it skinned")
 end)

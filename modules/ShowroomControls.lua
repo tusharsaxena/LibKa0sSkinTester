@@ -16,16 +16,14 @@ local addonName, NS = ...
 --                         first open. The only media picker in the collection (the owner's ruling
 --                         of 2026-11-01), so no other kind has a cell
 --   WowStyle1Dropdown...  a Blizzard DropdownButton as PremadeGroupsFilterExtension's panel draws
---                         one: a window's, painted with S.Dropdown. S.Dropdown's own list knows
---                         neither of the template's textures, and its Arrow is the whole gold button,
---                         so both go in opts.stock and a glyph of the sample's own is the arrow. The
---                         list it opens is the client's Menu, which no primitive paints
+--                         one: a window's, painted with S.Dropdown. S.Dropdown fades the
+--                         template's Background and its whole-button Arrow and lays its own chevron
+--                         over it (LibKa0s minor 16, #71). The list it opens is the client's Menu, which no primitive paints
 --
 -- A surface this client lacks gets its cell all the same, a label saying what is missing (unavailable).
 
 local R, L = NS.Showroom, NS.L
 local ICON = "Interface\\Icons\\INV_Misc_QuestionMark"
-local CHEVRON = "Interface\\ChatFrame\\ChatFrameExpandArrow"   -- points right; the sample turns it down
 local BLIZZ_TEMPLATE = "WowStyle1DropdownTemplate"
 local CHOICES = { "First choice", "Second choice" }
 local ACE_W, ACE_H = 200, 26
@@ -133,13 +131,7 @@ local function blizzardDropdown(g, paint)
             root:CreateRadio(text, function() return chosen == i end, function() chosen = i end)
         end
     end)
-    local glyph = dd:CreateTexture(nil, "OVERLAY")
-    glyph:SetSize(12, 12)
-    glyph:SetPoint("RIGHT", dd, "RIGHT", -6, 0)
-    glyph:SetTexture(CHEVRON)
-    glyph:SetRotation(-math.pi / 2)
-    dd.arrow = glyph
-    paint("Dropdown", dd, { stock = { dd.Background, dd.Arrow } })
+    paint("Dropdown", dd)
     return dd
 end
 

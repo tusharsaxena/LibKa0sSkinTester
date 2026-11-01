@@ -201,6 +201,7 @@ restart the client: new font and texture files are only seen at client start.
   its name and four color swatches; the card of the skin you are wearing has its name in the skin's
   accent. No EllesmereUI card; a Source dropdown sits at the right of the cards. Result: not run (changed by SF-ST-1)
 - **SHOW-37. Source dropdown (SF-ST-1).** With EllesmereUI installed, `/st show`, open the Source dropdown at the right of the cards and pick EllesmereUI. → The showroom wears EllesmereUI's look and no card reads selected; picking Ka0s skins asks for a `/reload` if EllesmereUI painted. Without EllesmereUI the pick falls back to the Ka0s skin. Result: not run
+- **SHOW-38. The library does the work (SF-ST-2; LibKa0s #70, #71, #72).** `/st show`, Library widgets, in Obsidian. → The line chart's first series has a soft area under its line; the Blizzard dropdown shows no gold button, a flat box and one chevron at its right, and its label stays the skin's color while you hover and press it; drag the "Drag the corner" grip → the box keeps its top left and scrolls with its cell. Fail: a flat chart line, a gold button or a doubled arrow, a white label on hover, or a box that comes off its cell. Result: not run
 - **SHOW-6. Pick a skin.** Click Obsidian, then `/reload` and reopen. → The window repaints in Obsidian
   at the click, Obsidian's card reads selected, and after the reload it is still Obsidian. Fail: a
   card that repaints nothing, or a reload that comes back in Default. Result: pass (owner-marked 2026-10-30)
@@ -583,4 +584,4 @@ starts in the slider tokens, which S.Slider paints over, so no expected result m
 pass mark goes: the bar tracks SHOW-12 names stay dark on both its skins.
 
 Owed: PANEL-5, PANEL-13, PANEL-14, PANEL-15, PROFILE-3, SHOW-9, SHOW-28, SHOW-29, SHOW-30, SHOW-31,
-SHOW-32, SHOW-33, SHOW-34, SHOW-35, SHOW-36, SHOW-37.
+SHOW-32, SHOW-33, SHOW-34, SHOW-35, SHOW-36, SHOW-37, SHOW-38.
