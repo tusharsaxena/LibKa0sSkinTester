@@ -119,3 +119,16 @@ test("selector: no EllesmereUI card and no copy button", function()
     end
     walk(sel)
 end)
+
+test("selector: a source dropdown offers Ka0s skins and EllesmereUI (SF-ST-1)", function()
+    local NS, _, sel = opened()
+    assertTrue(sel.source ~= nil, "the dropdown is on the row")
+    local values = {}
+    for _, o in ipairs(sel.source._options) do values[#values + 1] = o.value end
+    assertEqual(table.concat(values, ","), "ka0s,eui", "both sources")
+    assertEqual(sel.source._value, "ka0s", "reads the applied source")
+    sel.source.onSelect("eui")
+    assertEqual(NS.SkinChoice(), "eui", "EllesmereUI is saved as the source")
+    sel.source.onSelect("ka0s")
+    assertEqual(NS.SkinChoice(), "ka0s", "and Ka0s skins again")
+end)

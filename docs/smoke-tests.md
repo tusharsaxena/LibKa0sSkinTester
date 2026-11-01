@@ -199,7 +199,8 @@ restart the client: new font and texture files are only seen at client start.
   both. → Both wear the skin the same way. Result: pass (owner-marked 2026-10-30)
 - **SHOW-5. Swatch selector.** `/st show`. → Nine cards across the top, Ka0s Default first, each with
   its name and four color swatches; the card of the skin you are wearing has its name in the skin's
-  accent. No EllesmereUI card. Result: pass (owner-marked 2026-10-30)
+  accent. No EllesmereUI card; a Source dropdown sits at the right of the cards. Result: not run (changed by SF-ST-1)
+- **SHOW-37. Source dropdown (SF-ST-1).** With EllesmereUI installed, `/st show`, open the Source dropdown at the right of the cards and pick EllesmereUI. → The showroom wears EllesmereUI's look and no card reads selected; picking Ka0s skins asks for a `/reload` if EllesmereUI painted. Without EllesmereUI the pick falls back to the Ka0s skin. Result: not run
 - **SHOW-6. Pick a skin.** Click Obsidian, then `/reload` and reopen. → The window repaints in Obsidian
   at the click, Obsidian's card reads selected, and after the reload it is still Obsidian. Fail: a
   card that repaints nothing, or a reload that comes back in Default. Result: pass (owner-marked 2026-10-30)

@@ -69,7 +69,7 @@ refused in combat by the library (options-ui-§2), and a page shown in combat is
   showroom shows that copy's skins. While every Ka0s addon vendors the same tag they are identical.
 - EllesmereUI's paint is one-way: leaving the EllesmereUI source after it painted needs a reload
   (the library's reload popup says so). For the same reason the swatch selector has no EllesmereUI
-  card.
+  card; a Source dropdown beside the cards switches the source instead.
 - After a `/st` collision, the help text and the landing page still name `/st`.
 
 ## Documentation map
