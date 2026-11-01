@@ -168,7 +168,7 @@ test("hud: a skin change redraws each string's font object, the shadow behind th
     local tex
     rawset(s.bar, "SetStatusBarTexture", function(_, path) tex = path end)
     NS.Selector.Pick("obsidian")
-    assertEqual(#made, 3, "one object per string")
+    assertEqual(#made, 1, "one object per look, shared by the three strings")
     local want = Skin:ResolveSkin("obsidian")
     local objects = {}
     for i, fs in ipairs(strings) do
@@ -183,13 +183,19 @@ test("hud: a skin change redraws each string's font object, the shadow behind th
         assertEqual(o.shadowColor[1], want["hud.shadow"][1], i .. "'s shadow color")
     end
     assertEqual(tex, NS.Skin.BarStyle().texture, "the bar sample draws the skin's texture")
-    NS.Selector.Pick("ka0s")   -- Ka0s Default draws no shadow, so the cached objects must be cleared
+    NS.Selector.Pick("ka0s")   -- Ka0s Default draws no shadow, so each string moves to a look without one
+    local plain = strings[1]:GetFontObject()
     for i, fs in ipairs(strings) do
-        assertTrue(fs:GetFontObject() == objects[i], i .. " keeps its object")
-        assertEqual(objects[i].shadowX, 0, i .. "'s shadow is off")
-        assertEqual(objects[i].shadowY, 0, i .. "'s shadow is off")
+        assertTrue(fs:GetFontObject() == plain, i .. " shares the new look")
+        assertTrue(plain ~= objects[i], i .. " leaves the shadowed look")
     end
-    assertEqual(#made, 3, "a repeat draw makes no object")
+    assertEqual(plain.shadowX, 0, "the new look's shadow is off")
+    assertEqual(plain.shadowY, 0, "the new look's shadow is off")
+    assertEqual(#made, 2, "one object per look")
+    NS.Selector.Pick("obsidian")
+    assertTrue(strings[1]:GetFontObject() == objects[1], "a look worn before keeps its object")
+    assertEqual(#made, 2, "a repeat draw makes no object")
+    NS.Selector.Pick("ka0s")
     assertEqual(tex, NS.Skin.BarStyle().texture, "and the bar follows back")
 end)
 

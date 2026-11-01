@@ -173,6 +173,16 @@ local function navEntry(g, body, paint)
     body.nav, body.navHover = item, hover
 end
 
+-- S.HoverArt on its own (LibKa0s v1.85.0, SkinPaintExtras minor 16), as a host's row draws it.
+local function hoverSample(g, body, paint)
+    local box = boxed(g:Add(160, 22, "HoverArt (list.hoverArt)"), 160, 22)
+    box:EnableMouse(true)
+    paint("Text", label(box, "Hover me"), "body")
+    local art = hoverArt(box)
+    paint("HoverArt", art)
+    body.hoverSample, body.hoverSampleArt = box, art
+end
+
 local function launcher(g, caption, text, onClick, paint)
     local btn = R.SampleButton(g:Add(160, 24, caption), 160, 24, text)
     btn:SetPoint("TOPLEFT")
@@ -207,6 +217,7 @@ R.AddSection("widgets", L["Library widgets"], function(body, paint)
     lineChart(g, body)
     drawerHead(g, body, paint)
     navEntry(g, body, paint)
+    hoverSample(g, body, paint)
     g:Break()
     launchers(g, body, paint)
     return g:Height()

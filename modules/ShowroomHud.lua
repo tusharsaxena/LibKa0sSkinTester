@@ -21,7 +21,7 @@ local R, L = NS.Showroom, NS.L
 NS.Hud = { order = {}, lines = {} }
 local H = NS.Hud
 
-local BAR = "Interface\\TargetingFrame\\UI-StatusBar"
+local BAR = NS.Constants.FALLBACK_BAR_TEXTURE
 local LINE_W, LINE_H = 440, 18
 local SAMPLE = "12,345  0:42  98%"
 

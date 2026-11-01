@@ -135,6 +135,7 @@ NS.SKIN_VOCAB = {
     "BarTexture", "FontFlags", "HudFontSize", "Mark", "MarkText",
     -- LibKa0s v1.85.0: the HUD's colors, shadow and gloss, and the face a string draws in.
     "HudTextColor", "HudLabelColor", "BarFillColor", "HudShadow", "BarGloss", "HudFont",
+    "BarBorder", "HoverArt",
 }
 
 if not Skin then
@@ -181,6 +182,8 @@ if not Skin then
         fs:SetShadowColor(0, 0, 0, on and 1 or 0)
         fs:SetShadowOffset(on and 1 or 0, on and -1 or 0)
     end
+    -- LibKa0s v1.85.0 (SkinPaintExtras minor 16): a bar border's three, as the caller stored them.
+    S.BarBorder = function(style, show, size) return style, show, size end
     NS.Skin = S
     NS.SkinAvailable = false
     function NS.ApplySkinChoice() return false, false end

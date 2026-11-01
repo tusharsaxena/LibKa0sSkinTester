@@ -215,6 +215,17 @@ test("widgets: the drawer and nav hover art is the client's under Ka0s Default a
     assertTrue(sameColor(mock.__paint(sec.drawerChevron).vertex, arrow), "the chevron is icon.arrow")
 end)
 
+test("widgets: S.HoverArt's sample is the client's art under Ka0s Default and list.hoverArt under Glass", function()
+    -- red under: a sample that skips the primitive, which the coverage suite reads off R.used.
+    local NS, mock, sec = opened()
+    assertTrue(NS.Showroom.used.HoverArt, "through the wrapper")
+    assertTrue(mock.__paint(sec.hoverSampleArt).desaturated ~= true, "the client's art under Ka0s Default")
+    NS.Selector.Pick("glass")
+    assertTrue(mock.__paint(sec.hoverSampleArt).desaturated == true, "desaturated under Glass")
+    assertTrue(sameColor(mock.__paint(sec.hoverSampleArt).vertex, lib(mock):Token(OWNER, "list.hoverArt")),
+        "tinted list.hoverArt")
+end)
+
 --- A LibSharedMedia stand-in: every font key fetches as a path named after it, so a skin's face
 --- resolves in the harness (P.font gives the template back when no path resolves).
 local function fakeLSM(mock)

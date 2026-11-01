@@ -276,13 +276,14 @@ Total.
 - a5: every readout line is painted body text
 - a5: the BarStyle sample's fill is colored from the skin
 
-### test_showroom_coverage.lua (5)
+### test_showroom_coverage.lua (6)
 
 - showroom: every lib.VOCAB name is shown
 - showroom: every section is built and none is empty
 - showroom: the tabs sample moves its selection on a click
 - showroom: the sections build without the library's widgets
 - showroom: the slider sample is visible under Ka0s Default
+- showroom: the slider sample's parts start in the worn skin's slider tokens
 
 ### test_showroom_dropdowns.lua (8)
 
@@ -295,7 +296,7 @@ Total.
 - controls: the Blizzard dropdown's menu offers both choices and marks the pick
 - controls: a client without the Blizzard template shows a label in its cell
 
-### test_showroom_values.lua (13)
+### test_showroom_values.lua (15)
 
 - values: every getter is displayed
 - values: every sem token has a line
@@ -310,6 +311,8 @@ Total.
 - values: FontFlags shows From skin on a HUD and in a window, and a picked flag winning
 - values: HudFontSize shows a stored 12 and 24 scaled by the worn skin's HUD size
 - values: without the skin engine FontFlags and HudFontSize still answer what SetFont takes
+- values: BarBorder defers to the stored three under None and a real style wins
+- values: without the skin engine BarBorder answers the stored three
 
 ### test_showroom_textures.lua (8)
 
@@ -361,7 +364,7 @@ Total.
 - hud: BarGloss shows under a skin with gloss and only there
 - overlays: S.Mark tints its marks and the MarkText line is written again
 
-### test_showroom_widgets.lua (14)
+### test_showroom_widgets.lua (15)
 
 - widgets: the section is built with every sample
 - widgets: the drag handle's tooltip draws gtip.title, gtip.value and gtip.footer, per skin
@@ -370,6 +373,7 @@ Total.
 - widgets: a dragged resize grip leaves the box on its cell, at its new size
 - widgets: closing the showroom forgets a drag, and ends one under way
 - widgets: the drawer and nav hover art is the client's under Ka0s Default and list.hoverArt under Glass
+- widgets: S.HoverArt's sample is the client's art under Ka0s Default and list.hoverArt under Glass
 - widgets: the chart's tick labels and the autocomplete rows are in this addon's body face
 - widgets: Ignore fonts gives the chart's tick labels and the autocomplete rows their template face
 - widgets: Ignore settings panel leaves the section skinned (a window, decision D-01)
@@ -771,6 +775,233 @@ Total.
 - lizard sighted: parity names every file whose counts differ, and only those
 - lizard sighted: lizard lists every function of a hazard fixture once it is sanitized
 
+### test_skin_values.lua (3)
+
+- skin values: every host row carries its file, substring, why and cause id
+- skin values: no typed value outside the kit's categories and the host's rows
+- skin values: the check is falsifiable, a planted value of each shape is reported
+
+### test_skin_switch.lua (218)
+
+- skin switch: the check is falsifiable, a surface that redraws a literal is reported
+- skin switch: the window's shell changes
+- skin switch: the window's shell changes with the Scope ignored
+- skin switch: the title bar changes
+- skin switch: the title bar changes with the Scope ignored
+- skin switch: the footer changes
+- skin switch: the footer changes with the Scope ignored
+- skin switch: the scroll bar changes
+- skin switch: the scroll bar changes with the Scope ignored
+- skin switch: the skin selector changes
+- skin switch: the skin selector changes with the Scope ignored
+- skin switch: chrome: the title changes
+- skin switch: chrome: the title changes with the Scope ignored
+- skin switch: chrome: Shell, TitleBar, CloseButton, Footer changes
+- skin switch: chrome: Shell, TitleBar, CloseButton, Footer changes with the Scope ignored
+- skin switch: chrome: Tab x3 + SetTabSelection (click one) changes
+- skin switch: chrome: Tab x3 + SetTabSelection (click one) changes with the Scope ignored
+- skin switch: controls: the title changes
+- skin switch: controls: the title changes with the Scope ignored
+- skin switch: controls: Button changes
+- skin switch: controls: Button changes with the Scope ignored
+- skin switch: controls: Button (disabled) changes
+- skin switch: controls: Button (disabled) changes with the Scope ignored
+- skin switch: controls: Button (primary) changes
+- skin switch: controls: Button (primary) changes with the Scope ignored
+- skin switch: controls: Checkbox (checked) changes
+- skin switch: controls: Checkbox (checked) changes with the Scope ignored
+- skin switch: controls: Checkbox (unchecked) changes
+- skin switch: controls: Checkbox (unchecked) changes with the Scope ignored
+- skin switch: controls: Dropdown (click: MenuFrame) changes
+- skin switch: controls: Dropdown (click: MenuFrame) changes with the Scope ignored
+- skin switch: controls: EditBox (SearchBox, with its hint) changes
+- skin switch: controls: EditBox (SearchBox, with its hint) changes with the Scope ignored
+- skin switch: controls: PageButton (prev, next) changes
+- skin switch: controls: PageButton (prev, next) changes with the Scope ignored
+- skin switch: controls: Slider changes
+- skin switch: controls: Slider changes with the Scope ignored
+- skin switch: controls: SquareIcon (crop) + IconBorder changes
+- skin switch: controls: SquareIcon (crop) + IconBorder changes with the Scope ignored
+- skin switch: controls: StateButtonLabel (off) changes
+- skin switch: controls: StateButtonLabel (off) changes with the Scope ignored
+- skin switch: controls: StateButtonLabel (on) changes
+- skin switch: controls: StateButtonLabel (on) changes with the Scope ignored
+- skin switch: controls: WhiteButtonLabel changes
+- skin switch: controls: WhiteButtonLabel changes with the Scope ignored
+- skin switch: controls: WowStyle1DropdownTemplate (its list: stock) changes
+- skin switch: controls: WowStyle1DropdownTemplate (its list: stock) changes with the Scope ignored
+- skin switch: lists: the title changes
+- skin switch: lists: the title changes with the Scope ignored
+- skin switch: lists: ListRow (normal, stripe, hover, selected) changes
+- skin switch: lists: ListRow (normal, stripe, hover, selected) changes with the Scope ignored
+- skin switch: lists: ScrollBar (track, thumb) changes
+- skin switch: lists: ScrollBar (track, thumb) changes with the Scope ignored
+- skin switch: lists: SortHeaderBar changes
+- skin switch: lists: SortHeaderBar changes with the Scope ignored
+- skin switch: text: the title changes
+- skin switch: text: the title changes with the Scope ignored
+- skin switch: text: Font changes
+- skin switch: text: Text (accent) changes
+- skin switch: text: Text (accent) changes with the Scope ignored
+- skin switch: text: Text (body) changes
+- skin switch: text: Text (body) changes with the Scope ignored
+- skin switch: text: Text (disabled) changes
+- skin switch: text: Text (disabled) changes with the Scope ignored
+- skin switch: text: Text (heading) changes
+- skin switch: text: Text (heading) changes with the Scope ignored
+- skin switch: text: Text (headingAlt) changes
+- skin switch: text: Text (headingAlt) changes with the Scope ignored
+- skin switch: text: Text (link) changes
+- skin switch: text: Text (link) changes with the Scope ignored
+- skin switch: text: Text (linkHot) changes
+- skin switch: text: Text (linkHot) changes with the Scope ignored
+- skin switch: text: Text (muted) changes
+- skin switch: text: Text (muted) changes with the Scope ignored
+- skin switch: text: Text (title) changes
+- skin switch: text: Text (title) changes with the Scope ignored
+- skin switch: text: White changes
+- skin switch: text: White changes with the Scope ignored
+- skin switch: panels: the title changes
+- skin switch: panels: the title changes with the Scope ignored
+- skin switch: panels: Card changes
+- skin switch: panels: Card changes with the Scope ignored
+- skin switch: panels: Cover (text) changes
+- skin switch: panels: Cover (text) changes with the Scope ignored
+- skin switch: panels: Divider changes
+- skin switch: panels: Divider changes with the Scope ignored
+- skin switch: panels: Drawer (closed) changes
+- skin switch: panels: Drawer (closed) changes with the Scope ignored
+- skin switch: panels: Drawer (open, set) changes
+- skin switch: panels: Drawer (open, set) changes with the Scope ignored
+- skin switch: panels: Inset changes
+- skin switch: panels: Inset changes with the Scope ignored
+- skin switch: panels: NavItem changes
+- skin switch: panels: NavItem changes with the Scope ignored
+- skin switch: panels: NavItem (selected) changes
+- skin switch: panels: NavItem (selected) changes with the Scope ignored
+- skin switch: panels: Panel changes
+- skin switch: panels: Panel changes with the Scope ignored
+- skin switch: panels: Strip (sim) changes
+- skin switch: panels: Strip (sim) changes with the Scope ignored
+- skin switch: panels: Strip (test) changes
+- skin switch: panels: Strip (test) changes with the Scope ignored
+- skin switch: overlays: the title changes
+- skin switch: overlays: the title changes with the Scope ignored
+- skin switch: overlays: ApplyBarFill changes
+- skin switch: overlays: ApplyBarFill changes with the Scope ignored
+- skin switch: overlays: Confirm popup (Shell + Button) changes
+- skin switch: overlays: Confirm popup (Shell + Button) changes with the Scope ignored
+- skin switch: overlays: FadeRegions (left) beside stock changes
+- skin switch: overlays: FadeRegions (left) beside stock changes with the Scope ignored
+- skin switch: overlays: IconBorder, fromSkin changes
+- skin switch: overlays: IconBorder, fromSkin changes with the Scope ignored
+- skin switch: overlays: Mark (tint, sem.good), MarkText changes
+- skin switch: overlays: Mark (tint, sem.good), MarkText changes with the Scope ignored
+- skin switch: overlays: MenuFrame changes
+- skin switch: overlays: MenuFrame changes with the Scope ignored
+- skin switch: overlays: TestStrip (the library's) changes
+- skin switch: overlays: TestStrip (the library's) changes with the Scope ignored
+- skin switch: overlays: Tooltip (hover) changes
+- skin switch: overlays: Tooltip (hover) changes with the Scope ignored
+- skin switch: addon: the title changes
+- skin switch: addon: the title changes with the Scope ignored
+- skin switch: addon: Button, opts.tokens (danger) changes
+- skin switch: addon: Button, opts.tokens (danger) changes with the Scope ignored
+- skin switch: addon: Card, opts.tokens (caution) changes
+- skin switch: addon: Card, opts.tokens (caution) changes with the Scope ignored
+- skin switch: addon: IconBorder, fromSkin changes
+- skin switch: addon: IconBorder, fromSkin changes with the Scope ignored
+- skin switch: addon: Owner token (st.note) changes
+- skin switch: addon: Owner token (st.note) changes with the Scope ignored
+- skin switch: addon: Shell on SettingsFrameTemplate changes
+- skin switch: addon: Shell on SettingsFrameTemplate changes with the Scope ignored
+- skin switch: widgets: the title changes
+- skin switch: widgets: the title changes with the Scope ignored
+- skin switch: widgets: Autocomplete (type "o") changes
+- skin switch: widgets: Autocomplete (type "o") changes with the Scope ignored
+- skin switch: widgets: CopyWindow (its grip) changes
+- skin switch: widgets: CopyWindow (its grip) changes with the Scope ignored
+- skin switch: widgets: DragHandle (hover: gtip.title, gtip.value, gtip.footer) changes
+- skin switch: widgets: DragHandle (hover: gtip.title, gtip.value, gtip.footer) changes with the Scope ignored
+- skin switch: widgets: Drawer, opts.chevron + opts.hover changes
+- skin switch: widgets: Drawer, opts.chevron + opts.hover changes with the Scope ignored
+- skin switch: widgets: HoverArt (list.hoverArt) changes
+- skin switch: widgets: HoverArt (list.hoverArt) changes with the Scope ignored
+- skin switch: widgets: LineChart (tick labels: text.disabled, the body face) changes
+- skin switch: widgets: LineChart (tick labels: text.disabled, the body face) changes with the Scope ignored
+- skin switch: widgets: MakeResizable, opts.owner (icon.grip) changes
+- skin switch: widgets: MakeResizable, opts.owner (icon.grip) changes with the Scope ignored
+- skin switch: widgets: NavItem, opts.hover changes
+- skin switch: widgets: NavItem, opts.hover changes with the Scope ignored
+- skin switch: widgets: The debug console (its labels) changes
+- skin switch: widgets: The debug console (its labels) changes with the Scope ignored
+- skin switch: widgets: The skin picker (its layout) changes
+- skin switch: widgets: The skin picker (its layout) changes with the Scope ignored
+- skin switch: values: the title changes
+- skin switch: values: the title changes with the Scope ignored
+- skin switch: values:  changes
+- skin switch: values:  changes with the Scope ignored
+- skin switch: values: BarBorder (stored Solid, hidden, 2) changes
+- skin switch: values: BarBorder (stored Solid, hidden, 2) changes with the Scope ignored
+- skin switch: values: BarStyle changes
+- skin switch: values: BarStyle changes with the Scope ignored
+- skin switch: values: ChartStyle (series) changes
+- skin switch: values: ChartStyle (series) changes with the Scope ignored
+- skin switch: values: FontFlags (From skin: HUD, window; a picked flag) changes
+- skin switch: values: FontFlags (From skin: HUD, window; a picked flag) changes with the Scope ignored
+- skin switch: values: GetAccentColor changes
+- skin switch: values: GetAccentColor changes with the Scope ignored
+- skin switch: values: GetFont changes
+- skin switch: values: GetFont changes with the Scope ignored
+- skin switch: values: GetPanelColor changes
+- skin switch: values: GetPanelColor changes with the Scope ignored
+- skin switch: values: GlowColor changes
+- skin switch: values: GlowColor changes with the Scope ignored
+- skin switch: values: HudFontSize (stored 12, stored 24) changes
+- skin switch: values: HudFontSize (stored 12, stored 24) changes with the Scope ignored
+- skin switch: textures: the title changes
+- skin switch: textures: the title changes with the Scope ignored
+- skin switch: textures: Bar chart (series 1-5) changes
+- skin switch: textures: Bar chart (series 1-5) changes with the Scope ignored
+- skin switch: textures: Stacked bar (series 1-5) changes
+- skin switch: textures: Stacked bar (series 1-5) changes with the Scope ignored
+- skin switch: textures: StatusBar (accent, 72%) changes
+- skin switch: textures: StatusBar (accent, 72%) changes with the Scope ignored
+- skin switch: textures: StatusBar (bad, 88%) changes
+- skin switch: textures: StatusBar (bad, 88%) changes with the Scope ignored
+- skin switch: textures: StatusBar (good, 45%) changes
+- skin switch: textures: StatusBar (good, 45%) changes with the Scope ignored
+- skin switch: fonts: the title changes
+- skin switch: fonts: the title changes with the Scope ignored
+- skin switch: fonts: Azeroth: faces and width ratios changes
+- skin switch: fonts: Azeroth: faces and width ratios changes with the Scope ignored
+- skin switch: fonts: Ember: faces and width ratios changes
+- skin switch: fonts: Ember: faces and width ratios changes with the Scope ignored
+- skin switch: fonts: Glass: faces and width ratios changes
+- skin switch: fonts: Glass: faces and width ratios changes with the Scope ignored
+- skin switch: fonts: High Contrast: faces and width ratios changes
+- skin switch: fonts: High Contrast: faces and width ratios changes with the Scope ignored
+- skin switch: fonts: Ka0s Default: faces and width ratios changes
+- skin switch: fonts: Ka0s Default: faces and width ratios changes with the Scope ignored
+- skin switch: fonts: Obsidian: faces and width ratios changes
+- skin switch: fonts: Obsidian: faces and width ratios changes with the Scope ignored
+- skin switch: fonts: The Skin tab's Font outline, this addon's changes
+- skin switch: fonts: The Skin tab's Font outline, this addon's changes with the Scope ignored
+- skin switch: fonts: WoW Default: faces and width ratios changes
+- skin switch: fonts: WoW Default: faces and width ratios changes with the Scope ignored
+- skin switch: fonts: WoW Forever: faces and width ratios changes
+- skin switch: fonts: WoW Forever: faces and width ratios changes with the Scope ignored
+- skin switch: fonts: WoW Midnight: faces and width ratios changes
+- skin switch: fonts: WoW Midnight: faces and width ratios changes with the Scope ignored
+- skin switch: hud: the title changes
+- skin switch: hud: the title changes with the Scope ignored
+- skin switch: hud: BarFillColor, BarGloss changes
+- skin switch: hud: BarFillColor, BarGloss changes with the Scope ignored
+- skin switch: hud: BarStyle (the skin worn; Ignore fonts gives the host's face back) changes
+- skin switch: hud: BarStyle (the skin worn; Ignore fonts gives the host's face back) changes with the Scope ignored
+- skin switch: hud: HudFont: HudTextColor, HudLabelColor, HudShadow changes
+- skin switch: hud: HudFont: HudTextColor, HudLabelColor, HudShadow changes with the Scope ignored
+
 ## Totals
 
 | Suite | Cases |
@@ -786,14 +1017,14 @@ Total.
 | test_slash.lua | 19 |
 | test_selector.lua | 8 |
 | test_showroom.lua | 20 |
-| test_showroom_coverage.lua | 5 |
+| test_showroom_coverage.lua | 6 |
 | test_showroom_dropdowns.lua | 8 |
-| test_showroom_values.lua | 13 |
+| test_showroom_values.lua | 15 |
 | test_showroom_textures.lua | 8 |
 | test_showroom_owner.lua | 9 |
 | test_showroom_fonts.lua | 11 |
 | test_showroom_hud.lua | 10 |
-| test_showroom_widgets.lua | 14 |
+| test_showroom_widgets.lua | 15 |
 | test_skin_media.lua | 9 |
 | test_skin_outline.lua | 9 |
 | test_skin_verb.lua | 7 |
@@ -818,5 +1049,7 @@ Total.
 | test_layout_cap.lua | 13 |
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
+| test_skin_values.lua | 3 |
+| test_skin_switch.lua | 218 |
 | Skipped | 1 |
-| **Total** | **633** |
+| **Total** | **858** |

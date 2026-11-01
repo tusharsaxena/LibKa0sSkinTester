@@ -91,8 +91,10 @@ local CELL_GAP, CELL_MIN_W, CAPTION_H = 14, 150, 18
 
 --- A section's samples, left to right, wrapping at the body's width. g:Add(w, h, caption) answers a
 --- fresh cell frame of that size with the caption under it; g:Height() is what a build answers.
+--- body.cells[caption] is that cell: the surfaces tests/skin_surfaces.lua declares come from it.
 function R.Grid(body)
     local g = { x = 0, y = 0, rowH = 0, width = body:GetWidth() or SECTIONS_W }
+    body.cells = {}
     function g:Add(w, h, caption)
         local span = math.max(w, CELL_MIN_W)
         if self.x > 0 and self.x + span > self.width then
@@ -101,6 +103,7 @@ function R.Grid(body)
         local cell = CreateFrame("Frame", nil, body)
         cell:SetSize(w, h)
         cell:SetPoint("TOPLEFT", body, "TOPLEFT", self.x, -self.y)
+        body.cells[caption] = cell
         local cap = R.Caption(body, caption)
         cap:SetPoint("TOPLEFT", cell, "BOTTOMLEFT", 0, -4)
         self.x = self.x + span + CELL_GAP

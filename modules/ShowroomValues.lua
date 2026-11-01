@@ -1,5 +1,5 @@
 local addonName, NS = ...
--- modules/ShowroomValues.lua — the Values section: what the eight getters answer, then four token
+-- modules/ShowroomValues.lua — the Values section: what the nine getters answer, then four token
 -- categories of the skin worn, each token as a labeled swatch under its category's heading: every
 -- semantic color (`sem.*`), every item quality tier (`q.*`, poor to legendary), every tooltip color
 -- (`gtip.*`, LibKa0s v1.81.0's `gtip.footer` among them) and the two art tints v1.81.0 added
@@ -17,11 +17,12 @@ local addonName, NS = ...
 --   NS.Values.heads   [category] = the heading FontString ("sem", "q", "gtip", "art")
 --   NS.Values.getters [color getter] = its readout FontString
 --   NS.Values.bar, .barLine   the BarStyle sample's bar and its readout
+--   NS.Values.barBorder       the BarBorder sample's readout
 --
 -- Everything redraws on OnLooksChanged: these are values read once, not paint the library records.
 
 local R, L = NS.Showroom, NS.L
-local BAR = "Interface\\TargetingFrame\\UI-StatusBar"
+local BAR = NS.Constants.FALLBACK_BAR_TEXTURE
 local SWATCH = 16
 local SEM_W = 150
 
@@ -154,6 +155,22 @@ local function hudSizeGetter(g)
     end
 end
 
+--- BarBorder (LibKa0s v1.85.0, SkinPaintExtras minor 16) paints nothing either: a line of what a bar
+--- stored as Solid, hidden, thickness 2 and following the skin draws. A skin's real style wins, and
+--- its None hands the stored three back.
+local function barBorderGetter(g)
+    local fs = g:Add(300, 16, "BarBorder (stored Solid, hidden, 2)")
+        :CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    fs:SetPoint("LEFT")
+    R.Paint("Text", fs, "body")
+    V.shown.BarBorder = true
+    V.barBorder = fs
+    draws[#draws + 1] = function()
+        local style, show, size = R.Paint("BarBorder", "Solid", false, 2, true)
+        fs:SetText(("Draws %s, shown %s, %s thick"):format(tostring(style), tostring(show), tostring(size)))
+    end
+end
+
 local function semKeys()
     local lib, keys = Skin(), {}
     if not lib then return keys end
@@ -248,6 +265,7 @@ R.AddSection("values", L["Values"], function(body)
     barGetter(g)
     chartGetter(g)
     flagsGetter(g)
+    barBorderGetter(g)
     hudSizeGetter(g)
     if Skin() then
         heading(g, "sem", L["Semantic colors (sem.*)"])

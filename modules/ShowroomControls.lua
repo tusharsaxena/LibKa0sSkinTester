@@ -143,6 +143,13 @@ local function blizzardDropdown(g, paint)
     return dd
 end
 
+--- A white texture in `token`'s color, what a host's own slider part is before the primitive tints it.
+local function tinted(tex, token)
+    tex:SetColorTexture(1, 1, 1, 1)
+    local r, g, b, a = NS.Skin.Color(token)
+    if r then tex:SetVertexColor(r, g, b, a) end
+end
+
 local function dropdownRow(g, body, paint)
     g:Break()
     local dd = dropdown(g:Add(160, 22, "Dropdown (click: MenuFrame)"))
@@ -225,24 +232,22 @@ R.AddSection("controls", L["Controls"], function(body, paint)
     slider:SetOrientation("HORIZONTAL")
     slider:SetMinMaxValues(0, 100)
     slider:SetValue(40)
-    -- Drawn the way a host draws its own slider: white textures in the host's tints, which the
-    -- primitive re-tints with SetVertexColor in every skin (Ka0s Default sets its slider tokens since
-    -- LibKa0s SkinDefs minor 8); blank textures would show nothing where a skin leaves one alone.
+    -- Drawn the way a host draws its own slider: white textures tinted, which the primitive re-tints
+    -- with SetVertexColor in every skin (every skin sets its slider tokens); blank textures would show
+    -- nothing where a skin left one alone.
     -- The track is the host's own, so it goes in opts.stock: faded where the skin draws one.
     slider.track = slider:CreateTexture(nil, "BACKGROUND")
     slider.track:SetPoint("LEFT", slider, "LEFT", 0, 0)
     slider.track:SetPoint("RIGHT", slider, "RIGHT", 0, 0)
     slider.track:SetHeight(4)
-    slider.track:SetColorTexture(0.24, 0.24, 0.27, 0.9)
+    tinted(slider.track, "slider.track")
     local fill = slider:CreateTexture(nil, "ARTWORK")
     fill:SetPoint("LEFT", slider.track, "LEFT", 0, 0)
     fill:SetSize(72, 4)
-    fill:SetColorTexture(1, 1, 1, 1)
-    fill:SetVertexColor(1, 0.82, 0)
+    tinted(fill, "slider.fill")
     local thumb = slider:CreateTexture(nil, "OVERLAY")
     thumb:SetSize(10, 16)
-    thumb:SetColorTexture(1, 1, 1, 1)
-    thumb:SetVertexColor(0.9, 0.9, 0.9)
+    tinted(thumb, "slider.thumb")
     slider:SetThumbTexture(thumb)
     paint("Slider", slider, { fill = fill, thumb = thumb, stock = { slider.track } })
     body.slider, slider.thumb = slider, thumb

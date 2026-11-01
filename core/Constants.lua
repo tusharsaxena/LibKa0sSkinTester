@@ -1,5 +1,5 @@
 local _, NS = ...
--- core/Constants.lua — the monospace face and the layers table.
+-- core/Constants.lua — the monospace face, the degraded bar and the layers table.
 
 NS.Constants = NS.Constants or {}
 
@@ -9,6 +9,9 @@ NS.Constants = NS.Constants or {}
 NS.Constants.FONT_MONO_NAME = "JetBrains Mono"
 NS.Constants.FONT_MONO = NS.MediaFont and NS.MediaFont(NS.Constants.FONT_MONO_NAME)
     or _G.STANDARD_TEXT_FONT
+
+-- The bar a sample draws with the library absent, where S.BarStyle answers no texture.
+NS.Constants.FALLBACK_BAR_TEXTURE = "Interface\\TargetingFrame\\UI-StatusBar"
 
 -- The layers table (frame-layering-§5). The one strata and level table: every SetFrameStrata and
 -- SetFrameLevel in this addon reads it, and docs/ARCHITECTURE.md points here rather than copying it.

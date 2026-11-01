@@ -17,7 +17,7 @@ its theme, and a retired number is never reused.
 | COMBAT-1..2 | Combat | The showroom and the panel in combat |
 | DIAG-1..3 | Diagnostics | The debug console and the report |
 | DEGRADED-1 | Degraded install | The library-absent load |
-| SHOW-1..33 | Showroom | The window, the swatch selector, the sections, position and scale, the textures, Ka0s Default's face and bar, the addon surfaces, the library widgets, the tooltip colors and art tints, the HUD faces, the faces and widths, FontFlags and HudFontSize |
+| SHOW-1..36 | Showroom | The window, the swatch selector, the sections, position and scale, the textures, Ka0s Default's face and bar, the addon surfaces, the library widgets, the tooltip colors and art tints, the HUD faces, the faces and widths, FontFlags and HudFontSize |
 | PICKER-1..23 | First-run skin picker | When and where it shows, its title, preview, Apply, close, the gear, Apply to all, one window across addons, taking it down, combat, a preview meeting another write, the reload popup |
 | LOC-1 | Non-English client | Locale-dependent behavior |
 
@@ -403,6 +403,20 @@ restart the client: new font and texture files are only seen at client start.
   strip's icon takes the skin's icon tint. Hover the drag handle on Library widgets. → Its title is in
   the skin's tooltip title color. Fail: a strip icon or a tooltip title on the old color. Result:
 
+- **SHOW-34. BarBorder (LibKa0s v1.85.0).** Scroll to Values in Ka0s Default. → The BarBorder line reads
+  "Draws Solid, shown false, 2 thick": a skin's None hands the stored three back. Pick Azeroth. → "Draws
+  Solid, shown true, 1 thick". Pick WoW Default. → "Draws Blizzard Tooltip, shown true, 2 thick". Pick
+  Obsidian. → The stored three again. Fail: a line that stays between skins, or a needed reload.
+  Result:
+- **SHOW-35. HoverArt (LibKa0s v1.85.0).** On Library widgets in Ka0s Default, hover the HoverArt sample.
+  → The client's own highlight wash, as on the drawer head. Pick Glass and hover it. → The wash takes
+  `list.hoverArt`, desaturated first. Fail: a tinted wash under Ka0s Default, or the client's own color
+  under Glass. Result:
+- **SHOW-36. Every skin's own bar, glow and cover (LibKa0s v1.85.0, the owner's rulings of 2026-11-01).**
+  Click through every card with the Textures, Values and Panels sections in view. → Each non-default
+  skin's bar track, GlowColor swatch and Cover dim are its own, from its palette; Ka0s Default's are what
+  they were. Fail: two skins sharing all three, or Ka0s Default's moving. Result:
+
 ## First-run skin picker
 
 - **PICKER-1. A fresh profile.** Create a new profile on the Profiles page (or log in on a character
@@ -561,5 +575,9 @@ is empty until the owner runs it.
 The full skinning run (FS-ST-RV, FS-ST-FIX, 2026-11-01, LibKa0s v1.85.0) adds PANEL-15, PROFILE-3 and
 SHOW-30 to SHOW-33, and re-opens PANEL-5, PANEL-13 and SHOW-9, whose expected rows or sample changed.
 
+The FS-ST-GATE commit (2026-11-01, LibKa0s v1.85.0 re-cut) adds SHOW-34 to SHOW-36. Its slider sample
+starts in the slider tokens, which S.Slider paints over, so no expected result moved, and no owner
+pass mark goes: the bar tracks SHOW-12 names stay dark on both its skins.
+
 Owed: PANEL-5, PANEL-13, PANEL-14, PANEL-15, PROFILE-3, SHOW-9, SHOW-28, SHOW-29, SHOW-30, SHOW-31,
-SHOW-32, SHOW-33.
+SHOW-32, SHOW-33, SHOW-34, SHOW-35, SHOW-36.

@@ -120,6 +120,22 @@ Kit.diagnostics = {
     reset       = function() diagNS = enableAddon() end,
 }
 
+-- The typed-value gate and the skin-switch test (skinning-§1, kit revision 50). The rows name what
+-- no kit category takes; a stale one fails. The surfaces are tests/skin_surfaces.lua's, off one
+-- opened showroom kept for the suite: the facts need the instance's own library at load, and a
+-- surface's frames have to be the ones that library repaints.
+Kit.skinValues = {
+    rows = {
+        { file = "modules/ShowroomPanels.lua", substring = "sel:SetColorTexture(1, 1, 1, 1)",
+          why = "the white base S.NavItem tints nav.selected, a blank texture draws no fill",
+          cause = "A5" },
+        { file = "modules/ShowroomWidgets.lua", substring = "UI-QuestLogTitleHighlight",
+          why = "the client's hover art a skin tints through list.hoverArt and never replaces",
+          cause = "D9" },
+    },
+}
+Kit.skinSwitch = dofile("tests/skin_surfaces.lua")(enableAddon)
+
 -- Order is load-order-sensitive; keep it stable.
 --
 -- What holds this list honest is `Kit.assertSuiteInventory` (tests/_kit/framework.lua), which
@@ -199,5 +215,9 @@ Kit.run{
         -- The sighted complexity shadow (automated-tests-§3), new in kit revision 35: pins the
         -- sanitizer the runner's complexity suite measures through, and the parity check.
         { name = "test_lizard_sighted", dir = "tests/_kit/" },
+        -- The typed-value gate and the skin-switch test (skinning-§1), new in kit revision 50: their
+        -- facts are Kit.skinValues and Kit.skinSwitch, set above.
+        { name = "test_skin_values", dir = "tests/_kit/" },
+        { name = "test_skin_switch", dir = "tests/_kit/" },
     },
 }

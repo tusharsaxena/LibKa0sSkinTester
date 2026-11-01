@@ -6,7 +6,7 @@ local addonName, NS = ...
 
 local R, L = NS.Showroom, NS.L
 local ICON = "Interface\\Icons\\INV_Misc_QuestionMark"
-local BAR = "Interface\\TargetingFrame\\UI-StatusBar"   -- only with the library absent: BarStyle answers the skin's
+local BAR = NS.Constants.FALLBACK_BAR_TEXTURE   -- only with the library absent: BarStyle answers the skin's
 local WHITE = "Interface\\Buttons\\WHITE8X8"
 local TIP_BACKDROP = { bgFile = WHITE, edgeFile = WHITE, edgeSize = 1 }
 
