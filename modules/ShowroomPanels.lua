@@ -67,7 +67,9 @@ R.AddSection("panels", L["Panels"], function(body, paint)
         local item = boxed(g:Add(160, 22, selected and "NavItem (selected)" or "NavItem"), 160, 22)
         local sel = item:CreateTexture(nil, "BACKGROUND")
         sel:SetAllPoints(item)
+        sel:SetColorTexture(1, 1, 1, 1)   -- S.NavItem only tints: a blank texture draws no fill
         if not selected then sel:Hide() end
+        if selected then body.selectedNav = sel end
         paint("NavItem", item, { label = label(item, "General"), sel = sel, selected = selected })
     end
 

@@ -73,6 +73,10 @@ local function build(parentCategory)
         -- filled while hidden and the page would read as blank.
         container.frame:Show()
         AceConfigDialog:Open(APPNAME, container)
+        -- After the Open, because the group has no widgets before it. It paints what the Scope
+        -- allows, and gives this page's delete row its own confirm so the box can wear the skin
+        -- (LibKa0s v1.85.0, cause A4). Nothing moves on the page.
+        NS.SkinPaintAceTree(container)
     end)
 
     page = ctx

@@ -26,11 +26,17 @@ NS.C = {
         size    = 5,         -- 1 .. 10
         mode    = "medium",
         color   = { r = 0.2, g = 0.6, b = 1, a = 1 },
+        colorFromSkin = true,   -- the swatch's skin companion
         useClassColor = false,
-        -- LibSharedMedia keys: the shipped face, and the library's own stock entries of each kind.
+        -- LibSharedMedia keys: Ka0s Default's face and bar, and the library's own stock entries of
+        -- the other kinds. A row with a skin token carries its `<key>FromSkin` companion, on by
+        -- default as a composer's is (LibKa0s v1.85.0); a background and a sound have no such token.
         font       = "Ka0s Prototype",
-        statusbar  = "Blizzard",
+        fontFromSkin = true,
+        statusbar  = "Ka0s Default",
+        statusbarFromSkin = true,
         border     = "Blizzard Tooltip",
+        borderFromSkin = true,
         background = "Blizzard Tooltip",
         sound      = "None",
     },

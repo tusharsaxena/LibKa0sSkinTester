@@ -30,7 +30,7 @@ local BLIZZ_TEMPLATE = "WowStyle1DropdownTemplate"
 local CHOICES = { "First choice", "Second choice" }
 local ACE_W, ACE_H = 200, 26
 local CELL_W = 270   -- a dropdown's cell: wider than the dropdown, so its caption clears the next one
-local FONT_KEY, BAR_KEY = "Ka0s Prototype", "Blizzard"
+local FONT_KEY, BAR_KEY = "Ka0s Prototype", "Ka0s Default"
 
 local aceSamples = {}   -- the widgets PaintAce paints, once built; repainted on every OnLooksChanged
 
@@ -194,13 +194,15 @@ R.AddSection("controls", L["Controls"], function(body, paint)
         paint("PageButton", btn, dir)
     end
 
-    local square = CreateFrame("Button", nil, g:Add(32, 32, "SquareIcon (crop)"), "BackdropTemplate")
+    local square = CreateFrame("Button", nil, g:Add(32, 32, "SquareIcon (crop) + IconBorder"), "BackdropTemplate")
     square:SetSize(32, 32)
     square:SetPoint("TOPLEFT")
     square.icon = square:CreateTexture(nil, "ARTWORK")
     square.icon:SetAllPoints(square)
     square.icon:SetTexture(ICON)
     paint("SquareIcon", square, { crop = true })
+    -- S.SquareIcon's own edge is flat 1px; the skin's icon.borderStyle and size are IconBorder's.
+    paint("IconBorder", square, { fromSkin = true })
 
     local box = searchBox(g:Add(180, 22, "EditBox (SearchBox, with its hint)"))
     box:SetPoint("TOPLEFT")
@@ -226,6 +228,7 @@ R.AddSection("controls", L["Controls"], function(body, paint)
     -- Drawn the way a host draws its own slider: white textures in the host's tints, which the
     -- primitive re-tints with SetVertexColor in every skin (Ka0s Default sets its slider tokens since
     -- LibKa0s SkinDefs minor 8); blank textures would show nothing where a skin leaves one alone.
+    -- The track is the host's own, so it goes in opts.stock: faded where the skin draws one.
     slider.track = slider:CreateTexture(nil, "BACKGROUND")
     slider.track:SetPoint("LEFT", slider, "LEFT", 0, 0)
     slider.track:SetPoint("RIGHT", slider, "RIGHT", 0, 0)
@@ -241,7 +244,7 @@ R.AddSection("controls", L["Controls"], function(body, paint)
     thumb:SetColorTexture(1, 1, 1, 1)
     thumb:SetVertexColor(0.9, 0.9, 0.9)
     slider:SetThumbTexture(thumb)
-    paint("Slider", slider, { fill = fill, thumb = thumb })
+    paint("Slider", slider, { fill = fill, thumb = thumb, stock = { slider.track } })
     body.slider, slider.thumb = slider, thumb
 
     return g:Height()

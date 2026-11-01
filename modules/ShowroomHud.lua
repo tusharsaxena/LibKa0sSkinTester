@@ -54,9 +54,14 @@ local function drawSkin(key, label)
     fs:SetText(("%s  %s  (%s)"):format(label, SAMPLE, tostring(face)))
 end
 
+local function setColor(fs, r, g, b, a)
+    if r then fs:SetTextColor(r, g, b, a) end
+end
+
 local function drawWorn()
     local fs, st = H.worn, R.Paint("BarStyle") or {}
     fs.faceKey = st.fontKey
+    setColor(fs, NS.Skin.Color("text.body"))
     if st.fontKey then
         setFace(fs, st.fontKey, st.fontSize, st.outline)
         fs:SetText(("%s  (%s)"):format(SAMPLE, st.fontKey))
@@ -73,10 +78,6 @@ local function shadowWords()
     if x == false then return "HudShadow: none in this skin" end
     if x == nil then return "HudShadow: nil, the host's own stands" end
     return ("HudShadow: %s, %s"):format(tostring(x), tostring(y))
-end
-
-local function setColor(fs, r, g, b, a)
-    if r then fs:SetTextColor(r, g, b, a) end
 end
 
 local function drawSurface()

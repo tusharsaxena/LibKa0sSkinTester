@@ -180,7 +180,7 @@ add{
 -- Sample controls -- a page of its own (settings/Panel.lua): one row of each widget type the
 -- renderer draws, bar the dim `note` row (declined, docs/revendor/2026-10-31-v1.84.0), and one picker
 -- of each media kind (LibKa0s v1.83.0, options-ui-§23), so a skin and the previews can be judged on a settings page as well as in the showroom. The rows do nothing;
--- the page wears the owner's skin like every Ka0s settings page.
+-- the page is stock until Scope > Ignore settings panel is cleared, like every Ka0s settings page.
 -- ---------------------------------------------------------------------------
 
 local SAMPLE = { section = "sample", page = "sample", group = "Sample controls" }
@@ -221,6 +221,11 @@ sample{
     tooltip = "The class-color companion every color swatch carries. It changes nothing here.",
     default = C.sample.useClassColor,
 }
+sample{
+    path = "sample.colorFromSkin", type = "bool", label = "Use the skin's color",
+    tooltip = "The skin companion a HUD color carries: while it is on, A color swatch is not read. It changes nothing here.",
+    default = C.sample.colorFromSkin,
+}
 
 -- The library's own picker for each LibSharedMedia kind: Ka0sMedia_*, the collection's only media
 -- picker. `values` asks at call time: the keys are whatever media packs
@@ -229,27 +234,61 @@ local function mediaValues(kind)
     return function() return Settings.Helpers.LSMValues(kind)() end
 end
 
+--- `t.fromSkin` names the skin token a picker follows: the row is then disabled and shows the skin's
+--- value while its companion is on, the shape a composer's picker has (OptionsCompose minor 12).
+--- Its value is read once per render, through the companion's stored value and the facade.
 local function mediaSample(t)
     t.type, t.widget = "string", "Dropdown"
     t.values = mediaValues(t.kind)
     t.kind = nil
+    local token = t.fromSkin
+    t.fromSkin = nil
+    local companion = t.companion
+    t.companion = nil
+    if token then
+        local path = t.path .. "FromSkin"
+        t.disabledIf = path
+        t.skinValue = function()
+            if Helpers.Get(path) ~= true then return nil end
+            return NS.Skin.Resolve(token, nil, true)
+        end
+    end
     sample(t)
+    if companion then sample(companion) end
 end
 
 mediaSample{
     path = "sample.font", kind = "font", dialogControl = "Ka0sMedia_Font", label = "A font picker", startsLine = true,
     tooltip = "Every font LibSharedMedia knows, each drawn in its own face. It changes nothing.",
     default = C.sample.font,
+    fromSkin = "hud.font",
+    companion = {
+        path = "sample.fontFromSkin", type = "bool", label = "Use the skin's font",
+        tooltip = "While this is on, A font picker shows the skin's HUD font and its own pick is not read.",
+        default = C.sample.fontFromSkin,
+    },
 }
 mediaSample{
     path = "sample.statusbar", kind = "statusbar", dialogControl = "Ka0sMedia_Statusbar", label = "A bar texture picker",
     tooltip = "Every bar texture LibSharedMedia knows, each with its bar. It changes nothing.",
     default = C.sample.statusbar,
+    fromSkin = "bar.texture",
+    companion = {
+        path = "sample.statusbarFromSkin", type = "bool", label = "Use the skin's texture",
+        tooltip = "While this is on, A bar texture picker shows the skin's bar texture and its own pick is not read.",
+        default = C.sample.statusbarFromSkin,
+    },
 }
 mediaSample{
     path = "sample.border", kind = "border", dialogControl = "Ka0sMedia_Border", label = "A border picker",
     tooltip = "Every border LibSharedMedia knows, each with its swatch. It changes nothing.",
     default = C.sample.border,
+    fromSkin = "bar.borderStyle",
+    companion = {
+        path = "sample.borderFromSkin", type = "bool", label = "Use the skin's border",
+        tooltip = "While this is on, A border picker shows the skin's bar border and its own pick is not read.",
+        default = C.sample.borderFromSkin,
+    },
 }
 mediaSample{
     path = "sample.background", kind = "background", dialogControl = "Ka0sMedia_Background", label = "A background picker",

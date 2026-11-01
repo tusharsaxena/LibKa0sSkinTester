@@ -15,6 +15,8 @@ local addonName, NS = ...
 --   NS.Values.tips    [gtip key] = { swatch, text }, one per `gtip.*` token in the schema
 --   NS.Values.art     [art key] = { swatch, text }: `list.hoverArt` and `icon.grip`
 --   NS.Values.heads   [category] = the heading FontString ("sem", "q", "gtip", "art")
+--   NS.Values.getters [color getter] = its readout FontString
+--   NS.Values.bar, .barLine   the BarStyle sample's bar and its readout
 --
 -- Everything redraws on OnLooksChanged: these are values read once, not paint the library records.
 
@@ -23,7 +25,7 @@ local BAR = "Interface\\TargetingFrame\\UI-StatusBar"
 local SWATCH = 16
 local SEM_W = 150
 
-NS.Values = { shown = {}, lines = {}, tiers = {}, tips = {}, art = {}, heads = {} }
+NS.Values = { shown = {}, lines = {}, tiers = {}, tips = {}, art = {}, heads = {}, getters = {} }
 local V = NS.Values
 local draws = {}   -- one redraw per display, run at build and on every skin change
 
@@ -55,7 +57,9 @@ end
 --- A getter shown as a swatch of the color it answers, or as "nil" when the skin sets none.
 local function colorGetter(g, name, none)
     local tex, fs = swatchLine(g:Add(160, SWATCH, name), name)
+    R.Paint("Text", fs, "body")
     V.shown[name] = true
+    V.getters[name] = fs
     draws[#draws + 1] = function()
         local r, gg, b, a = R.Paint(name)
         setSwatch(tex, r, gg, b, a)
@@ -85,10 +89,14 @@ local function barGetter(g)
     bg:SetAllPoints(bar)
     local fs = cell:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     fs:SetPoint("TOPLEFT", bar, "BOTTOMLEFT", 0, -2)
+    R.Paint("Text", fs, "body")
     V.shown.BarStyle = true
+    V.bar, V.barLine = bar, fs
     draws[#draws + 1] = function()
         local st = R.Paint("BarStyle") or {}
         bar:SetStatusBarTexture(st.texture or BAR)
+        local r, gg, b, a = colorOf(st.fill)
+        if r then bar:SetStatusBarColor(r, gg, b, a) end
         setSwatch(bg, colorOf(st.bg))
         fs:SetText(("%s, %s %s"):format(tostring(st.textureKey), tostring(st.fontKey), tostring(st.fontSize)))
     end
@@ -122,6 +130,7 @@ local function flagsGetter(g)
     local fs = g:Add(440, 16, "FontFlags (From skin: HUD, window; a picked flag)")
         :CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     fs:SetPoint("LEFT")
+    R.Paint("Text", fs, "body")
     V.shown.FontFlags = true
     V.flags = fs
     draws[#draws + 1] = function()
@@ -136,6 +145,7 @@ local function hudSizeGetter(g)
     local fs = g:Add(300, 16, "HudFontSize (stored 12, stored 24)")
         :CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     fs:SetPoint("LEFT")
+    R.Paint("Text", fs, "body")
     V.shown.HudFontSize = true
     V.hudSize = fs
     draws[#draws + 1] = function()

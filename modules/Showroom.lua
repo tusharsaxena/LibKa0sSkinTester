@@ -30,10 +30,12 @@ local LAYERS = NS.Constants.LAYERS
 
 local WINDOW_NAME = "LibKa0sSkinTesterShowroom"
 local WIDTH, HEIGHT = 960, 640
-local TITLE_H, FOOTER_H = 28, 22
+-- Geometry is skin-invariant (skinning-§4), so the two the skin states are read once. The fallbacks
+-- are Ka0s Default's, for the library-absent window. The footer has no token.
+local TITLE_H, FOOTER_H = (NS.Skin and NS.Skin.Token("title.height")) or 30, 22
 local SECTION_TITLE_H, SECTION_GAP = 24, 16
 local SCROLL_STEP = 60
-local BAR_W, BAR_GAP, MIN_THUMB = 8, 6, 24   -- the scrollbar's width, its gap from the sections, its shortest knob
+local BAR_W, BAR_GAP, MIN_THUMB = (NS.Skin and NS.Skin.Token("scroll.width")) or 8, 6, 24   -- the scrollbar's width, its gap from the sections, its shortest knob
 local SECTIONS_W = WIDTH - 16 - BAR_GAP - BAR_W   -- the body's width less the scrollbar's gutter
 
 R.used = R.used or {}

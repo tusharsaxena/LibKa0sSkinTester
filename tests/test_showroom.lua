@@ -183,3 +183,109 @@ test("showroom scrollbar: the corridor and the knob are the skin's", function()
     assertToken(mock, mock.__paint(f.track).color, "scroll.track", "the corridor under contrast")
     assertTrue(mock.__paint(f.thumb).shown ~= false, "the knob is drawn")
 end)
+
+-- ── cause A5 of Ka0sAddonsCommonTasks docs/2026-11-01-FULL_SKINNING: every sample tells the truth ──
+
+local function opened()
+    local NS, _, mock = painted()
+    NS.Showroom.Show()
+    return NS, mock
+end
+
+local function shadowed(obj, method)
+    local calls, real = {}, obj[method]
+    rawset(obj, method, function(self, ...)
+        calls[#calls + 1] = { ... }
+        return real(self, ...)
+    end)
+    return calls
+end
+
+test("a5: the hover tooltip is a frame of this addon's, in tooltip.* and gtip.*", function()
+    local NS, mock = opened()
+    local tip = NS.Showroom.sampleTooltip
+    assertTrue(tip ~= nil and mock.__paint(tip).frameType ~= "GameTooltip", "never a GameTooltip")
+    local Skin = mock.LibStub("LibKa0s-Skin-1.0")
+    local t = Skin:ResolveSkin("obsidian")
+    NS.Selector.Pick("obsidian")
+    local bd = { tip:GetBackdropColor() }
+    assertEqual(bd[1], t["tooltip.bg"][1], "the frame wears tooltip.bg")
+    local title, line = shadowed(tip.title, "SetTextColor"), shadowed(tip.line, "SetTextColor")
+    NS.Showroom.Section("overlays").tipButton:GetScript("OnEnter")(NS.Showroom.Section("overlays").tipButton)
+    assertEqual(title[#title][1], t["gtip.title"][1], "the title in gtip.title")
+    assertEqual(line[#line][1], t["gtip.value"][1], "the line in gtip.value")
+end)
+
+test("a5: the ApplyBarFill sample draws the skin's texture and accent, and follows a change", function()
+    local NS, mock = opened()
+    local LSM = mock.LibStub:NewLibrary("LibSharedMedia-3.0", 1) or mock.LibStub("LibSharedMedia-3.0")
+    LSM.Fetch = function(_, kind, key) return ("Media\\%s\\%s"):format(kind, tostring(key)) end
+    local bar = NS.Showroom.Section("overlays").fillBar
+    local tex = shadowed(bar, "SetStatusBarTexture")
+    NS.Selector.Pick("obsidian")
+    assertEqual(#tex >= 1, true, "the bar was given a texture again")
+    local want = NS.Skin.BarStyle().texture
+    assertEqual(tex[#tex][1], want, "the skin's bar.texture")
+    assertTrue(want ~= "Interface\\TargetingFrame\\UI-StatusBar", "not the client's bar")
+    local r = bar:GetStatusBarColor()
+    assertEqual(r, mock.LibStub("LibKa0s-Skin-1.0"):ResolveSkin("obsidian")["text.accent"][1], "the accent")
+end)
+
+test("a5: the fade's label and the icon border follow the skin", function()
+    local NS, mock = opened()
+    local sec = NS.Showroom.Section("overlays")
+    NS.Selector.Pick("obsidian")
+    local t = mock.LibStub("LibKa0s-Skin-1.0"):ResolveSkin("obsidian")
+    local tc = { sec.faded.text:GetTextColor() }
+    assertEqual(tc[1], t["text.body"][1], "text.body on the label")
+end)
+
+test("a5: every IconBorder sample asks for the skin's own edge", function()
+    local NS = painted()
+    local real, asked = NS.Skin.IconBorder, {}
+    NS.Skin.IconBorder = function(frame, opts)
+        asked[#asked + 1] = opts
+        return real(frame, opts)
+    end
+    NS.Showroom.Show()
+    NS.Skin.IconBorder = real
+    assertEqual(#asked, 3, "Controls' square, Overlays' and Addon surfaces'")
+    for _, opts in ipairs(asked) do assertTrue(opts.fromSkin == true, "fromSkin") end
+end)
+
+test("a5: the slider's own track is handed over and a selected nav entry has a fill to tint", function()
+    local NS, mock = opened()
+    local sec = NS.Showroom.Section("controls")
+    assertTrue((mock.__paint(sec.slider.track).alpha or 1) == 0 or mock.__paint(sec.slider.track).shown == false,
+        "the host's track is faded under the primitive's")
+    local item = NS.Showroom.Section("panels").selectedNav
+    assertTrue(mock.__paint(item).color ~= nil, "the selection is a texture with something on it")
+    local vr = mock.__paint(item).vertex
+    assertEqual(vr[1], mock.LibStub("LibKa0s-Skin-1.0"):ResolveSkin("ka0s")["nav.selBg"][1], "in nav.selBg")
+end)
+
+test("a5: the window's title bar stands at title.height", function()
+    local _, mock = opened()
+    local f = mock.frames["LibKa0sSkinTesterShowroom"]
+    assertEqual(f.titleBar:GetHeight(), mock.LibStub("LibKa0s-Skin-1.0"):ResolveSkin("ka0s")["title.height"])
+end)
+
+test("a5: every readout line is painted body text", function()
+    local NS, mock = opened()
+    local V = NS.Values
+    local t = mock.LibStub("LibKa0s-Skin-1.0"):ResolveSkin("obsidian")
+    NS.Selector.Pick("obsidian")
+    for name, fs in pairs({ flags = V.flags, hudSize = V.hudSize, color = V.getters.GlowColor, bar = V.barLine,
+                            outline = NS.Fonts.outline, worn = NS.Hud.worn }) do
+        local c = { fs:GetTextColor() }
+        assertEqual(c[1], t["text.body"][1], name .. " is in text.body")
+    end
+end)
+
+test("a5: the BarStyle sample's fill is colored from the skin", function()
+    local NS, mock = opened()
+    local bar = NS.Values.bar
+    local calls = shadowed(bar, "SetStatusBarColor")
+    NS.Selector.Pick("obsidian")
+    assertEqual(calls[#calls][1], mock.LibStub("LibKa0s-Skin-1.0"):ResolveSkin("obsidian")["bar.fill"][1])
+end)

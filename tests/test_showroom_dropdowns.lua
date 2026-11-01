@@ -120,7 +120,7 @@ test("controls: each media picker reads a real key, and no other media kind has 
     -- second media widget, which the owner ruled out on 2026-11-01.
     local _, _, sec = opened{ prepare = withPickers }
     assertEqual(sec.fontPicker.value, "Ka0s Prototype")
-    assertEqual(sec.barPicker.value, "Blizzard")
+    assertEqual(sec.barPicker.value, "Ka0s Default")
     assertTrue(sec.lsmFont == nil and sec.lsmBar == nil, "Ka0sMedia_* is the only media picker")
 end)
 
