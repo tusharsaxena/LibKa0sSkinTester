@@ -212,8 +212,8 @@ test("a5: the hover tooltip is a frame of this addon's, in tooltip.* and gtip.*"
     assertEqual(bd[1], t["tooltip.bg"][1], "the frame wears tooltip.bg")
     local title, line = shadowed(tip.title, "SetTextColor"), shadowed(tip.line, "SetTextColor")
     NS.Showroom.Section("overlays").tipButton:GetScript("OnEnter")(NS.Showroom.Section("overlays").tipButton)
-    assertEqual(title[#title][1], t["gtip.title"][1], "the title in gtip.title")
-    assertEqual(line[#line][1], t["gtip.value"][1], "the line in gtip.value")
+    assertToken(mock, title[#title], "gtip.title", "the title")
+    assertToken(mock, line[#line], "gtip.value", "the line")
 end)
 
 test("a5: the ApplyBarFill sample draws the skin's texture and accent, and follows a change", function()
@@ -234,10 +234,17 @@ end)
 test("a5: the fade's label and the icon border follow the skin", function()
     local NS, mock = opened()
     local sec = NS.Showroom.Section("overlays")
+    local function edge()   -- the Top edge's height: the first region of the primitive's holder
+        return (select(1, sec.framed:GetChildren())):GetRegions():GetHeight()
+    end
+    local ka0s = mock.LibStub("LibKa0s-Skin-1.0"):ResolveSkin("ka0s")
+    assertEqual(edge(), ka0s["icon.borderSize"], "Ka0s Default's edge")
     NS.Selector.Pick("obsidian")
     local t = mock.LibStub("LibKa0s-Skin-1.0"):ResolveSkin("obsidian")
     local tc = { sec.faded.text:GetTextColor() }
     assertEqual(tc[1], t["text.body"][1], "text.body on the label")
+    assertTrue(t["icon.borderSize"] ~= ka0s["icon.borderSize"], "the two skins differ here")
+    assertEqual(edge(), t["icon.borderSize"], "Obsidian's edge")
 end)
 
 test("a5: every IconBorder sample asks for the skin's own edge", function()
@@ -268,6 +275,11 @@ test("a5: the window's title bar stands at title.height", function()
     local _, mock = opened()
     local f = mock.frames["LibKa0sSkinTesterShowroom"]
     assertEqual(f.titleBar:GetHeight(), mock.LibStub("LibKa0s-Skin-1.0"):ResolveSkin("ka0s")["title.height"])
+end)
+
+test("a5: the scrollbar stands at scroll.width", function()
+    local _, mock = opened()
+    assertEqual(window(mock).scrollBar:GetWidth(), mock.LibStub("LibKa0s-Skin-1.0"):ResolveSkin("ka0s")["scroll.width"])
 end)
 
 test("a5: every readout line is painted body text", function()
