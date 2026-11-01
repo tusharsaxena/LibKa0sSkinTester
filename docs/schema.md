@@ -23,9 +23,13 @@ capture ring, outside AceDB, written only by the harness).
 | `sample.mode` | string | `medium` | Sample controls | `small`, `medium`, `large`; read by nothing |
 | `sample.color` | color | `{ r = 0.2, g = 0.6, b = 1, a = 1 }` | Sample controls | Read by nothing |
 | `sample.useClassColor` | bool | `false` | Sample controls | The swatch's class-color companion (options-ui-§17), `classColorSource = "player"` |
+| `sample.colorFromSkin` | bool | `true` | Sample controls | The swatch's skin companion; read by nothing, and the swatch stays live |
 | `sample.font` | string | `Ka0s Prototype` | Sample controls | `Ka0sMedia_Font`; a LibSharedMedia key, read by nothing |
-| `sample.statusbar` | string | `Blizzard` | Sample controls | `Ka0sMedia_Statusbar`; a LibSharedMedia key, read by nothing |
+| `sample.fontFromSkin` | bool | `true` | Sample controls | While on, `sample.font` is disabled and shows `hud.font` |
+| `sample.statusbar` | string | `Ka0s Default` | Sample controls | `Ka0sMedia_Statusbar`; a LibSharedMedia key, read by nothing |
+| `sample.statusbarFromSkin` | bool | `true` | Sample controls | While on, `sample.statusbar` is disabled and shows `bar.texture` |
 | `sample.border` | string | `Blizzard Tooltip` | Sample controls | `Ka0sMedia_Border`; a LibSharedMedia key, read by nothing |
+| `sample.borderFromSkin` | bool | `true` | Sample controls | While on, `sample.border` is disabled and shows `bar.borderStyle` |
 | `sample.background` | string | `Blizzard Tooltip` | Sample controls | `Ka0sMedia_Background`; a LibSharedMedia key, read by nothing |
 | `sample.sound` | string | `None` | Sample controls | `Ka0sMedia_Sound`; a LibSharedMedia key, read by nothing |
 

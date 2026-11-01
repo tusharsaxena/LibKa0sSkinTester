@@ -25,11 +25,13 @@ login; each page's body builds on its first show.
 - **Sample controls**: one row of each widget type the renderer draws, bar the dim `note` row (a checkbox, a slider, a
   dropdown, a color swatch and its Use class color companion) and one `Ka0sMedia_*` picker of each
   media kind (font, bar texture, border, background, sound; LibKa0s v1.83.0, options-ui-§23), under
-  one group heading, untabbed. The descriptor's `getLSM` feeds the pickers' lists. It
+  one group heading, untabbed. The swatch and the font, bar and border pickers carry the skin
+  companion a real row carries, on by default; a background and a sound have no skin token. The descriptor's `getLSM` feeds the pickers' lists. It
   shows the skin on a settings page once Ignore settings panel is off (a new profile has it on, so
   the page starts in the client's look); the rows are read by nothing. No Skin tab and no copy
   action: the skin is picked on General.
-- **Profiles**: AceDBOptions' profile controls, last.
+- **Profiles**: AceDBOptions' profile controls, last. `NS.SkinPaintAceTree` follows each `Open`, so
+  the page follows the Scope and the delete confirmation wears the skin (LibKa0s v1.85.0).
 
 A row with no `page` is the General page's; the sample rows carry `page = "sample"`, and the host's
 `rowsForPage` (settings/OptionsSetup.lua) hands each page only its own rows.

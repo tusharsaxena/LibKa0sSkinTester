@@ -11,13 +11,13 @@ its theme, and a retired number is never reused.
 |---|---|---|
 | INSTALL-1..3 | Install | Load, reload, first run |
 | SLASH-1..6 | Slash commands | `/st`, `/skintester`, help, the disabled refusal, a foreign `/st`, `/st skin`, `/st widths` |
-| PANEL-1..13 | Settings panel | Landing page, General's tabs, Skin, Keybindings, Sample controls, the Scope, Font and texture, the settings chrome's face and tooltips, the Font outline, the media pickers |
-| PROFILE-1..2 | Profiles | The Profiles page and the `profile` verb |
+| PANEL-1..15 | Settings panel | Landing page, General's tabs, Skin, Keybindings, Sample controls, the Scope, Font and texture, the settings chrome's face and tooltips, the Font outline, the media pickers |
+| PROFILE-1..3 | Profiles | The Profiles page and the `profile` verb |
 | STATE-1..2 | Enable and disable | The stand-down and its refusal |
 | COMBAT-1..2 | Combat | The showroom and the panel in combat |
 | DIAG-1..3 | Diagnostics | The debug console and the report |
 | DEGRADED-1 | Degraded install | The library-absent load |
-| SHOW-1..27 | Showroom | The window, the swatch selector, the sections, position and scale, the textures, Ka0s Default's face and bar, the addon surfaces, the library widgets, the tooltip colors and art tints, the HUD faces, the faces and widths, FontFlags and HudFontSize |
+| SHOW-1..33 | Showroom | The window, the swatch selector, the sections, position and scale, the textures, Ka0s Default's face and bar, the addon surfaces, the library widgets, the tooltip colors and art tints, the HUD faces, the faces and widths, FontFlags and HudFontSize |
 | PICKER-1..23 | First-run skin picker | When and where it shows, its title, preview, Apply, close, the gear, Apply to all, one window across addons, taking it down, combat, a preview meeting another write, the reload popup |
 | LOC-1 | Non-English client | Locale-dependent behavior |
 
@@ -75,8 +75,9 @@ restart the client: new font and texture files are only seen at client start.
 - **PANEL-5. Sample controls.** On General -> Skin untick Ignore settings panel (a new
   profile has it ticked, and the page is then the client's), pick Obsidian, then open Settings ->
   AddOns -> Ka0s Skin Tester -> Sample controls. → One group heading over a checkbox, a slider, a dropdown, a color swatch and Use
-  class color, then the five media pickers (PANEL-13), all in Obsidian; no Skin tab and no copy button. Pick Glass on General and come
-  back. → The page follows. Result: Owner reported pass, 2026-10-31
+  class color, Use the skin's color, then the five media pickers (PANEL-13) with three skin companions, all in Obsidian; no Skin tab and no copy button. Pick Glass on General and come
+  back. → The page follows. (Amended by FS-ST-FIX, 2026-11-01: the four companions; the pass of
+  2026-10-31 was against the old rows.) Result:
 - **PANEL-6. The Scope.** On a fresh profile open General -> Skin with the showroom open. →
   Ignore settings panel is ticked and Ignore fonts is not; the settings pages are in the client's
   look while the showroom wears the skin. Untick Ignore settings panel. → The settings pages take the
@@ -116,16 +117,18 @@ restart the client: new font and texture files are only seen at client start.
   needs a reload. Result: Owner reported pass, 2026-10-31
 - **PANEL-13. The media pickers (ST-F01; LibKa0s v1.83.0, LK-F03, D-08, D-09).** Fully restart the
   client (new font files), untick Ignore settings panel on General -> Skin, pick Obsidian and open
-  Sample controls. → Five pickers under the color swatch: A font picker on Ka0s Prototype, drawn in
-  Prototype; A bar texture picker on Blizzard, beside its bar; A border picker and A background
-  picker on Blizzard Tooltip, each beside its swatch; A sound picker on None. Open each. → The
+  Sample controls. Untick Use the skin's font, texture and border (PANEL-15). → Five pickers under the
+  color swatch: A font picker on Ka0s Prototype, drawn in Prototype; A bar texture picker on Ka0s
+  Default, beside its bar; A border picker and A background picker on Blizzard Tooltip, each beside
+  its swatch; A sound picker on None. Open each. → The
   pull-out wears Obsidian, and every row shows what it offers: fonts each in their own face (the
   thirteen new Ka0s faces among them), bars, borders and backgrounds each with their art. Sounds
   need a media pack: with one loaded, a row's play button plays it, and without one the list holds
   None alone. Pick an entry in each. → The closed row shows it, it survives a `/reload`, and nothing
   else changes. Tick Ignore fonts. → The font rows keep their own faces. Fail: a list of plain
   names, a blank row, a stock (unskinned) pull-out with the panel skinned, or a list reading only
-  the no-media entry. Result: Owner reported pass, 2026-10-31
+  the no-media entry. (Amended by FS-ST-FIX, 2026-11-01: the companions, and the bar default moved
+  from Blizzard to Ka0s Default; the pass of 2026-10-31 was against the old rows.) Result:
 - **PANEL-14. A font row and a border row are the pickers (M3-MEDIA; LibKa0s v1.84.0, the owner's
   ruling of 2026-11-01).** Untick Ignore settings panel on General -> Skin, pick Obsidian and open
   Sample controls. → A font picker reads a font name in that face, and A border picker reads a border
@@ -133,6 +136,14 @@ restart the client: new font and texture files are only seen at client start.
   left. Open each. → Both pull-outs wear Obsidian, with a preview on every row. Pick Glass on General
   and open them again. → Both follow. Fail: a stock pull-out on either row, a blank closed row, or a
   border row sitting further right than the rows around it. Result:
+- **PANEL-15. The sample rows follow the skin (FS-ST-FIX, cause A5).** Untick Ignore settings panel,
+  pick Obsidian and open Sample controls on a new profile. → Use the skin's color, font, texture and
+  border are ticked, and A font picker, A bar texture picker and A border picker are grayed, showing
+  Obsidian's HUD font, bar texture and border style. A color swatch stays live. Pick Glass on General
+  and come back. → The grayed font and bar rows show Glass's. Untick Use the skin's texture. → A bar
+  texture picker comes alive on Ka0s Default. A background picker and A sound picker carry no
+  companion, because no skin token names one. Fail: a grayed row showing a value that is not the
+  skin's, or a live row with its companion ticked. Result:
 
 ## Profiles
 
@@ -140,6 +151,12 @@ restart the client: new font and texture files are only seen at client start.
   forth on the Profiles page. → The showroom follows each profile's skin. Result: pass (owner-marked 2026-10-30)
 - **PROFILE-2. The verb.** `/st profile`, then `/st profile <name>`. → Lists, then switches.
   Result: pass (owner-marked 2026-10-30)
+- **PROFILE-3. The delete confirmation (FS-ST-FIX, cause A4; LibKa0s v1.85.0).** With two profiles,
+  untick Ignore settings panel, pick Obsidian, open Profiles and press Delete a Profile on the spare
+  one. → The confirmation wears Obsidian; nothing else on the page moved. Cancel it, tick Ignore
+  settings panel and press Delete again. → The stock box. Open another, non-Ka0s addon's Ace dialog
+  that raises the same box. → Stock under every setting. Fail: a Ka0s box stock with the panel skinned,
+  a skinned box with the panel ignored, or another addon's box skinned. Result:
 
 ## Enable and disable
 
@@ -193,7 +210,10 @@ restart the client: new font and texture files are only seen at client start.
   Record an illegible sample as a skin defect (skin, section, caption), not as a showroom failure.
   Result: pass (owner-marked 2026-10-30)
 - **SHOW-9. Live samples.** Hover "Hover me", click the dropdown, click the second and third tabs. →
-  A skinned tooltip, the skinned popup menu, and the tab selection moving. Result: pass (owner-marked 2026-10-30)
+  A tooltip in the skin's tooltip background and border, its title and line in the skin's tooltip
+  colors, the skinned popup menu, and the tab selection moving. (Amended by FS-ST-FIX, 2026-11-01: the
+  sample is now a frame of this addon's, so the pass of 2026-10-30, on the GameTooltip sample, no
+  longer stands.) Result:
 - **SHOW-10. Values.** Look at the Values section in Ka0s Default, then Azeroth. → The swatches and the
   `sem.*` lines change color with the skin, and the body-font line changes face where the skin sets
   one. Result: pass (owner-marked 2026-10-30)
@@ -341,7 +361,7 @@ restart the client: new font and texture files are only seen at client start.
 - **SHOW-28. Every dropdown kind (ST-D1).** `/st show` in Obsidian and scroll to the dropdown rows of
   Controls. → Five dropdowns, each captioned: Dropdown (click: MenuFrame), WowStyle1DropdownTemplate,
   AceGUI Dropdown, Ka0sMedia_Font and Ka0sMedia_Statusbar, the last two reading a real key (Ka0s
-  Prototype, Blizzard), and no LSM30 cell anywhere. The first two wear
+  Prototype, Ka0s Default), and no LSM30 cell anywhere. The first two wear
   Obsidian's input fill and edge, with a small down arrow in its arrow color and no gold button; hover
   and open the WowStyle1 one → it stays that way, and its list is the client's own, as its caption
   says. AceGUI Dropdown and the two pickers are the client's stock look. Open General -> Skin and clear
@@ -359,6 +379,29 @@ restart the client: new font and texture files are only seen at client start.
   section. Close the showroom and reopen it → the box is back at its first size, in its cell. Close
   with Escape in the middle of a drag, then reopen → the same, and the grip still works. Fail: a box
   that stays put while the section scrolls, or a size that survives a close. Result:
+- **SHOW-30. The HUD primitives (FS-ST-RV; LibKa0s v1.85.0).** Scroll to HUD faces, below the worn
+  line, in Ka0s Default. → White sample numbers, a gold HUD label, "HudShadow: none in this skin" and a
+  blue bar with no shine. Pick Azeroth, then Obsidian, then High Contrast with no reload. → The
+  numbers, the label and the bar change color with each skin, and the shadow line reads 1, -1, then
+  2, -2 on High Contrast, with a visible shadow on the text. Pick Glass. → The bar shines over its
+  fill's top half. Tick Ignore fonts. → The shadow line reads nil. Fail: a color that stays between
+  skins, a shine under any skin but Glass, or a needed reload. Result:
+- **SHOW-31. Marks (FS-ST-RV; LibKa0s v1.85.0).** Scroll to Overlays. → An info mark, a green tick and
+  a line holding the info mark, the first and the line's mark in the skin's icon tint. Pick Azeroth. →
+  All follow with no reload. Fail: a blank mark, a client icon, or a line left on the old tint.
+  Result:
+- **SHOW-32. The samples tell the truth (FS-ST-FIX, cause A5).** In Obsidian: the Overlays ApplyBarFill
+  bar wears Ka0s Matte in the accent color; the Faded label is body text beside the stock twin; the
+  IconBorder sample and Controls' SquareIcon carry the skin's icon edge. In Values, every getter
+  readout, the BarStyle line, the FontFlags and HudFontSize lines and, in Faces and widths, the Font
+  outline line are body text, and the BarStyle bar has its fill color. In HUD faces the worn line is
+  body text. On Panels, NavItem (selected) shows a filled selection. On Controls, the slider shows one
+  track. The window's title bar is 30 high, its band ending where the bar does. Pick Azeroth. →
+  All of them follow. Fail: gold or white stock text on a readout, a white or unfilled bar, a doubled
+  slider track, or a band running past the title bar. Result:
+- **SHOW-33. The strip's look (LibKa0s v1.85.0, releasing Step 5).** On Overlays, in Azeroth: the test
+  strip's icon takes the skin's icon tint. Hover the drag handle on Library widgets. → Its title is in
+  the skin's tooltip title color. Fail: a strip icon or a tooltip title on the old color. Result:
 
 ## First-run skin picker
 
@@ -514,3 +557,9 @@ runs them.
 
 M3-MEDIA (2026-11-01) removes the two LSM30 cells from SHOW-28 and adds PANEL-14, whose `Result:` line
 is empty until the owner runs it.
+
+The full skinning run (FS-ST-RV, FS-ST-FIX, 2026-11-01, LibKa0s v1.85.0) adds PANEL-15, PROFILE-3 and
+SHOW-30 to SHOW-33, and re-opens PANEL-5, PANEL-13 and SHOW-9, whose expected rows or sample changed.
+
+Owed: PANEL-5, PANEL-13, PANEL-14, PANEL-15, PROFILE-3, SHOW-9, SHOW-28, SHOW-29, SHOW-30, SHOW-31,
+SHOW-32, SHOW-33.

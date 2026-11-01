@@ -23,7 +23,7 @@ Total.
 - harness: the addon's AceTimer handles are the kit's, on the kit's queue
 - events: the [Init] summary carries no rejected clause when every name registered
 
-### test_libka0s.lua (55)
+### test_libka0s.lua (56)
 
 - libka0s: every vendored major registers under LibStub
 - libka0s: MODULES names every file of every major, at a positive integer minor
@@ -58,6 +58,7 @@ Total.
 - slash: the descriptor's L overrides exactly one string and nothing else
 - slash: every user-visible CLI string resolves to prose, not to its own key
 - degraded: the addon loads with LibKa0s absent
+- degraded: the facade draws HudFont and answers MarkText, with no skin to read (LibKa0s v1.85.0)
 - degraded: the cause clause is published on BOTH paths
 - degraded: the printer announces the absence exactly ONCE, then prints normally
 - degraded: the fallback printer still degrades a secret in place
@@ -252,7 +253,7 @@ Total.
 - selector: clicking the current card does nothing
 - selector: no EllesmereUI card and no copy button
 
-### test_showroom.lua (11)
+### test_showroom.lua (19)
 
 - showroom: the window is painted through the wrapper
 - showroom: Paint answers the primitive's answer and records the name once
@@ -265,6 +266,14 @@ Total.
 - showroom scrollbar: the wheel moves the sections and the knob together
 - showroom scrollbar: dragging the knob scrolls the sections, and a sync does not scroll back
 - showroom scrollbar: the corridor and the knob are the skin's
+- a5: the hover tooltip is a frame of this addon's, in tooltip.* and gtip.*
+- a5: the ApplyBarFill sample draws the skin's texture and accent, and follows a change
+- a5: the fade's label and the icon border follow the skin
+- a5: every IconBorder sample asks for the skin's own edge
+- a5: the slider's own track is handed over and a selected nav entry has a fill to tint
+- a5: the window's title bar stands at title.height
+- a5: every readout line is painted body text
+- a5: the BarStyle sample's fill is colored from the skin
 
 ### test_showroom_coverage.lua (5)
 
@@ -338,13 +347,17 @@ Total.
 - fonts: /st widths is refused while the addon is disabled
 - fonts: without the skin engine the section builds and the probe says why
 
-### test_showroom_hud.lua (5)
+### test_showroom_hud.lua (9)
 
 - hud: the section is built, one line per skin, in the library's order
 - hud: each skin's line names that skin's own HUD face, all nine of them
 - hud: each skin's line is drawn in its face, at its hud.fontSize, under its hud.outline
 - hud: the worn line follows the skin worn, through BarStyle
 - hud: under Ignore fonts the worn line takes the host's own face, and the skin lines keep theirs
+- hud: the v1.85.0 samples redraw on a skin change, through the drawing setters
+- hud: HudShadow reads as its three answers, and each string goes through HudFont
+- hud: BarGloss shows under a skin with gloss and only there
+- overlays: S.Mark tints its marks and the MarkText line is written again
 
 ### test_showroom_widgets.lua (14)
 
@@ -430,7 +443,7 @@ Total.
 - picker: another addon's picker closed in combat does not bring this one up until combat ends
 - picker: a stand-down while it waits out combat leaves nothing to show after
 
-### test_settings_sample.lua (9)
+### test_settings_sample.lua (10)
 
 - settings: the sample page carries one row of each widget type
 - settings: the sample page carries one picker of each media kind, on the library's own types
@@ -441,6 +454,7 @@ Total.
 - settings: on a new profile the sample page is the client's
 - settings: the sample rows stay on their page
 - settings: no copy button on the sample page
+- settings: the sample rows with a skin token carry a companion, default on, showing the skin's value
 
 ### test_panel.lua (37)
 
@@ -482,7 +496,7 @@ Total.
 - panel: Reset position forgets the saved point and centers the showroom
 - panel: the Skin tab is the library's, for this owner, and a pick lands in the profile
 
-### test_profiles.lua (17)
+### test_profiles.lua (18)
 
 - profiles: the page registers this db's AceDBOptions table, as the LAST subcategory
 - profiles: the page has no Defaults button
@@ -501,6 +515,7 @@ Total.
 - profile verb: an unknown name is refused, and no profile is created
 - profile verb: surrounding quotes are stripped, case and inner spaces kept
 - profile verb: a switch in combat is refused and nothing moves
+- profiles: the page hands the group to the skin after AceConfigDialog fills it
 
 ### test_diagnostics.lua (10)
 
@@ -759,7 +774,7 @@ Total.
 | Suite | Cases |
 |-------|------:|
 | test_harness.lua | 12 |
-| test_libka0s.lua | 55 |
+| test_libka0s.lua | 56 |
 | test_surface_parity.lua | 8 |
 | test_mediasetup.lua | 13 |
 | test_envsetup.lua | 9 |
@@ -768,22 +783,22 @@ Total.
 | test_settings.lua | 53 |
 | test_slash.lua | 19 |
 | test_selector.lua | 8 |
-| test_showroom.lua | 11 |
+| test_showroom.lua | 19 |
 | test_showroom_coverage.lua | 5 |
 | test_showroom_dropdowns.lua | 8 |
 | test_showroom_values.lua | 13 |
 | test_showroom_textures.lua | 8 |
 | test_showroom_owner.lua | 9 |
 | test_showroom_fonts.lua | 11 |
-| test_showroom_hud.lua | 5 |
+| test_showroom_hud.lua | 9 |
 | test_showroom_widgets.lua | 14 |
 | test_skin_media.lua | 9 |
 | test_skin_outline.lua | 9 |
 | test_skin_verb.lua | 7 |
 | test_skin_picker.lua | 30 |
-| test_settings_sample.lua | 9 |
+| test_settings_sample.lua | 10 |
 | test_panel.lua | 37 |
-| test_profiles.lua | 17 |
+| test_profiles.lua | 18 |
 | test_diagnostics.lua | 10 |
 | test_launcher.lua | 36 |
 | test_keybinds.lua | 8 |
@@ -802,4 +817,4 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | Skipped | 1 |
-| **Total** | **616** |
+| **Total** | **631** |
