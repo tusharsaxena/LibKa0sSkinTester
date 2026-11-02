@@ -1,0 +1,1 @@
+R3 review (owner-ask lens, 2026-11-03): OK. lua tests/run.lua 863/0/1. R3-L3 samples name .icon so the zoom reaches them; R3-FRIZ step 2 over every profile; R3-RV repins. Note: ShowroomControls.lua:196-205 SquareIcon crops 0.08 then IconBorder resets it to 0.07 (looser); see the LibKa0s note.
