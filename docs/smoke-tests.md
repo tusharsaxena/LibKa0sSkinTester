@@ -202,6 +202,7 @@ restart the client: new font and texture files are only seen at client start.
   accent. No EllesmereUI card; a Source dropdown sits at the right of the cards. Result: not run (changed by SF-ST-1)
 - **SHOW-37. Source dropdown (SF-ST-1).** With EllesmereUI installed, `/st show`, open the Source dropdown at the right of the cards and pick EllesmereUI. → The showroom wears EllesmereUI's look and no card reads selected; picking Ka0s skins asks for a `/reload` if EllesmereUI painted. Without EllesmereUI the pick falls back to the Ka0s skin. Result: not run
 - **SHOW-38. The library does the work (SF-ST-2; LibKa0s #70, #71, #72).** `/st show`, Library widgets, in Obsidian. → The line chart's first series has a soft area under its line; the Blizzard dropdown shows no gold button, a flat box and one chevron at its right, and its label stays the skin's color while you hover and press it; drag the "Drag the corner" grip → the box keeps its top left and scrolls with its cell. Fail: a flat chart line, a gold button or a doubled arrow, a white label on hover, or a box that comes off its cell. Result: not run
+- **SHOW-39. The icon samples zoom and wear a 1 px outline (R3-L3; LibKa0s R3-L3).** With the re-vendored LibKa0s, `/st show` in Ka0s Default, then Azeroth, WoW Default and Obsidian. → The Overlays IconBorder sample, the Addon surfaces icon border and Controls' SquareIcon (crop) + IconBorder each show the question-mark icon zoomed in, its own art edge gone, inside a 1 px outline in the skin's icon border color, the same thickness in every skin. Fail: the icon's own gray frame showing inside the outline, a 2 px edge in Ka0s Default, Azeroth or WoW Midnight, or a tooltip-style edge in WoW Default. Result: not run
 - **SHOW-6. Pick a skin.** Click Obsidian, then `/reload` and reopen. → The window repaints in Obsidian
   at the click, Obsidian's card reads selected, and after the reload it is still Obsidian. Fail: a
   card that repaints nothing, or a reload that comes back in Default. Result: pass (owner-marked 2026-10-30)
@@ -583,5 +584,9 @@ The FS-ST-GATE commit (2026-11-01, LibKa0s v1.85.0 re-cut) adds SHOW-34 to SHOW-
 starts in the slider tokens, which S.Slider paints over, so no expected result moved, and no owner
 pass mark goes: the bar tracks SHOW-12 names stay dark on both its skins.
 
+R3-L3 of the owner's third smoke round (2026-11-02) adds SHOW-39, whose `Result:` line reads not run
+until the owner runs it. SHOW-32's IconBorder samples keep their pass: they still carry the skin's
+icon edge.
+
 Owed: PANEL-5, PANEL-13, PANEL-14, PANEL-15, PROFILE-3, SHOW-9, SHOW-28, SHOW-29, SHOW-30, SHOW-31,
-SHOW-32, SHOW-33, SHOW-34, SHOW-35, SHOW-36, SHOW-37, SHOW-38.
+SHOW-32, SHOW-33, SHOW-34, SHOW-35, SHOW-36, SHOW-37, SHOW-38, SHOW-39.

@@ -11,7 +11,8 @@ local _, NS = ...
 --                         half: stock while the Scope leaves the panel the client's (the default),
 --                         painted once it is cleared. PaintAce is asked again on every
 --                         OnLooksChanged, so a Scope change or a skin switch shows at once.
---   an icon border        IconBorder with opts.fromSkin: icon.borderStyle and icon.borderSize
+--   an icon border        IconBorder with opts.fromSkin: a 1 px outline in icon.border and the
+--                         icon zoomed 0.07, in every skin (LibKa0s R3-L3)
 --   a template window     a SettingsFrameTemplate miniature painted like any window: its art faded
 --                         and the skin's drawn under every skin, Ka0s Default included (LibKa0s
 --                         v1.81.0 retired opts.stockDefault, ruling R-2: the client's look is the
@@ -90,9 +91,10 @@ end
 
 local function iconBorder(g, paint)
     local framed = boxed(g:Add(36, 36, "IconBorder, fromSkin"), 36, 36)
-    local icon = framed:CreateTexture(nil, "ARTWORK")
-    icon:SetAllPoints(framed)
-    icon:SetTexture(ICON)
+    -- Named `icon`, so the library's default zoom reaches it (LibKa0s R3-L3).
+    framed.icon = framed:CreateTexture(nil, "ARTWORK")
+    framed.icon:SetAllPoints(framed)
+    framed.icon:SetTexture(ICON)
     paint("IconBorder", framed, { fromSkin = true })
     return framed
 end

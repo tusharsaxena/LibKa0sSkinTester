@@ -260,6 +260,24 @@ test("a5: every IconBorder sample asks for the skin's own edge", function()
     for _, opts in ipairs(asked) do assertTrue(opts.fromSkin == true, "fromSkin") end
 end)
 
+test("R3-L3: every IconBorder sample names its icon, so the library's 0.07 zoom reaches it", function()
+    -- red under: an icon texture only a local held, which S.IconBorder does not search for (LibKa0s
+    -- R3-L3 zooms the Texture handed in, opts.icon, else frame.icon / frame.Icon).
+    local NS = painted()
+    local real, frames = NS.Skin.IconBorder, {}
+    NS.Skin.IconBorder = function(frame, opts)
+        frames[#frames + 1] = frame
+        return real(frame, opts)
+    end
+    NS.Showroom.Show()
+    NS.Skin.IconBorder = real
+    assertEqual(#frames, 3, "Controls' square, Overlays' and Addon surfaces'")
+    for i, f in ipairs(frames) do
+        local icon = rawget(f, "icon")
+        assertTrue(type(icon) == "table" and type(icon.SetTexCoord) == "function", "sample " .. i .. " names its icon")
+    end
+end)
+
 test("a5: the slider's own track is handed over and a selected nav entry has a fill to tint", function()
     local NS, mock = opened()
     local sec = NS.Showroom.Section("controls")

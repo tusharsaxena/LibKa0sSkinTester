@@ -149,9 +149,10 @@ R.AddSection("overlays", L["Overlays"], function(body, paint)
 
     local framed = boxed(g:Add(36, 36, "IconBorder, fromSkin"), 36, 36)
     framed:SetPoint("TOPLEFT")
-    local icon = framed:CreateTexture(nil, "ARTWORK")
-    icon:SetAllPoints(framed)
-    icon:SetTexture(ICON)
+    -- Named `icon`, so the library's default zoom reaches it (LibKa0s R3-L3).
+    framed.icon = framed:CreateTexture(nil, "ARTWORK")
+    framed.icon:SetAllPoints(framed)
+    framed.icon:SetTexture(ICON)
     paint("IconBorder", framed, { fromSkin = true })
     body.framed = framed
 

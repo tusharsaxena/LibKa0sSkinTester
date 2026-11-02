@@ -200,7 +200,8 @@ R.AddSection("controls", L["Controls"], function(body, paint)
     square.icon:SetAllPoints(square)
     square.icon:SetTexture(ICON)
     paint("SquareIcon", square, { crop = true })
-    -- S.SquareIcon's own edge is flat 1px; the skin's icon.borderStyle and size are IconBorder's.
+    -- S.SquareIcon crops to 0.08; IconBorder then zooms the icon to 0.07 and draws its 1 px outline
+    -- in icon.border, in every skin (LibKa0s R3-L3).
     paint("IconBorder", square, { fromSkin = true })
 
     local box = searchBox(g:Add(180, 22, "EditBox (SearchBox, with its hint)"))

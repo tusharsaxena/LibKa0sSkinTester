@@ -242,7 +242,7 @@ Total.
 - slash: a foreign /st is reported once and left alone
 - slash: with no foreign /st, nothing is said and both commands stay
 
-### test_selector.lua (8)
+### test_selector.lua (9)
 
 - selector: one card per Ka0s skin, in Skins() order
 - selector: clicking a card applies and saves the skin
@@ -252,8 +252,9 @@ Total.
 - selector: an unknown saved skin falls back to ka0s
 - selector: clicking the current card does nothing
 - selector: no EllesmereUI card and no copy button
+- selector: a source dropdown offers Ka0s skins and EllesmereUI (SF-ST-1)
 
-### test_showroom.lua (20)
+### test_showroom.lua (21)
 
 - showroom: the window is painted through the wrapper
 - showroom: Paint answers the primitive's answer and records the name once
@@ -270,6 +271,7 @@ Total.
 - a5: the ApplyBarFill sample draws the skin's texture and accent, and follows a change
 - a5: the fade's label and the icon border follow the skin
 - a5: every IconBorder sample asks for the skin's own edge
+- R3-L3: every IconBorder sample names its icon, so the library's 0.07 zoom reaches it
 - a5: the slider's own track is handed over and a selected nav entry has a fill to tint
 - a5: the window's title bar stands at title.height
 - a5: the scrollbar stands at scroll.width
@@ -364,10 +366,11 @@ Total.
 - hud: BarGloss shows under a skin with gloss and only there
 - overlays: S.Mark tints its marks and the MarkText line is written again
 
-### test_showroom_widgets.lua (15)
+### test_showroom_widgets.lua (16)
 
 - widgets: the section is built with every sample
 - widgets: the drag handle's tooltip draws gtip.title, gtip.value and gtip.footer, per skin
+- widgets: the chart sample fills the area under its first series (#70)
 - widgets: the drag handle, chart and autocomplete are owned by this addon, off the panel
 - widgets: the resize grip is the client's art under Ka0s Default and icon.grip under Obsidian
 - widgets: a dragged resize grip leaves the box on its cell, at its new size
@@ -574,6 +577,10 @@ Total.
 - launcher: with no LibDBIcon the broker plugin still registers
 - launcher: the row still stores with no broker library at all
 - launcher: with LibKa0s absent the seam answers honestly and the store still moves
+
+### test_launcher_skin_entry.lua (1)
+
+- launcher descriptor passes openSkinPicker, which runs the skin verb
 
 ### test_keybinds.lua (8)
 
@@ -927,8 +934,8 @@ Total.
 - skin switch: widgets: Drawer, opts.chevron + opts.hover changes with the Scope ignored
 - skin switch: widgets: HoverArt (list.hoverArt) changes
 - skin switch: widgets: HoverArt (list.hoverArt) changes with the Scope ignored
-- skin switch: widgets: LineChart (tick labels: text.disabled, the body face) changes
-- skin switch: widgets: LineChart (tick labels: text.disabled, the body face) changes with the Scope ignored
+- skin switch: widgets: LineChart (tick labels: text.disabled, the body face; the first series filled) changes
+- skin switch: widgets: LineChart (tick labels: text.disabled, the body face; the first series filled) changes with the Scope ignored
 - skin switch: widgets: MakeResizable, opts.owner (icon.grip) changes
 - skin switch: widgets: MakeResizable, opts.owner (icon.grip) changes with the Scope ignored
 - skin switch: widgets: NavItem, opts.hover changes
@@ -1015,8 +1022,8 @@ Total.
 | test_database.lua | 11 |
 | test_settings.lua | 53 |
 | test_slash.lua | 19 |
-| test_selector.lua | 8 |
-| test_showroom.lua | 20 |
+| test_selector.lua | 9 |
+| test_showroom.lua | 21 |
 | test_showroom_coverage.lua | 6 |
 | test_showroom_dropdowns.lua | 8 |
 | test_showroom_values.lua | 15 |
@@ -1024,7 +1031,7 @@ Total.
 | test_showroom_owner.lua | 9 |
 | test_showroom_fonts.lua | 11 |
 | test_showroom_hud.lua | 10 |
-| test_showroom_widgets.lua | 15 |
+| test_showroom_widgets.lua | 16 |
 | test_skin_media.lua | 9 |
 | test_skin_outline.lua | 9 |
 | test_skin_verb.lua | 7 |
@@ -1034,6 +1041,7 @@ Total.
 | test_profiles.lua | 18 |
 | test_diagnostics.lua | 10 |
 | test_launcher.lua | 36 |
+| test_launcher_skin_entry.lua | 1 |
 | test_keybinds.lua | 8 |
 | test_lifecycle.lua | 18 |
 | test_debuglog.lua | 36 |
@@ -1052,4 +1060,4 @@ Total.
 | test_skin_values.lua | 3 |
 | test_skin_switch.lua | 218 |
 | Skipped | 1 |
-| **Total** | **858** |
+| **Total** | **862** |
