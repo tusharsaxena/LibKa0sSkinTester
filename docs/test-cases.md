@@ -150,9 +150,9 @@ Total.
 - util: Restore clears existing anchors before applying the saved one
 - util: a Save/Restore round trip survives through the real frame stub
 
-### test_database.lua (11)
+### test_database.lua (12)
 
-- database: fresh DB lands at schemaVersion 1
+- database: fresh DB lands at schemaVersion 2
 - database: RunMigrations is idempotent
 - database: RunMigrations re-seeds a missing schemaVersion
 - database: defaults declare global.schemaVersion 0 (savedvariables-§1)
@@ -163,6 +163,7 @@ Total.
 - database: a version move is logged, a no-op migration is silent (debug-logging-§8)
 - database: migrations run before any profile read (OnInitialize order)
 - database: the profile is untouched by a migration pass
+- database: a stored pick of Ka0s Friz Quadrata TT moves to Ka0s Ubuntu, in every profile (R3-FRIZ)
 
 ### test_settings.lua (53)
 
@@ -1019,7 +1020,7 @@ Total.
 | test_mediasetup.lua | 13 |
 | test_envsetup.lua | 9 |
 | test_util.lua | 26 |
-| test_database.lua | 11 |
+| test_database.lua | 12 |
 | test_settings.lua | 53 |
 | test_slash.lua | 19 |
 | test_selector.lua | 9 |
@@ -1060,4 +1061,4 @@ Total.
 | test_skin_values.lua | 3 |
 | test_skin_switch.lua | 218 |
 | Skipped | 1 |
-| **Total** | **862** |
+| **Total** | **863** |

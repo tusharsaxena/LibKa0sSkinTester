@@ -55,5 +55,7 @@ tab writes them only through `NS.WriteSkinChoice`.
 
 ## Migrations
 
-`NS.SCHEMA_VERSION = 1`. Step 1 is the stamp itself. A new step goes in `NS.MIGRATIONS` and is
+`NS.SCHEMA_VERSION = 2`. Step 1 is the stamp itself. Step 2 (R3-FRIZ) moves a stored pick of
+`Ka0s Friz Quadrata TT`, which LibKa0s v1.85.0 deleted, to `Ka0s Ubuntu` in every stored profile, at
+any depth; Blizzard's own `Friz Quadrata TT` stays. A new step goes in `NS.MIGRATIONS` and is
 idempotent against a fresh default profile.

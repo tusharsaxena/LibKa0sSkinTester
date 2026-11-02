@@ -37,7 +37,7 @@ end
 test("diagnostics: identity names schema, profile, enabled, stood-down and the holds", function()
     local NS = T.enableAddon()
     local lines = report(NS)
-    assertTrue(has(lines, "schema stored=1 code=1"), "both schema versions")
+    assertTrue(has(lines, "schema stored=2 code=2"), "both schema versions")
     assertTrue(has(lines, "profile=Default"), "the active profile")
     assertTrue(has(lines, "enabled=true stoodDown=false"), "the switch and the latch")
     assertTrue(has(lines, "holds"), "the holds line")

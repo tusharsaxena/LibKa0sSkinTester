@@ -445,8 +445,8 @@ test("debuglog: InitSummary leads with the debug-logging-§5 identity fields, th
     local NS = T.bootAddon()
     local s = NS.addon:InitSummary()
     -- Standard-mandated identity prefix (name/version/schema/profile) comes first.
-    assertEqual(s:sub(1, #("LibKa0sSkinTester v" .. NS.addon.VERSION .. ", schema v1, profile 'Default'")),
-        "LibKa0sSkinTester v" .. NS.addon.VERSION .. ", schema v1, profile 'Default'")
+    assertEqual(s:sub(1, #("LibKa0sSkinTester v" .. NS.addon.VERSION .. ", schema v2, profile 'Default'")),
+        "LibKa0sSkinTester v" .. NS.addon.VERSION .. ", schema v2, profile 'Default'")
     -- Runtime state appended on the same one line.
     for _, frag in ipairs({ "enabled=true", "skin=ka0s:ka0s" }) do
         assertTrue(s:find(frag, 1, true) ~= nil, "summary carries " .. frag)

@@ -404,7 +404,7 @@ test("settings: RestoreAllDefaults leaves db.global untouched", function()
     local NS = T.bootAddon()
     NS.addon.db.global.windows.showroom = { point = "CENTER", relPoint = "CENTER", x = 1, y = 2 }
     NS.addon.Settings.Helpers.RestoreAllDefaults()
-    assertEqual(NS.addon.db.global.schemaVersion, 1)
+    assertEqual(NS.addon.db.global.schemaVersion, 2)
     assertTrue(NS.addon.db.global.windows.showroom ~= nil,
         "window geometry is account-wide and survives a profile reset")
 end)

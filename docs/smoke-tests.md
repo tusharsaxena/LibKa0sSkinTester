@@ -17,7 +17,7 @@ its theme, and a retired number is never reused.
 | COMBAT-1..2 | Combat | The showroom and the panel in combat |
 | DIAG-1..3 | Diagnostics | The debug console and the report |
 | DEGRADED-1 | Degraded install | The library-absent load |
-| SHOW-1..36 | Showroom | The window, the swatch selector, the sections, position and scale, the textures, Ka0s Default's face and bar, the addon surfaces, the library widgets, the tooltip colors and art tints, the HUD faces, the faces and widths, FontFlags and HudFontSize |
+| SHOW-1..40 | Showroom | The window, the swatch selector, the sections, position and scale, the textures, Ka0s Default's face and bar, the addon surfaces, the library widgets, the tooltip colors and art tints, the HUD faces, the faces and widths, FontFlags and HudFontSize, the icon samples, a stored pick of the deleted Friz |
 | PICKER-1..23 | First-run skin picker | When and where it shows, its title, preview, Apply, close, the gear, Apply to all, one window across addons, taking it down, combat, a preview meeting another write, the reload popup |
 | LOC-1 | Non-English client | Locale-dependent behavior |
 
@@ -203,6 +203,7 @@ restart the client: new font and texture files are only seen at client start.
 - **SHOW-37. Source dropdown (SF-ST-1).** With EllesmereUI installed, `/st show`, open the Source dropdown at the right of the cards and pick EllesmereUI. → The showroom wears EllesmereUI's look and no card reads selected; picking Ka0s skins asks for a `/reload` if EllesmereUI painted. Without EllesmereUI the pick falls back to the Ka0s skin. Result: not run
 - **SHOW-38. The library does the work (SF-ST-2; LibKa0s #70, #71, #72).** `/st show`, Library widgets, in Obsidian. → The line chart's first series has a soft area under its line; the Blizzard dropdown shows no gold button, a flat box and one chevron at its right, and its label stays the skin's color while you hover and press it; drag the "Drag the corner" grip → the box keeps its top left and scrolls with its cell. Fail: a flat chart line, a gold button or a doubled arrow, a white label on hover, or a box that comes off its cell. Result: not run
 - **SHOW-39. The icon samples zoom and wear a 1 px outline (R3-L3; LibKa0s R3-L3).** With the re-vendored LibKa0s, `/st show` in Ka0s Default, then Azeroth, WoW Default and Obsidian. → The Overlays IconBorder sample, the Addon surfaces icon border and Controls' SquareIcon (crop) + IconBorder each show the question-mark icon zoomed in, its own art edge gone, inside a 1 px outline in the skin's icon border color, the same thickness in every skin. Fail: the icon's own gray frame showing inside the outline, a 2 px edge in Ka0s Default, Azeroth or WoW Midnight, or a tooltip-style edge in WoW Default. Result: not run
+- **SHOW-40. A stored pick of the deleted Friz lands on Ka0s Ubuntu (R3-FRIZ).** Before you update, set General's A font picker to Ka0s Friz Quadrata TT and log out. Install the re-vendored build and fully restart the client (a new font file), then `/st show` and open the settings panel. → A font picker reads Ka0s Ubuntu, drawn in Ubuntu, and `/dump LibKa0sSkinTesterDB.global.schemaVersion` prints 2. A profile that picked Blizzard's own Friz Quadrata TT keeps it. Fail: the picker empty, on the game's default face, or still naming Ka0s Friz Quadrata TT. Result: not run
 - **SHOW-6. Pick a skin.** Click Obsidian, then `/reload` and reopen. → The window repaints in Obsidian
   at the click, Obsidian's card reads selected, and after the reload it is still Obsidian. Fail: a
   card that repaints nothing, or a reload that comes back in Default. Result: pass (owner-marked 2026-10-30)
@@ -239,11 +240,11 @@ restart the client: new font and texture files are only seen at client start.
   naming a key the bars do not show. Result: pass (owner-marked 2026-10-30)
 - **SHOW-13. Ka0s Default's face and bar.** Fully restart the client (new font and texture files),
   then `/st show` in Ka0s Default. → Every title and the body text are in Prototype (LibKa0s v1.82.0,
-  D-02; Oxanium before), titles larger than the body, not Ka0s Friz Quadrata TT; the Textures section's labels read "Texture:
+  D-02; Oxanium before), titles larger than the body, not Ka0s Ubuntu; the Textures section's labels read "Texture:
   Ka0s Default" and every fill shows that bar, dim at the top with a highlight low on the bar and a
   short lip, not the flat Blizzard bar. Click Obsidian, then WoW Default. → Their own faces and bars;
-  WoW Default is the shipped Ka0s Friz Quadrata TT (v1.83.0, D-01), visibly unlike Prototype, with the Blizzard bar. Fail: a square where a glyph should be,
-  or a flat or missing fill. Result: Owner reported pass, 2026-10-31
+  WoW Default is the shipped Ka0s Ubuntu (LibKa0s R3-L6; Ka0s Friz Quadrata TT before), visibly unlike Prototype, with the Blizzard bar. Fail: a square where a glyph should be,
+  or a flat or missing fill. Result: not run (re-opened by R3-FRIZ)
 - **SHOW-14. Every skin's own bar (ST-02; LibKa0s SO-04).** Fully restart the client (new texture
   files), clear any Texture override on General → Skin, then `/st show` and scroll to Textures. Click
   each card in turn → every label reads "Texture: <key>" for that skin and every fill shows it: Ka0s
@@ -290,12 +291,12 @@ restart the client: new font and texture files are only seen at client start.
   last section. → Nine lines, two to a row, each "<skin>  12,345  0:42  98%  (<face>)" in that skin's
   own face, at its own HUD size (LibKa0s v1.82.0, D-09) with a dark outline, whatever skin is worn:
   Ka0s Default Prototype, Obsidian Expressway (v1.82.0; Oxanium SemiBold and Inter SemiBold before), Azeroth Open Sans Semibold, Glass Avant Garde, High Contrast Doris PP, Ember
-  Emblem, WoW Default Ka0s Friz Quadrata TT (v1.83.0), WoW Midnight Segoe UI Semibold, WoW
+  Emblem, WoW Default Ka0s Ubuntu (LibKa0s R3-L6; Ka0s Friz Quadrata TT before), WoW Midnight Segoe UI Semibold, WoW
   Forever Fira Sans SemiBold. Judge each face as a HUD face: digits legible under the outline, no
   closed-up counters. The tenth line, under them, is the worn skin's face: click Ember → it reads
   Emblem. Fail: a square where a glyph should be, a line in another skin's face, two skins
   sharing a face, or a face you reject for a HUD (record which skin and
-  why: the owner's call, R-4). Result: Owner reported pass, 2026-10-31
+  why: the owner's call, R-4). Result: not run (re-opened by R3-FRIZ)
 - **SHOW-20. Ignore fonts reaches the HUD (ST-01; LibKa0s v1.81.0, LK-01, ruling R-1).** On HUD
   faces in Obsidian, tick Ignore fonts on General -> Skin. → The last line drops to the game's own
   face and reads "(Ignore fonts: the host's own face)" at once; the nine skin lines keep their faces
@@ -589,5 +590,8 @@ R3-L3 of the owner's third smoke round (2026-11-02) adds SHOW-39, whose `Result:
 until the owner runs it. SHOW-32's IconBorder samples keep their pass: they still carry the skin's
 icon edge.
 
-Owed: PANEL-5, PANEL-13, PANEL-14, PANEL-15, PROFILE-3, SHOW-9, SHOW-28, SHOW-29, SHOW-30, SHOW-31,
-SHOW-32, SHOW-33, SHOW-34, SHOW-35, SHOW-36, SHOW-37, SHOW-38, SHOW-39.
+R3-FRIZ of the same round (LibKa0s R3-L6, R3-L7: Ka0s Friz Quadrata TT deleted, WoW Default on Ka0s
+Ubuntu) adds SHOW-40 and re-opens SHOW-13 and SHOW-19, whose WoW Default face changed.
+
+Owed: PANEL-5, PANEL-13, PANEL-14, PANEL-15, PROFILE-3, SHOW-9, SHOW-13, SHOW-19, SHOW-28, SHOW-29, SHOW-30, SHOW-31,
+SHOW-32, SHOW-33, SHOW-34, SHOW-35, SHOW-36, SHOW-37, SHOW-38, SHOW-39, SHOW-40.
