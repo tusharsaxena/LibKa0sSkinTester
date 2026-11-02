@@ -77,12 +77,12 @@ restart the client: new font and texture files are only seen at client start.
   AddOns -> Ka0s Skin Tester -> Sample controls. → One group heading over a checkbox, a slider, a dropdown, a color swatch and Use
   class color, Use the skin's color, then the five media pickers (PANEL-13) with three skin companions, all in Obsidian; no Skin tab and no copy button. Pick Glass on General and come
   back. → The page follows. (Amended by FS-ST-FIX, 2026-11-01: the four companions; the pass of
-  2026-10-31 was against the old rows.) Result:
+  2026-10-31 was against the old rows.) Result: Failed (owner, 2026-11-02): re-opened as R3-L1
 - **PANEL-6. The Scope.** On a fresh profile open General -> Skin with the showroom open. →
   Ignore settings panel is ticked and Ignore fonts is not; the settings pages are in the client's
   look while the showroom wears the skin. Untick Ignore settings panel. → The settings pages take the
   skin at once, no reload. Pick Azeroth and tick Ignore fonts. → The showroom's Open Sans text and titles go
-  back to the game's fonts at once and keep the skin's colors. `/reload`. → Both ticks are as you left them. Result: Owner reported pass, 2026-10-31
+  back to the game's fonts at once and keep the skin's colors. `/reload`. → Both ticks are as you left them. Result: Passed (owner, 2026-11-02)
 - **PANEL-7. Font and texture rows.** Open General -> Skin. → A "Font and texture" section between
   the skins and the Scope, with a Font and a Texture dropdown. Each list starts with "Skin's default
   (<key>)" naming the current skin's own font or texture, then every font or statusbar texture
@@ -128,14 +128,14 @@ restart the client: new font and texture files are only seen at client start.
   else changes. Tick Ignore fonts. → The font rows keep their own faces. Fail: a list of plain
   names, a blank row, a stock (unskinned) pull-out with the panel skinned, or a list reading only
   the no-media entry. (Amended by FS-ST-FIX, 2026-11-01: the companions, and the bar default moved
-  from Blizzard to Ka0s Default; the pass of 2026-10-31 was against the old rows.) Result:
+  from Blizzard to Ka0s Default; the pass of 2026-10-31 was against the old rows.) Result: Passed (owner, 2026-11-02)
 - **PANEL-14. A font row and a border row are the pickers (M3-MEDIA; LibKa0s v1.84.0, the owner's
   ruling of 2026-11-01).** Untick Ignore settings panel on General -> Skin, pick Obsidian and open
   Sample controls. → A font picker reads a font name in that face, and A border picker reads a border
   name beside its swatch, both lined up with the rows around them, with no extra tile to the
   left. Open each. → Both pull-outs wear Obsidian, with a preview on every row. Pick Glass on General
   and open them again. → Both follow. Fail: a stock pull-out on either row, a blank closed row, or a
-  border row sitting further right than the rows around it. Result:
+  border row sitting further right than the rows around it. Result: Failed (owner, 2026-11-02): re-opened as R3-L1
 - **PANEL-15. The sample rows follow the skin (FS-ST-FIX, cause A5).** Untick Ignore settings panel,
   pick Obsidian and open Sample controls on a new profile. → Use the skin's color, font, texture and
   border are ticked, and A font picker, A bar texture picker and A border picker are grayed, showing
@@ -143,7 +143,7 @@ restart the client: new font and texture files are only seen at client start.
   and come back. → The grayed font and bar rows show Glass's. Untick Use the skin's texture. → A bar
   texture picker comes alive on Ka0s Default. A background picker and A sound picker carry no
   companion, because no skin token names one. Fail: a grayed row showing a value that is not the
-  skin's, or a live row with its companion ticked. Result:
+  skin's, or a live row with its companion ticked. Result: Passed (owner, 2026-11-02)
 
 ## Profiles
 
@@ -156,7 +156,7 @@ restart the client: new font and texture files are only seen at client start.
   one. → The confirmation wears Obsidian; nothing else on the page moved. Cancel it, tick Ignore
   settings panel and press Delete again. → The stock box. Open another, non-Ka0s addon's Ace dialog
   that raises the same box. → Stock under every setting. Fail: a Ka0s box stock with the panel skinned,
-  a skinned box with the panel ignored, or another addon's box skinned. Result:
+  a skinned box with the panel ignored, or another addon's box skinned. Result: Passed (owner, 2026-11-02)
 
 ## Enable and disable
 
@@ -199,9 +199,9 @@ restart the client: new font and texture files are only seen at client start.
   both. → Both wear the skin the same way. Result: pass (owner-marked 2026-10-30)
 - **SHOW-5. Swatch selector.** `/st show`. → Nine cards across the top, Ka0s Default first, each with
   its name and four color swatches; the card of the skin you are wearing has its name in the skin's
-  accent. No EllesmereUI card; a Source dropdown sits at the right of the cards. Result: not run (changed by SF-ST-1)
-- **SHOW-37. Source dropdown (SF-ST-1).** With EllesmereUI installed, `/st show`, open the Source dropdown at the right of the cards and pick EllesmereUI. → The showroom wears EllesmereUI's look and no card reads selected; picking Ka0s skins asks for a `/reload` if EllesmereUI painted. Without EllesmereUI the pick falls back to the Ka0s skin. Result: not run
-- **SHOW-38. The library does the work (SF-ST-2; LibKa0s #70, #71, #72).** `/st show`, Library widgets, in Obsidian. → The line chart's first series has a soft area under its line; the Blizzard dropdown shows no gold button, a flat box and one chevron at its right, and its label stays the skin's color while you hover and press it; drag the "Drag the corner" grip → the box keeps its top left and scrolls with its cell. Fail: a flat chart line, a gold button or a doubled arrow, a white label on hover, or a box that comes off its cell. Result: not run
+  accent. No EllesmereUI card; a Source dropdown sits at the right of the cards. Result: Passed (owner, 2026-11-02)
+- **SHOW-37. Source dropdown (SF-ST-1).** With EllesmereUI installed, `/st show`, open the Source dropdown at the right of the cards and pick EllesmereUI. → The showroom wears EllesmereUI's look and no card reads selected; picking Ka0s skins asks for a `/reload` if EllesmereUI painted. Without EllesmereUI the pick falls back to the Ka0s skin. Result: Passed (owner, 2026-11-02)
+- **SHOW-38. The library does the work (SF-ST-2; LibKa0s #70, #71, #72).** `/st show`, Library widgets, in Obsidian. → The line chart's first series has a soft area under its line; the Blizzard dropdown shows no gold button, a flat box and one chevron at its right, and its label stays the skin's color while you hover and press it; drag the "Drag the corner" grip → the box keeps its top left and scrolls with its cell. Fail: a flat chart line, a gold button or a doubled arrow, a white label on hover, or a box that comes off its cell. Result: Passed (owner, 2026-11-02)
 - **SHOW-39. The icon samples zoom and wear a 1 px outline (R3-L3; LibKa0s R3-L3).** With the re-vendored LibKa0s, `/st show` in Ka0s Default, then Azeroth, WoW Default and Obsidian. → The Overlays IconBorder sample, the Addon surfaces icon border and Controls' SquareIcon (crop) + IconBorder each show the question-mark icon zoomed in, its own art edge gone, inside a 1 px outline in the skin's icon border color, the same thickness in every skin. Fail: the icon's own gray frame showing inside the outline, a 2 px edge in Ka0s Default, Azeroth or WoW Midnight, or a tooltip-style edge in WoW Default. Result: not run
 - **SHOW-40. A stored pick of the deleted Friz lands on Ka0s Ubuntu (R3-FRIZ).** Before you update, set General's A font picker to Ka0s Friz Quadrata TT and log out. Install the re-vendored build and fully restart the client (a new font file), then `/st show` and open the settings panel. → A font picker reads Ka0s Ubuntu, drawn in Ubuntu, and `/dump LibKa0sSkinTesterDB.global.schemaVersion` prints 2. A profile that picked Blizzard's own Friz Quadrata TT keeps it. Fail: the picker empty, on the game's default face, or still naming Ka0s Friz Quadrata TT. Result: not run
 - **SHOW-6. Pick a skin.** Click Obsidian, then `/reload` and reopen. → The window repaints in Obsidian
@@ -217,7 +217,7 @@ restart the client: new font and texture files are only seen at client start.
   A tooltip in the skin's tooltip background and border, its title and line in the skin's tooltip
   colors, the skinned popup menu, and the tab selection moving. (Amended by FS-ST-FIX, 2026-11-01: the
   sample is now a frame of this addon's, so the pass of 2026-10-30, on the GameTooltip sample, no
-  longer stands.) Result:
+  longer stands.) Result: Passed (owner, 2026-11-02)
 - **SHOW-10. Values.** Look at the Values section in Ka0s Default, then Azeroth. → The swatches and the
   `sem.*` lines change color with the skin, and the body-font line changes face where the skin sets
   one. Result: pass (owner-marked 2026-10-30)
@@ -383,18 +383,18 @@ restart the client: new font and texture files are only seen at client start.
   scrolls with its caption. Drag it again, then move the window by its title bar → it stays with the
   section. Close the showroom and reopen it → the box is back at its first size, in its cell. Close
   with Escape in the middle of a drag, then reopen → the same, and the grip still works. Fail: a box
-  that stays put while the section scrolls, or a size that survives a close. Result:
+  that stays put while the section scrolls, or a size that survives a close. Result: Passed (owner, 2026-11-02)
 - **SHOW-30. The HUD primitives (FS-ST-RV; LibKa0s v1.85.0).** Scroll to HUD faces, below the worn
   line, in Ka0s Default. → White sample numbers, a gold HUD label, "HudShadow: none in this skin" and a
   blue bar with no shine. Pick Azeroth, then Obsidian, then High Contrast with no reload. → The
   numbers, the label and the bar change color with each skin, and the shadow line reads 1, -1, then
   2, -2 on High Contrast, with a visible shadow on the text. Pick Glass. → The bar shines over its
   fill's top half. Tick Ignore fonts. → The shadow line reads nil. Fail: a color that stays between
-  skins, a shine under any skin but Glass, or a needed reload. Result:
+  skins, a shine under any skin but Glass, or a needed reload. Result: Passed (owner, 2026-11-02)
 - **SHOW-31. Marks (FS-ST-RV; LibKa0s v1.85.0).** Scroll to Overlays. → An info mark, a green tick and
   a line holding the info mark, the first and the line's mark in the skin's icon tint. Pick Azeroth. →
   All follow with no reload. Fail: a blank mark, a client icon, or a line left on the old tint.
-  Result:
+  Result: Passed (owner, 2026-11-02)
 - **SHOW-32. The samples tell the truth (FS-ST-FIX, cause A5).** In Obsidian: the Overlays ApplyBarFill
   bar wears Ka0s Matte in the accent color; the Faded label is body text beside the stock twin; the
   IconBorder sample and Controls' SquareIcon carry the skin's icon edge. In Values, every getter
@@ -403,26 +403,26 @@ restart the client: new font and texture files are only seen at client start.
   body text. On Panels, NavItem (selected) shows a filled selection. On Controls, the slider shows one
   track. The window's title bar is 30 high, its band ending where the bar does. Pick Azeroth. →
   All of them follow. Fail: gold or white stock text on a readout, a white or unfilled bar, a doubled
-  slider track, or a band running past the title bar. Result:
+  slider track, or a band running past the title bar. Result: Failed (owner, 2026-11-02): re-opened as R3-L3
 - **SHOW-33. The strip's look (LibKa0s v1.85.0, releasing Step 5).** On Overlays, in Azeroth: the test
   strip's icon takes the skin's icon tint. Hover the drag handle on Library widgets. → Its title is in
-  the skin's tooltip title color. Fail: a strip icon or a tooltip title on the old color. Result:
+  the skin's tooltip title color. Fail: a strip icon or a tooltip title on the old color. Result: Passed (owner, 2026-11-02)
 
 - **SHOW-34. BarBorder (LibKa0s v1.85.0).** Scroll to Values in Ka0s Default. → The BarBorder line reads
   "Draws Solid, shown false, 2 thick": a skin's None hands the stored three back. Pick Azeroth. → "Draws
   Solid, shown true, 1 thick". Pick WoW Default. → "Draws Blizzard Tooltip, shown true, 2 thick". Pick
   Obsidian. → The stored three again. Fail: a line that stays between skins, or a needed reload.
-  Result:
+  Result: Passed (owner, 2026-11-02)
 - **SHOW-35. HoverArt (LibKa0s v1.85.0).** On Library widgets in Ka0s Default, hover the HoverArt sample.
   → The client's own highlight wash, as on the drawer head. Pick Glass and hover it. → The wash takes
   `list.hoverArt`, desaturated first. Fail: a tinted wash under Ka0s Default, or the client's own color
-  under Glass. Result:
+  under Glass. Result: Passed (owner, 2026-11-02)
 - **SHOW-36. Every skin's own bar, glow and cover (LibKa0s v1.85.0, the owner's rulings of 2026-11-01).**
   Click through every card with the Textures, Values and Panels sections in view. → Each non-default
   skin's bar track, GlowColor swatch and Cover dim are its own, from its palette; Ka0s Default's are what
-  they were. Fail: two skins sharing all three, or Ka0s Default's moving. Result:
+  they were. Fail: two skins sharing all three, or Ka0s Default's moving. Result: Passed (owner, 2026-11-02)
 - **SHOW-37. The Source dropdown on its own row (SF-FIX, not run).**
-  Open the showroom: the Source dropdown sits under the skin cards, inside the window's right edge, and still switches between Ka0s and EllesmereUI skins.
+  Open the showroom: the Source dropdown sits under the skin cards, inside the window's right edge, and still switches between Ka0s and EllesmereUI skins. Result: Passed (owner, 2026-11-02)
 
 ## First-run skin picker
 
@@ -595,3 +595,5 @@ Ubuntu) adds SHOW-40 and re-opens SHOW-13 and SHOW-19, whose WoW Default face ch
 
 Owed: PANEL-5, PANEL-13, PANEL-14, PANEL-15, PROFILE-3, SHOW-9, SHOW-13, SHOW-19, SHOW-28, SHOW-29, SHOW-30, SHOW-31,
 SHOW-32, SHOW-33, SHOW-34, SHOW-35, SHOW-36, SHOW-37, SHOW-38, SHOW-39, SHOW-40.
+
+On 2026-11-02 the owner reported that every check on the smoke lists of the full skinning run and its smoke feedback batch (Ka0sAddonsCommonTasks `docs/2026-11-01-FULL_SKINNING/` and `docs/2026-11-01-SMOKE_FEEDBACK/`) passed, apart from DpsRace's clock font, the skinned look of the AceGUI Dropdown and the Ka0sMedia_Font and Ka0sMedia_Statusbar pickers, FadeNineSlice and IconBorder (`docs/2026-11-02-SMOKE_ROUND3/`, R3-SMOKE). Passed, recorded on each `Result:` line as `Passed (owner, 2026-11-02)`: PANEL-6, PANEL-13, PANEL-15, PROFILE-3, SHOW-5, SHOW-9, SHOW-29, SHOW-30, SHOW-31, SHOW-33, SHOW-34, SHOW-35, SHOW-36, SHOW-37 and SHOW-38. Failed, re-opened as R3-L3 (IconBorder's 1 px outline and zoom) and recorded as `Failed (owner, 2026-11-02): re-opened as R3-L3`: SHOW-32. Failed, re-opened as R3-L1 (the skinned AceGUI and media-picker dropdowns) and recorded as `Failed (owner, 2026-11-02): re-opened as R3-L1`: PANEL-5 and PANEL-14. Still owed: SHOW-28, whose expected result the third smoke round itself changed after the owner's run.
