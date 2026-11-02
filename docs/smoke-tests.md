@@ -368,13 +368,14 @@ restart the client: new font and texture files are only seen at client start.
   Obsidian's input fill and edge, with a small down arrow in its arrow color and no gold button; hover
   and open the WowStyle1 one → it stays that way, and its list is the client's own, as its caption
   says. AceGUI Dropdown and the two pickers are the client's stock look. Open General -> Skin and clear
-  Scope -> Ignore settings panel. → Those three repaint at once in the skin's input fill and edge, with
-  no client art behind them; open each → the list wears the skin, the font picker's rows in their own
+  Scope -> Ignore settings panel. → Those three repaint at once like the first two (LibKa0s R3-L1): the
+  skin's input fill and edge, the text left-aligned, one chevron in the skin's arrow color and no gold
+  button, with no client art behind them; open each → the list wears the skin, the font picker's rows in their own
   faces, the bar picker's rows with their swatches. Click Glass → all five follow. Set Ignore settings
   panel again → those three are stock again and the first two stay skinned. Tick Ignore fonts → the
   first two go to the game's fonts. Scroll the section → every dropdown moves with it and clips at the window's
   edge. Fail: a dropdown that stays put, a gold button or client text holder showing under the skin
-  on either of the first two (record the state: idle, hover or open), one that needs a reload to
+  on any of the five while it wears the skin (record the state: idle, hover or open), one that needs a reload to
   change, or an empty cell. Result:
 - **SHOW-29. The resize sample stays in its cell (ST-D2).** On Library widgets drag the "Drag the
   corner" box's grip to make it larger. → It resizes and its top left stays put. Roll the wheel → it

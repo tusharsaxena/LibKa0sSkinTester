@@ -150,7 +150,7 @@ end)
 
 -- ── the icon border ──────────────────────────────────────────────────────────────────────────
 
-test("addon surfaces: the icon border draws icon.borderSize edges in icon.border, per skin", function()
+test("addon surfaces: the icon border draws a 1 px edge in icon.border, in every skin", function()
     local NS, mock, sec = opened()
     local Skin = lib(mock)
     local function edges()
@@ -160,11 +160,11 @@ test("addon surfaces: the icon border draws icon.borderSize edges in icon.border
     local top = edges().edgeTop
     assertTrue(top ~= nil and mock.__paint(top).shown, "a top edge is drawn under Ka0s Default")
     assertToken(mock, mock.__paint(top).color, "icon.border", "the edge color")
-    assertEqual(Skin:Token(OWNER, "icon.borderSize"), 2, "Ka0s Default's icon border is 2px")
-    assertEqual(top:GetHeight(), 2, "the edge is icon.borderSize thick")
+    -- LibKa0s R3-L3: 1 px in every skin, though Ka0s Default's icon.borderSize is 2.
+    assertEqual(Skin:Token(OWNER, "icon.borderSize"), 2, "Ka0s Default's token still says 2")
+    assertEqual(top:GetHeight(), 1, "the edge is 1 px all the same")
     NS.Selector.Pick("obsidian")
-    assertEqual(Skin:Token(OWNER, "icon.borderSize"), 1, "Obsidian's is 1px")
-    assertEqual(edges().edgeTop:GetHeight(), 1, "and the edge follows the switch")
+    assertEqual(edges().edgeTop:GetHeight(), 1, "and 1 px after the switch")
 end)
 
 -- ── a template window, skinned in every skin (R-2) ──────────────────────────────────────────

@@ -55,7 +55,7 @@ test("hud: each skin's line names that skin's own HUD face, all nine of them", f
     assertEqual(NS.Hud.lines.ka0s.faceKey, "Ka0s Prototype")
     assertEqual(NS.Hud.lines.obsidian.faceKey, "Ka0s Expressway")
     assertEqual(NS.Hud.lines.ember.faceKey, "Ka0s Emblem")
-    assertEqual(NS.Hud.lines.wow.faceKey, "Ka0s Friz Quadrata TT", "WoW Default names the shipped face (D-01)")
+    assertEqual(NS.Hud.lines.wow.faceKey, "Ka0s Ubuntu", "WoW Default names the shipped face (LibKa0s R3-L6)")
     local n = 0
     for _ in pairs(faces) do n = n + 1 end
     assertEqual(n, 9, "nine skins, nine faces")
@@ -153,6 +153,8 @@ local function fakeFontObjects(mock, strings)
         function o:SetFont(...) self.font = { ... } end
         function o:SetShadowColor(...) self.shadowColor = { ... } end
         function o:SetShadowOffset(x, y) self.shadowX, self.shadowY = x, y end
+        -- A real font object answers its face (LibKa0s R3-DR-1L reads it back to hold the face).
+        function o:GetFont() return unpack(self.font or {}) end
         if name:find("LibKa0sHud_", 1, true) then made[#made + 1] = o end
         return o
     end

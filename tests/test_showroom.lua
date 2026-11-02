@@ -237,14 +237,13 @@ test("a5: the fade's label and the icon border follow the skin", function()
     local function edge()   -- the Top edge's height: the first region of the primitive's holder
         return (select(1, sec.framed:GetChildren())):GetRegions():GetHeight()
     end
-    local ka0s = mock.LibStub("LibKa0s-Skin-1.0"):ResolveSkin("ka0s")
-    assertEqual(edge(), ka0s["icon.borderSize"], "Ka0s Default's edge")
+    -- LibKa0s R3-L3: the outline is 1 px in every skin, whatever its icon.borderSize says.
+    assertEqual(edge(), 1, "Ka0s Default's edge")
     NS.Selector.Pick("obsidian")
     local t = mock.LibStub("LibKa0s-Skin-1.0"):ResolveSkin("obsidian")
     local tc = { sec.faded.text:GetTextColor() }
     assertEqual(tc[1], t["text.body"][1], "text.body on the label")
-    assertTrue(t["icon.borderSize"] ~= ka0s["icon.borderSize"], "the two skins differ here")
-    assertEqual(edge(), t["icon.borderSize"], "Obsidian's edge")
+    assertEqual(edge(), 1, "Obsidian's edge")
 end)
 
 test("a5: every IconBorder sample asks for the skin's own edge", function()

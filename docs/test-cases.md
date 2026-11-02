@@ -335,7 +335,7 @@ Total.
 - addon surfaces: the danger button paints its fill, edge and label from the named tokens
 - addon surfaces: the caution callout paints its fill, edge and title from the named tokens
 - addon surfaces: the TreeGroup follows the Scope's settings-panel half, live
-- addon surfaces: the icon border draws icon.borderSize edges in icon.border, per skin
+- addon surfaces: the icon border draws a 1 px edge in icon.border, in every skin
 - addon surfaces: the settings-style window wears Ka0s Default under Ka0s Default
 - addon surfaces: the settings-style window follows a skin switch and stays skinned back on Ka0s Default
 
