@@ -13,8 +13,6 @@ local _, NS = ...
 --                         OnLooksChanged, so a Scope change or a skin switch shows at once. Its
 --                         height is the host's (no auto-height) and its content pane holds a
 --                         placeholder page (R4-ST2).
---   an icon border        IconBorder with opts.fromSkin: a 1 px outline in icon.border and the
---                         icon zoomed 0.07, in every skin (LibKa0s R3-L3)
 --   a template window     a SettingsFrameTemplate miniature painted like any window: its art faded
 --                         and the skin's drawn under every skin, Ka0s Default included (LibKa0s
 --                         v1.81.0 retired opts.stockDefault, ruling R-2: the client's look is the
@@ -23,7 +21,6 @@ local _, NS = ...
 -- Built only through the sample's own frames: no GameTooltip, no StaticPopup, no Blizzard window.
 
 local R, L = NS.Showroom, NS.L
-local ICON = "Interface\\Icons\\INV_Misc_QuestionMark"
 local STOCK_TEMPLATE = "SettingsFrameTemplate"
 
 local tree   -- the TreeGroup sample, once built; repainted on every OnLooksChanged
@@ -100,16 +97,6 @@ local function treeGroup(g, paint)
     return tree, cell, paint("PaintAce", tree)
 end
 
-local function iconBorder(g, paint)
-    local framed = boxed(g:Add(36, 36, "IconBorder, fromSkin"), 36, 36)
-    -- Named `icon`, so the library's default zoom reaches it (LibKa0s R3-L3).
-    framed.icon = framed:CreateTexture(nil, "ARTWORK")
-    framed.icon:SetAllPoints(framed)
-    framed.icon:SetTexture(ICON)
-    paint("IconBorder", framed, { fromSkin = true })
-    return framed
-end
-
 -- A template's parentKey child: a raw field holding a frame or region, else nil.
 local function child(f, key)
     local v = f and rawget(f, key)
@@ -153,7 +140,6 @@ R.AddSection("addon", L["Addon surfaces"], function(body, paint)
     body.note = ownerToken(g, paint)
     body.danger = dangerButton(g, paint)
     body.callout = cautionCallout(g, paint)
-    body.iconFrame = iconBorder(g, paint)
     g:Break()
     body.tree, body.treeCell, body.treePainted = treeGroup(g, paint)
     body.stockWindow = stockWindow(g, paint)

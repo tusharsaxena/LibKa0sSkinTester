@@ -17,7 +17,7 @@ its theme, and a retired number is never reused.
 | COMBAT-1..2 | Combat | The showroom and the panel in combat |
 | DIAG-1..3 | Diagnostics | The debug console and the report |
 | DEGRADED-1 | Degraded install | The library-absent load |
-| SHOW-1..42 | Showroom | The window, the swatch selector, the sections, position and scale, the textures, Ka0s Default's face and bar, the addon surfaces, the library widgets, the tooltip colors and art tints, the HUD faces, the faces and widths, FontFlags and HudFontSize, the icon samples, a stored pick of the deleted Friz |
+| SHOW-1..43 | Showroom | The window, the swatch selector, the sections, position and scale, the textures, Ka0s Default's face and bar, the addon surfaces, the library widgets, the tooltip colors and art tints, the HUD faces, the faces and widths, FontFlags and HudFontSize, the icon samples, a stored pick of the deleted Friz |
 | PICKER-1..23 | First-run skin picker | When and where it shows, its title, preview, Apply, close, the gear, Apply to all, one window across addons, taking it down, combat, a preview meeting another write, the reload popup |
 | LOC-1 | Non-English client | Locale-dependent behavior |
 
@@ -211,10 +211,11 @@ restart the client: new font and texture files are only seen at client start.
   accent. No EllesmereUI card; a Source dropdown sits at the right of the cards. Result: Passed (owner, 2026-11-02)
 - **SHOW-37. Source dropdown (SF-ST-1).** With EllesmereUI installed, `/st show`, open the Source dropdown at the right of the cards and pick EllesmereUI. → The showroom wears EllesmereUI's look and no card reads selected; picking Ka0s skins asks for a `/reload` if EllesmereUI painted. Without EllesmereUI the pick falls back to the Ka0s skin. Result: Passed (owner, 2026-11-02)
 - **SHOW-38. The library does the work (SF-ST-2; LibKa0s #70, #71, #72).** `/st show`, Library widgets, in Obsidian. → The line chart's first series has a soft area under its line; the Blizzard dropdown shows no gold button, a flat box and one chevron at its right, and its label stays the skin's color while you hover and press it; drag the "Drag the corner" grip → the box keeps its top left and scrolls with its cell. Fail: a flat chart line, a gold button or a doubled arrow, a white label on hover, or a box that comes off its cell. Result: Passed (owner, 2026-11-02)
-- **SHOW-39. The icon samples zoom and wear a 1 px outline (R3-L3; LibKa0s R3-L3).** With the re-vendored LibKa0s, `/st show` in Ka0s Default, then Azeroth, WoW Default and Obsidian. → The Overlays IconBorder sample, the Addon surfaces icon border and Controls' SquareIcon (crop) + IconBorder each show the question-mark icon zoomed in, its own art edge gone, inside a 1 px outline in the skin's icon border color, the same thickness in every skin. Fail: the icon's own gray frame showing inside the outline, a 2 px edge in Ka0s Default, Azeroth or WoW Midnight, or a tooltip-style edge in WoW Default. Result: not run
+- **SHOW-39. The icon samples zoom and wear a 1 px outline (R3-L3; LibKa0s R3-L3).** With the re-vendored LibKa0s, `/st show` in Ka0s Default, then Azeroth, WoW Default and Obsidian. → The Overlays IconBorder sample and Controls' SquareIcon (crop) + IconBorder (the Addon surfaces duplicate is gone, R4-ST3) each show the question-mark icon zoomed in, its own art edge gone, inside a 1 px outline in the skin's icon border color, the same thickness in every skin. Fail: the icon's own gray frame showing inside the outline, a 2 px edge in Ka0s Default, Azeroth or WoW Midnight, or a tooltip-style edge in WoW Default. Result: not run
 - **SHOW-40. A stored pick of the deleted Friz lands on Ka0s Ubuntu (R3-FRIZ).** Before you update, set General's A font picker to Ka0s Friz Quadrata TT and log out. Install the re-vendored build and fully restart the client (a new font file), then `/st show` and open the settings panel. → A font picker reads Ka0s Ubuntu, drawn in Ubuntu, and `/dump LibKa0sSkinTesterDB.global.schemaVersion` prints 2. A profile that picked Blizzard's own Friz Quadrata TT keeps it. Fail: the picker empty, on the game's default face, or still naming Ka0s Friz Quadrata TT. Result: not run
 - **SHOW-41. The zoom keeps a tighter crop, and the outline stays 1 px after a scale change (R3-FIX; LibKa0s R3-FIX).** `/st show`, Controls, in Obsidian: look at SquareIcon (crop) + IconBorder, then switch skins twice. → Its icon stays cropped as tightly as SquareIcon left it (no more of the art's edge showing after a switch), inside a 1 px outline. Then change Options → Graphics → UI Scale and come back. → Every IconBorder outline and FadeNineSlice edge in the showroom is still exactly 1 px. Fail: the art's own edge creeping back in after a switch, or a 2 px or blurred edge after the scale change. Result: not run
 - **SHOW-42. The TreeGroup sample keeps its height and shows a page (R4-ST2; round 4, images 4-7).** `/st show`, Addon surfaces, the "TreeGroup via PaintAce (Scope: panel)" cell, in each of the nine skins with Ignore settings panel unticked (Scope on, the default here), then again with it ticked (Scope off: the client's look). → Both boxes are the full 120 tall, side by side; General, Skin, Strings and About sit inside the left box; the right box reads "The General page". Fail: either box collapsed to a thin strip, a row hanging below the boxes, or an empty right pane. Result:
+- **SHOW-43. One IconBorder sample in Overlays, none beside the caution box (R4-ST3; round 4, image 22).** `/st show` in Ka0s Default, then Obsidian. → Overlays shows its "IconBorder, fromSkin" sample beside ApplyBarFill, and Controls shows SquareIcon (crop) + IconBorder; in Addon surfaces the "Waiting for the pull" box is followed by the next row (the TreeGroup), with no icon cell beside it. Fail: an icon border cell beside the Waiting for the pull box, or either remaining sample missing. Result:
 - **SHOW-6. Pick a skin.** Click Obsidian, then `/reload` and reopen. → The window repaints in Obsidian
   at the click, Obsidian's card reads selected, and after the reload it is still Obsidian. Fail: a
   card that repaints nothing, or a reload that comes back in Default. Result: pass (owner-marked 2026-10-30)
@@ -289,7 +290,8 @@ restart the client: new font and texture files are only seen at client start.
   colors and title. Click Obsidian → the icon border is 1px. Click Ka0s Default → the small window
   is in Ka0s Default's colors again, never the client's frame. Clicking its close button does
   nothing. Fail: a sample in another skin's colors, the client's settings-window frame showing under
-  any skin, or an error. Result: pass (owner-marked 2026-10-30)
+  any skin, or an error. (Since 2026-11-03 the section has no icon border, R4-ST3, and its
+  TreeGroup starts skinned, R4-ST1; the pass of 2026-10-30 stands for the rest.) Result: pass (owner-marked 2026-10-30)
 - **SHOW-18. The TreeGroup follows the Scope (ST-01).** With the showroom open on Addon surfaces,
   open General -> Skin, set Scope -> Ignore settings panel, then clear it (a new profile has it
   clear in this addon, R4-ST1). → The TreeGroup sample repaints at once: both panes in the skin's navigation fill and edge, the row labels in the skin's navigation
@@ -607,7 +609,7 @@ R3-FRIZ of the same round (LibKa0s R3-L6, R3-L7: Ka0s Friz Quadrata TT deleted, 
 Ubuntu) adds SHOW-40 and re-opens SHOW-13 and SHOW-19, whose WoW Default face changed.
 
 Owed: PANEL-5, PANEL-6, PANEL-13, PANEL-14, PANEL-15, PROFILE-3, SHOW-9, SHOW-13, SHOW-19, SHOW-28, SHOW-29, SHOW-30, SHOW-31,
-SHOW-32, SHOW-33, SHOW-34, SHOW-35, SHOW-36, SHOW-37, SHOW-38, SHOW-39, SHOW-40, SHOW-41, PANEL-16, SHOW-42.
+SHOW-32, SHOW-33, SHOW-34, SHOW-35, SHOW-36, SHOW-37, SHOW-38, SHOW-39, SHOW-40, SHOW-41, PANEL-16, SHOW-42, SHOW-43.
 
 On 2026-11-02 the owner reported that every check on the smoke lists of the full skinning run and its smoke feedback batch (Ka0sAddonsCommonTasks `docs/2026-11-01-FULL_SKINNING/` and `docs/2026-11-01-SMOKE_FEEDBACK/`) passed, apart from DpsRace's clock font, the skinned look of the AceGUI Dropdown and the Ka0sMedia_Font and Ka0sMedia_Statusbar pickers, FadeNineSlice and IconBorder (`docs/2026-11-02-SMOKE_ROUND3/`, R3-SMOKE). Passed, recorded on each `Result:` line as `Passed (owner, 2026-11-02)`: PANEL-6, PANEL-13, PANEL-15, PROFILE-3, SHOW-5, SHOW-9, SHOW-29, SHOW-30, SHOW-31, SHOW-33, SHOW-34, SHOW-35, SHOW-36, SHOW-37 and SHOW-38. Failed, re-opened as R3-L3 (IconBorder's 1 px outline and zoom) and recorded as `Failed (owner, 2026-11-02): re-opened as R3-L3`: SHOW-32. Failed, re-opened as R3-L1 (the skinned AceGUI and media-picker dropdowns) and recorded as `Failed (owner, 2026-11-02): re-opened as R3-L1`: PANEL-5 and PANEL-14. Still owed: SHOW-28, whose expected result the third smoke round itself changed after the owner's run.
 
@@ -618,3 +620,7 @@ starts unticked; what they check is unchanged, so their results stand.
 
 R4-ST2 of the same round (2026-11-03) adds SHOW-42: the TreeGroup sample keeps its 120 height
 (SetAutoAdjustHeight(false), as PrettyChat's) and its content pane shows a placeholder page.
+
+R4-ST3 of the same round (2026-11-03) removes the Addon surfaces IconBorder sample, a duplicate of
+Overlays' one (image 22), and adds SHOW-43. SHOW-39 drops it from its list; SHOW-17 keeps its pass
+with a note.

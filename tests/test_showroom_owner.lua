@@ -1,9 +1,9 @@
 -- tests/test_showroom_owner.lua — the Addon surfaces section (ST-01 of Ka0sAddonsCommonTasks
 -- docs/2026-10-29-SKINNING_ROLLOUT): LibKa0s v1.80.0's rollout surfaces, each on show and painted
 -- through NS.Showroom.Paint. An owner token this addon registers, a danger button and a caution callout
--- through opts.tokens, an AceGUI TreeGroup through PaintAce, an icon border that follows
--- icon.borderStyle / icon.borderSize, and a settings-style window skinned in every skin (LibKa0s
--- v1.81.0 retired opts.stockDefault, ruling R-2).
+-- through opts.tokens, an AceGUI TreeGroup through PaintAce, and a settings-style window skinned in
+-- every skin (LibKa0s v1.81.0 retired opts.stockDefault, ruling R-2). Its icon border went in R4-ST3
+-- (a duplicate of Overlays'); the 1 px edge case below runs on Overlays' sample instead.
 --
 -- The skin assertions run under the kit's paint recorder (tests/_kit/mock_paint.lua). The
 -- stock-window cases also model SettingsFrameTemplate's anatomy (a NineSlice with the title on it, a
@@ -76,10 +76,12 @@ end
 test("addon surfaces: the section is built, and every sample went through the wrapper", function()
     local NS, _, sec = opened()
     assertTrue(sec ~= nil and (sec:GetHeight() or 0) > 0, "built, with a height")
-    for _, key in ipairs({ "note", "danger", "callout", "iconFrame", "tree", "stockWindow" }) do
+    for _, key in ipairs({ "note", "danger", "callout", "tree", "stockWindow" }) do
         assertTrue(sec[key] ~= nil, key .. " is on show")
     end
-    for _, name in ipairs({ "Text", "Button", "Card", "IconBorder", "PaintAce", "Shell" }) do
+    -- R4-ST3: no icon border here; Overlays' and Controls' samples show it (round 4, image 22).
+    assertTrue(sec.iconFrame == nil, "no duplicate IconBorder beside the caution callout")
+    for _, name in ipairs({ "Text", "Button", "Card", "PaintAce", "Shell" }) do
         assertTrue(NS.Showroom.used[name] == true, name .. " went through NS.Showroom.Paint")
     end
 end)
@@ -165,12 +167,14 @@ test("addon surfaces: the TreeGroup keeps its 120 height and shows a page (R4-ST
 end)
 
 -- ── the icon border ──────────────────────────────────────────────────────────────────────────
+-- R4-ST3 removed Addon surfaces' own sample (a duplicate); the edge is pinned on Overlays' one.
 
-test("addon surfaces: the icon border draws a 1 px edge in icon.border, in every skin", function()
-    local NS, mock, sec = opened()
+test("overlays: the IconBorder sample draws a 1 px edge in icon.border, in every skin", function()
+    local NS, mock = opened()
     local Skin = lib(mock)
+    local framed = NS.Showroom.Section("overlays").framed
     local function edges()
-        local rec = Skin.painted[sec.iconFrame]
+        local rec = Skin.painted[framed]
         return rec and rec.regions or {}
     end
     local top = edges().edgeTop

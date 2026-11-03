@@ -255,7 +255,8 @@ test("a5: every IconBorder sample asks for the skin's own edge", function()
     end
     NS.Showroom.Show()
     NS.Skin.IconBorder = real
-    assertEqual(#asked, 3, "Controls' square, Overlays' and Addon surfaces'")
+    -- R4-ST3: Addon surfaces' duplicate beside the caution callout is gone (round 4, image 22).
+    assertEqual(#asked, 2, "Controls' square and Overlays'")
     for _, opts in ipairs(asked) do assertTrue(opts.fromSkin == true, "fromSkin") end
 end)
 
@@ -270,7 +271,7 @@ test("R3-L3: every IconBorder sample names its icon, so the library's 0.07 zoom 
     end
     NS.Showroom.Show()
     NS.Skin.IconBorder = real
-    assertEqual(#frames, 3, "Controls' square, Overlays' and Addon surfaces'")
+    assertEqual(#frames, 2, "Controls' square and Overlays'")
     for i, f in ipairs(frames) do
         local icon = rawget(f, "icon")
         assertTrue(type(icon) == "table" and type(icon.SetTexCoord) == "function", "sample " .. i .. " names its icon")

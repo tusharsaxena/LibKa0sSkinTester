@@ -339,7 +339,7 @@ Total.
 - addon surfaces: the caution callout paints its fill, edge and title from the named tokens
 - addon surfaces: the TreeGroup follows the Scope's settings-panel half, live
 - addon surfaces: the TreeGroup keeps its 120 height and shows a page (R4-ST2)
-- addon surfaces: the icon border draws a 1 px edge in icon.border, in every skin
+- overlays: the IconBorder sample draws a 1 px edge in icon.border, in every skin
 - addon surfaces: the settings-style window wears Ka0s Default under Ka0s Default
 - addon surfaces: the settings-style window follows a skin switch and stays skinned back on Ka0s Default
 
@@ -793,7 +793,7 @@ Total.
 - skin values: no typed value outside the kit's categories and the host's rows
 - skin values: the check is falsifiable, a planted value of each shape is reported
 
-### test_skin_switch.lua (218)
+### test_skin_switch.lua (216)
 
 - skin switch: the check is falsifiable, a surface that redraws a literal is reported
 - skin switch: the window's shell changes
@@ -921,8 +921,6 @@ Total.
 - skin switch: addon: Button, opts.tokens (danger) changes with the Scope ignored
 - skin switch: addon: Card, opts.tokens (caution) changes
 - skin switch: addon: Card, opts.tokens (caution) changes with the Scope ignored
-- skin switch: addon: IconBorder, fromSkin changes
-- skin switch: addon: IconBorder, fromSkin changes with the Scope ignored
 - skin switch: addon: Owner token (st.note) changes
 - skin switch: addon: Owner token (st.note) changes with the Scope ignored
 - skin switch: addon: Shell on SettingsFrameTemplate changes
@@ -1063,6 +1061,6 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | test_skin_values.lua | 3 |
-| test_skin_switch.lua | 218 |
+| test_skin_switch.lua | 216 |
 | Skipped | 1 |
-| **Total** | **867** |
+| **Total** | **865** |
