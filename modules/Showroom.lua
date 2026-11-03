@@ -290,6 +290,11 @@ local function build()
     -- second time (a translucent band reading twice as strong). The collection's convention (R4-ST4).
     R.Paint("Shell", f, { noTopBar = true })
     R.Paint("TitleBar", bar, { text = bar.title })
+    -- The header on the band (LibKa0s v1.85.0 R5-L3): the bar takes the band's rect and the title and
+    -- close sit on its middle at y 0, in every skin, a 2 px edge and EllesmereUI's 25 px bar included.
+    -- The anchors above stay as the no-library fallback, where both calls are no-ops.
+    f.band = R.Paint("Band", f)
+    R.Paint("Header", f, { title = bar.title, right = { close }, bars = { bar } })
     if close then R.Paint("CloseButton", close) end
     R.Paint("Footer", footer, { text = footer.text })
     R.Paint("ScrollBar", f.scrollBar, { track = f.track, thumb = f.thumb })

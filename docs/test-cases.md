@@ -82,7 +82,7 @@ Total.
 - libka0s: Options reads no descriptor L (tripwire)
 - locale: every key enUS.lua defines has a reader
 
-### test_surface_parity.lua (8)
+### test_surface_parity.lua (9)
 
 - parity: the Core seam's whole namespace surface survives the library's absence
 - parity: the DebugLog stub carries the whole live surface
@@ -92,6 +92,7 @@ Total.
 - parity: the Schema host stub carries the library's own members
 - parity: the Launcher stub carries the whole live surface
 - parity: the Lifecycle stub carries the whole live surface
+- parity: the degraded Skin facade carries every live lib.VOCAB name, in the library's order
 
 ### test_mediasetup.lua (13)
 
@@ -256,7 +257,7 @@ Total.
 - selector: no EllesmereUI card and no copy button
 - selector: a source dropdown offers Ka0s skins and EllesmereUI (SF-ST-1)
 
-### test_showroom.lua (24)
+### test_showroom.lua (25)
 
 - showroom: the window is painted through the wrapper
 - showroom: Paint answers the primitive's answer and records the name once
@@ -282,6 +283,7 @@ Total.
 - a5: the scrollbar stands at scroll.width
 - a5: every readout line is painted body text
 - a5: the BarStyle sample's fill is colored from the skin
+- R5-RV: the showroom's title bar, title and close sit on S.Band in every skin
 
 ### test_showroom_coverage.lua (6)
 
@@ -1021,7 +1023,7 @@ Total.
 |-------|------:|
 | test_harness.lua | 12 |
 | test_libka0s.lua | 56 |
-| test_surface_parity.lua | 8 |
+| test_surface_parity.lua | 9 |
 | test_mediasetup.lua | 13 |
 | test_envsetup.lua | 9 |
 | test_util.lua | 26 |
@@ -1029,7 +1031,7 @@ Total.
 | test_settings.lua | 53 |
 | test_slash.lua | 19 |
 | test_selector.lua | 10 |
-| test_showroom.lua | 24 |
+| test_showroom.lua | 25 |
 | test_showroom_coverage.lua | 6 |
 | test_showroom_dropdowns.lua | 8 |
 | test_showroom_values.lua | 15 |
@@ -1066,4 +1068,4 @@ Total.
 | test_skin_values.lua | 3 |
 | test_skin_switch.lua | 216 |
 | Skipped | 1 |
-| **Total** | **868** |
+| **Total** | **870** |

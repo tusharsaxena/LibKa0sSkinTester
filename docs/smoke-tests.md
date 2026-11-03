@@ -15,10 +15,10 @@ its theme, and a retired number is never reused.
 | PROFILE-1..3 | Profiles | The Profiles page and the `profile` verb |
 | STATE-1..2 | Enable and disable | The stand-down and its refusal |
 | COMBAT-1..2 | Combat | The showroom and the panel in combat |
-| DIAG-1..4 | Diagnostics | The debug console, its copy window and the report |
+| DIAG-1..5 | Diagnostics | The debug console, its copy window and the report, the library windows' headers |
 | DEGRADED-1 | Degraded install | The library-absent load |
-| SHOW-1..47 | Showroom | The window, the swatch selector, the sections, position and scale, the textures, Ka0s Default's face and bar, the addon surfaces, the library widgets, the tooltip colors and art tints, the HUD faces, the faces and widths, FontFlags and HudFontSize, the icon samples, a stored pick of the deleted Friz, Ka0s Default's header, the icon outline colors, the window edge beside the HUD's |
-| PICKER-1..23 | First-run skin picker | When and where it shows, its title, preview, Apply, close, the gear, Apply to all, one window across addons, taking it down, combat, a preview meeting another write, the reload popup |
+| SHOW-1..49 | Showroom | The window, the swatch selector, the sections, position and scale, the textures, Ka0s Default's face and bar, the addon surfaces, the library widgets, the tooltip colors and art tints, the HUD faces, the faces and widths, FontFlags and HudFontSize, the icon samples, a stored pick of the deleted Friz, Ka0s Default's header, the icon outline colors, the window edge beside the HUD's, round 5's darker header, the header on its band |
+| PICKER-1..25 | First-run skin picker | When and where it shows, its title, preview, Apply, close, the gear, Apply to all, one window across addons, taking it down, combat, a preview meeting another write, the reload popup, the list closing on an outside press, the title on its band |
 | LOC-1 | Non-English client | Locale-dependent behavior |
 
 ## Before you start
@@ -213,6 +213,7 @@ restart the client: new font and texture files are only seen at client start.
   into the log, as the showroom's title bar runs into its body (image 27), and the copy window has no
   line under its title either; the rule over the console's footer stays. Fail: a 1 px line under
   either window's title bar in any skin. Result:
+- **DIAG-5. The console, copy window and perf panel headers sit on their band (R5-RV; LibKa0s R5-L2, R5-L3).** `/st debug`, press Copy, and run `/st perf` until its step panel shows, in Ka0s Default, then WoW Midnight. → Each window shows exactly one title band, its title and close mark vertically centered on it; under WoW Midnight they sit 1 px lower than in round 4, still centered. Fail: two bands or none, or a title or close mark off the band's middle. Result:
 
 ## Degraded install
 
@@ -241,9 +242,11 @@ restart the client: new font and texture files are only seen at client start.
 - **SHOW-42. The TreeGroup sample keeps its height and shows a page (R4-ST2; round 4, images 4-7).** `/st show`, Addon surfaces, the "TreeGroup via PaintAce (Scope: panel)" cell, in each of the nine skins with Ignore settings panel unticked (the sample skinned, the default here), then again with it ticked (the client's look). → Both boxes are the full 120 tall, side by side; General, Skin, Strings and About sit inside the left box; the right box reads "The General page". Fail: either box collapsed to a thin strip, a row hanging below the boxes, or an empty right pane. Result:
 - **SHOW-43. One IconBorder sample in Overlays, none beside the caution box (R4-ST3; round 4, image 22).** `/st show` in Ka0s Default, then Obsidian. → Overlays shows its "IconBorder, fromSkin" sample beside ApplyBarFill, and Controls shows SquareIcon (crop) + IconBorder; in Addon surfaces the "Waiting for the pull" box is followed by the next row (the TreeGroup), with no icon cell beside it. Fail: an icon border cell beside the Waiting for the pull box, or either remaining sample missing. Result:
 - **SHOW-44. The showroom's title band is painted once (R4-ST4).** `/st show` in Glass, then Ka0s Default and Obsidian, and compare the title band with Drop Watcher's or Loot History's window in the same skin. → The band is the same strength in all of them; Glass's reads as a faint white wash (title.bg at 0.10), not a noticeably brighter strip. Fail: the showroom's band clearly brighter or more opaque than another Ka0s window's in the same skin. Result:
-- **SHOW-45. Ka0s Default's header is the dark gold band (R4-L2; LibKa0s R4-L2; owner's mockup option E).** With the re-vendored LibKa0s, `/st show` in Ka0s Default. → The showroom's title band is a dark gold gradient, #3A2F0A at the top to #1F1905 at the bottom, with no line under it, and the Ka0s Default card's second swatch is the same dark gold (#2C2408), not black. Fail: a black or near-black band, a flat band where the other Ka0s windows show the gradient, or a black second swatch. Result:
+- **SHOW-45. Ka0s Default's header is the dark gold band (R4-L2; LibKa0s R4-L2; owner's mockup option E).** With the re-vendored LibKa0s, `/st show` in Ka0s Default. → The showroom's title band is a dark gold gradient, lighter at the top than at the bottom, with no line under it, and the Ka0s Default card's second swatch is the same dark gold, not black. (Option E's shade is retired by R5-L1; SHOW-48 checks round 5's darker one.) Fail: a black or near-black band, a flat band where the other Ka0s windows show the gradient, or a black second swatch. Result:
 - **SHOW-46. The icon samples' outline takes the new icon.outline colors (R4-L3; LibKa0s R4-L3).** `/st show`, Overlays' "IconBorder, fromSkin" and Controls' SquareIcon (crop) + IconBorder, in each skin. → The 1 px outline reads gray #4D4D57 in Ka0s Default, a soft white (0.35) in Glass, #5A5048 in WoW Forever, #8A3C1C in Ember and #7A6532 in WoW Midnight; Obsidian, Azeroth, High Contrast and WoW Default look as they did. Fail: a black outline in Ka0s Default, any outline thicker than 1 px, or the icon's own art edge showing inside it. Result:
 - **SHOW-47. The icon samples keep the window outline after the HUD edge option (R4-RV3; LibKa0s R4-L4).** With the re-vendored LibKa0s, `/st show` in Ka0s Default, then Glass and Ember, and look at Overlays' "IconBorder, fromSkin" and Controls' SquareIcon (crop) + IconBorder. → Both still wear the 1 px window outline of SHOW-46: gray #4D4D57 in Ka0s Default, not black; the HUD edge (`opts.hud`) is for HUD icons in other addons and this addon draws none. Fail: a black outline in Ka0s Default, or either sample's outline changing color from SHOW-46. Result:
+- **SHOW-48. Ka0s Default's header is darker than round 4 (R5-RV; LibKa0s R5-L1; the owner's option C).** With the re-vendored LibKa0s, `/st show` in Ka0s Default, and open Loot History's or Drop Watcher's window beside it. → The showroom's title band is a dark gold gradient visibly darker than round 4's, the same shade as the other Ka0s windows' bands, and the Ka0s Default card's second swatch is that darker gold, not black. The other skins' bands look as they did. Fail: a band no darker than round 4, a black band, a showroom band of another shade than the other Ka0s windows', or another skin's band changing. Result:
+- **SHOW-49. The showroom's header sits on its band (R5-RV; LibKa0s R5-L3; feedback item 5).** `/st show` in Ka0s Default, then WoW Midnight (its 2 px edge), Glass and WoW Default, and, with EllesmereUI installed, its source. → In each, the title bar fills the band flush inside the window's edge with no strip of body color above or beside it, and the title and the close mark are vertically centered on the band (within 1 px, the title's capitals against the close mark's middle); the title follows the skin's title alignment. Fail: a title or close mark visibly above or below the band's middle in any skin, or a gap between the edge and the band. Result:
 - **SHOW-6. Pick a skin.** Click Obsidian, then `/reload` and reopen. → The window repaints in Obsidian
   at the click, Obsidian's card reads selected, and after the reload it is still Obsidian. Fail: a
   card that repaints nothing, or a reload that comes back in Default. Result: pass (owner-marked 2026-10-30)
@@ -577,6 +580,8 @@ restart the client: new font and texture files are only seen at client start.
   skin, as the window does; the settings pages go to the game's look. Result: Owner reported pass, 2026-10-31
 - **PICKER-23. Combat.** Start combat with the picker up, then change a row. → Refused, the row reads
   what is worn, one gray line. A picker raised in combat draws its rows disabled. Result: Owner reported pass, 2026-10-31
+- **PICKER-24. The skin list closes on a press outside it (R5-RV; LibKa0s R5-L4; feedback item 6, images 46 and 47).** `/st skin`, open the skin list, then press the picker window's body. → The list closes. Open it again and press the game world. → It closes. Open it, then press the picker's title, eye and gear in turn. → Each press closes the list and the eye and gear still do what they do. On General -> Skin, open the settings page's skin list, then press the Font dropdown. → The list closes and the Font list opens. With the picker and the settings page both up, open both lists, then close one. → The other stays open until it is pressed outside. Escape still closes the window. Fail: a list that stays open after an outside press, a press that closes the list but drops the button's own click, or a Lua error. Result:
+- **PICKER-25. The picker's title sits on its band (R5-RV; LibKa0s R5-L3).** `/st skin` in Ka0s Default, then WoW Midnight. → "Choose a skin" and the close mark are vertically centered on the window's title band. Fail: the title TOP-aligned above the band's middle, or the close mark off it. Result:
 
 ## Non-English client
 
@@ -638,7 +643,7 @@ Ubuntu) adds SHOW-40 and re-opens SHOW-13 and SHOW-19, whose WoW Default face ch
 
 Owed: PANEL-5, PANEL-6, PANEL-13, PANEL-14, PANEL-15, PROFILE-3, SHOW-9, SHOW-13, SHOW-19, SHOW-28, SHOW-29, SHOW-30, SHOW-31,
 SHOW-32, SHOW-33, SHOW-34, SHOW-35, SHOW-36, SHOW-37, SHOW-38, SHOW-39, SHOW-40, SHOW-41, PANEL-16, SHOW-42, SHOW-43, SHOW-44,
-DIAG-4, SHOW-45, SHOW-46, SHOW-47, PANEL-17, PANEL-18.
+DIAG-4, SHOW-45, SHOW-46, SHOW-47, PANEL-17, PANEL-18, SHOW-48, SHOW-49, DIAG-5, PICKER-24, PICKER-25.
 
 On 2026-11-02 the owner reported that every check on the smoke lists of the full skinning run and its smoke feedback batch (Ka0sAddonsCommonTasks `docs/2026-11-01-FULL_SKINNING/` and `docs/2026-11-01-SMOKE_FEEDBACK/`) passed, apart from DpsRace's clock font, the skinned look of the AceGUI Dropdown and the Ka0sMedia_Font and Ka0sMedia_Statusbar pickers, FadeNineSlice and IconBorder (`docs/2026-11-02-SMOKE_ROUND3/`, R3-SMOKE). Passed, recorded on each `Result:` line as `Passed (owner, 2026-11-02)`: PANEL-6, PANEL-13, PANEL-15, PROFILE-3, SHOW-5, SHOW-9, SHOW-29, SHOW-30, SHOW-31, SHOW-33, SHOW-34, SHOW-35, SHOW-36, SHOW-37 and SHOW-38. Failed, re-opened as R3-L3 (IconBorder's 1 px outline and zoom) and recorded as `Failed (owner, 2026-11-02): re-opened as R3-L3`: SHOW-32. Failed, re-opened as R3-L1 (the skinned AceGUI and media-picker dropdowns) and recorded as `Failed (owner, 2026-11-02): re-opened as R3-L1`: PANEL-5 and PANEL-14. Still owed: SHOW-28, whose expected result the third smoke round itself changed after the owner's run.
 
@@ -672,3 +677,11 @@ R4-L1 of the same round (LibKa0s OptionsCombat minor 4, 2026-11-03; LibKa0s has 
 in-client steps live here) adds PANEL-17, a dropdown list on a Ka0s settings page, the Profiles page
 or a Ka0s window closing on a press outside it, and PANEL-18, another author's AceGUI dropdown keeping
 its stock behavior.
+
+R5-RV of the owner's fifth smoke round (Ka0sAddonsCommonTasks `docs/2026-11-03-SMOKE_ROUND5/`, 2026-11-03)
+re-vendors LibKa0s v1.85.0 at its sixteenth re-cut (17d18aa), which brings R5-L1 (Ka0s Default's
+darker header, option C), R5-L2 (Shell's band over a backdrop window's fill), R5-L3 (`S.Band` and
+`S.Header`: every header child on the band's middle), R5-L4 (the skin list's outside-press close) and
+R5-L5 (the icon rule). The showroom's own header moves onto the band in the same commit, because the
+showroom shows every `lib.VOCAB` name. It adds SHOW-48, SHOW-49, DIAG-5, PICKER-24 and PICKER-25, and
+SHOW-45 drops option E's hexes. LibKa0s has no smoke file, so the library's checks live here.

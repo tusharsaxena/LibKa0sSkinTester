@@ -136,6 +136,8 @@ NS.SKIN_VOCAB = {
     -- LibKa0s v1.85.0: the HUD's colors, shadow and gloss, and the face a string draws in.
     "HudTextColor", "HudLabelColor", "BarFillColor", "HudShadow", "BarGloss", "HudFont",
     "BarBorder", "HoverArt",
+    -- LibKa0s v1.85.0 R5-L3: the title band as a frame (answers nil here) and the header on it (a no-op).
+    "Band", "Header",
 }
 
 if not Skin then

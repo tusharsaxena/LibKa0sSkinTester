@@ -378,3 +378,65 @@ test("a5: the BarStyle sample's fill is colored from the skin", function()
     NS.Selector.Pick("obsidian")
     assertEqual(calls[#calls][1], mock.LibStub("LibKa0s-Skin-1.0"):ResolveSkin("obsidian")["bar.fill"][1])
 end)
+
+-- R5-L3 (LibKa0s v1.85.0, Ka0sAddonsCommonTasks docs/2026-11-03-SMOKE_ROUND5, feedback item 5): every
+-- header child sits on the title band's own frame at y 0, so it is on the band's geometric middle in
+-- every skin; a child title bar under noTopBar takes the band's rect. Pinned the way LibKa0s's
+-- tests/test_header_band.lua pins it. Frames record SetAllPoints here (the base mock's is a no-op).
+
+local CENTERED = { LEFT = true, CENTER = true, RIGHT = true }
+
+local function bandMock(m)
+    installPaint(m)
+    local create = m.CreateFrame
+    m.CreateFrame = function(...)
+        local f = create(...)
+        if type(f) == "table" then
+            rawset(f, "SetAllPoints", function(self, rel)
+                self.__points, self.__allPoints = {}, rel or self.__parent
+            end)
+            local clear = f.ClearAllPoints
+            rawset(f, "ClearAllPoints", function(self)
+                self.__allPoints = nil
+                return clear(self)
+            end)
+        end
+        return f
+    end
+end
+
+local function bandOpened()
+    local NS, _, mock = T.enableAddon{ mock = bandMock }
+    NS.Showroom.Show()
+    return NS, mock
+end
+
+--- `region` has one or two points, each LEFT, CENTER or RIGHT, on `band` at y 0.
+local function assertOnBand(region, band, what)
+    local n = region:GetNumPoints()
+    assertTrue(n >= 1 and n <= 2, what .. ": anchored")
+    for i = 1, n do
+        local point, rel, relPoint, _, y = region:GetPoint(i)
+        assertTrue(CENTERED[point], ("%s: a %s point, never TOP*"):format(what, tostring(point)))
+        assertEqual(relPoint, point, what .. ": to the band's own " .. tostring(point))
+        assertTrue(rel == band, what .. ": anchored to the band")
+        assertEqual(y, 0, what .. ": y 0, the band's middle")
+    end
+end
+
+test("R5-RV: the showroom's title bar, title and close sit on S.Band in every skin", function()
+    -- red under: the bar at a fixed 0,0 and its title and close anchored to the bar, so a 2 px edge
+    -- (WoW Midnight) or EllesmereUI's 25 px bar leaves them off the band's middle.
+    local NS, mock = bandOpened()
+    local f = window(mock)
+    for _, def in ipairs(lib(mock):Skins()) do
+        NS.Selector.Pick(def.key)
+        local band = NS.Skin.Band(f)
+        assertTrue(band ~= nil, def.key .. ": a band frame")
+        assertTrue(rawget(f.titleBar, "__allPoints") == band, def.key .. ": the bar takes the band's rect")
+        assertOnBand(f.titleBar.title, band, def.key .. ": the title")
+        assertOnBand(f.close, band, def.key .. ": the close mark")
+        assertEqual(select(1, f.close:GetPoint(1)), "RIGHT", def.key .. ": the close mark on the right")
+    end
+    assertTrue(NS.Showroom.used.Band and NS.Showroom.used.Header, "both went through NS.Showroom.Paint")
+end)
