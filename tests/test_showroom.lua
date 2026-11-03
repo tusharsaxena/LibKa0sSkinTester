@@ -277,6 +277,30 @@ test("R3-L3: every IconBorder sample names its icon, so the library's 0.07 zoom 
     end
 end)
 
+test("R3-FIX: Controls' square keeps S.SquareIcon's 0.08 crop through IconBorder's 0.07 zoom and a switch", function()
+    -- red under: a zoom that set 0.07 outright, loosening the host's tighter crop (LibKa0s R3-FIX).
+    local NS = painted()
+    local real, squares = NS.Skin.SquareIcon, {}
+    NS.Skin.SquareIcon = function(frame, ...)
+        squares[#squares + 1] = frame
+        return real(frame, ...)
+    end
+    NS.Showroom.Show()
+    NS.Skin.SquareIcon = real
+    local icon = squares[1] and rawget(squares[1], "icon")
+    assertTrue(type(icon) == "table", "Controls painted a SquareIcon with an icon")
+    local function crop(what)
+        local ulx, uly, _, _, _, _, lrx, lry = icon:GetTexCoord()
+        assertTrue(near(ulx, 0.08) and near(uly, 0.08) and near(lrx, 0.92) and near(lry, 0.92),
+            what .. ": the 0.08 crop stands")
+    end
+    crop("after the show")
+    NS.Selector.Pick("obsidian")
+    crop("after a switch to Obsidian")
+    NS.Selector.Pick("ka0s")
+    crop("after a switch back")
+end)
+
 test("a5: the slider's own track is handed over and a selected nav entry has a fill to tint", function()
     local NS, mock = opened()
     local sec = NS.Showroom.Section("controls")
