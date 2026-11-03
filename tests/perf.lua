@@ -194,8 +194,9 @@ NS.Showroom.Hide()
 --
 -- The toggle and the reapply change no string and build no table, so they must allocate nothing:
 -- those ceilings are hard (the toggle's over the mock's own flip, measured above). The repaint is
--- pinned, in bytes and in API calls, at the figure measured on 2026-11-01 with the collector stopped
--- (221860.8 bytes, 1360 calls, SF-ST-2: +200 calls and +575 bytes over the 1160 and 221285.9 of SF-FIX, measured at SF-FIX and at SF-ST-2, the Blizzard dropdown painted by the library's own WowStyle1 path in place of the sample's stock list and glyph). It is not derived from this run: a ceiling
+-- pinned, in bytes and in API calls, at the figure measured on 2026-11-04 with the collector stopped
+-- (249622.3 bytes, 1415 calls, R6-AT; the rise from SF-ST-2's figure is listed below). Before that
+-- it was pinned at 2026-11-01's (221860.8 bytes, 1360 calls, SF-ST-2: +200 calls and +575 bytes over the 1160 and 221285.9 of SF-FIX, measured at SF-FIX and at SF-ST-2, the Blizzard dropdown painted by the library's own WowStyle1 path in place of the sample's stock list and glyph). It is not derived from this run: a ceiling
 -- computed from its own measurement cannot fail, and skinRepaint read that way while it rose from 12
 -- to 1083 API calls per change.
 --
@@ -206,9 +207,24 @@ NS.Showroom.Hide()
 -- the library's Skin:Repaint walking every recorded frame; the addon's own OnLooksChanged redraws are
 -- about 20 KB. A skin change is one click, not a per-frame path.
 --
+-- Re-pinned 2026-11-04 (R6-AT) at 1415 calls and 249622.3 bytes, stable over five runs. The re-measure
+-- this comment asks for was missed at the round 3 to round 5 re-vendors and samples, so the rise from
+-- SF-ST-2's 1360 and 221860.8 was found late, by the round 6 automated-test run (109cad2). Measured on
+-- `git archive` exports of each commit and its parent: R3-RV (115020c, the re-cut LibKa0s v1.85.0)
+-- 1360 -> 1388 calls, 221861.3 -> 226773.0 bytes; R4-ST1 (49bfafe, the settings panel's Ignore
+-- default off, so the panel's frames are skinned) 1388 -> 1397, 227669.3 -> 243072.3; R4-ST3
+-- (958358c, a duplicate IconBorder sample removed) 1397 -> 1371, 243077.9 -> 239054.2; R4-ST4
+-- (c623473, the Shell painted with noTopBar) 1371 -> 1365, 239048.3 -> 238125.6; R5-RV (8189bff, the
+-- round 5 re-cut and the header on the band) 1365 -> 1405, 239757.4 -> 247333.7; R5-WIN (94aae3f,
+-- every window on LootHistory's edge, band and header) 1405 -> 1415, 247333.7 -> 249621.7. The small
+-- byte moves between those steps (up to about 1600 bytes) are other commits. Round 6
+-- (266cdfe, 2dcf085, ddad584, 2b336b3) left it flat. Each step is deliberate skin work, so the figure
+-- is accepted, not cut. The API pin is the measured count; the byte ceiling is the measured figure plus
+-- about 20 bytes, to the nearest 10, the same headroom as SF-FIX's and SF-ST-2's pins.
+--
 -- Raise a ceiling only by re-measuring and saying why; a rise IS the finding. A LibKa0s re-vendor or a
 -- new sample moves the repaint's figures, so that is the moment to re-measure and re-pin them.
-local REPAINT_MAX_BYTES, REPAINT_MAX_API = 221880, 1360
+local REPAINT_MAX_BYTES, REPAINT_MAX_API = 249640, 1415
 assert_(repaint.apiPerIter <= REPAINT_MAX_API,
     ("skinRepaint made %.1f API calls, over its pinned %d"):format(repaint.apiPerIter, REPAINT_MAX_API))
 local CEILINGS = {
