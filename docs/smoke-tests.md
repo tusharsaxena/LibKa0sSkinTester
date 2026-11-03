@@ -11,7 +11,7 @@ its theme, and a retired number is never reused.
 |---|---|---|
 | INSTALL-1..3 | Install | Load, reload, first run |
 | SLASH-1..6 | Slash commands | `/st`, `/skintester`, help, the disabled refusal, a foreign `/st`, `/st skin`, `/st widths` |
-| PANEL-1..18 | Settings panel | Landing page, General's tabs, Skin, Keybindings, Sample controls, the Scope, Font and texture, the settings chrome's face and tooltips, the Font outline, the media pickers, a dropdown list closing on an outside press |
+| PANEL-1..19 | Settings panel | Landing page, General's tabs, Skin, Keybindings, Sample controls, the Scope, Font and texture, the settings chrome's face and tooltips, the Font outline, the media pickers, a dropdown list closing on an outside press, no Sim mode box |
 | PROFILE-1..3 | Profiles | The Profiles page and the `profile` verb |
 | STATE-1..2 | Enable and disable | The stand-down and its refusal |
 | COMBAT-1..2 | Combat | The showroom and the panel in combat |
@@ -172,6 +172,12 @@ restart the client: new font and texture files are only seen at client start.
   round (AceGUI's own behavior: the list stays open until it is toggled, a row is picked, or the page
   hides). Then open a Ka0s dropdown (PANEL-17) and click outside it. → The Ka0s one closes. Fail: the
   other author's list now closing on an outside press, or a Lua error naming LibKa0s. Result:
+- **PANEL-19. Master controls draws no Sim mode box here (R6-RV2; LibKa0s R6-SIM-L).** `/st diagnostics`,
+  then open the settings panel's General page. → The identity header's LibKa0s running line lists `OptionsCompose 19`,
+  not 18, with every other Ka0s addon loaded too (Outfitter's own copy stays at 18, and the client runs 19).
+  The Master controls rows are exactly the ones round 5 drew: this addon has no simulation and passes no
+  sim hooks, so no Sim mode checkbox appears beside any of them. Fail: `OptionsCompose 18`, a Sim mode box,
+  a moved or missing Master controls row, or a Lua error. Result:
 
 ## Profiles
 
@@ -646,7 +652,7 @@ Ubuntu) adds SHOW-40 and re-opens SHOW-13 and SHOW-19, whose WoW Default face ch
 
 Owed: PANEL-5, PANEL-6, PANEL-13, PANEL-14, PANEL-15, PROFILE-3, SHOW-9, SHOW-13, SHOW-19, SHOW-28, SHOW-29, SHOW-30, SHOW-31,
 SHOW-32, SHOW-33, SHOW-34, SHOW-35, SHOW-36, SHOW-37, SHOW-38, SHOW-39, SHOW-40, SHOW-41, PANEL-16, SHOW-42, SHOW-43, SHOW-44,
-DIAG-4, SHOW-45, SHOW-46, SHOW-47, PANEL-17, PANEL-18, SHOW-48, SHOW-49, DIAG-5, PICKER-24, PICKER-25, SHOW-50, PICKER-26, PICKER-3, PICKER-27.
+DIAG-4, SHOW-45, SHOW-46, SHOW-47, PANEL-17, PANEL-18, SHOW-48, SHOW-49, DIAG-5, PICKER-24, PICKER-25, SHOW-50, PICKER-26, PICKER-3, PICKER-27, PANEL-19.
 
 On 2026-11-02 the owner reported that every check on the smoke lists of the full skinning run and its smoke feedback batch (Ka0sAddonsCommonTasks `docs/2026-11-01-FULL_SKINNING/` and `docs/2026-11-01-SMOKE_FEEDBACK/`) passed, apart from DpsRace's clock font, the skinned look of the AceGUI Dropdown and the Ka0sMedia_Font and Ka0sMedia_Statusbar pickers, FadeNineSlice and IconBorder (`docs/2026-11-02-SMOKE_ROUND3/`, R3-SMOKE). Passed, recorded on each `Result:` line as `Passed (owner, 2026-11-02)`: PANEL-6, PANEL-13, PANEL-15, PROFILE-3, SHOW-5, SHOW-9, SHOW-29, SHOW-30, SHOW-31, SHOW-33, SHOW-34, SHOW-35, SHOW-36, SHOW-37 and SHOW-38. Failed, re-opened as R3-L3 (IconBorder's 1 px outline and zoom) and recorded as `Failed (owner, 2026-11-02): re-opened as R3-L3`: SHOW-32. Failed, re-opened as R3-L1 (the skinned AceGUI and media-picker dropdowns) and recorded as `Failed (owner, 2026-11-02): re-opened as R3-L1`: PANEL-5 and PANEL-14. Still owed: SHOW-28, whose expected result the third smoke round itself changed after the owner's run.
 
@@ -702,3 +708,8 @@ R6-PV of the same round (2026-11-04) moves the picker's eye from the one-shot `o
 `spec.preview` in window mode: the showroom opens with a picker that finds it closed, the eye closes
 and opens it, and every close puts it back. It adds PICKER-27 and re-opens PICKER-3, whose eye now
 closes the showroom the picker opened before it opens it again.
+
+R6-RV2 of the same round (2026-11-04) re-vendors LibKa0s v1.85.0 at its eighteenth re-cut (550ef68),
+which moves `OptionsCompose.lua` alone, to minor 19, for R6-SIM-L (the Master controls Sim mode checkbox,
+drawn only for a host that passes `isSimMode` and `toggleSim`). This addon has no simulation, so it passes
+neither and owes nothing; it adds PANEL-19.
