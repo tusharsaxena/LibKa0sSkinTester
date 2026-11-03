@@ -256,7 +256,7 @@ Total.
 - selector: no EllesmereUI card and no copy button
 - selector: a source dropdown offers Ka0s skins and EllesmereUI (SF-ST-1)
 
-### test_showroom.lua (23)
+### test_showroom.lua (24)
 
 - showroom: the window is painted through the wrapper
 - showroom: Paint answers the primitive's answer and records the name once
@@ -273,6 +273,7 @@ Total.
 - a5: the ApplyBarFill sample draws the skin's texture and accent, and follows a change
 - a5: the fade's label and the icon border follow the skin
 - a5: every IconBorder sample asks for the skin's own edge
+- R4-L4: every IconBorder sample sits in a window, so none asks for the HUD's icon.border edge
 - R3-L3: every IconBorder sample names its icon, so the library's 0.07 zoom reaches it
 - R3-FIX: Controls' square keeps S.SquareIcon's 0.08 crop through IconBorder's 0.07 zoom and a switch
 - a5: the slider's own track is handed over and a selected nav entry has a fill to tint
@@ -1028,7 +1029,7 @@ Total.
 | test_settings.lua | 53 |
 | test_slash.lua | 19 |
 | test_selector.lua | 10 |
-| test_showroom.lua | 23 |
+| test_showroom.lua | 24 |
 | test_showroom_coverage.lua | 6 |
 | test_showroom_dropdowns.lua | 8 |
 | test_showroom_values.lua | 15 |
@@ -1065,4 +1066,4 @@ Total.
 | test_skin_values.lua | 3 |
 | test_skin_switch.lua | 216 |
 | Skipped | 1 |
-| **Total** | **867** |
+| **Total** | **868** |

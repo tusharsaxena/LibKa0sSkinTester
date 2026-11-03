@@ -260,6 +260,21 @@ test("a5: every IconBorder sample asks for the skin's own edge", function()
     for _, opts in ipairs(asked) do assertTrue(opts.fromSkin == true, "fromSkin") end
 end)
 
+test("R4-L4: every IconBorder sample sits in a window, so none asks for the HUD's icon.border edge", function()
+    -- red under: a sample passing opts.hud = true (LibKa0s R4-L4), which would draw the HUD's black
+    -- icon.border under Ka0s Default in place of the window's icon.outline (SHOW-47).
+    local NS = painted()
+    local real, asked = NS.Skin.IconBorder, {}
+    NS.Skin.IconBorder = function(frame, opts)
+        asked[#asked + 1] = opts
+        return real(frame, opts)
+    end
+    NS.Showroom.Show()
+    NS.Skin.IconBorder = real
+    assertEqual(#asked, 2, "Controls' square and Overlays'")
+    for i, opts in ipairs(asked) do assertTrue(opts.hud == nil, "sample " .. i .. " keeps the window outline") end
+end)
+
 test("R3-L3: every IconBorder sample names its icon, so the library's 0.07 zoom reaches it", function()
     -- red under: an icon texture only a local held, which S.IconBorder does not search for (LibKa0s
     -- R3-L3 zooms the Texture handed in, opts.icon, else frame.icon / frame.Icon).

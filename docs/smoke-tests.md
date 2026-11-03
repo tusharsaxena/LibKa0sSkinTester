@@ -17,7 +17,7 @@ its theme, and a retired number is never reused.
 | COMBAT-1..2 | Combat | The showroom and the panel in combat |
 | DIAG-1..4 | Diagnostics | The debug console, its copy window and the report |
 | DEGRADED-1 | Degraded install | The library-absent load |
-| SHOW-1..46 | Showroom | The window, the swatch selector, the sections, position and scale, the textures, Ka0s Default's face and bar, the addon surfaces, the library widgets, the tooltip colors and art tints, the HUD faces, the faces and widths, FontFlags and HudFontSize, the icon samples, a stored pick of the deleted Friz, Ka0s Default's header, the icon outline colors |
+| SHOW-1..47 | Showroom | The window, the swatch selector, the sections, position and scale, the textures, Ka0s Default's face and bar, the addon surfaces, the library widgets, the tooltip colors and art tints, the HUD faces, the faces and widths, FontFlags and HudFontSize, the icon samples, a stored pick of the deleted Friz, Ka0s Default's header, the icon outline colors, the window edge beside the HUD's |
 | PICKER-1..23 | First-run skin picker | When and where it shows, its title, preview, Apply, close, the gear, Apply to all, one window across addons, taking it down, combat, a preview meeting another write, the reload popup |
 | LOC-1 | Non-English client | Locale-dependent behavior |
 
@@ -224,6 +224,7 @@ restart the client: new font and texture files are only seen at client start.
 - **SHOW-44. The showroom's title band is painted once (R4-ST4).** `/st show` in Glass, then Ka0s Default and Obsidian, and compare the title band with Drop Watcher's or Loot History's window in the same skin. → The band is the same strength in all of them; Glass's reads as a faint white wash (title.bg at 0.10), not a noticeably brighter strip. Fail: the showroom's band clearly brighter or more opaque than another Ka0s window's in the same skin. Result:
 - **SHOW-45. Ka0s Default's header is the dark gold band (R4-L2; LibKa0s R4-L2; owner's mockup option E).** With the re-vendored LibKa0s, `/st show` in Ka0s Default. → The showroom's title band is a dark gold gradient, #3A2F0A at the top to #1F1905 at the bottom, with no line under it, and the Ka0s Default card's second swatch is the same dark gold (#2C2408), not black. Fail: a black or near-black band, a flat band where the other Ka0s windows show the gradient, or a black second swatch. Result:
 - **SHOW-46. The icon samples' outline takes the new icon.outline colors (R4-L3; LibKa0s R4-L3).** `/st show`, Overlays' "IconBorder, fromSkin" and Controls' SquareIcon (crop) + IconBorder, in each skin. → The 1 px outline reads gray #4D4D57 in Ka0s Default, a soft white (0.35) in Glass, #5A5048 in WoW Forever, #8A3C1C in Ember and #7A6532 in WoW Midnight; Obsidian, Azeroth, High Contrast and WoW Default look as they did. Fail: a black outline in Ka0s Default, any outline thicker than 1 px, or the icon's own art edge showing inside it. Result:
+- **SHOW-47. The icon samples keep the window outline after the HUD edge option (R4-RV3; LibKa0s R4-L4).** With the re-vendored LibKa0s, `/st show` in Ka0s Default, then Glass and Ember, and look at Overlays' "IconBorder, fromSkin" and Controls' SquareIcon (crop) + IconBorder. → Both still wear the 1 px window outline of SHOW-46: gray #4D4D57 in Ka0s Default, not black; the HUD edge (`opts.hud`) is for HUD icons in other addons and this addon draws none. Fail: a black outline in Ka0s Default, or either sample's outline changing color from SHOW-46. Result:
 - **SHOW-6. Pick a skin.** Click Obsidian, then `/reload` and reopen. → The window repaints in Obsidian
   at the click, Obsidian's card reads selected, and after the reload it is still Obsidian. Fail: a
   card that repaints nothing, or a reload that comes back in Default. Result: pass (owner-marked 2026-10-30)
@@ -618,7 +619,7 @@ Ubuntu) adds SHOW-40 and re-opens SHOW-13 and SHOW-19, whose WoW Default face ch
 
 Owed: PANEL-5, PANEL-6, PANEL-13, PANEL-14, PANEL-15, PROFILE-3, SHOW-9, SHOW-13, SHOW-19, SHOW-28, SHOW-29, SHOW-30, SHOW-31,
 SHOW-32, SHOW-33, SHOW-34, SHOW-35, SHOW-36, SHOW-37, SHOW-38, SHOW-39, SHOW-40, SHOW-41, PANEL-16, SHOW-42, SHOW-43, SHOW-44,
-DIAG-4, SHOW-45, SHOW-46.
+DIAG-4, SHOW-45, SHOW-46, SHOW-47.
 
 On 2026-11-02 the owner reported that every check on the smoke lists of the full skinning run and its smoke feedback batch (Ka0sAddonsCommonTasks `docs/2026-11-01-FULL_SKINNING/` and `docs/2026-11-01-SMOKE_FEEDBACK/`) passed, apart from DpsRace's clock font, the skinned look of the AceGUI Dropdown and the Ka0sMedia_Font and Ka0sMedia_Statusbar pickers, FadeNineSlice and IconBorder (`docs/2026-11-02-SMOKE_ROUND3/`, R3-SMOKE). Passed, recorded on each `Result:` line as `Passed (owner, 2026-11-02)`: PANEL-6, PANEL-13, PANEL-15, PROFILE-3, SHOW-5, SHOW-9, SHOW-29, SHOW-30, SHOW-31, SHOW-33, SHOW-34, SHOW-35, SHOW-36, SHOW-37 and SHOW-38. Failed, re-opened as R3-L3 (IconBorder's 1 px outline and zoom) and recorded as `Failed (owner, 2026-11-02): re-opened as R3-L3`: SHOW-32. Failed, re-opened as R3-L1 (the skinned AceGUI and media-picker dropdowns) and recorded as `Failed (owner, 2026-11-02): re-opened as R3-L1`: PANEL-5 and PANEL-14. Still owed: SHOW-28, whose expected result the third smoke round itself changed after the owner's run.
 
@@ -642,3 +643,8 @@ which brings the library's R4-L2 (Ka0s Default's dark gold header), R4-L3 (the n
 token that IconBorder and SquareIcon outlines read) and R4-SEP (no line under any window title the
 library draws). It adds DIAG-4, SHOW-45 and SHOW-46, and SHOW-39 now names the outline color. This
 addon draws no header line of its own, so R4-SEP needs no host change here.
+
+R4-RV3 of the same round (2026-11-03) re-vendors LibKa0s v1.85.0 at its fifteenth re-cut (2a78817),
+which brings R4-L4: S.IconBorder's `opts.hud = true` draws a HUD icon's edge in `icon.border` and
+never `icon.outline`. Both of this addon's IconBorder samples sit in the showroom window, so they keep
+the outline and pass no `hud`; R4-HUD needs no host change here. It adds SHOW-47.
