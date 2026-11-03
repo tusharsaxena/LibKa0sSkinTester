@@ -30,7 +30,7 @@ end
 
 -- A fully booted addon whose launcher has registered, plus the one broker object.
 local function launched()
-    local NS, mock = T.enableAddon()
+    local NS, mock = T.enableSeen()
     return NS, mock, mock.ldbObjects[NAME]
 end
 

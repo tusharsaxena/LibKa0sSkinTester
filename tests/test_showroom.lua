@@ -12,7 +12,7 @@ local OWNER = "LibKa0sSkinTester"
 local installPaint = dofile("tests/_kit/mock_paint.lua")
 
 local function painted()
-    return T.enableAddon{ mock = function(m) installPaint(m) end }
+    return T.enableSeen{ mock = function(m) installPaint(m) end }
 end
 
 local function lib(mock) return mock.LibStub("LibKa0s-Skin-1.0") end
@@ -49,7 +49,7 @@ test("showroom: Paint answers the primitive's answer and records the name once",
 end)
 
 test("showroom: sections lay out in registration order, each under its title", function()
-    local NS = T.enableAddon()
+    local NS = T.enableSeen()
     local order = {}
     NS.Showroom.AddSection("zz_a", "Alpha", function(body, paint)
         order[#order + 1] = "a"

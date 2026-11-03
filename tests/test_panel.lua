@@ -159,9 +159,10 @@ end)
 -- ---------------------------------------------------------------------------
 
 test("panel: registration creates no AceGUI widgets", function()
-    local _, _, mock = T.enableAddon()
-    -- The five are the first-run skin picker's rows (LibKa0s v1.83.0); a fresh profile shows it at login.
-    assertEqual(#mock.aceWidgets, 5,
+    local _, _, mock = T.enableSeen()
+    -- A returning profile: no first-run skin picker (whose rows are AceGUI widgets, LibKa0s v1.83.0)
+    -- and so no showroom it opens (R6-PV), only the registration.
+    assertEqual(#mock.aceWidgets, 0,
         "no settings page is built at PLAYER_LOGIN — not even the Defaults button")
 end)
 

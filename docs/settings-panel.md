@@ -69,9 +69,9 @@ which is safe because the stand-down and every profile event take it out of the 
 nothing and prints a gray line on every call; while the addon is disabled the dispatcher refuses it.
 
 The window sits with its center 75% of the way up the screen, clear of the middle, at DIALOG
-strata and raised after the eye runs, so the showroom the eye opens does not cover it. It holds the title "Choose a skin", the addon's label on a line of its own, a
+strata and raised after it opens the showroom and after the eye runs, so the showroom does not cover it. It holds the title "Choose a skin", the addon's label on a line of its own, a
 dropdown of every skin (three swatches and the name in that skin's own face), the eye (the
-showroom), the gear, the Skin tab's rows ("Font and texture": Font and Texture, each a full-width
+showroom, below), the gear, the Skin tab's rows ("Font and texture": Font and Texture, each a full-width
 picker with a reset icon, then Font outline; "Scope": Ignore settings panel and Ignore fonts),
 "Apply", "Apply to all Ka0s addons" (only while another Ka0s addon is loaded) and the close control.
 
@@ -89,6 +89,19 @@ picker with a reset icon, then Font outline; "Scope": Ignore settings panel and 
   previewed. They write nothing, and close.
 - **Apply to all Ka0s addons** saves here, gives every other Ka0s addon the same source, skin,
   scope, font, texture and font outline, and closes this window and every picker still waiting.
+
+**The eye and the showroom (`spec.preview`, LibKa0s OptionsSkinPicker minor 11, R6-PV).** This
+addon has no test mode and no lock, so its preview mode is `"window"`: the showroom itself. When the
+picker shows with the showroom closed, the showroom opens with it. The eye closes and opens the
+showroom, lit while it is open and dimmed while it is closed, its tooltip "Preview: the skin showroom
+is open. Click to close it." or "... is closed. Click to open it.". Every close (Apply, Apply to all,
+the gear, the close control, Escape and the addon's own take-down) puts the showroom back as it was
+when the picker opened: closed again if the picker or the eye opened it, open again if it was open
+and the eye closed it. A picker opened from the showroom's own "Show the picker" button finds it open
+and leaves it so. The picker and the eye call `NS.Showroom.Show`, `NS.Showroom.Hide` and
+`NS.Showroom.IsShown`, the calls `/st show`, the launcher's Show window entry and the key binding make,
+so the stand-down refusal still applies. The showroom's shown state is not stored, so a `/reload` while
+the picker is up leaves nothing behind.
 
 A write on the Skin tab while the window is up first drops a preview left unapplied here, so the
 profile never stores what the picker only previewed.

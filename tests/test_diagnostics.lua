@@ -64,7 +64,7 @@ end)
 
 test("diagnostics: the showroom section reads the window and never builds it", function()
     -- red under: a section that calls NS.Showroom.Show to report on it.
-    local NS, _, mock = T.enableAddon()
+    local NS, _, mock = T.enableSeen()
     local lines = report(NS)
     assertTrue(has(lines, "showroom: built=false shown=false"), "an unbuilt window reads as such")
     assertTrue(mock.frames["LibKa0sSkinTesterShowroom"] == nil, "and the report built nothing")

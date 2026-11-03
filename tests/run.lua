@@ -43,6 +43,17 @@ local function enableAddon(opts)
     return NS, env, m
 end
 
+-- The full lifecycle for a returning player: the profile has closed the first-run skin picker, so
+-- OnEnable shows none. Since R6-PV a first-run picker opens the showroom with it (spec.preview,
+-- window mode), so a case about the showroom, the launcher or the panel that expects a closed,
+-- unbuilt window at login starts here rather than on a fresh profile.
+local function enableSeen(opts)
+    local NS, env, m = bootAddon(opts)
+    NS.addon.db.profile.skin.pickerSeen = true
+    NS.addon:OnEnable()
+    return NS, env, m
+end
+
 -- Where Kit.assertSurfaceParity's by-name form looks the LIVE half up (kit 15, vendored by M4-01).
 --
 -- Registered explicitly, and the explicitness is doing two jobs at once. `Kit.expose` auto-wires a
@@ -92,6 +103,7 @@ _G.SKINTESTER_TEST = Kit.expose{
     newAddon    = newAddon,
     bootAddon   = bootAddon,
     enableAddon = enableAddon,
+    enableSeen  = enableSeen,
     loadAddon   = loadAddon,
     root        = root,
     LibStub     = surfaceMock.LibStub,
@@ -179,6 +191,7 @@ Kit.run{
         "test_skin_outline",
         "test_skin_verb",
         "test_skin_picker",
+        "test_skin_picker_preview",
         "test_settings_sample",
         "test_panel",
         "test_profiles",

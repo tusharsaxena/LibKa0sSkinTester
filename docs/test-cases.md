@@ -436,7 +436,7 @@ Total.
 - picker: not before login
 - picker: the spec names this owner's seams, the General page's Skin tab and the eye
 - picker: closing it marks the profile, and the next login does not show it
-- picker: the eye opens the showroom and leaves the picker up
+- picker: the eye closes the showroom the picker opened and leaves the picker up
 - picker: the gear saves the pick, opens the General page itself, and marks the profile
 - picker: a pick previews: the skin moves live, the profile keeps its own and is not marked
 - picker: Apply saves the pick through the schema runtime and marks the profile
@@ -462,6 +462,22 @@ Total.
 - picker: a skin /st set stores under a pending preview stays on the close
 - picker: another addon's picker closed in combat does not bring this one up until combat ends
 - picker: a stand-down while it waits out combat leaves nothing to show after
+
+### test_skin_picker_preview.lua (13)
+
+- picker preview: the spec passes spec.preview in window mode, and no one-shot onPreview
+- picker preview: enter, exit and the reads go through the showroom's own seam
+- picker preview: the first-run picker with the showroom closed opens it, the eye lit
+- picker preview: the eye closes the showroom and opens it again, the picker staying up
+- picker preview: the close control closes the showroom the picker opened
+- picker preview: Escape closes the showroom the picker opened
+- picker preview: Apply closes the showroom the picker opened
+- picker preview: the gear closes the showroom the picker opened
+- picker preview: HideSkinPicker closes the showroom the picker opened
+- picker preview: the stand-down closes the showroom the picker opened
+- picker preview: a showroom already open is left open, and the close does not hide it
+- picker preview: an eye that closed a showroom open at the start opens it again on close
+- picker preview: a showroom the player closes while the picker is up stays closed
 
 ### test_settings_sample.lua (11)
 
@@ -1047,6 +1063,7 @@ Total.
 | test_skin_outline.lua | 9 |
 | test_skin_verb.lua | 7 |
 | test_skin_picker.lua | 30 |
+| test_skin_picker_preview.lua | 13 |
 | test_settings_sample.lua | 11 |
 | test_panel.lua | 37 |
 | test_profiles.lua | 18 |
@@ -1071,4 +1088,4 @@ Total.
 | test_skin_values.lua | 3 |
 | test_skin_switch.lua | 216 |
 | Skipped | 1 |
-| **Total** | **873** |
+| **Total** | **886** |

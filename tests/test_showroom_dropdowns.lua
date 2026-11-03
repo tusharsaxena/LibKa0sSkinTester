@@ -31,7 +31,7 @@ end
 --- `opts.prepare(mock)` runs after the addon's load and before the showroom's first open.
 local function opened(opts)
     opts = opts or {}
-    local NS, _, mock = T.enableAddon{ mock = function(m)
+    local NS, _, mock = T.enableSeen{ mock = function(m)
         installPaint(m)
         modelTemplate(m)
         if opts.mock then opts.mock(m) end
