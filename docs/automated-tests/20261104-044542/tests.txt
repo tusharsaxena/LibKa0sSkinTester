@@ -1,0 +1,889 @@
+  PASS  harness: the runner is on the shared kit and reports its revision
+  PASS  harness: the addon's load list is DERIVED from the TOC, in TOC order (testing-§9)
+  PASS  harness: every derived addon path exists on disk
+  PASS  harness: no libs/ path leaked into the derived addon list
+  PASS  harness: the explicit LibKa0s list matches LibKa0s.xml, in XML order (anti-patterns #48)
+  PASS  harness: every LibKa0s file the runner loads exists on disk
+  PASS  harness: the libraries load BEFORE the addon's own files
+  PASS  harness: the addon is a named AceAddon the kit can look up
+  PASS  harness: an undefined frame method reads as one cached stub, not a fresh closure
+  PASS  harness: a registration naming a method the addon lacks is refused
+  PASS  harness: the addon's AceTimer handles are the kit's, on the kit's queue
+  PASS  events: the [Init] summary carries no rejected clause when every name registered
+  PASS  libka0s: every vendored major registers under LibStub
+  PASS  libka0s: MODULES names every file of every major, at a positive integer minor
+  PASS  core: the published seams ARE the library's, not a lookalike
+  PASS  core: the close button is the library's, told which addon folder is asking
+  PASS  core: ApplySkin stays a bare bind, so its optional override survives
+  PASS  core: the printer emits <prefix><space><body> as one line
+  PASS  core: the prefix is read at CALL time, not captured at load
+  PASS  core: the sink is the Lua global print, so the harness can see chat output
+  PASS  debuglog: the console is the library's instance, and the sink is bound bare
+  PASS  debuglog: the library is told the FOLDER name, not just the frame name
+  PASS  debuglog: the descriptor keeps the frame globals the old console used
+  PASS  debuglog: the composed window title is unchanged
+  PASS  debuglog: the flag stays the addon's — the library never keeps a copy
+  PASS  debuglog: the [Init] summary is the addon's, reached through the descriptor
+  PASS  debuglog: the console's user-visible strings resolve to prose, not to their own keys
+  PASS  debuglog: the gated sink survives a format its arguments cannot satisfy (WhatGroup WG-22)
+  PASS  options: Settings.Helpers IS the library instance, decorated in place
+  PASS  options: the library is told the FOLDER name, and the help-mark art is declared if drawn
+  PASS  options: the host's data seams survived the move onto the instance
+  PASS  options: the host's RestoreAllDefaults deliberately overrides the library's
+  PASS  options: a panel write takes the addon's single write seam
+  PASS  options: no layout constant is restated in this addon's own source
+  PASS  options: the panel body still builds on the NEXT frame, not inside OnShow
+  PASS  slash: the help header is the library's, with this addon's alias sentence
+  PASS  slash: a help row is the one command-row formatter, indented two spaces
+  PASS  slash: the landing page renders the SAME rows, un-indented (convergence #2)
+  PASS  slash: the landing page draws those rows and nothing of its own
+  PASS  slash: `list` renders through the shared key/value formatter
+  PASS  slash: a number row still renders through its schema `fmt`
+  PASS  slash: `toggle` survived the adoption, through the descriptor's parse adapter
+  PASS  slash: the descriptor's L overrides exactly one string and nothing else
+  PASS  slash: every user-visible CLI string resolves to prose, not to its own key
+  PASS  degraded: the addon loads with LibKa0s absent
+  PASS  degraded: the facade draws HudFont and answers MarkText, with no skin to read (LibKa0s v1.85.0)
+  PASS  degraded: the cause clause is published on BOTH paths
+  PASS  degraded: the printer announces the absence exactly ONCE, then prints normally
+  PASS  degraded: the fallback printer still degrades a secret in place
+  PASS  degraded: every DebugLog member the addon calls still answers
+  PASS  degraded: the console stub copies NO library formatter
+  PASS  degraded: every HAND-WRITTEN schema row survives the options library's absence (options-ui-§1)
+  PASS  degraded: the STORED profile is the same shape with the library absent
+  PASS  degraded: `/st disable` and `/st enable` print the library-absent line and write nothing (options-ui-§1, WhatGroup#22)
+  PASS  degraded: `/st profile`, CliProfile and ProfileSwitch print the library-absent line and switch nothing (Slash 17)
+  PASS  degraded: Reset all settings still resets the profile (options-ui-§1)
+  PASS  degraded: the settings stub carries no widget maker and no layout constant
+  PASS  degraded: the settings panel explains itself once at load and once per config
+  PASS  degraded: a bare /st runs `config`, as the library's dispatcher does
+  PASS  degraded: `/st debug on` still moves the flag and explains the missing window ONCE
+  PASS  libka0s: no seam re-spells the refusal line (slash-commands-§7)
+  PASS  degraded: the Slash stub's DisabledLine uses the library's DISABLED_LINE_FORMAT bytes
+  PASS  libka0s: the Master controls hook is keyed off the library's constant, not a copy of it
+  PASS  libka0s: the L-trap matcher flags the table and the `or` spelling, not the `and` one
+  PASS  libka0s: no seam file hands a descriptor this addon's locale table (the L trap)
+  PASS  libka0s: Core has no STRINGS and reads no descriptor L (tripwire)
+  PASS  libka0s: Options reads no descriptor L (tripwire)
+  PASS  locale: every key enUS.lua defines has a reader
+  PASS  parity: the Core seam's whole namespace surface survives the library's absence
+  PASS  parity: the DebugLog stub carries the whole live surface
+  PASS  parity: the Slash stub carries the whole live surface
+  PASS  parity: the Options helpers stub carries the whole live surface
+  PASS  parity: the Schema host stub's instance carries the whole live instance surface
+  PASS  parity: the Schema host stub carries the library's own members
+  PASS  parity: the Launcher stub carries the whole live surface
+  PASS  parity: the Lifecycle stub carries the whole live surface
+  PASS  parity: the degraded Skin facade carries every live lib.VOCAB name, in the library's order
+  PASS  mediasetup: NS.Icon answers the vendored path, EXTENSIONLESS
+  PASS  mediasetup: an icon the library does not ship answers nil
+  PASS  mediasetup: NS.MediaFont answers the vendored face, and only for a face it ships
+  PASS  mediasetup: the face this addon names is the face the library registers
+  PASS  mediasetup: the LSM registration is the library's, made at file load
+  PASS  mediasetup: every icon this addon draws is one the library ships
+  PASS  mediasetup: every icon this addon draws has a file in the vendored copy
+  PASS  mediasetup: every declared icon has a file in the vendored copy, and nothing undeclared ships
+  PASS  mediasetup: the declaration names every icon the library draws for this addon
+  PASS  mediasetup: this addon ships no private copy of the shared art (anti-patterns #63)
+  PASS  mediasetup: with no library there is no art and no face, and that is not an error
+  PASS  mediasetup: a degraded install still gets a REAL font, never nil and never a dead path
+  PASS  mediasetup: Ka0s Default's faces are Ka0s Prototype, and the vendored copy ships them
+  PASS  envsetup: NS.Meta reads this addon's TOC
+  PASS  envsetup: NS.Meta asks about this addon's FOLDER, not its title or its frame prefix
+  PASS  envsetup: NS.Meta degrades to nil when the client exposes no manifest reader
+  PASS  envsetup: NS.Version prefers the TOC over this addon's own constant
+  PASS  envsetup: NS.Version falls back to this addon's own constant
+  PASS  envsetup degraded: an install with no LibKa0s still reads its own TOC
+  PASS  envsetup degraded: Meta never reads the bare GetAddOnMetadata global
+  PASS  envsetup: no file inlines its own C_AddOns ladder any more
+  PASS  envsetup: the library-absent ladder has two rungs, Env then C_AddOns
+  PASS  util: SafeToString handles nil / booleans / strings / numbers
+  PASS  util: SafeToString yields <secret> for a value that raises in concat
+  PASS  util: IsConcatSafe true for scalars, false for a raising value
+  PASS  util: NS.Print prepends the [ST] prefix and stringifies each arg
+  PASS  util: NS.Print degrades a secret-like arg in place, never raising
+  PASS  util: Windows.Save/Restore round-trips a frame point through db.global (WhatGroup WG-26)
+  PASS  util: Windows.Restore is a no-op when nothing is saved (WhatGroup WG-26)
+  PASS  util: SafeToString renders a negative and a fractional number
+  PASS  util: SafeToString degrades a function and a coroutine
+  PASS  util: IsConcatSafe reports a boolean as unsafe
+  PASS  util: IsConcatSafe reports nil as safe (concat of an empty table)
+  PASS  util: NS.Print with no arguments still prints the prefix
+  PASS  util: NS.Print joins several arguments with single spaces
+  PASS  util: NS.Print stringifies nil and boolean arguments in place
+  PASS  util: PointOf reads a frame's primary anchor
+  PASS  util: PointOf defaults relPoint to the point and offsets to zero
+  PASS  util: PointOf returns nil for a frame with no anchor yet
+  PASS  util: PointOf returns nil for nil or a non-frame
+  PASS  util: Save is a no-op before the db is ready
+  PASS  util: Save skips a frame that has no anchor
+  PASS  util: Save overwrites a previously stored point
+  PASS  util: windows are stored under independent names
+  PASS  util: Restore returns false for a frame that cannot be anchored
+  PASS  util: Restore is a no-op before the db is ready
+  PASS  util: Restore clears existing anchors before applying the saved one
+  PASS  util: a Save/Restore round trip survives through the real frame stub
+  PASS  database: fresh DB lands at schemaVersion 2
+  PASS  database: RunMigrations is idempotent
+  PASS  database: RunMigrations re-seeds a missing schemaVersion
+  PASS  database: defaults declare global.schemaVersion 0 (savedvariables-§1)
+  PASS  database: the stamp survives AceDB's logout strip, so the first real migration runs
+  PASS  database: a raising step leaves the stamp at the last completed version
+  PASS  database: RunMigrations before the db exists is a no-op
+  PASS  database: an older saved DB is stepped up to the current version
+  PASS  database: a version move is logged, a no-op migration is silent (debug-logging-§8)
+  PASS  database: migrations run before any profile read (OnInitialize order)
+  PASS  database: the profile is untouched by a migration pass
+  PASS  database: a stored pick of Ka0s Friz Quadrata TT moves to Ka0s Ubuntu, in every profile (R3-FRIZ)
+  PASS  settings: BuildDefaults threads profile + global defaults
+  PASS  settings: defaults source from NS.C (defaults/Profile.lua, WhatGroup WG-24)
+  PASS  settings: BuildDefaults seeds an empty global.windows table (WhatGroup WG-26)
+  PASS  settings: debug is not a persisted schema row (WhatGroup WG-12)
+  PASS  settings: ValidateSchema reports zero errors
+  PASS  settings: Get/Set round-trips through db.profile
+  PASS  settings: RestoreAllDefaults resets a changed value
+  PASS  settings: RestoreAllDefaults prunes orphaned profile keys (F1)
+  PASS  settings: RestoreAllDefaults deep-copies table defaults (F2)
+  PASS  settings: RestoreAllDefaults skips per-row onChange (F3)
+  PASS  settings: every schema row declares the fields the panel and CLI need
+  PASS  settings: schema paths are unique
+  PASS  settings: every schema row carries a tooltip
+  PASS  settings: every number row declares min, max and step
+  PASS  settings: ValidateSchema counts each defect on a broken row
+  PASS  settings: ValidateSchema reports a non-table row
+  PASS  settings: a broken row does not stop the panel registering
+  PASS  settings: BuildDefaults nests dotted paths into real subtables
+  PASS  settings: BuildDefaults covers every schema row
+  PASS  settings: BuildDefaults deep-copies table defaults
+  PASS  settings: BuildDefaults is a fresh table each call
+  PASS  settings: Get returns nil before the db exists
+  PASS  settings: Set before the db exists is a harmless no-op
+  PASS  settings: a write creates the intermediate tables it walks through
+  PASS  settings: Get on an unknown deep path returns nil and creates no table
+  PASS  settings: Resolve replaces a non-table intermediate
+  PASS  settings: there is no RawSet; a write to `enabled` always runs its onChange
+  PASS  settings: Set takes no skipOnChange option
+  PASS  settings: a throwing onChange propagates, after the value landed
+  PASS  settings: Set on a path with no schema row is refused and stores nothing
+  PASS  settings: FindSchema matches on the exact path
+  PASS  settings: RestoreAllDefaults restores every schema row
+  PASS  settings: RestoreAllDefaults leaves db.global untouched
+  PASS  settings: RefreshAll runs every refresher on the open page, in registration order
+  PASS  settings: a throwing refresher does not abort the sweep
+  PASS  settings: a hidden page is not refreshed — it is flagged dirty (options-ui-§11)
+  PASS  settings: every Set re-syncs the widgets once; there is no skipRefresh
+  PASS  settings: RestoreAllDefaults refreshes once, plus once per session-only row
+  PASS  settings: EnsureResetPopup is idempotent
+  PASS  settings: the reset dialog is a blocking, escapable confirmation
+  PASS  settings: accepting the reset dialog acknowledges in chat
+  PASS  settings: the page's tabs are the designed ones, in order, at the designed size
+  PASS  settings: no tab holds fewer than two controls
+  PASS  settings: every row's group is one of the designed tabs
+  PASS  settings: the Master controls block is the FIRST group, in canonical order
+  PASS  settings: the Master controls rows are the COMPOSER's, not hand-written
+  PASS  settings: Enable names the addon, and the rows it has no state for are omitted
+  PASS  settings: the master rows keep this addon's own shipped defaults
+  PASS  settings: the debug console is a SESSION-ONLY row that never reaches db.profile (WhatGroup WG-12)
+  PASS  settings: a global reset closes the console a profile reset cannot reach (options-ui-§12)
+  PASS  settings: every row on every page carries a `group`
+  PASS  settings: every color row is followed by its class-color companion, and none is disabled
+  PASS  settings: the stored settings are exactly the pinned ones
+  PASS  slash: COMMANDS order is the help order, seventeen positional triples
+  PASS  slash: every description has an enUS entry
+  PASS  slash: the chat command and its alias are registered through AceConsole
+  PASS  slash: the help header is the library's, with this addon's alias sentence
+  PASS  slash: version prints the tagged version
+  PASS  slash: a bare /st opens the settings panel, and so does config
+  PASS  slash: list groups the rows under their sections, with current values
+  PASS  slash: get and set reach the write seam for a number row, clamped to its range
+  PASS  slash: a bool row takes the library's words and `toggle`
+  PASS  slash: the skin row accepts a registered skin and refuses an unknown key
+  PASS  slash: reset takes a path; a bare reset explains itself and writes nothing
+  PASS  slash: enable and disable write the Enable row and move the latch
+  PASS  slash: debug toggles the WINDOW, `on`/`off` the flag, and an unknown word the window
+  PASS  slash: perf is registered by the addon and answers through the library
+  PASS  slash: show toggles the showroom while enabled
+  PASS  slash: degraded, the CLI verbs name the missing library and nothing raises
+  PASS  slash: /skintester opens the window
+  PASS  slash: a foreign /st is reported once and left alone
+  PASS  slash: with no foreign /st, nothing is said and both commands stay
+  PASS  selector: one card per Ka0s skin, in Skins() order
+  PASS  selector: clicking a card applies and saves the skin
+  PASS  selector: a pick made elsewhere moves the selection
+  PASS  selector: the saved skin is applied at load
+  PASS  selector: the saved Scope is applied at load, and /st set moves one half
+  PASS  selector: a fresh profile skins this addon's settings panel (R4-ST1, a documented deviation)
+  PASS  selector: an unknown saved skin falls back to ka0s
+  PASS  selector: clicking the current card does nothing
+  PASS  selector: no EllesmereUI card and no copy button
+  PASS  selector: a source dropdown offers Ka0s skins and EllesmereUI (SF-ST-1)
+  PASS  showroom: the window is painted through the wrapper
+  PASS  showroom: Paint answers the primitive's answer and records the name once
+  PASS  showroom: sections lay out in registration order, each under its title
+  PASS  showroom: a caption is muted text
+  PASS  showroom: opened after a skin change, it wears the new skin
+  PASS  showroom: a skin change repaints the open window
+  PASS  showroom: a skin card's label keeps to one line under any skin's type size
+  PASS  showroom scrollbar: hidden while the sections fit, shown once they overflow
+  PASS  showroom scrollbar: the wheel moves the sections and the knob together
+  PASS  showroom scrollbar: dragging the knob scrolls the sections, and a sync does not scroll back
+  PASS  showroom scrollbar: the corridor and the knob are the skin's
+  PASS  a5: the hover tooltip is a frame of this addon's, in tooltip.* and gtip.*
+  PASS  a5: the ApplyBarFill sample draws the skin's texture and accent, and follows a change
+  PASS  a5: the fade's label and the icon border follow the skin
+  PASS  a5: every IconBorder sample asks for the skin's own edge
+  PASS  R4-L4: every IconBorder sample sits in a window, so none asks for the HUD's icon.border edge
+  PASS  R3-L3: every IconBorder sample names its icon, so the library's 0.07 zoom reaches it
+  PASS  R3-FIX: Controls' square keeps S.SquareIcon's 0.08 crop through IconBorder's 0.07 zoom and a switch
+  PASS  a5: the slider's own track is handed over and a selected nav entry has a fill to tint
+  PASS  a5: the window's title bar stands at title.height
+  PASS  R4-ST4: title.bg is one layer, the bar's, and stays one through a skin switch
+  PASS  a5: the scrollbar stands at scroll.width
+  PASS  a5: every readout line is painted body text
+  PASS  a5: the BarStyle sample's fill is colored from the skin
+  PASS  R5-RV: the showroom's title bar, title and close sit on S.Band in every skin
+  PASS  R5-WIN: the confirm popup's one band carries its question on its middle, in every skin
+  PASS  R5-WIN: the showroom's body sits 6 px in from its title bar and footer, as LootHistory's content
+  PASS  showroom: every lib.VOCAB name is shown
+  PASS  showroom: every section is built and none is empty
+  PASS  showroom: the tabs sample moves its selection on a click
+  PASS  showroom: the sections build without the library's widgets
+  PASS  showroom: the slider sample is visible under Ka0s Default
+  PASS  showroom: the slider sample's parts start in the worn skin's slider tokens
+  PASS  controls: the library's dropdown row is drawn, sized, labeled and in its cell
+  PASS  controls: AceGUI's Dropdown is in its cell and follows the Scope's panel half, live
+  PASS  controls: the media pickers are the library's types, painted and handed back like the Dropdown
+  PASS  controls: a media picker this client lacks is the plain Dropdown, and says so
+  PASS  controls: each media picker reads a real key, and no other media kind has a cell
+  PASS  controls: the Blizzard dropdown drops the template's art and wears the skin
+  PASS  controls: the Blizzard dropdown's menu offers both choices and marks the pick
+  PASS  controls: a client without the Blizzard template shows a label in its cell
+  PASS  values: every getter is displayed
+  PASS  values: every sem token has a line
+  PASS  values: a skin change redraws them
+  PASS  values: the two token categories each have a heading, in the heading role
+  PASS  values: every quality tier in the schema has a line, poor to legendary
+  PASS  values: each tier line wears its own color, and follows a skin change
+  PASS  values: a tier the skin leaves unset reads none, with no swatch
+  PASS  values: the tooltip colors category lists every gtip.* token, gtip.footer included
+  PASS  values: gtip.footer is Ka0s Default's 0.6 gray and follows gtip.muted under Obsidian
+  PASS  values: the art tokens read the client's art under Ka0s Default and a color under Obsidian
+  PASS  values: FontFlags shows From skin on a HUD and in a window, and a picked flag winning
+  PASS  values: HudFontSize shows a stored 12 and 24 scaled by the worn skin's HUD size
+  PASS  values: without the skin engine FontFlags and HudFontSize still answer what SetFont takes
+  PASS  values: BarBorder defers to the stored three under None and a real style wins
+  PASS  values: without the skin engine BarBorder answers the stored three
+  PASS  textures: the section is built with three bars, five rows and five segments
+  PASS  textures: the status bars wear the accent, good and bad colors, in the bar texture
+  PASS  textures: the chart rows and stacked segments wear the series colors
+  PASS  textures: every label names the texture key in effect
+  PASS  textures: a skin switch recolors the bars and relabels them
+  PASS  textures: a texture override repaints every fill and relabels it, live
+  PASS  textures: the section builds without the skin engine
+  PASS  textures: Ka0s Default draws its own Ka0s Default bar, shipped in the vendored copy
+  PASS  addon surfaces: the section is built, and every sample went through the wrapper
+  PASS  addon surfaces: the owner tokens resolve: default, a skin's own entry, else the follow
+  PASS  addon surfaces: the owner token line wears st.note, and follows a skin switch
+  PASS  addon surfaces: the danger button paints its fill, edge and label from the named tokens
+  PASS  addon surfaces: the caution callout paints its fill, edge and title from the named tokens
+  PASS  addon surfaces: the TreeGroup follows the Scope's settings-panel half, live
+  PASS  addon surfaces: the TreeGroup keeps its 120 height and shows a page (R4-ST2)
+  PASS  overlays: the IconBorder sample draws a 1 px edge in icon.outline, in every skin
+  PASS  addon surfaces: the settings-style window wears Ka0s Default under Ka0s Default
+  PASS  addon surfaces: the settings-style window follows a skin switch and stays skinned back on Ka0s Default
+  PASS  R5-WIN: the settings-style window's title and close sit on S.Band in every skin
+  PASS  fonts: the section is built, one face line per skin, in the library's order
+  PASS  fonts: each line names its skin's body and title faces, the new faces among them
+  PASS  fonts: the lines draw in each face at its size, under this addon's Font outline
+  PASS  fonts: with Ignore fonts ticked the face lines draw window text's stock flags, as the mode line says
+  PASS  fonts: the outline line follows the Font outline and says Ignore fonts wins
+  PASS  fonts: Measure gives every skin a width per role and Ka0s Default a ratio of 1
+  PASS  fonts: /st widths prints a header and one line per skin against Ka0s Default
+  PASS  fonts: a face the client cannot resolve reads unmeasured, and nothing raises
+  PASS  fonts: a face the client refuses reads unmeasured, never the previous face's width
+  PASS  fonts: /st widths is refused while the addon is disabled
+  PASS  fonts: without the skin engine the section builds and the probe says why
+  PASS  hud: the section is built, one line per skin, in the library's order
+  PASS  hud: each skin's line names that skin's own HUD face, all nine of them
+  PASS  hud: each skin's line is drawn in its face, at its hud.fontSize, under its hud.outline
+  PASS  hud: the worn line follows the skin worn, through BarStyle
+  PASS  hud: under Ignore fonts the worn line takes the host's own face, and the skin lines keep theirs
+  PASS  hud: the v1.85.0 samples redraw on a skin change, through the drawing setters
+  PASS  hud: HudShadow reads as its three answers, and both primitives are shown
+  PASS  hud: a skin change redraws each string's font object, the shadow behind the cache included
+  PASS  hud: BarGloss shows under a skin with gloss and only there
+  PASS  overlays: S.Mark tints its marks and the MarkText line is written again
+  PASS  widgets: the section is built with every sample
+  PASS  widgets: the drag handle's tooltip draws gtip.title, gtip.value and gtip.footer, per skin
+  PASS  widgets: the chart sample fills the area under its first series (#70)
+  PASS  widgets: the drag handle, chart and autocomplete are owned by this addon, off the panel
+  PASS  widgets: the resize grip is the client's art under Ka0s Default and icon.grip under Obsidian
+  PASS  widgets: a dragged resize grip leaves the box on its cell, at its new size
+  PASS  widgets: closing the showroom forgets a drag, and ends one under way
+  PASS  widgets: the drawer and nav hover art is the client's under Ka0s Default and list.hoverArt under Glass
+  PASS  widgets: S.HoverArt's sample is the client's art under Ka0s Default and list.hoverArt under Glass
+  PASS  widgets: the chart's tick labels and the autocomplete rows are in this addon's body face
+  PASS  widgets: Ignore fonts gives the chart's tick labels and the autocomplete rows their template face
+  PASS  widgets: Ignore settings panel leaves the section skinned (a window, decision D-01)
+  PASS  widgets: the copy window opens owned by this addon
+  PASS  widgets: the console button opens the debug console
+  PASS  widgets: the picker button shows the skin picker on a profile that has closed it
+  PASS  widgets: the picker button does nothing in combat
+  PASS  media: a fresh profile stores the skin's own font and texture, and the picker unseen
+  PASS  media: the write seam's fourth argument writes both keys, false as the empty string
+  PASS  media: another addon's copy reaches the store through WriteChoice
+  PASS  media: a row's write applies its own half live
+  PASS  media: the stored overrides are applied at load
+  PASS  media: a profile switch applies the incoming profile's overrides, and back
+  PASS  media: a profile reset clears the overrides
+  PASS  media: Ignore fonts wins over a font override
+  PASS  media: without the skin engine the apply is a quiet no-op
+  PASS  outline: a fresh profile stores HUD text only, the library's default
+  PASS  outline: the schema row offers the library's three modes, in its order
+  PASS  outline: the write seam stores media.outline, and leaves it alone when it is nil
+  PASS  outline: another addon's copy reaches the store through WriteChoice
+  PASS  outline: the row's write applies the mode live
+  PASS  outline: /st set refuses a mode the library does not know
+  PASS  outline: the stored mode is applied at load
+  PASS  outline: a profile switch applies the incoming profile's mode, and back
+  PASS  outline: without the skin engine the apply is a quiet no-op
+  PASS  skin verb: the row sits right after config, with the library's help words
+  PASS  skin verb: /st skin shows the picker on a profile that has closed it
+  PASS  skin verb: NS.RunSkinVerb hands O.SkinVerb this addon's first-run spec
+  PASS  skin verb: in combat every call prints the library's gray line and shows nothing
+  PASS  skin verb: refused while the addon is disabled, and no picker shows
+  PASS  skin verb: without LibKa0s the verb prints the library-absent line
+  PASS  skin verb: the showroom's Show the picker goes through O.SkinVerb
+  PASS  picker: a fresh profile shows it once the addon is enabled
+  PASS  picker: not before login
+  PASS  picker: the spec names this owner's seams, the General page's Skin tab and the eye
+  PASS  picker: closing it marks the profile, and the next login does not show it
+  PASS  picker: the eye closes the showroom the picker opened and leaves the picker up
+  PASS  picker: the gear saves the pick, opens the General page itself, and marks the profile
+  PASS  picker: a pick previews: the skin moves live, the profile keeps its own and is not marked
+  PASS  picker: Apply saves the pick through the schema runtime and marks the profile
+  PASS  picker: the close control puts the old skin back, writes nothing, and marks the profile
+  PASS  picker: the title is "Choose a skin" and the owner line names this addon
+  PASS  picker: not while the addon is disabled
+  PASS  picker: a login in combat skips it, and the next trigger shows it
+  PASS  picker: a profile reset shows it again
+  PASS  picker: a new profile shows it; one that closed it does not
+  PASS  picker: /st disable hides it, and the profile stays unseen
+  PASS  picker: a switch to a disabled profile hides it, and neither profile is marked
+  PASS  picker: a switch to a profile that closed it hides it, and writes nothing
+  PASS  picker: a switch to a seen profile under a pending preview wears that profile's skin
+  PASS  picker: a switch to an unseen profile under a pending preview opens afresh on it
+  PASS  picker: Apply after a switch under a pending preview writes nothing the dropdown did not show
+  PASS  picker: a profile copy under a pending preview wears the copied skin
+  PASS  picker: behind another Ka0s addon's picker it queues, and shows when that one closes
+  PASS  picker: a stand-down while queued takes it out unseen, and nothing shows after
+  PASS  picker: another addon's Apply to all marks this profile seen and gives it the skin
+  PASS  picker: this addon's Apply to all saves here and gives the other addon the skin
+  PASS  picker: Apply to all is hidden while this addon is the only skin owner
+  PASS  picker: a skin General -> Skin stores under a pending preview stays on the close
+  PASS  picker: a skin /st set stores under a pending preview stays on the close
+  PASS  picker: another addon's picker closed in combat does not bring this one up until combat ends
+  PASS  picker: a stand-down while it waits out combat leaves nothing to show after
+  PASS  picker preview: the spec passes spec.preview in window mode, and no one-shot onPreview
+  PASS  picker preview: enter, exit and the reads go through the showroom's own seam
+  PASS  picker preview: the first-run picker with the showroom closed opens it, the eye lit
+  PASS  picker preview: the eye closes the showroom and opens it again, the picker staying up
+  PASS  picker preview: the close control closes the showroom the picker opened
+  PASS  picker preview: Escape closes the showroom the picker opened
+  PASS  picker preview: Apply closes the showroom the picker opened
+  PASS  picker preview: the gear closes the showroom the picker opened
+  PASS  picker preview: HideSkinPicker closes the showroom the picker opened
+  PASS  picker preview: the stand-down closes the showroom the picker opened
+  PASS  picker preview: a showroom already open is left open, and the close does not hide it
+  PASS  picker preview: an eye that closed a showroom open at the start opens it again on close
+  PASS  picker preview: a showroom the player closes while the picker is up stays closed
+  PASS  settings: the sample page carries one row of each widget type
+  PASS  settings: the sample page carries one picker of each media kind, on the library's own types
+  PASS  settings: each sample picker lists what LibSharedMedia holds of its kind
+  PASS  settings: each sample picker draws on the page, and with no media library it still opens
+  PASS  settings: /st set takes a media key the sample picker lists, and refuses one it does not
+  PASS  settings: the sample page wears the owner's skin once the panel is skinned
+  PASS  settings: on a new profile the sample page wears the skin (R4-ST1)
+  PASS  settings: with Ignore settings panel ticked the sample page is the client's
+  PASS  settings: the sample rows stay on their page
+  PASS  settings: no copy button on the sample page
+  PASS  settings: the sample rows with a skin token carry a companion, default on, showing the skin's value
+  PASS  panel: OnEnable registers the parent category and the General subcategory
+  PASS  panel: the parent category is added to the AddOns list
+  PASS  panel: Register is idempotent — a second call registers nothing more
+  PASS  panel: a registration taken in combat is parked and lands at PLAYER_REGEN_ENABLED, with no second host call
+  PASS  panel: a login taken in combat is parked and lands at combat end, with no second registration
+  PASS  panel: registration validates the schema
+  PASS  panel: both panels start hidden
+  PASS  panel: registration creates no AceGUI widgets
+  PASS  panel: OnShow itself builds nothing; the deferred hop does
+  PASS  panel: the build is one-shot across repeated shows
+  PASS  panel: two OnShows before the hop runs still build only once
+  PASS  panel: the Defaults button is built lazily, on the General page only
+  PASS  panel: the reset dialog is not registered before it is needed (taint)
+  PASS  panel: the Debug console renders as an ordinary Master controls checkbox
+  PASS  panel: ticking Debug console shows the window without touching db.profile
+  PASS  panel: unticking Debug console hides the window
+  PASS  panel: opening the console while General is OPEN moves the checkbox
+  PASS  panel: re-opening General re-syncs the Debug console checkbox
+  PASS  panel: a re-render REPLACES the refresher list rather than growing it
+  PASS  panel: the scroll container is patched to always show its scrollbar
+  PASS  panel: the patch is one-shot per widget
+  PASS  panel: releasing the widget restores AceGUI's stock behavior
+  PASS  panel: the landing page lists one row per slash command
+  PASS  panel: the landing page shows the TOC Notes line
+  PASS  panel: the landing page renders the Slash Commands heading and the logo
+  PASS  panel: the landing logo path is built from the folder this copy loaded from
+  PASS  panel: the landing page adds logo, notes, heading and command rows in that order
+  PASS  panel: a dirty landing page re-renders in place instead of stacking a second copy
+  PASS  panel: the landing page is drawn by the library's BuildLandingPage, logo and commands
+  PASS  panel: the header Defaults tooltip is the library's Reset all settings wording (WHA-L12)
+  PASS  panel: General's strip is Master controls, Skin, then Keybindings
+  PASS  panel: Master controls holds only the rows this addon has state for
+  PASS  panel: the scale slider commits on release, through the write seam
+  PASS  panel: unticking Enable stands the addon down through the row's onChange
+  PASS  panel: Defaults raises the confirmation, and confirming restores the profile
+  PASS  panel: Reset position forgets the saved point and centers the showroom
+  PASS  panel: the Skin tab is the library's, for this owner, and a pick lands in the profile
+  PASS  profiles: the page registers this db's AceDBOptions table, as the LAST subcategory
+  PASS  profiles: the page has no Defaults button
+  PASS  profiles: without any one of the three libraries the page opts out
+  PASS  profiles: nothing is built until the page is first shown, then the dialog fills a SHOWN container
+  PASS  profiles: a switch made elsewhere re-draws an OPEN Profiles page into the same container
+  PASS  profiles: a switch while the page is HIDDEN re-draws it on its next show
+  PASS  profiles: a page first shown in combat draws nothing, then draws once at combat end
+  PASS  profiles: a switch logs ONE [Profile] line naming the incoming profile (debug-logging-§10)
+  PASS  profiles: switching to a disabled profile stands the addon down, and back brings it up
+  PASS  profiles: the Reset all settings tooltip says it is Profiles -> Reset Profile
+  PASS  profiles: ONE named veto keeps the Profiles page and every profile row out of the reset walk
+  PASS  profiles: /st resetall resets the active profile and leaves the list and the other profile alone
+  PASS  profile verb: bare `/st profile` lists the profiles, the current one marked
+  PASS  profile verb: `/st profile <name>` switches to an existing profile and runs the handler
+  PASS  profile verb: an unknown name is refused, and no profile is created
+  PASS  profile verb: surrounding quotes are stripped, case and inner spaces kept
+  PASS  profile verb: a switch in combat is refused and nothing moves
+  PASS  profiles: the page hands the group to the skin after AceConfigDialog fills it
+  PASS  diagnostics: identity names schema, profile, enabled, stood-down and the holds
+  PASS  diagnostics: the always rows print at default, and a changed row prints with its default
+  PASS  diagnostics: the skin section names the engine, the stored and applied skin, and the skins
+  PASS  diagnostics: the showroom section reads the window and never builds it
+  PASS  diagnostics: the report reads and never acts: no registration, hold, timer or save
+  PASS  diagnostics: a raising section costs exactly one line, and the report still ends
+  PASS  diagnostics: an over-cap report ends `truncated`, then the end marker
+  PASS  diagnostics: with logging off, the enable ack then one localized chat line
+  PASS  diagnostics: with logging already on, exactly one chat line
+  PASS  diagnostics: without LibKa0s-DebugLog both forms print the library-absent line, writing nothing
+  PASS  launcher: it registers at login, and the broker object IS the minimap button's
+  PASS  launcher: the object is a launcher, named for the FOLDER, wearing this addon's logo
+  PASS  launcher: the label is the BRAND NAME in plain text (launcher-§1)
+  PASS  launcher: the label is NOT wired to the TOC Title
+  PASS  launcher: the name is the FOLDER this copy loaded from, not a hand-typed literal
+  PASS  launcher: Register is idempotent -- a second call builds no second button
+  PASS  launcher: the icon file exists and is an uncompressed 32-bit TGA
+  PASS  launcher: the TOC's IconTexture is the same file the object wears
+  PASS  launcher: LEFT-click opens the settings panel, and never the showroom
+  PASS  launcher: LEFT-click opens the panel while disabled too, with no refusal line
+  PASS  launcher: RIGHT-click opens a menu titled with the label, with its two entries in order
+  PASS  launcher: the Enabled entry runs the /st disable|enable body, ack and all
+  PASS  launcher: the Show window entry toggles the showroom through NS.Showroom.Toggle
+  PASS  launcher: Bindings.xml carries one CLICK binding on the toggle button, no default, no Lua
+  PASS  launcher: the binding button is plain, named, hidden and registered for the down edge
+  PASS  launcher: the binding labels are the brand and the localized action
+  PASS  launcher: a key press runs the Show window handler, once per press
+  PASS  launcher: while disabled only Enabled is live; the rest are grayed and call nothing
+  PASS  launcher: with no MenuUtil the right click falls back to the settings panel
+  PASS  launcher: the descriptor passes the two pairs to the verbs' seams, and no retired field
+  PASS  launcher: the tooltip reads title and status, then the two click hints
+  PASS  launcher: while disabled the tooltip still draws, with the same two click hints
+  PASS  launcher: the tooltip's version is the TOC's, not the in-code constant
+  PASS  launcher: there is no host tooltip hook, and the retired label's locale row is gone
+  PASS  launcher: the Minimap button row is stored, global, and LibDBIcon's OWN hide key
+  PASS  launcher: the row's get/set invert, and the button follows immediately
+  PASS  launcher: the row's CLI path reads in its own sense
+  PASS  launcher: a legacy store with hide = true reads not-shown, and nothing moves
+  PASS  launcher: a button the player hid survives Reset all settings (options-ui-§12)
+  PASS  launcher: a button the player hid survives the General page's Defaults button
+  PASS  launcher: a button the player hid survives the Master controls reset button
+  PASS  launcher: LibDBIcon's own writes into the table are not disturbed
+  PASS  launcher: an install with neither broker library loads, and says so once
+  PASS  launcher: with no LibDBIcon the broker plugin still registers
+  PASS  launcher: the row still stores with no broker library at all
+  PASS  launcher: with LibKa0s absent the seam answers honestly and the store still moves
+  PASS  launcher descriptor passes openSkinPicker, which runs the skin verb
+  PASS  keybinds: Bindings.xml files every binding in the addon's own category, labeled, brand-titled
+  PASS  keybinds: NS.BINDINGS is the one table, Show window first, each with a localized tooltip
+  PASS  keybinds: the General strip ENDS in Keybindings, after Appearance
+  PASS  keybinds: the tab's rows are NS.BINDINGS in order, labeled with the BINDING_NAME_ text
+  PASS  keybinds: a key bound through the tab is the client's key (GetBindingKey), saved to the set in force
+  PASS  keybinds: a key set on the client's page shows in the tab after UPDATE_BINDINGS
+  PASS  keybinds: a second key, set on the client's page, reads '<key> +1' on the one key button
+  PASS  keybinds: in combat the tab refuses, and no binding is written or saved
+  PASS  lifecycle: the addon exposes no public global (WhatGroup WG-01)
+  PASS  lifecycle: NS IS the addon object (AceAddon mixes into the namespace)
+  PASS  lifecycle: earlier files' fields survive NewAddon
+  PASS  lifecycle: the shared chat prefix is the cyan [ST] tag
+  PASS  lifecycle: NS.Print, LibKa0sSkinTester._print and NS.Util.print are one seam
+  PASS  lifecycle: debug state is session-only and starts off
+  PASS  lifecycle: OnInitialize builds the db from the schema defaults
+  PASS  lifecycle: OnInitialize registers both slash verbs
+  PASS  lifecycle: no events are registered before OnEnable
+  PASS  lifecycle: InitSummary reflects live runtime state
+  PASS  lifecycle: InitSummary is safe before the db exists
+  PASS  lifecycle: /st config opens the parent settings category
+  PASS  lifecycle: /st config is refused during combat (options-ui-§2)
+  PASS  lifecycle: a login taken in combat registers the panel at combat end
+  PASS  lifecycle: /st reset <path> resets one setting, with no confirmation
+  PASS  lifecycle: a bare /st reset explains the change rather than resetting or erroring
+  PASS  lifecycle: /st resetall asks for confirmation rather than resetting outright
+  PASS  lifecycle: /st resetall and the Defaults button share one OnAccept body
+  PASS  debuglog: FONT_MONO points at the library payload's JetBrains Mono TTF
+  PASS  debuglog: the console renders in the vendored TTF when the client can fetch it
+  PASS  debuglog: FormatPlain wraps the tag in brackets, single-space separators
+  PASS  debuglog: FormatPlain tolerates a nil tag
+  PASS  debuglog: FormatColored colors timestamp + tag; pipe and content default
+  PASS  debuglog: /st debug on enables session state
+  PASS  debuglog: /st debug off disables session state
+  PASS  debuglog: /st debug (no arg) toggles the window, not the state
+  PASS  debuglog: header toggle click flips debug state
+  PASS  debuglog: enabling writes a '[Debug] logging enabled' console line
+  PASS  debuglog: enabling debug appends the [Init] session summary after the bracket (debug-logging-§5)
+  PASS  debuglog: [Init] fires only on enable, not on disable (debug-logging-§5)
+  PASS  debuglog: disabling still appends a '[Debug] logging disabled' line
+  PASS  debuglog: NS.Debug survives an unsafe format arg without raising (WhatGroup WG-22)
+  PASS  debuglog: NS.Debug is a no-op (no console write) when debug is off
+  PASS  debuglog: debug-logging-§11 scrollbar + line-counter sync is a safe no-op under the mock
+  PASS  debuglog: settings change logs one [Set] line at the write seam (debug-logging-§10)
+  PASS  debuglog: RestoreAllDefaults logs one [Set] reset profile line counting the rows it changed (debug-logging-§10)
+  PASS  debuglog: RestoreAllDefaults on a pristine profile counts 0 rows (debug-logging-§10)
+  PASS  debuglog: a profile reset from outside the helper is logged once, without a count (debug-logging-§10)
+  PASS  debuglog: the library's page reset is one [Set] line counting the rows it changed (debug-logging-§10)
+  PASS  debuglog: an all-default page reset logs 0 rows, not a line per row (debug-logging-§10)
+  PASS  debuglog: the bulk bracket adds no line when the act reset the profile (debug-logging-§10)
+  PASS  debuglog: a nested bracket logs once, at the outermost close, with the summed tally (debug-logging-§10)
+  PASS  debuglog: a nested bracket that reset the profile silences the outer line (debug-logging-§10)
+  PASS  debuglog: a bracket that closes on an error still logs its tally and unmutes (debug-logging-§10)
+  PASS  debuglog: a write that raises inside a bracket is not counted (debug-logging-§10)
+  PASS  debuglog: a profile reset that raises logs one marked line and re-raises (debug-logging-§10)
+  PASS  debuglog: a profile reset that raises leaves no count for a later reset (debug-logging-§10)
+  PASS  debuglog: a profile reset inside an open bracket silences the bracket (debug-logging-§10)
+  PASS  debuglog: a profile copy logs one [Set] copied line naming the source (debug-logging-§10)
+  PASS  debuglog: InitSummary leads with the debug-logging-§5 identity fields, then runtime state
+  PASS  debuglog: enable ack is color-coded green/red matching the header (debug-logging-§5)
+  PASS  debuglog: pin — standing down logs one [Lifecycle] line naming the holds, the library's
+  PASS  debuglog: pin — standing back up logs the library's [Lifecycle] stood-up line, once
+  PASS  debuglog: a caught error logged while debug was off is still logged once it is on
+  PASS  debuglog: neither the console nor its copy window draws a line under its title (R4-SEP)
+  PASS  library lines: an unknown verb writes the library's [Cmd] refusal, once
+  PASS  library lines: a feature verb refused by the disabled gate is one [Cmd] line
+  PASS  library lines: a set the parser refuses writes one [Cmd] line naming the path
+  PASS  library lines: a profile switch refused in combat writes one [Cmd] line
+  PASS  library lines: a registration parked in combat logs the park and the flush, once each
+  PASS  library lines: the launcher's registration lands the first time logging is turned on
+  PASS  library lines: the login migration's [Migrate] line lands the first time logging is turned on
+  PASS  library lines: a caught error logged once is logged again after a Clear
+  PASS  docmap: every Tier 2 row agrees with what docs/ holds
+  PASS  lintconfig: .luacheckrc sets no top-level ignore
+  PASS  lintconfig: .luacheckrc switches no warning class off wholesale
+  PASS  lintconfig: every files[...] ignore is narrowed to a file or a name
+  PASS  lint: exclude_files carries the template's frozen stores
+  PASS  lint: read_globals grants no removed or unread global
+  PASS  lintconfig: no source file carries a bare inline luacheck ignore
+  PASS  docs/ARCHITECTURE.md carries the ten sections documentation-§3 names
+  PASS  every mandated hub section that has a topic doc has spilled into it
+  PASS  every anchor pointing into docs/ARCHITECTURE.md resolves to a heading
+  PASS  the player-facing history has the ONE home documentation-§1 allows, and no second
+  PASS  README.md's top-level sections are the ones documentation-§1 names, in its order
+  PASS  README.md's Reporting a bug section is the standard's text with /st, and links nowhere
+  PASS  the README's settings table is page-granular, not per-tab
+  PASS  every settings tab the README sends a player to exists in the schema
+  PASS  docs/smoke-tests.md carries a non-English-client section
+  PASS  every evidence id the register cites is assigned by its bundle in docs/audits/ or docs/reviews/
+  PASS  disabled 1: enabled, the addon holds NO registration, and that is pinned
+  PASS  disabled 3: the registration set stays empty, by count and by name
+  PASS  disabled 3: the write seam is the route — the checkbox and the verb reach the same latch
+  PASS  disabled 4: no timer, ticker or OnUpdate survives, and none is armed afterwards
+  PASS  disabled 5: the showroom is hidden, and every route back to the screen refuses
+  PASS  disabled 6: combat edges and a skin change write nothing, say nothing, show nothing
+  PASS  disabled 7: every reserved verb answers normally, and the bare /st opens the panel
+  PASS  disabled 7: the feature verb answers exactly one refusal line by hold, and writes nothing
+  PASS  disabled 8: left-click opens the panel; right-click's menu grays Show window
+  PASS  disabled 8: the Show window key press refuses by hold: the disabled line, then the perf line
+  PASS  disabled 8: with LibKa0s absent the button still exists and a press refuses on the stub's line
+  PASS  disabled 9: re-enabling restores the (empty) registration set and reopens nothing
+  PASS  disabled 9: a setting changed WHILE DISABLED is what the rebuild reflects
+  PASS  disabled 10: releasing the perf hold does NOT resurrect an addon `disabled` still holds down
+  PASS  disabled 10: the other order — disabled first, perf released last
+  PASS  disabled 10: the latch persists nothing
+  PASS  disabled: the chat command, the db, the launcher and the skin owner all survive
+  PASS  disabled: a profile switch that flips `enabled` is re-evaluated, both ways
+  PASS  libs/LibKa0s is the LibKa0s release CLAUDE.md says this addon bundles
+  PASS  tests/_kit is the test kit that shipped with that release
+  PASS  the automated-test runner is recorded executable (100755)
+  PASS  eol: every tracked file carries the terminator .gitattributes declares for it
+  PASS  eol: .gitattributes is line-endings-§5's canonical body for this repo kind
+  PASS  prose: no authored file carries a British spelling from localization-§5's published list
+  PASS  prose: the gate carries localization-§5's two lists whole, and nothing of its own
+  PASS  prose self-test: the carve-out suppresses the named generated folder, and only it
+  PASS  prose self-test: a path the carve-out does not name is not covered by one that looks like it
+  PASS  prose self-test: a carve-out that is not a set of path strings is a failure, not a silence
+  PASS  prose self-test: a TOC's file lines are read as paths, and its directives and comments are not
+  PASS  prose self-test: a .pkgmeta's ignore block is read, and the keys around it are not
+  PASS  prose self-test: an ignore entry covers a path exactly, by folder, and by wildcard
+  PASS  prose self-test: the carve-out admits a generated dump and refuses a file the TOC loads
+  PASS  prose self-test: a waiver-file exclusion meets the same two refusals as the carve-out
+  PASS  prose self-test: each list is refused on the matching rule its own scan uses
+  PASS  prose self-test: the scan and the refusals read the added exclusions through one reader
+  PASS  prose self-test: a narrowing is refused by what it suppresses, not by how it is written
+  PASS  prose self-test: the disclosure names what each entry suppressed, and says when it is bounded
+  PASS  prose self-test: a malformed waived is a failure, not a silence
+  PASS  layoutcap: every authored file over the 1500-line cap is named in the census
+  PASS  layoutcap: no census row outlives the breach it records
+  PASS  layoutcap: every over-cap census row carries one of layout-§1's three terminal states
+  PASS  layoutcap: the census and the exempt set agree about which paths were exempted
+  PASS  layoutcap: an empty census is written as a result rather than left standing empty
+  PASS  layoutcap self-test: the parser reads the census nested under the register, and stops there
+  PASS  layoutcap self-test: a census outside its register, or at the wrong level, is not read
+  PASS  layoutcap self-test: an over-cap file missing from the census is reported, and an exempt one is not
+  PASS  layoutcap self-test: a census row that outlives its breach is reported
+  PASS  layoutcap self-test: an over-cap row that names no terminal state is reported
+  PASS  layoutcap self-test: the census and the exempt set are held to naming the same paths
+  PASS  layoutcap self-test: a census that states nothing is told apart from one that states none
+  PASS  layoutcap self-test: the exempt set takes folders as well as paths
+  PASS  diagnostics contract: both forms run the report
+  PASS  diagnostics contract: the debug word is matched in any case
+  PASS  diagnostics contract: both markers carry the brand and the end counts the report
+  PASS  diagnostics contract: the report appends after what the console already holds
+  PASS  diagnostics contract: the report lands with logging off and turns it on for the session
+  SKIP  diagnostics contract: an addon that opts out lands the report and leaves logging off — this addon keeps the default (Kit.diagnostics.enablesLogging is not false), so its report turns logging on; the case above holds it
+  PASS  diagnostics contract: with logging already on, the report writes no second enable line
+  PASS  diagnostics contract: both forms run while the addon is disabled
+  PASS  diagnostics contract: no other name runs the report
+  PASS  lizard sighted: every hazard lizard loses a function over is neutralized
+  PASS  lizard sighted: fields, strings, comments and look-alike names come through unchanged
+  PASS  lizard sighted: a method definition is rewritten to its dot form with self
+  PASS  lizard sighted: no line is added or removed, CRLF included
+  PASS  lizard sighted: countFunctions counts the keyword, not strings, comments or longer names
+  PASS  lizard sighted: listedCounts reads the per-file table, once per file
+  PASS  lizard sighted: parity names every file whose counts differ, and only those
+  PASS  lizard sighted: lizard lists every function of a hazard fixture once it is sanitized
+  PASS  skin values: every host row carries its file, substring, why and cause id
+  PASS  skin values: no typed value outside the kit's categories and the host's rows
+  PASS  skin values: the check is falsifiable, a planted value of each shape is reported
+  PASS  skin switch: the check is falsifiable, a surface that redraws a literal is reported
+  PASS  skin switch: the window's shell changes
+  PASS  skin switch: the window's shell changes with the Scope ignored
+  PASS  skin switch: the title bar changes
+  PASS  skin switch: the title bar changes with the Scope ignored
+  PASS  skin switch: the footer changes
+  PASS  skin switch: the footer changes with the Scope ignored
+  PASS  skin switch: the scroll bar changes
+  PASS  skin switch: the scroll bar changes with the Scope ignored
+  PASS  skin switch: the skin selector changes
+  PASS  skin switch: the skin selector changes with the Scope ignored
+  PASS  skin switch: chrome: the title changes
+  PASS  skin switch: chrome: the title changes with the Scope ignored
+  PASS  skin switch: chrome: Shell, Band, Header, TitleBar, CloseButton, Footer changes
+  PASS  skin switch: chrome: Shell, Band, Header, TitleBar, CloseButton, Footer changes with the Scope ignored
+  PASS  skin switch: chrome: Tab x3 + SetTabSelection (click one) changes
+  PASS  skin switch: chrome: Tab x3 + SetTabSelection (click one) changes with the Scope ignored
+  PASS  skin switch: controls: the title changes
+  PASS  skin switch: controls: the title changes with the Scope ignored
+  PASS  skin switch: controls: Button changes
+  PASS  skin switch: controls: Button changes with the Scope ignored
+  PASS  skin switch: controls: Button (disabled) changes
+  PASS  skin switch: controls: Button (disabled) changes with the Scope ignored
+  PASS  skin switch: controls: Button (primary) changes
+  PASS  skin switch: controls: Button (primary) changes with the Scope ignored
+  PASS  skin switch: controls: Checkbox (checked) changes
+  PASS  skin switch: controls: Checkbox (checked) changes with the Scope ignored
+  PASS  skin switch: controls: Checkbox (unchecked) changes
+  PASS  skin switch: controls: Checkbox (unchecked) changes with the Scope ignored
+  PASS  skin switch: controls: Dropdown (click: MenuFrame) changes
+  PASS  skin switch: controls: Dropdown (click: MenuFrame) changes with the Scope ignored
+  PASS  skin switch: controls: EditBox (SearchBox, with its hint) changes
+  PASS  skin switch: controls: EditBox (SearchBox, with its hint) changes with the Scope ignored
+  PASS  skin switch: controls: PageButton (prev, next) changes
+  PASS  skin switch: controls: PageButton (prev, next) changes with the Scope ignored
+  PASS  skin switch: controls: Slider changes
+  PASS  skin switch: controls: Slider changes with the Scope ignored
+  PASS  skin switch: controls: SquareIcon (crop) + IconBorder changes
+  PASS  skin switch: controls: SquareIcon (crop) + IconBorder changes with the Scope ignored
+  PASS  skin switch: controls: StateButtonLabel (off) changes
+  PASS  skin switch: controls: StateButtonLabel (off) changes with the Scope ignored
+  PASS  skin switch: controls: StateButtonLabel (on) changes
+  PASS  skin switch: controls: StateButtonLabel (on) changes with the Scope ignored
+  PASS  skin switch: controls: WhiteButtonLabel changes
+  PASS  skin switch: controls: WhiteButtonLabel changes with the Scope ignored
+  PASS  skin switch: controls: WowStyle1DropdownTemplate (its list: stock) changes
+  PASS  skin switch: controls: WowStyle1DropdownTemplate (its list: stock) changes with the Scope ignored
+  PASS  skin switch: lists: the title changes
+  PASS  skin switch: lists: the title changes with the Scope ignored
+  PASS  skin switch: lists: ListRow (normal, stripe, hover, selected) changes
+  PASS  skin switch: lists: ListRow (normal, stripe, hover, selected) changes with the Scope ignored
+  PASS  skin switch: lists: ScrollBar (track, thumb) changes
+  PASS  skin switch: lists: ScrollBar (track, thumb) changes with the Scope ignored
+  PASS  skin switch: lists: SortHeaderBar changes
+  PASS  skin switch: lists: SortHeaderBar changes with the Scope ignored
+  PASS  skin switch: text: the title changes
+  PASS  skin switch: text: the title changes with the Scope ignored
+  PASS  skin switch: text: Font changes
+  PASS  skin switch: text: Text (accent) changes
+  PASS  skin switch: text: Text (accent) changes with the Scope ignored
+  PASS  skin switch: text: Text (body) changes
+  PASS  skin switch: text: Text (body) changes with the Scope ignored
+  PASS  skin switch: text: Text (disabled) changes
+  PASS  skin switch: text: Text (disabled) changes with the Scope ignored
+  PASS  skin switch: text: Text (heading) changes
+  PASS  skin switch: text: Text (heading) changes with the Scope ignored
+  PASS  skin switch: text: Text (headingAlt) changes
+  PASS  skin switch: text: Text (headingAlt) changes with the Scope ignored
+  PASS  skin switch: text: Text (link) changes
+  PASS  skin switch: text: Text (link) changes with the Scope ignored
+  PASS  skin switch: text: Text (linkHot) changes
+  PASS  skin switch: text: Text (linkHot) changes with the Scope ignored
+  PASS  skin switch: text: Text (muted) changes
+  PASS  skin switch: text: Text (muted) changes with the Scope ignored
+  PASS  skin switch: text: Text (title) changes
+  PASS  skin switch: text: Text (title) changes with the Scope ignored
+  PASS  skin switch: text: White changes
+  PASS  skin switch: text: White changes with the Scope ignored
+  PASS  skin switch: panels: the title changes
+  PASS  skin switch: panels: the title changes with the Scope ignored
+  PASS  skin switch: panels: Card changes
+  PASS  skin switch: panels: Card changes with the Scope ignored
+  PASS  skin switch: panels: Cover (text) changes
+  PASS  skin switch: panels: Cover (text) changes with the Scope ignored
+  PASS  skin switch: panels: Divider changes
+  PASS  skin switch: panels: Divider changes with the Scope ignored
+  PASS  skin switch: panels: Drawer (closed) changes
+  PASS  skin switch: panels: Drawer (closed) changes with the Scope ignored
+  PASS  skin switch: panels: Drawer (open, set) changes
+  PASS  skin switch: panels: Drawer (open, set) changes with the Scope ignored
+  PASS  skin switch: panels: Inset changes
+  PASS  skin switch: panels: Inset changes with the Scope ignored
+  PASS  skin switch: panels: NavItem changes
+  PASS  skin switch: panels: NavItem changes with the Scope ignored
+  PASS  skin switch: panels: NavItem (selected) changes
+  PASS  skin switch: panels: NavItem (selected) changes with the Scope ignored
+  PASS  skin switch: panels: Panel changes
+  PASS  skin switch: panels: Panel changes with the Scope ignored
+  PASS  skin switch: panels: Strip (sim) changes
+  PASS  skin switch: panels: Strip (sim) changes with the Scope ignored
+  PASS  skin switch: panels: Strip (test) changes
+  PASS  skin switch: panels: Strip (test) changes with the Scope ignored
+  PASS  skin switch: overlays: the title changes
+  PASS  skin switch: overlays: the title changes with the Scope ignored
+  PASS  skin switch: overlays: ApplyBarFill changes
+  PASS  skin switch: overlays: ApplyBarFill changes with the Scope ignored
+  PASS  skin switch: overlays: Confirm popup (Shell, Header + Button) changes
+  PASS  skin switch: overlays: Confirm popup (Shell, Header + Button) changes with the Scope ignored
+  PASS  skin switch: overlays: FadeRegions (left) beside stock changes
+  PASS  skin switch: overlays: FadeRegions (left) beside stock changes with the Scope ignored
+  PASS  skin switch: overlays: IconBorder, fromSkin changes
+  PASS  skin switch: overlays: IconBorder, fromSkin changes with the Scope ignored
+  PASS  skin switch: overlays: Mark (tint, sem.good), MarkText changes
+  PASS  skin switch: overlays: Mark (tint, sem.good), MarkText changes with the Scope ignored
+  PASS  skin switch: overlays: MenuFrame changes
+  PASS  skin switch: overlays: MenuFrame changes with the Scope ignored
+  PASS  skin switch: overlays: TestStrip (the library's) changes
+  PASS  skin switch: overlays: TestStrip (the library's) changes with the Scope ignored
+  PASS  skin switch: overlays: Tooltip (hover) changes
+  PASS  skin switch: overlays: Tooltip (hover) changes with the Scope ignored
+  PASS  skin switch: addon: the title changes
+  PASS  skin switch: addon: the title changes with the Scope ignored
+  PASS  skin switch: addon: Button, opts.tokens (danger) changes
+  PASS  skin switch: addon: Button, opts.tokens (danger) changes with the Scope ignored
+  PASS  skin switch: addon: Card, opts.tokens (caution) changes
+  PASS  skin switch: addon: Card, opts.tokens (caution) changes with the Scope ignored
+  PASS  skin switch: addon: Owner token (st.note) changes
+  PASS  skin switch: addon: Owner token (st.note) changes with the Scope ignored
+  PASS  skin switch: addon: Shell on SettingsFrameTemplate changes
+  PASS  skin switch: addon: Shell on SettingsFrameTemplate changes with the Scope ignored
+  PASS  skin switch: widgets: the title changes
+  PASS  skin switch: widgets: the title changes with the Scope ignored
+  PASS  skin switch: widgets: Autocomplete (type "o") changes
+  PASS  skin switch: widgets: Autocomplete (type "o") changes with the Scope ignored
+  PASS  skin switch: widgets: CopyWindow (its grip) changes
+  PASS  skin switch: widgets: CopyWindow (its grip) changes with the Scope ignored
+  PASS  skin switch: widgets: DragHandle (hover: gtip.title, gtip.value, gtip.footer) changes
+  PASS  skin switch: widgets: DragHandle (hover: gtip.title, gtip.value, gtip.footer) changes with the Scope ignored
+  PASS  skin switch: widgets: Drawer, opts.chevron + opts.hover changes
+  PASS  skin switch: widgets: Drawer, opts.chevron + opts.hover changes with the Scope ignored
+  PASS  skin switch: widgets: HoverArt (list.hoverArt) changes
+  PASS  skin switch: widgets: HoverArt (list.hoverArt) changes with the Scope ignored
+  PASS  skin switch: widgets: LineChart (tick labels: text.disabled, the body face; the first series filled) changes
+  PASS  skin switch: widgets: LineChart (tick labels: text.disabled, the body face; the first series filled) changes with the Scope ignored
+  PASS  skin switch: widgets: MakeResizable, opts.owner (icon.grip) changes
+  PASS  skin switch: widgets: MakeResizable, opts.owner (icon.grip) changes with the Scope ignored
+  PASS  skin switch: widgets: NavItem, opts.hover changes
+  PASS  skin switch: widgets: NavItem, opts.hover changes with the Scope ignored
+  PASS  skin switch: widgets: The debug console (its labels) changes
+  PASS  skin switch: widgets: The debug console (its labels) changes with the Scope ignored
+  PASS  skin switch: widgets: The skin picker (its layout) changes
+  PASS  skin switch: widgets: The skin picker (its layout) changes with the Scope ignored
+  PASS  skin switch: values: the title changes
+  PASS  skin switch: values: the title changes with the Scope ignored
+  PASS  skin switch: values:  changes
+  PASS  skin switch: values:  changes with the Scope ignored
+  PASS  skin switch: values: BarBorder (stored Solid, hidden, 2) changes
+  PASS  skin switch: values: BarBorder (stored Solid, hidden, 2) changes with the Scope ignored
+  PASS  skin switch: values: BarStyle changes
+  PASS  skin switch: values: BarStyle changes with the Scope ignored
+  PASS  skin switch: values: ChartStyle (series) changes
+  PASS  skin switch: values: ChartStyle (series) changes with the Scope ignored
+  PASS  skin switch: values: FontFlags (From skin: HUD, window; a picked flag) changes
+  PASS  skin switch: values: FontFlags (From skin: HUD, window; a picked flag) changes with the Scope ignored
+  PASS  skin switch: values: GetAccentColor changes
+  PASS  skin switch: values: GetAccentColor changes with the Scope ignored
+  PASS  skin switch: values: GetFont changes
+  PASS  skin switch: values: GetFont changes with the Scope ignored
+  PASS  skin switch: values: GetPanelColor changes
+  PASS  skin switch: values: GetPanelColor changes with the Scope ignored
+  PASS  skin switch: values: GlowColor changes
+  PASS  skin switch: values: GlowColor changes with the Scope ignored
+  PASS  skin switch: values: HudFontSize (stored 12, stored 24) changes
+  PASS  skin switch: values: HudFontSize (stored 12, stored 24) changes with the Scope ignored
+  PASS  skin switch: textures: the title changes
+  PASS  skin switch: textures: the title changes with the Scope ignored
+  PASS  skin switch: textures: Bar chart (series 1-5) changes
+  PASS  skin switch: textures: Bar chart (series 1-5) changes with the Scope ignored
+  PASS  skin switch: textures: Stacked bar (series 1-5) changes
+  PASS  skin switch: textures: Stacked bar (series 1-5) changes with the Scope ignored
+  PASS  skin switch: textures: StatusBar (accent, 72%) changes
+  PASS  skin switch: textures: StatusBar (accent, 72%) changes with the Scope ignored
+  PASS  skin switch: textures: StatusBar (bad, 88%) changes
+  PASS  skin switch: textures: StatusBar (bad, 88%) changes with the Scope ignored
+  PASS  skin switch: textures: StatusBar (good, 45%) changes
+  PASS  skin switch: textures: StatusBar (good, 45%) changes with the Scope ignored
+  PASS  skin switch: fonts: the title changes
+  PASS  skin switch: fonts: the title changes with the Scope ignored
+  PASS  skin switch: fonts: Azeroth: faces and width ratios changes
+  PASS  skin switch: fonts: Azeroth: faces and width ratios changes with the Scope ignored
+  PASS  skin switch: fonts: Ember: faces and width ratios changes
+  PASS  skin switch: fonts: Ember: faces and width ratios changes with the Scope ignored
+  PASS  skin switch: fonts: Glass: faces and width ratios changes
+  PASS  skin switch: fonts: Glass: faces and width ratios changes with the Scope ignored
+  PASS  skin switch: fonts: High Contrast: faces and width ratios changes
+  PASS  skin switch: fonts: High Contrast: faces and width ratios changes with the Scope ignored
+  PASS  skin switch: fonts: Ka0s Default: faces and width ratios changes
+  PASS  skin switch: fonts: Ka0s Default: faces and width ratios changes with the Scope ignored
+  PASS  skin switch: fonts: Obsidian: faces and width ratios changes
+  PASS  skin switch: fonts: Obsidian: faces and width ratios changes with the Scope ignored
+  PASS  skin switch: fonts: The Skin tab's Font outline, this addon's changes
+  PASS  skin switch: fonts: The Skin tab's Font outline, this addon's changes with the Scope ignored
+  PASS  skin switch: fonts: WoW Default: faces and width ratios changes
+  PASS  skin switch: fonts: WoW Default: faces and width ratios changes with the Scope ignored
+  PASS  skin switch: fonts: WoW Forever: faces and width ratios changes
+  PASS  skin switch: fonts: WoW Forever: faces and width ratios changes with the Scope ignored
+  PASS  skin switch: fonts: WoW Midnight: faces and width ratios changes
+  PASS  skin switch: fonts: WoW Midnight: faces and width ratios changes with the Scope ignored
+  PASS  skin switch: hud: the title changes
+  PASS  skin switch: hud: the title changes with the Scope ignored
+  PASS  skin switch: hud: BarFillColor, BarGloss changes
+  PASS  skin switch: hud: BarFillColor, BarGloss changes with the Scope ignored
+  PASS  skin switch: hud: BarStyle (the skin worn; Ignore fonts gives the host's face back) changes
+  PASS  skin switch: hud: BarStyle (the skin worn; Ignore fonts gives the host's face back) changes with the Scope ignored
+  PASS  skin switch: hud: HudFont: HudTextColor, HudLabelColor, HudShadow changes
+  PASS  skin switch: hud: HudFont: HudTextColor, HudLabelColor, HudShadow changes with the Scope ignored
+
+886 passed, 0 failed, 1 skipped, 887 total

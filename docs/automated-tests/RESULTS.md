@@ -32,6 +32,7 @@ archaeology, for the same reason a skip is never a pass (`automated-tests-§4`).
 
 | Run | Commit | Tree | Version | Lint w/e | Files | Tests | Perf | NLOC | Funcs | Avg NLOC | Avg CCN | Max CCN | CCN warn | Verdict |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| [`20261104-044542`](20261104-044542/) | `9c3debb` | clean | 0.1.0 | 0/0 | 83 | 886/1/887 | pass | 12430 | 1741 | 6.6 | 2.0 | 14 | 0 | **green** |
 | [`20261104-042203`](20261104-042203/) | `2b336b3` | clean | 0.1.0 | 0/0 | 83 | 886/1/887 | fail | 12430 | 1741 | 6.6 | 2.0 | 14 | 0 | **amber** |
 | [`20261102-023745`](20261102-023745/) | `3e5a661` | clean | 0.1.0 | 0/0 | 81 | 860/1/861 | pass | 12034 | 1683 | 6.6 | 2.0 | 14 | 0 | **green** |
 | [`20261102-004124`](20261102-004124/) | `21540ee` | clean | 0.1.0 | 0/0 | 81 | 859/1/860 | fail | 12038 | 1683 | 6.6 | 2.0 | 14 | 0 | **amber** |
@@ -47,10 +48,10 @@ archaeology, for the same reason a skip is never a pass (`automated-tests-§4`).
 ## Test suite
 
 **887 cases** — 886 passed, 0 failed, 1 skipped. The generated inventory
-[`20261104-042203/test-cases.md`](20261104-042203/test-cases.md) is the authority on which cases existed at this run;
+[`20261104-044542/test-cases.md`](20261104-044542/test-cases.md) is the authority on which cases existed at this run;
 `docs/test-cases.md` is that same list at HEAD.
 
-Moved **861 → 887** since the previous run.
+Unchanged from the previous run at 887 cases.
 
 **1 case(s) reported a `skip`.** A skip is counted in the total and never in `passed`, and at
 the release gate it is NOT EVALUATED rather than passed (`automated-tests-§3`).
@@ -67,21 +68,21 @@ to whoever thinks to open `.luacheckrc`.
 ## Perf
 
 **4 scenarios** from `tests/perf.lua`; the measurements are in
-[`20261104-042203/perf.json`](20261104-042203/perf.json).
+[`20261104-044542/perf.json`](20261104-044542/perf.json).
 
 | `scenario` | `iters` | `ms/iter` | `api/iter` | `bytes/iter` |
 |---|---|---|---|---|
-| `showroomToggle` | 2000 | 0.00099 | 1.0 | 64.0 |
-| `skinRepaint` | 500 | 4.35391 | 1415.0 | 249621.7 |
-| `applyScale` | 2000 | 0.00027 | 2.0 | 0.0 |
-| `applyAlpha` | 2000 | 0.00048 | 2.0 | 0.0 |
+| `showroomToggle` | 2000 | 0.00175 | 1.0 | 64.0 |
+| `skinRepaint` | 500 | 8.48766 | 1415.0 | 249621.7 |
+| `applyScale` | 2000 | 0.00047 | 2.0 | 0.0 |
+| `applyAlpha` | 2000 | 0.00047 | 2.0 | 0.0 |
 
 `perf` never fails a run and never blocks a commit — it is recorded, read and compared, not
 thresholded (`performance-§9`). It does gate the **tag** (`automated-tests-§3`).
 
 ## Complexity watch list
 
-Current as of [`20261104-042203`](20261104-042203/) — **this run's measurement, not its diff.** Max CCN **14** across 1741
+Current as of [`20261104-044542`](20261104-044542/) — **this run's measurement, not its diff.** Max CCN **14** across 1741
 functions, **0** of them warned on; 1 file(s) in the 1000–1500 band and 0 over the 1500 cap
 (`layout-§1`).
 
