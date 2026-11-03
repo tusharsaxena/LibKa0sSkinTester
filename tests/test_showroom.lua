@@ -440,3 +440,32 @@ test("R5-RV: the showroom's title bar, title and close sit on S.Band in every sk
     end
     assertTrue(NS.Showroom.used.Band and NS.Showroom.used.Header, "both went through NS.Showroom.Paint")
 end)
+
+test("R5-WIN: the confirm popup's one band carries its question on its middle, in every skin", function()
+    -- red under: the question TOP-anchored at -12 on a popup whose Shell now draws the title band
+    -- over a backdrop window's fill (LibKa0s R5-L2), so it sits off the band's middle.
+    local NS, mock = bandOpened()
+    local pop = NS.Showroom.Section("overlays").confirmPopup
+    assertTrue(pop ~= nil, "the popup is kept")
+    for _, def in ipairs(lib(mock):Skins()) do
+        NS.Selector.Pick(def.key)
+        local band = NS.Skin.Band(pop)
+        assertTrue(band ~= nil, def.key .. ": a band frame")
+        assertOnBand(pop.text, band, def.key .. ": the question")
+        assertEqual(select(1, pop.text:GetPoint(1)), "CENTER", def.key .. ": centered")
+        local top = lib(mock).painted[pop].regions.top
+        assertTrue(top ~= nil and top:IsShown(), def.key .. ": Shell's band is drawn, once (the popup has no bar)")
+    end
+end)
+
+test("R5-WIN: the showroom's body sits 6 px in from its title bar and footer, as LootHistory's content", function()
+    -- red under: the 8 px gutter, 2 px deeper than every other Ka0s window's content inset.
+    local _, mock = bandOpened()
+    local f = window(mock)
+    local p, rel, rp, x, y = f.body:GetPoint(1)
+    assertEqual(p .. rp, "TOPLEFTBOTTOMLEFT", "under the bar"); assertTrue(rel == f.titleBar, "the bar")
+    assertEqual(x, 6, "6 px in"); assertEqual(y, -6, "6 px down")
+    p, rel, rp, x, y = f.body:GetPoint(2)
+    assertEqual(p .. rp, "BOTTOMRIGHTTOPRIGHT", "over the footer"); assertTrue(rel == f.footer, "the footer")
+    assertEqual(x, -6, "6 px in"); assertEqual(y, 6, "6 px up")
+end)

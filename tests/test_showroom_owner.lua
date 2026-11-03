@@ -26,7 +26,12 @@ local function modelSettingsTemplate(m)
             f.NineSlice.Text = f.NineSlice:CreateFontString(nil, "OVERLAY", "GameFontNormal")
             -- Not Ka0s Default's title.text (gold), so a title the library recolored shows.
             f.NineSlice.Text:SetTextColor(0.9, 0.9, 0.9, 1)
+            -- The template's own anchors (R5-WIN): the title TOP-anchored a few px down, the close
+            -- mark in the top-right corner. Seeded, so a band test is red against them and not
+            -- vacuously green on a region with no points.
+            f.NineSlice.Text:SetPoint("TOP", f, "TOP", 0, -5)
             local close = create("Button", nil, f)
+            close:SetPoint("TOPRIGHT", f, "TOPRIGHT", 0, 0)
             local art = close:CreateTexture()
             rawset(close, "GetNormalTexture", function() return art end)
             f.ClosePanelButton, f.closeArt = close, art
@@ -208,3 +213,36 @@ test("addon surfaces: the settings-style window follows a skin switch and stays 
     assertTrue(not isStock(mock, win), "back on Ka0s Default it is still skinned")
     assertToken(mock, mock.__paint(win.NineSlice.Text).textColor, "title.text", "the title back on Ka0s Default")
 end)
+
+-- ── the template window's header on its band (R5-WIN; LibKa0s R5-L3) ─────────────────────────
+
+local CENTERED = { LEFT = true, CENTER = true, RIGHT = true }
+
+--- `region` has one or two points, each LEFT, CENTER or RIGHT, on `band` at y 0.
+local function assertOnBand(region, band, what)
+    local n = region:GetNumPoints()
+    assertTrue(n >= 1 and n <= 2, what .. ": anchored")
+    for i = 1, n do
+        local point, rel, relPoint, _, y = region:GetPoint(i)
+        assertTrue(CENTERED[point], ("%s: a %s point, never TOP*"):format(what, tostring(point)))
+        assertEqual(relPoint, point, what .. ": to the band's own " .. tostring(point))
+        assertTrue(rel == band, what .. ": anchored to the band")
+        assertEqual(y, 0, what .. ": y 0, the band's middle")
+    end
+end
+
+test("R5-WIN: the settings-style window's title and close sit on S.Band in every skin", function()
+    -- red under: NineSlice.Text and ClosePanelButton left on SettingsFrameTemplate's own TOP and
+    -- TOPRIGHT anchors, off the 30 px band's middle (the class of bug behind PGFE's image 42).
+    local NS, mock, sec = opened{ template = true }
+    local win = sec.stockWindow
+    for _, def in ipairs(lib(mock):Skins()) do
+        NS.Selector.Pick(def.key)
+        local band = NS.Skin.Band(win)
+        assertTrue(band ~= nil, def.key .. ": a band frame")
+        assertOnBand(win.NineSlice.Text, band, def.key .. ": the title")
+        assertOnBand(win.ClosePanelButton, band, def.key .. ": the close mark")
+        assertEqual(select(1, win.ClosePanelButton:GetPoint(1)), "RIGHT", def.key .. ": the close on the right")
+    end
+end)
+

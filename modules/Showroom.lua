@@ -36,7 +36,8 @@ local TITLE_H, FOOTER_H = (NS.Skin and NS.Skin.Token("title.height")) or 30, 22
 local SECTION_TITLE_H, SECTION_GAP = 24, 16
 local SCROLL_STEP = 60
 local BAR_W, BAR_GAP, MIN_THUMB = (NS.Skin and NS.Skin.Token("scroll.width")) or 8, 6, 24   -- the scrollbar's width, its gap from the sections, its shortest knob
-local SECTIONS_W = WIDTH - 16 - BAR_GAP - BAR_W   -- the body's width less the scrollbar's gutter
+local BODY_INSET = 6   -- the body's gutter inside the title bar and footer: LootHistory's content inset (R5-WIN)
+local SECTIONS_W = WIDTH - 2 * BODY_INSET - BAR_GAP - BAR_W   -- the body's width less the scrollbar's gutter
 
 R.used = R.used or {}
 local sections = {}      -- { key, title, build }, in registration order
@@ -264,8 +265,8 @@ local function build()
 
     -- The body: the swatch selector on top, the sections scrolling below it.
     local body = CreateFrame("Frame", nil, f)
-    body:SetPoint("TOPLEFT", bar, "BOTTOMLEFT", 8, -8)
-    body:SetPoint("BOTTOMRIGHT", footer, "TOPRIGHT", -8, 8)
+    body:SetPoint("TOPLEFT", bar, "BOTTOMLEFT", BODY_INSET, -BODY_INSET)
+    body:SetPoint("BOTTOMRIGHT", footer, "TOPRIGHT", -BODY_INSET, BODY_INSET)
     f.body = body
 
     f.selector = NS.Selector.Build(body)

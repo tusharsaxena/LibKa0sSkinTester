@@ -1,6 +1,6 @@
 local _, NS = ...
 -- modules/ShowroomChrome.lua — the Chrome section: the tab strip. The window around every section is
--- the rest of the chrome (Shell, TitleBar, CloseButton, Footer), painted by modules/Showroom.lua.
+-- the rest of the chrome (Shell, Band, Header, TitleBar, CloseButton, Footer), painted by modules/Showroom.lua.
 
 local R, L = NS.Showroom, NS.L
 
@@ -26,7 +26,7 @@ R.AddSection("chrome", L["Window chrome"], function(body, paint)
     select(tabs[1])
     body.tabs = tabs
 
-    local frameCell = g:Add(300, 24, "Shell, TitleBar, CloseButton, Footer")
+    local frameCell = g:Add(300, 24, "Shell, Band, Header, TitleBar, CloseButton, Footer")
     local note = frameCell:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     note:SetPoint("LEFT", frameCell, "LEFT", 0, 0)
     note:SetText("The window around these samples")

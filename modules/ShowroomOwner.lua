@@ -129,6 +129,10 @@ local function stockWindow(g, paint)
         close:SetScript("OnClick", nil)   -- a sample: its parent is a showroom cell, not a window
         paint("CloseButton", close)
     end
+    -- The template keeps its own anchors for the title and close (TOP and TOPRIGHT, placed for its
+    -- 24 px header), off Shell's band. Both go onto the band's middle (LibKa0s R5-L3, R5-WIN), and a
+    -- switch places them again.
+    paint("Header", win, { title = nine and child(nine, "Text"), right = { close } })
     local body = line(win, "The skin's art in every skin", "GameFontHighlightSmall")
     body:SetPoint("CENTER", win, "CENTER", 0, -6)
     paint("Text", body, "body")

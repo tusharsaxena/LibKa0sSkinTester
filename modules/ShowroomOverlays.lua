@@ -80,13 +80,19 @@ local function confirmPopup(cell, paint)
     local text = pop:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     text:SetPoint("TOP", pop, "TOP", 0, -12)
     text:SetText("Reset every setting?")
+    pop.text = text
     paint("Shell", pop)
+    -- Shell draws a backdrop window's title band over its fill (LibKa0s R5-L2), so the question is
+    -- the popup's header: centered on the band's middle in every skin (R5-L3, the lead's call 3 for
+    -- popovers). The TOP anchor above is the no-library fallback.
+    paint("Header", pop, { title = text, align = "CENTER" })
     paint("Text", text, "body")
     for i, word in ipairs({ "Accept", "Cancel" }) do
         local btn = R.SampleButton(pop, 90, 22, word)
         btn:SetPoint("BOTTOM", pop, "BOTTOM", (i == 1 and -50 or 50), 10)
         paint("Button", btn, { primary = i == 1 })
     end
+    return pop
 end
 
 local function testStrip(cell, paint)
@@ -130,7 +136,7 @@ R.AddSection("overlays", L["Overlays"], function(body, paint)
 
     body.tipButton = hoverTooltip(g:Add(120, 24, "Tooltip (hover)"), paint)
     standingMenu(g:Add(140, 66, "MenuFrame"), paint)
-    confirmPopup(g:Add(220, 80, "Confirm popup (Shell + Button)"), paint)
+    body.confirmPopup = confirmPopup(g:Add(220, 80, "Confirm popup (Shell, Header + Button)"), paint)
     testStrip(g:Add(260, 18, "TestStrip (the library's)"), paint)
 
     local fades = g:Add(250, 24, "FadeRegions (left) beside stock")

@@ -257,7 +257,7 @@ Total.
 - selector: no EllesmereUI card and no copy button
 - selector: a source dropdown offers Ka0s skins and EllesmereUI (SF-ST-1)
 
-### test_showroom.lua (25)
+### test_showroom.lua (27)
 
 - showroom: the window is painted through the wrapper
 - showroom: Paint answers the primitive's answer and records the name once
@@ -284,6 +284,8 @@ Total.
 - a5: every readout line is painted body text
 - a5: the BarStyle sample's fill is colored from the skin
 - R5-RV: the showroom's title bar, title and close sit on S.Band in every skin
+- R5-WIN: the confirm popup's one band carries its question on its middle, in every skin
+- R5-WIN: the showroom's body sits 6 px in from its title bar and footer, as LootHistory's content
 
 ### test_showroom_coverage.lua (6)
 
@@ -334,7 +336,7 @@ Total.
 - textures: the section builds without the skin engine
 - textures: Ka0s Default draws its own Ka0s Default bar, shipped in the vendored copy
 
-### test_showroom_owner.lua (10)
+### test_showroom_owner.lua (11)
 
 - addon surfaces: the section is built, and every sample went through the wrapper
 - addon surfaces: the owner tokens resolve: default, a skin's own entry, else the follow
@@ -346,6 +348,7 @@ Total.
 - overlays: the IconBorder sample draws a 1 px edge in icon.outline, in every skin
 - addon surfaces: the settings-style window wears Ka0s Default under Ka0s Default
 - addon surfaces: the settings-style window follows a skin switch and stays skinned back on Ka0s Default
+- R5-WIN: the settings-style window's title and close sit on S.Band in every skin
 
 ### test_showroom_fonts.lua (11)
 
@@ -813,8 +816,8 @@ Total.
 - skin switch: the skin selector changes with the Scope ignored
 - skin switch: chrome: the title changes
 - skin switch: chrome: the title changes with the Scope ignored
-- skin switch: chrome: Shell, TitleBar, CloseButton, Footer changes
-- skin switch: chrome: Shell, TitleBar, CloseButton, Footer changes with the Scope ignored
+- skin switch: chrome: Shell, Band, Header, TitleBar, CloseButton, Footer changes
+- skin switch: chrome: Shell, Band, Header, TitleBar, CloseButton, Footer changes with the Scope ignored
 - skin switch: chrome: Tab x3 + SetTabSelection (click one) changes
 - skin switch: chrome: Tab x3 + SetTabSelection (click one) changes with the Scope ignored
 - skin switch: controls: the title changes
@@ -906,8 +909,8 @@ Total.
 - skin switch: overlays: the title changes with the Scope ignored
 - skin switch: overlays: ApplyBarFill changes
 - skin switch: overlays: ApplyBarFill changes with the Scope ignored
-- skin switch: overlays: Confirm popup (Shell + Button) changes
-- skin switch: overlays: Confirm popup (Shell + Button) changes with the Scope ignored
+- skin switch: overlays: Confirm popup (Shell, Header + Button) changes
+- skin switch: overlays: Confirm popup (Shell, Header + Button) changes with the Scope ignored
 - skin switch: overlays: FadeRegions (left) beside stock changes
 - skin switch: overlays: FadeRegions (left) beside stock changes with the Scope ignored
 - skin switch: overlays: IconBorder, fromSkin changes
@@ -1031,12 +1034,12 @@ Total.
 | test_settings.lua | 53 |
 | test_slash.lua | 19 |
 | test_selector.lua | 10 |
-| test_showroom.lua | 25 |
+| test_showroom.lua | 27 |
 | test_showroom_coverage.lua | 6 |
 | test_showroom_dropdowns.lua | 8 |
 | test_showroom_values.lua | 15 |
 | test_showroom_textures.lua | 8 |
-| test_showroom_owner.lua | 10 |
+| test_showroom_owner.lua | 11 |
 | test_showroom_fonts.lua | 11 |
 | test_showroom_hud.lua | 10 |
 | test_showroom_widgets.lua | 16 |
@@ -1068,4 +1071,4 @@ Total.
 | test_skin_values.lua | 3 |
 | test_skin_switch.lua | 216 |
 | Skipped | 1 |
-| **Total** | **870** |
+| **Total** | **873** |
