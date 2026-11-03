@@ -1,0 +1,5 @@
+ka0s-review (R6 follow-up, independent adversarial reviewer, 2026-11-04): R6-NAME 2b336b3 PASS.
+- Touches README.md only (title line 1 and the opening sentence line 8), per inputs/OWNER_ANSWERS.md (README only, everything else keeps Ka0s).
+- The kept README mentions are accurate in-game labels: NS.BRAND_NAME is still 'Ka0s Skin Tester' (core/Namespace.lua:11), feeding the picker owner line and BINDING_HEADER_LIBKA0SSKINTESTER (modules/Showroom.lua:400); the settings category parentTitle is still 'Ka0s Skin Tester' (settings/OptionsSetup.lua:227). Renaming those README sites would make them wrong.
+- No gate test pins the README name (test_doc_structure checks headings only), so no test change; CRLF kept.
+- R6-MM2 and R6-PF1 do not apply to this repo. Fresh gate green (886/0/1, luacheck 0/0).
