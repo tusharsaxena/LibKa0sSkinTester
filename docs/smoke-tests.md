@@ -18,7 +18,7 @@ its theme, and a retired number is never reused.
 | DIAG-1..5 | Diagnostics | The debug console, its copy window and the report, the library windows' headers |
 | DEGRADED-1 | Degraded install | The library-absent load |
 | SHOW-1..50 | Showroom | The window, the swatch selector, the sections, position and scale, the textures, Ka0s Default's face and bar, the addon surfaces, the library widgets, the tooltip colors and art tints, the HUD faces, the faces and widths, FontFlags and HudFontSize, the icon samples, a stored pick of the deleted Friz, Ka0s Default's header, the icon outline colors, the window edge beside the HUD's, round 5's darker header, the header on its band, every window like Loot History's |
-| PICKER-1..25 | First-run skin picker | When and where it shows, its title, preview, Apply, close, the gear, Apply to all, one window across addons, taking it down, combat, a preview meeting another write, the reload popup, the list closing on an outside press, the title on its band |
+| PICKER-1..26 | First-run skin picker | When and where it shows, its title, preview, Apply, close, the gear, Apply to all, one window across addons, taking it down, combat, a preview meeting another write, the reload popup, the list closing on an outside press, the title on its band |
 | LOC-1 | Non-English client | Locale-dependent behavior |
 
 ## Before you start
@@ -583,6 +583,7 @@ restart the client: new font and texture files are only seen at client start.
   what is worn, one gray line. A picker raised in combat draws its rows disabled. Result: Owner reported pass, 2026-10-31
 - **PICKER-24. The skin list closes on a press outside it (R5-RV; LibKa0s R5-L4; feedback item 6, images 46 and 47).** `/st skin`, open the skin list, then press the picker window's body. → The list closes. Open it again and press the game world. → It closes. Open it before each press, then press the picker's title, its eye, then its gear. → Each press closes the list and the eye and gear still do what they do. On General -> Skin, open the settings page's skin list, then press the Font dropdown. → The list closes and the Font list opens. With the picker and the settings page both up, open the picker's list, then press the settings page's skin list button. → The picker's list closes (that press is outside it) and the settings page's list opens and stays open until it is itself pressed outside; the two lists never open or close each other by any other route. (Both cannot be open at once in game: opening one is a press outside the other.) Escape still closes the window. Fail: a list that stays open after an outside press, a press that closes the list but drops the button's own click, or a Lua error. Result:
 - **PICKER-25. The picker's title sits on its band (R5-RV; LibKa0s R5-L3).** `/st skin` in Ka0s Default, then WoW Midnight. → "Choose a skin" and the close mark are vertically centered on the window's title band. Fail: the title TOP-aligned above the band's middle, or the close mark off it. Result:
+- **PICKER-26. The picker's file runs at minor 11 (R6-RV; LibKa0s R6-L1).** `/st diagnostics`. → The identity header's Options line lists `OptionsSkinPicker 11`, not 10, with every other Ka0s addon loaded too (Outfitter's own copy stays at 10, and the client runs 11). Fail: `OptionsSkinPicker 10`, or a Lua error on load. Result:
 
 ## Non-English client
 
@@ -644,7 +645,7 @@ Ubuntu) adds SHOW-40 and re-opens SHOW-13 and SHOW-19, whose WoW Default face ch
 
 Owed: PANEL-5, PANEL-6, PANEL-13, PANEL-14, PANEL-15, PROFILE-3, SHOW-9, SHOW-13, SHOW-19, SHOW-28, SHOW-29, SHOW-30, SHOW-31,
 SHOW-32, SHOW-33, SHOW-34, SHOW-35, SHOW-36, SHOW-37, SHOW-38, SHOW-39, SHOW-40, SHOW-41, PANEL-16, SHOW-42, SHOW-43, SHOW-44,
-DIAG-4, SHOW-45, SHOW-46, SHOW-47, PANEL-17, PANEL-18, SHOW-48, SHOW-49, DIAG-5, PICKER-24, PICKER-25, SHOW-50.
+DIAG-4, SHOW-45, SHOW-46, SHOW-47, PANEL-17, PANEL-18, SHOW-48, SHOW-49, DIAG-5, PICKER-24, PICKER-25, SHOW-50, PICKER-26.
 
 On 2026-11-02 the owner reported that every check on the smoke lists of the full skinning run and its smoke feedback batch (Ka0sAddonsCommonTasks `docs/2026-11-01-FULL_SKINNING/` and `docs/2026-11-01-SMOKE_FEEDBACK/`) passed, apart from DpsRace's clock font, the skinned look of the AceGUI Dropdown and the Ka0sMedia_Font and Ka0sMedia_Statusbar pickers, FadeNineSlice and IconBorder (`docs/2026-11-02-SMOKE_ROUND3/`, R3-SMOKE). Passed, recorded on each `Result:` line as `Passed (owner, 2026-11-02)`: PANEL-6, PANEL-13, PANEL-15, PROFILE-3, SHOW-5, SHOW-9, SHOW-29, SHOW-30, SHOW-31, SHOW-33, SHOW-34, SHOW-35, SHOW-36, SHOW-37 and SHOW-38. Failed, re-opened as R3-L3 (IconBorder's 1 px outline and zoom) and recorded as `Failed (owner, 2026-11-02): re-opened as R3-L3`: SHOW-32. Failed, re-opened as R3-L1 (the skinned AceGUI and media-picker dropdowns) and recorded as `Failed (owner, 2026-11-02): re-opened as R3-L1`: PANEL-5 and PANEL-14. Still owed: SHOW-28, whose expected result the third smoke round itself changed after the owner's run.
 
@@ -691,3 +692,7 @@ R5-WIN of the same round (2026-11-03) brings every window this addon builds to L
 the showroom's body gutter moves from 8 to 6 px, the SettingsFrameTemplate sample's title and close
 move from the template's anchors onto `S.Band` through `S.Header`, and the confirm popup, which
 R5-L2 now gives a title band, carries its question on the band's middle. It adds SHOW-50.
+
+R6-RV of the owner's sixth smoke round (Ka0sAddonsCommonTasks `docs/2026-11-03-SMOKE_ROUND6/`, 2026-11-04)
+re-vendors LibKa0s v1.85.0 at its seventeenth re-cut (79d043d), which moves `OptionsSkinPicker.lua` alone,
+to minor 11, for R6-L1 (the skin picker's preview contract, `spec.preview`). It adds PICKER-26.
