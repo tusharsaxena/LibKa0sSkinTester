@@ -29,7 +29,7 @@ The settings have a Sample controls page too: a checkbox, a slider, a dropdown a
 
 The Skin tab's Font and Texture menus put a font, or a bar texture, of your choice over the skin's own. They list every font and bar texture your addons have registered, each font in its own face and each texture beside a swatch, so a media pack adds to them. A Reset button under each goes back to the skin's own. Texture changes every bar of data, which is what the showroom's Textures section shows. Ignore fonts still wins over a chosen font. Choosing another skin puts both back to that skin's own. Font outline, under them, says where the skin outlines text: on HUD text only (the default), on all of it, or nowhere; Ignore fonts wins over it too. `/st skin` opens the skin picker again whenever you want it.
 
-The minimap button opens the settings on a left-click and a small menu on a right-click, where Show window opens the showroom. You can also bind a key to it from the game's Keybindings menu (the Ka0s Skin Tester header) or from the General page's Keybindings tab.
+The minimap button opens the settings on a left-click and a small menu on a right-click, where Show window opens the showroom and Open skin selector brings back the skin picker. You can also bind a key to it from the game's Keybindings menu (the Ka0s Skin Tester header) or from the General page's Keybindings tab.
 
 Everything else is in Settings, AddOns, Ka0s Skin Tester, and `/st help` lists the slash commands.
 

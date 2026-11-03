@@ -11,7 +11,9 @@ login; each page's body builds on its first show.
   - **Master controls**, composed by the library: Enable Skin Tester; Master scale and Master
     opacity (the showroom's); Debug console and Minimap button; Reset position and Reset all
     settings. No Lock frame, Test mode or General visibility, because the showroom is a window the
-    player opens, not a positionable display.
+    player opens, not a positionable display. No Sim mode box either: the library draws it only
+    for a host that passes `isSimMode` and `toggleSim` (OptionsCompose minor 19), and this addon
+    has no simulation (PANEL-19).
   - **Skin** (the library's own tab, keyed `Appearance` and labeled "Skin"): the skin source;
     "Look", with the library's note and the nine skins (the tab's own name is not repeated); "Font
     and texture" (two preview pickers, each row in its face or beside its bar, each list led by
@@ -54,7 +56,7 @@ as that fourth argument's `outline`, which writes `skin.outline`; its row's `onC
 
 ## The first-run skin picker
 
-The library's `O.SkinPicker` (OptionsSkinPicker minor 4), shown by `NS.MaybeShowSkinPicker`
+The library's `O.SkinPicker` (OptionsSkinPicker minor 11), shown by `NS.MaybeShowSkinPicker`
 (settings/Panel.lua) while the profile's `skin.pickerSeen` is false: once from `OnEnable`, after the
 stored skin is applied, and after every profile switch, copy or reset. The addon never asks for it
 while disabled or in combat; it registers no game event, so a trigger in combat is skipped and the
@@ -124,6 +126,9 @@ not written into the new profile and does not overwrite the skin the new profile
 
 ## The launcher
 
-Left-click opens this panel; right-click opens the options menu, whose entries are Enabled and Show
-window (the skin showroom). The Show window binding is set under Options -> Keybindings ->
+Left-click opens this panel; right-click opens the options menu, whose entries are the toggles
+Enabled and Show window (the skin showroom), then the actions Open settings and Open skin selector
+(the skin picker, through `NS.RunSkinVerb`; the library adds it because the descriptor passes
+`openSkinPicker` and the addon is a registered skin owner, LibKa0s-Launcher minor 6, SF-F2). Show
+window and Open skin selector gray while the addon is disabled. The Show window binding is set under Options -> Keybindings ->
 Ka0s Skin Tester, or on General -> Keybindings here.
