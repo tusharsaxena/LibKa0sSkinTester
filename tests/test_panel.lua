@@ -434,10 +434,13 @@ test("panel: the landing page adds logo, notes, heading and command rows in that
     local rows = NS.SlashCommands:LandingRows()
     assertTrue(#rows > 0, "there is at least one command row to render")
     assertEqual(#kids, 6 + #rows, "and nothing beyond the rows")
+    -- The rows' text, not their color codes: with the panel skinned (this addon's default since
+    -- R4-ST1) the library recolors each command row from the skin.
+    local function plain(s) return (tostring(s):gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "")) end
     for i, line in ipairs(rows) do
         local row = kids[6 + i]
         assertEqual(row.type, "Label")
-        assertEqual(row.text, line, "row " .. i .. " comes from LandingRows()")
+        assertEqual(plain(row.text), plain(line), "row " .. i .. " comes from LandingRows()")
         assertEqual(row.justifyH, "LEFT")
         assertTrue(row.fullWidth)
     end

@@ -86,6 +86,16 @@ test("selector: the saved Scope is applied at load, and /st set moves one half",
     assertEqual(panel, true, "the other half kept")
 end)
 
+test("selector: a fresh profile skins this addon's settings panel (R4-ST1, a documented deviation)", function()
+    -- red under: the standard's default (Ignore settings panel on) left in defaults/Profile.lua. The
+    -- tester is the showroom, so its "(Scope: panel)" samples must wear the skin out of the box.
+    local NS, mock = bootWithSkin("ka0s")
+    local panel, fonts = lib(mock):GetIgnore(OWNER)
+    assertEqual(panel, false, "Ignore settings panel is off on a new profile")
+    assertEqual(fonts, false, "Ignore fonts keeps its default")
+    assertEqual(NS.addon.db.profile.skin.ignorePanel, false, "and the profile reads it so")
+end)
+
 test("selector: an unknown saved skin falls back to ka0s", function()
     -- red under: an apply that hands the library any string (cleanSkin keeps every non-empty one).
     local NS, mock = bootWithSkin("nope")

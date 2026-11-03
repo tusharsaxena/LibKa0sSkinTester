@@ -139,13 +139,15 @@ test("addon surfaces: the TreeGroup follows the Scope's settings-panel half, liv
     local NS, mock, sec = opened()
     local Skin = lib(mock)
     assertEqual(sec.tree.type, "TreeGroup")
-    assertTrue(sec.treePainted ~= true, "stock while the Scope leaves the panel the client's (the default)")
-    NS.ApplySkinIgnore(false, nil)
+    -- R4-ST1: this addon's Scope leaves the panel skinned by default (a documented deviation).
     local st = Skin.__ace[sec.tree]
-    assertTrue(st ~= nil and st.owner == OWNER, "painted for this owner once the Scope is cleared")
+    assertTrue(st ~= nil and st.owner == OWNER, "painted for this owner by default")
     NS.ApplySkinIgnore(true, nil)
     st = Skin.__ace[sec.tree]
-    assertTrue(st == nil or st.owner ~= OWNER, "handed back when the Scope leaves the panel again")
+    assertTrue(st == nil or st.owner ~= OWNER, "handed back while the panel is ignored")
+    NS.ApplySkinIgnore(false, nil)
+    st = Skin.__ace[sec.tree]
+    assertTrue(st ~= nil and st.owner == OWNER, "painted again once the Scope is cleared")
 end)
 
 -- ── the icon border ──────────────────────────────────────────────────────────────────────────

@@ -243,13 +243,14 @@ Total.
 - slash: a foreign /st is reported once and left alone
 - slash: with no foreign /st, nothing is said and both commands stay
 
-### test_selector.lua (9)
+### test_selector.lua (10)
 
 - selector: one card per Ka0s skin, in Skins() order
 - selector: clicking a card applies and saves the skin
 - selector: a pick made elsewhere moves the selection
 - selector: the saved skin is applied at load
 - selector: the saved Scope is applied at load, and /st set moves one half
+- selector: a fresh profile skins this addon's settings panel (R4-ST1, a documented deviation)
 - selector: an unknown saved skin falls back to ka0s
 - selector: clicking the current card does nothing
 - selector: no EllesmereUI card and no copy button
@@ -454,7 +455,7 @@ Total.
 - picker: another addon's picker closed in combat does not bring this one up until combat ends
 - picker: a stand-down while it waits out combat leaves nothing to show after
 
-### test_settings_sample.lua (10)
+### test_settings_sample.lua (11)
 
 - settings: the sample page carries one row of each widget type
 - settings: the sample page carries one picker of each media kind, on the library's own types
@@ -462,7 +463,8 @@ Total.
 - settings: each sample picker draws on the page, and with no media library it still opens
 - settings: /st set takes a media key the sample picker lists, and refuses one it does not
 - settings: the sample page wears the owner's skin once the panel is skinned
-- settings: on a new profile the sample page is the client's
+- settings: on a new profile the sample page wears the skin (R4-ST1)
+- settings: with Ignore settings panel ticked the sample page is the client's
 - settings: the sample rows stay on their page
 - settings: no copy button on the sample page
 - settings: the sample rows with a skin token carry a companion, default on, showing the skin's value
@@ -1024,7 +1026,7 @@ Total.
 | test_database.lua | 12 |
 | test_settings.lua | 53 |
 | test_slash.lua | 19 |
-| test_selector.lua | 9 |
+| test_selector.lua | 10 |
 | test_showroom.lua | 22 |
 | test_showroom_coverage.lua | 6 |
 | test_showroom_dropdowns.lua | 8 |
@@ -1038,7 +1040,7 @@ Total.
 | test_skin_outline.lua | 9 |
 | test_skin_verb.lua | 7 |
 | test_skin_picker.lua | 30 |
-| test_settings_sample.lua | 10 |
+| test_settings_sample.lua | 11 |
 | test_panel.lua | 37 |
 | test_profiles.lua | 18 |
 | test_diagnostics.lua | 10 |
@@ -1062,4 +1064,4 @@ Total.
 | test_skin_values.lua | 3 |
 | test_skin_switch.lua | 218 |
 | Skipped | 1 |
-| **Total** | **864** |
+| **Total** | **866** |

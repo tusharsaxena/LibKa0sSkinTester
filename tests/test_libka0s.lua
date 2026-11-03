@@ -461,8 +461,11 @@ test("slash: the landing page draws those rows and nothing of its own", function
     local main = mock.frames["LibKa0sSkinTesterParentPanel"]
     main:Show()
     mock.fireCTimers()
+    -- The rows' text, not their color codes: with the panel skinned (this addon's default since
+    -- R4-ST1) the library recolors each command row from the skin.
+    local function plain(s) return (tostring(s):gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "")) end
     for _, line in ipairs(NS.SlashCommands:LandingRows()) do
-        local found = mock.findWidget(function(w) return w.type == "Label" and w.text == line end)
+        local found = mock.findWidget(function(w) return w.type == "Label" and plain(w.text) == plain(line) end)
         assertTrue(found ~= nil, "the landing page is missing the row: " .. line)
     end
 end)

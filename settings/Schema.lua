@@ -118,7 +118,7 @@ add{
     section = "skin",  group = "Appearance",
     path    = "skin.ignorePanel",  type = "bool",  widget = "CheckBox",  skipRender = true,
     label   = "Ignore settings panel",
-    tooltip = "Keep this addon's settings panel in the game's own look. The showroom still wears the skin.",
+    tooltip = "Keep this addon's settings panel, and the showroom's settings-panel samples (Scope: panel), in the game's own look. The rest of the showroom still wears the skin. Off by default in this addon.",
     default = C.skin.ignorePanel,
     onChange = function(v) NS.ApplySkinIgnore(v, nil) end,
 }

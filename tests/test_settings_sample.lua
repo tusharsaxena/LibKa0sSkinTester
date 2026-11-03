@@ -103,8 +103,8 @@ test("settings: /st set takes a media key the sample picker lists, and refuses o
 end)
 
 test("settings: the sample page wears the owner's skin once the panel is skinned", function()
-    -- A new profile leaves the settings panel the client's (the Scope's default); the sample page
-    -- is there to show the skin on a settings page, so this case turns that off first.
+    -- A new profile skins this addon's settings panel (R4-ST1, a documented deviation); the set
+    -- below is a no-op kept to pin that the page wears the skin with the panel half cleared.
     local NS, _, mock = T.enableAddon()
     NS.addon:OnSlashCommand("set skin.ignorePanel false")
     NS.Selector.Pick("obsidian")
@@ -116,9 +116,22 @@ test("settings: the sample page wears the owner's skin once the panel is skinned
     assertTrue(st ~= nil and st.owner == OWNER, "and it was painted for this addon")
 end)
 
-test("settings: on a new profile the sample page is the client's", function()
-    -- red under: a default that skins the settings panel.
+test("settings: on a new profile the sample page wears the skin (R4-ST1)", function()
+    -- red under: the standard's default (Ignore settings panel on), which this addon deviates from.
     local _, _, mock = openSample("obsidian")
+    local cb = widget(mock, "CheckBox", "A checkbox")
+    assertTrue(cb ~= nil, "the checkbox rendered")
+    local st = mock.LibStub("LibKa0s-Skin-1.0").__ace[cb]
+    assertTrue(st ~= nil and st.owner == OWNER, "and it was painted for this addon")
+end)
+
+test("settings: with Ignore settings panel ticked the sample page is the client's", function()
+    -- red under: a Scope whose panel half no longer reaches the sample page.
+    local NS, _, mock = T.enableAddon()
+    NS.addon:OnSlashCommand("set skin.ignorePanel true")
+    NS.Selector.Pick("obsidian")
+    mock.frames["LibKa0sSkinTesterSamplePanel"]:Show()
+    mock.fireCTimers()
     local cb = widget(mock, "CheckBox", "A checkbox")
     assertTrue(cb ~= nil, "the checkbox rendered")
     local st = mock.LibStub("LibKa0s-Skin-1.0").__ace[cb]

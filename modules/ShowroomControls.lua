@@ -10,7 +10,7 @@ local addonName, NS = ...
 --
 --   W.Dropdown            the library's button, owned by this addon: a window's, every skin paints it
 --   AceGUI Dropdown       acquired here and handed to PaintAce; a settings-panel surface, so stock
---   Ka0sMedia_Font,       while the Scope leaves the panel the client's (the default), and repainted
+--   Ka0sMedia_Font,       while the Scope leaves the panel the client's (off by default here), and repainted
 --   Ka0sMedia_Statusbar   on every OnLooksChanged, as the TreeGroup is. The pickers are the ones the
 --                         settings renderer draws, each showing a real key; their faces load on the
 --                         first open. The only media picker in the collection (the owner's ruling

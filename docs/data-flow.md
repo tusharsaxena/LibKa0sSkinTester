@@ -15,7 +15,7 @@
   library keeps any non-empty string.
 - A Scope tick (Ignore settings panel, Ignore fonts) runs the same way: the tab calls
   `Skin:SetIgnore`, which repaints this owner live, then writes the pair through
-  `NS.WriteSkinChoice`'s third argument; `/st set skin.ignorePanel false` goes through the row's
+  `NS.WriteSkinChoice`'s third argument; `/st set skin.ignorePanel true` goes through the row's
   `onChange`, `NS.ApplySkinIgnore`, one half at a time.
 - A Font or Texture pick on the Skin tab calls `Skin:SetOverride`, which lays the key over the
   owner's tokens (`font.body`, `font.title`, `hud.font`; `bar.texture`), repaints every recorded
