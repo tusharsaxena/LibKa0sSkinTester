@@ -160,8 +160,8 @@ test("addon surfaces: the icon border draws a 1 px edge in icon.border, in every
     local top = edges().edgeTop
     assertTrue(top ~= nil and mock.__paint(top).shown, "a top edge is drawn under Ka0s Default")
     assertToken(mock, mock.__paint(top).color, "icon.border", "the edge color")
-    -- LibKa0s R3-L3: 1 px in every skin, though Ka0s Default's icon.borderSize is 2.
-    assertEqual(Skin:Token(OWNER, "icon.borderSize"), 2, "Ka0s Default's token still says 2")
+    -- LibKa0s R3-L3: 1 px in every skin; since R3-FIX every skin's icon.borderSize says 1 too.
+    assertEqual(Skin:Token(OWNER, "icon.borderSize"), 1, "Ka0s Default's token says 1")
     assertEqual(top:GetHeight(), 1, "the edge is 1 px all the same")
     NS.Selector.Pick("obsidian")
     assertEqual(edges().edgeTop:GetHeight(), 1, "and 1 px after the switch")
