@@ -520,3 +520,18 @@ test("debuglog: a caught error logged while debug was off is still logged once i
     assertEqual(countLogged(NS, "[Capture] site: boom"), 1)
 end)
 
+test("debuglog: neither the console nor its copy window draws a line under its title (R4-SEP)", function()
+    -- red under: LibKa0s v1.85.0 before R4-SEP, whose console made `f.divider`, a 1 px rule under
+    -- the title bar (round 4, image 28). This addon draws no line of its own; the library's is gone.
+    local NS, _, mock = T.newAddon()
+    NS.DebugLog:Show()
+    NS.DebugLog:ShowCopy()
+    local windows = 0
+    for _, f in ipairs(mock.frames) do
+        if f.titleText ~= nil or f == NS.DebugLog._copyFrameForTest then
+            windows = windows + 1
+            assertTrue(f.divider == nil, "no header rule on " .. tostring(f.titleText or "the copy window"))
+        end
+    end
+    assertTrue(windows >= 2, "the console and the copy window were both built")
+end)

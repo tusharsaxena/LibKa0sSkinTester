@@ -340,7 +340,7 @@ Total.
 - addon surfaces: the caution callout paints its fill, edge and title from the named tokens
 - addon surfaces: the TreeGroup follows the Scope's settings-panel half, live
 - addon surfaces: the TreeGroup keeps its 120 height and shows a page (R4-ST2)
-- overlays: the IconBorder sample draws a 1 px edge in icon.border, in every skin
+- overlays: the IconBorder sample draws a 1 px edge in icon.outline, in every skin
 - addon surfaces: the settings-style window wears Ka0s Default under Ka0s Default
 - addon surfaces: the settings-style window follows a skin switch and stays skinned back on Ka0s Default
 
@@ -620,7 +620,7 @@ Total.
 - lifecycle: /st resetall asks for confirmation rather than resetting outright
 - lifecycle: /st resetall and the Defaults button share one OnAccept body
 
-### test_debuglog.lua (36)
+### test_debuglog.lua (37)
 
 - debuglog: FONT_MONO points at the library payload's JetBrains Mono TTF
 - debuglog: the console renders in the vendored TTF when the client can fetch it
@@ -658,6 +658,7 @@ Total.
 - debuglog: pin — standing down logs one [Lifecycle] line naming the holds, the library's
 - debuglog: pin — standing back up logs the library's [Lifecycle] stood-up line, once
 - debuglog: a caught error logged while debug was off is still logged once it is on
+- debuglog: neither the console nor its copy window draws a line under its title (R4-SEP)
 
 ### test_library_lines.lua (8)
 
@@ -1048,7 +1049,7 @@ Total.
 | test_launcher_skin_entry.lua | 1 |
 | test_keybinds.lua | 8 |
 | test_lifecycle.lua | 18 |
-| test_debuglog.lua | 36 |
+| test_debuglog.lua | 37 |
 | test_library_lines.lua | 8 |
 | test_docmap.lua | 1 |
 | test_lintconfig.lua | 6 |
@@ -1064,4 +1065,4 @@ Total.
 | test_skin_values.lua | 3 |
 | test_skin_switch.lua | 216 |
 | Skipped | 1 |
-| **Total** | **866** |
+| **Total** | **867** |

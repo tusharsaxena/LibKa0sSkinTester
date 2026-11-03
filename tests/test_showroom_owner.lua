@@ -169,7 +169,7 @@ end)
 -- ── the icon border ──────────────────────────────────────────────────────────────────────────
 -- R4-ST3 removed Addon surfaces' own sample (a duplicate); the edge is pinned on Overlays' one.
 
-test("overlays: the IconBorder sample draws a 1 px edge in icon.border, in every skin", function()
+test("overlays: the IconBorder sample draws a 1 px edge in icon.outline, in every skin", function()
     local NS, mock = opened()
     local Skin = lib(mock)
     local framed = NS.Showroom.Section("overlays").framed
@@ -179,7 +179,8 @@ test("overlays: the IconBorder sample draws a 1 px edge in icon.border, in every
     end
     local top = edges().edgeTop
     assertTrue(top ~= nil and mock.__paint(top).shown, "a top edge is drawn under Ka0s Default")
-    assertToken(mock, mock.__paint(top).color, "icon.border", "the edge color")
+    -- LibKa0s R4-L3: the frame edge reads icon.outline (#4D4D57 under Ka0s Default); icon.border stays the HUD's.
+    assertToken(mock, mock.__paint(top).color, "icon.outline", "the edge color")
     -- LibKa0s R3-L3: 1 px in every skin; since R3-FIX every skin's icon.borderSize says 1 too.
     assertEqual(Skin:Token(OWNER, "icon.borderSize"), 1, "Ka0s Default's token says 1")
     assertEqual(top:GetHeight(), 1, "the edge is 1 px all the same")
