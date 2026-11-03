@@ -22,7 +22,18 @@ through the bounded runner. No authored `.lua` file may pass 1500 lines (layout-
 suite list and the kit's wiring; `tests/loader.lua` builds one isolated addon per case from the TOC
 plus every file of `libs/LibKa0s/LibKa0s.xml` in XML order; `tests/wow_mock.lua` extends the kit's
 base mock. The kit's own suites (`test_eol`, `test_prose`, `test_layout_cap`,
-`test_diagnostics_contract`, `test_lizard_sighted`) are declared by their directory.
+`test_diagnostics_contract`, `test_lizard_sighted`, `test_skin_values`, `test_skin_switch`) are
+declared by their directory.
+
+### The skin gates (skinning-§1, kit revision 50)
+
+`test_skin_values` reads every typed color and texture in `core/`, `modules/` and `settings/`. A value
+the skin has a token for goes through the token; anything else no kit category takes is a row in
+`Kit.skinValues.rows` in `tests/run.lua`, with its reason and cause id, and a stale row fails.
+`test_skin_switch` flips every declared surface to a probe skin and fails one that draws the same.
+`tests/skin_surfaces.lua` declares them: the window's chrome, then every captioned sample cell off
+`body.cells`, so a new sample is declared with no edit here. A cell left out is in its `LEFT_OUT`, with
+the reason.
 
 What the suites test is this addon's wiring: each descriptor, each degradation stub (by loading the
 addon with the library absent, never by hand-stubbing), the stand-down, the bindings and the layers.

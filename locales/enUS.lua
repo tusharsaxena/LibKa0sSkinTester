@@ -56,6 +56,7 @@ L["Text"]                               = "Text"
 L["Panels"]                             = "Panels"
 L["Overlays"]                           = "Overlays"
 L["Addon surfaces"]                     = "Addon surfaces"
+L["The General page"]                   = "The General page"
 L["Values"]                             = "Values"
 L["Textures"]                           = "Textures"
 L["Semantic colors (sem.*)"]            = "Semantic colors (sem.*)"
@@ -71,8 +72,11 @@ L["Widths of a fixed corpus against Ka0s Default (1.000x is parity):"] =
     "Widths of a fixed corpus against Ka0s Default (1.000x is parity):"
 L["Library widgets"]                    = "Library widgets"
 
--- The first-run skin picker's eye
-L["Preview: open the skin showroom"]    = "Preview: open the skin showroom"
+-- The skin picker's eye (spec.preview, window mode)
+L["Preview: the skin showroom is open. Click to close it."] =
+    "Preview: the skin showroom is open. Click to close it."
+L["Preview: the skin showroom is closed. Click to open it."] =
+    "Preview: the skin showroom is closed. Click to open it."
 L["Another addon already uses /st, so this one answers only to /skintester."] =
     "Another addon already uses /st, so this one answers only to /skintester."
 L["Toggle the skin showroom"]           = "Toggle the skin showroom"

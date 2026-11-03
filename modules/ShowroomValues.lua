@@ -1,5 +1,5 @@
 local addonName, NS = ...
--- modules/ShowroomValues.lua — the Values section: what the eight getters answer, then four token
+-- modules/ShowroomValues.lua — the Values section: what the nine getters answer, then four token
 -- categories of the skin worn, each token as a labeled swatch under its category's heading: every
 -- semantic color (`sem.*`), every item quality tier (`q.*`, poor to legendary), every tooltip color
 -- (`gtip.*`, LibKa0s v1.81.0's `gtip.footer` among them) and the two art tints v1.81.0 added
@@ -15,15 +15,18 @@ local addonName, NS = ...
 --   NS.Values.tips    [gtip key] = { swatch, text }, one per `gtip.*` token in the schema
 --   NS.Values.art     [art key] = { swatch, text }: `list.hoverArt` and `icon.grip`
 --   NS.Values.heads   [category] = the heading FontString ("sem", "q", "gtip", "art")
+--   NS.Values.getters [color getter] = its readout FontString
+--   NS.Values.bar, .barLine   the BarStyle sample's bar and its readout
+--   NS.Values.barBorder       the BarBorder sample's readout
 --
 -- Everything redraws on OnLooksChanged: these are values read once, not paint the library records.
 
 local R, L = NS.Showroom, NS.L
-local BAR = "Interface\\TargetingFrame\\UI-StatusBar"
+local BAR = NS.Constants.FALLBACK_BAR_TEXTURE
 local SWATCH = 16
 local SEM_W = 150
 
-NS.Values = { shown = {}, lines = {}, tiers = {}, tips = {}, art = {}, heads = {} }
+NS.Values = { shown = {}, lines = {}, tiers = {}, tips = {}, art = {}, heads = {}, getters = {} }
 local V = NS.Values
 local draws = {}   -- one redraw per display, run at build and on every skin change
 
@@ -55,7 +58,9 @@ end
 --- A getter shown as a swatch of the color it answers, or as "nil" when the skin sets none.
 local function colorGetter(g, name, none)
     local tex, fs = swatchLine(g:Add(160, SWATCH, name), name)
+    R.Paint("Text", fs, "body")
     V.shown[name] = true
+    V.getters[name] = fs
     draws[#draws + 1] = function()
         local r, gg, b, a = R.Paint(name)
         setSwatch(tex, r, gg, b, a)
@@ -85,10 +90,14 @@ local function barGetter(g)
     bg:SetAllPoints(bar)
     local fs = cell:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     fs:SetPoint("TOPLEFT", bar, "BOTTOMLEFT", 0, -2)
+    R.Paint("Text", fs, "body")
     V.shown.BarStyle = true
+    V.bar, V.barLine = bar, fs
     draws[#draws + 1] = function()
         local st = R.Paint("BarStyle") or {}
         bar:SetStatusBarTexture(st.texture or BAR)
+        local r, gg, b, a = colorOf(st.fill)
+        if r then bar:SetStatusBarColor(r, gg, b, a) end
         setSwatch(bg, colorOf(st.bg))
         fs:SetText(("%s, %s %s"):format(tostring(st.textureKey), tostring(st.fontKey), tostring(st.fontSize)))
     end
@@ -122,6 +131,7 @@ local function flagsGetter(g)
     local fs = g:Add(440, 16, "FontFlags (From skin: HUD, window; a picked flag)")
         :CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     fs:SetPoint("LEFT")
+    R.Paint("Text", fs, "body")
     V.shown.FontFlags = true
     V.flags = fs
     draws[#draws + 1] = function()
@@ -136,11 +146,28 @@ local function hudSizeGetter(g)
     local fs = g:Add(300, 16, "HudFontSize (stored 12, stored 24)")
         :CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     fs:SetPoint("LEFT")
+    R.Paint("Text", fs, "body")
     V.shown.HudFontSize = true
     V.hudSize = fs
     draws[#draws + 1] = function()
         fs:SetText(("12 draws at %s   24 draws at %s"):format(
             tostring(R.Paint("HudFontSize", 12)), tostring(R.Paint("HudFontSize", 24))))
+    end
+end
+
+--- BarBorder (LibKa0s v1.85.0, SkinPaintExtras minor 16) paints nothing either: a line of what a bar
+--- stored as Solid, hidden, thickness 2 and following the skin draws. A skin's real style wins, and
+--- its None hands the stored three back.
+local function barBorderGetter(g)
+    local fs = g:Add(300, 16, "BarBorder (stored Solid, hidden, 2)")
+        :CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    fs:SetPoint("LEFT")
+    R.Paint("Text", fs, "body")
+    V.shown.BarBorder = true
+    V.barBorder = fs
+    draws[#draws + 1] = function()
+        local style, show, size = R.Paint("BarBorder", "Solid", false, 2, true)
+        fs:SetText(("Draws %s, shown %s, %s thick"):format(tostring(style), tostring(show), tostring(size)))
     end
 end
 
@@ -238,6 +265,7 @@ R.AddSection("values", L["Values"], function(body)
     barGetter(g)
     chartGetter(g)
     flagsGetter(g)
+    barBorderGetter(g)
     hudSizeGetter(g)
     if Skin() then
         heading(g, "sem", L["Semantic colors (sem.*)"])

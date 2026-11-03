@@ -302,7 +302,8 @@ test("options: the library is told the FOLDER name, and the help-mark art is dec
     -- The one residual the library's loaded-addon guard cannot catch is a path with no file behind
     -- it. Since LibKa0s v1.75.0 the vendored icons folder is pruned to the CLAUDE.md
     -- `LibKa0s icons:` line, so `info` ships only when declared: any settings file other than the
-    -- degradation stub that calls IdList must come with `info` on that line. Today none does.
+    -- degradation stub that calls IdList must come with `info` on that line. v1.85.0 declared it for
+    -- the library's own marks, and still no settings file here calls IdList.
     -- red under: adding an IdList call (a help line) to settings/Panel.lua without declaring info.
     local callers = {}
     local pipe = io.popen and io.popen("ls -1 settings")
@@ -460,8 +461,11 @@ test("slash: the landing page draws those rows and nothing of its own", function
     local main = mock.frames["LibKa0sSkinTesterParentPanel"]
     main:Show()
     mock.fireCTimers()
+    -- The rows' text, not their color codes: with the panel skinned (this addon's default since
+    -- R4-ST1) the library recolors each command row from the skin.
+    local function plain(s) return (tostring(s):gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "")) end
     for _, line in ipairs(NS.SlashCommands:LandingRows()) do
-        local found = mock.findWidget(function(w) return w.type == "Label" and w.text == line end)
+        local found = mock.findWidget(function(w) return w.type == "Label" and plain(w.text) == plain(line) end)
         assertTrue(found ~= nil, "the landing page is missing the row: " .. line)
     end
 end)
@@ -549,6 +553,24 @@ test("degraded: the addon loads with LibKa0s absent", function()
     assertNil(env.LibStub("LibKa0s-Core-1.0", true), "the library really is absent")
     assertEqual(type(NS.Print), "function", "the printer still answers")
     assertEqual(type(NS.SafeToString), "function", "the stringifier still answers")
+end)
+
+test("degraded: the facade draws HudFont and answers MarkText, with no skin to read (LibKa0s v1.85.0)", function()
+    local NS = T.newAddon{ skip = NO_LIBKA0S }
+    assertEqual(NS.SkinAvailable, false, "the facade is the stub")
+    local calls, fs = {}, {}
+    function fs.SetFont(_, face, size, flags) calls.font = { face, size, flags } end
+    function fs.SetShadowColor(_, r, g, b, a) calls.color = { r, g, b, a } end
+    function fs.SetShadowOffset(_, x, y) calls.offset = { x, y } end
+    NS.Skin.HudFont(fs, { face = "F.ttf", size = 0, flags = NS.Skin.FROM_SKIN, shadow = true })
+    assertEqual(table.concat(calls.font, "|"), "F.ttf|12|OUTLINE", "@skin never reaches SetFont")
+    assertEqual(calls.offset[1], 1, "a stored shadow writes its arm")
+    NS.Skin.HudFont(fs, { face = "F.ttf", shadow = false })
+    assertEqual(calls.offset[1], 0, "the off arm clears")
+    assertTrue(NS.Skin.MarkText("x", 16):find("|T", 1, true) == 1, "MarkText is a string")
+    for _, name in ipairs({ "Mark", "HudTextColor", "HudLabelColor", "BarFillColor", "HudShadow", "BarGloss" }) do
+        assertEqual(type(NS.Skin[name]), "function", name)
+    end
 end)
 
 test("degraded: the cause clause is published on BOTH paths", function()

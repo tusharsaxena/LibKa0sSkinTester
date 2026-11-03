@@ -59,3 +59,13 @@ test("showroom: the slider sample is visible under Ka0s Default", function()
     local thumb = mock.__paint(slider.thumb)
     assertTrue(thumb.color ~= nil and thumb.vertex ~= nil, "the thumb is a tinted white texture")
 end)
+
+test("showroom: the slider sample's parts start in the worn skin's slider tokens", function()
+    -- red under: a typed tint on the host's parts, which the typed-value gate reads.
+    local installPaint = dofile("tests/_kit/mock_paint.lua")
+    local NS, mock = opened{ mock = function(m) installPaint(m) end }
+    local slider, Skin = NS.Showroom.Section("controls").slider, mock.LibStub("LibKa0s-Skin-1.0")
+    local want = Skin:Token("LibKa0sSkinTester", "slider.thumb")
+    local got = mock.__paint(slider.thumb).vertex
+    for i = 1, 3 do assertEqual(got[i], want[i], "thumb channel " .. i) end
+end)

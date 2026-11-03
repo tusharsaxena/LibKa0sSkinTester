@@ -30,11 +30,14 @@ local LAYERS = NS.Constants.LAYERS
 
 local WINDOW_NAME = "LibKa0sSkinTesterShowroom"
 local WIDTH, HEIGHT = 960, 640
-local TITLE_H, FOOTER_H = 28, 22
+-- Geometry is skin-invariant (skinning-§4), so the two the skin states are read once. The fallbacks
+-- are Ka0s Default's, for the library-absent window. The footer has no token.
+local TITLE_H, FOOTER_H = (NS.Skin and NS.Skin.Token("title.height")) or 30, 22
 local SECTION_TITLE_H, SECTION_GAP = 24, 16
 local SCROLL_STEP = 60
-local BAR_W, BAR_GAP, MIN_THUMB = 8, 6, 24   -- the scrollbar's width, its gap from the sections, its shortest knob
-local SECTIONS_W = WIDTH - 16 - BAR_GAP - BAR_W   -- the body's width less the scrollbar's gutter
+local BAR_W, BAR_GAP, MIN_THUMB = (NS.Skin and NS.Skin.Token("scroll.width")) or 8, 6, 24   -- the scrollbar's width, its gap from the sections, its shortest knob
+local BODY_INSET = 6   -- the body's gutter inside the title bar and footer: LootHistory's content inset (R5-WIN)
+local SECTIONS_W = WIDTH - 2 * BODY_INSET - BAR_GAP - BAR_W   -- the body's width less the scrollbar's gutter
 
 R.used = R.used or {}
 local sections = {}      -- { key, title, build }, in registration order
@@ -89,8 +92,10 @@ local CELL_GAP, CELL_MIN_W, CAPTION_H = 14, 150, 18
 
 --- A section's samples, left to right, wrapping at the body's width. g:Add(w, h, caption) answers a
 --- fresh cell frame of that size with the caption under it; g:Height() is what a build answers.
+--- body.cells[caption] is that cell: the surfaces tests/skin_surfaces.lua declares come from it.
 function R.Grid(body)
     local g = { x = 0, y = 0, rowH = 0, width = body:GetWidth() or SECTIONS_W }
+    body.cells = {}
     function g:Add(w, h, caption)
         local span = math.max(w, CELL_MIN_W)
         if self.x > 0 and self.x + span > self.width then
@@ -99,6 +104,7 @@ function R.Grid(body)
         local cell = CreateFrame("Frame", nil, body)
         cell:SetSize(w, h)
         cell:SetPoint("TOPLEFT", body, "TOPLEFT", self.x, -self.y)
+        body.cells[caption] = cell
         local cap = R.Caption(body, caption)
         cap:SetPoint("TOPLEFT", cell, "BOTTOMLEFT", 0, -4)
         self.x = self.x + span + CELL_GAP
@@ -259,8 +265,8 @@ local function build()
 
     -- The body: the swatch selector on top, the sections scrolling below it.
     local body = CreateFrame("Frame", nil, f)
-    body:SetPoint("TOPLEFT", bar, "BOTTOMLEFT", 8, -8)
-    body:SetPoint("BOTTOMRIGHT", footer, "TOPRIGHT", -8, 8)
+    body:SetPoint("TOPLEFT", bar, "BOTTOMLEFT", BODY_INSET, -BODY_INSET)
+    body:SetPoint("BOTTOMRIGHT", footer, "TOPRIGHT", -BODY_INSET, BODY_INSET)
     f.body = body
 
     f.selector = NS.Selector.Build(body)
@@ -281,8 +287,15 @@ local function build()
     buildScrollBar(f, body)
 
     frame = f
-    R.Paint("Shell", f)
+    -- noTopBar: the TitleBar paints title.bg itself, so the Shell's band under it would paint it a
+    -- second time (a translucent band reading twice as strong). The collection's convention (R4-ST4).
+    R.Paint("Shell", f, { noTopBar = true })
     R.Paint("TitleBar", bar, { text = bar.title })
+    -- The header on the band (LibKa0s v1.85.0 R5-L3): the bar takes the band's rect and the title and
+    -- close sit on its middle at y 0, in every skin, a 2 px edge and EllesmereUI's 25 px bar included.
+    -- The anchors above stay as the no-library fallback, where both calls are no-ops.
+    f.band = R.Paint("Band", f)
+    R.Paint("Header", f, { title = bar.title, right = { close }, bars = { bar } })
     if close then R.Paint("CloseButton", close) end
     R.Paint("Footer", footer, { text = footer.text })
     R.Paint("ScrollBar", f.scrollBar, { track = f.track, thumb = f.thumb })

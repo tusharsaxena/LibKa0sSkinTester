@@ -23,7 +23,7 @@ Total.
 - harness: the addon's AceTimer handles are the kit's, on the kit's queue
 - events: the [Init] summary carries no rejected clause when every name registered
 
-### test_libka0s.lua (55)
+### test_libka0s.lua (56)
 
 - libka0s: every vendored major registers under LibStub
 - libka0s: MODULES names every file of every major, at a positive integer minor
@@ -58,6 +58,7 @@ Total.
 - slash: the descriptor's L overrides exactly one string and nothing else
 - slash: every user-visible CLI string resolves to prose, not to its own key
 - degraded: the addon loads with LibKa0s absent
+- degraded: the facade draws HudFont and answers MarkText, with no skin to read (LibKa0s v1.85.0)
 - degraded: the cause clause is published on BOTH paths
 - degraded: the printer announces the absence exactly ONCE, then prints normally
 - degraded: the fallback printer still degrades a secret in place
@@ -81,7 +82,7 @@ Total.
 - libka0s: Options reads no descriptor L (tripwire)
 - locale: every key enUS.lua defines has a reader
 
-### test_surface_parity.lua (8)
+### test_surface_parity.lua (9)
 
 - parity: the Core seam's whole namespace surface survives the library's absence
 - parity: the DebugLog stub carries the whole live surface
@@ -91,6 +92,7 @@ Total.
 - parity: the Schema host stub carries the library's own members
 - parity: the Launcher stub carries the whole live surface
 - parity: the Lifecycle stub carries the whole live surface
+- parity: the degraded Skin facade carries every live lib.VOCAB name, in the library's order
 
 ### test_mediasetup.lua (13)
 
@@ -149,9 +151,9 @@ Total.
 - util: Restore clears existing anchors before applying the saved one
 - util: a Save/Restore round trip survives through the real frame stub
 
-### test_database.lua (11)
+### test_database.lua (12)
 
-- database: fresh DB lands at schemaVersion 1
+- database: fresh DB lands at schemaVersion 2
 - database: RunMigrations is idempotent
 - database: RunMigrations re-seeds a missing schemaVersion
 - database: defaults declare global.schemaVersion 0 (savedvariables-§1)
@@ -162,6 +164,7 @@ Total.
 - database: a version move is logged, a no-op migration is silent (debug-logging-§8)
 - database: migrations run before any profile read (OnInitialize order)
 - database: the profile is untouched by a migration pass
+- database: a stored pick of Ka0s Friz Quadrata TT moves to Ka0s Ubuntu, in every profile (R3-FRIZ)
 
 ### test_settings.lua (53)
 
@@ -241,18 +244,20 @@ Total.
 - slash: a foreign /st is reported once and left alone
 - slash: with no foreign /st, nothing is said and both commands stay
 
-### test_selector.lua (8)
+### test_selector.lua (10)
 
 - selector: one card per Ka0s skin, in Skins() order
 - selector: clicking a card applies and saves the skin
 - selector: a pick made elsewhere moves the selection
 - selector: the saved skin is applied at load
 - selector: the saved Scope is applied at load, and /st set moves one half
+- selector: a fresh profile skins this addon's settings panel (R4-ST1, a documented deviation)
 - selector: an unknown saved skin falls back to ka0s
 - selector: clicking the current card does nothing
 - selector: no EllesmereUI card and no copy button
+- selector: a source dropdown offers Ka0s skins and EllesmereUI (SF-ST-1)
 
-### test_showroom.lua (11)
+### test_showroom.lua (27)
 
 - showroom: the window is painted through the wrapper
 - showroom: Paint answers the primitive's answer and records the name once
@@ -265,14 +270,31 @@ Total.
 - showroom scrollbar: the wheel moves the sections and the knob together
 - showroom scrollbar: dragging the knob scrolls the sections, and a sync does not scroll back
 - showroom scrollbar: the corridor and the knob are the skin's
+- a5: the hover tooltip is a frame of this addon's, in tooltip.* and gtip.*
+- a5: the ApplyBarFill sample draws the skin's texture and accent, and follows a change
+- a5: the fade's label and the icon border follow the skin
+- a5: every IconBorder sample asks for the skin's own edge
+- R4-L4: every IconBorder sample sits in a window, so none asks for the HUD's icon.border edge
+- R3-L3: every IconBorder sample names its icon, so the library's 0.07 zoom reaches it
+- R3-FIX: Controls' square keeps S.SquareIcon's 0.08 crop through IconBorder's 0.07 zoom and a switch
+- a5: the slider's own track is handed over and a selected nav entry has a fill to tint
+- a5: the window's title bar stands at title.height
+- R4-ST4: title.bg is one layer, the bar's, and stays one through a skin switch
+- a5: the scrollbar stands at scroll.width
+- a5: every readout line is painted body text
+- a5: the BarStyle sample's fill is colored from the skin
+- R5-RV: the showroom's title bar, title and close sit on S.Band in every skin
+- R5-WIN: the confirm popup's one band carries its question on its middle, in every skin
+- R5-WIN: the showroom's body sits 6 px in from its title bar and footer, as LootHistory's content
 
-### test_showroom_coverage.lua (5)
+### test_showroom_coverage.lua (6)
 
 - showroom: every lib.VOCAB name is shown
 - showroom: every section is built and none is empty
 - showroom: the tabs sample moves its selection on a click
 - showroom: the sections build without the library's widgets
 - showroom: the slider sample is visible under Ka0s Default
+- showroom: the slider sample's parts start in the worn skin's slider tokens
 
 ### test_showroom_dropdowns.lua (8)
 
@@ -285,7 +307,7 @@ Total.
 - controls: the Blizzard dropdown's menu offers both choices and marks the pick
 - controls: a client without the Blizzard template shows a label in its cell
 
-### test_showroom_values.lua (13)
+### test_showroom_values.lua (15)
 
 - values: every getter is displayed
 - values: every sem token has a line
@@ -300,6 +322,8 @@ Total.
 - values: FontFlags shows From skin on a HUD and in a window, and a picked flag winning
 - values: HudFontSize shows a stored 12 and 24 scaled by the worn skin's HUD size
 - values: without the skin engine FontFlags and HudFontSize still answer what SetFont takes
+- values: BarBorder defers to the stored three under None and a real style wins
+- values: without the skin engine BarBorder answers the stored three
 
 ### test_showroom_textures.lua (8)
 
@@ -312,7 +336,7 @@ Total.
 - textures: the section builds without the skin engine
 - textures: Ka0s Default draws its own Ka0s Default bar, shipped in the vendored copy
 
-### test_showroom_owner.lua (9)
+### test_showroom_owner.lua (11)
 
 - addon surfaces: the section is built, and every sample went through the wrapper
 - addon surfaces: the owner tokens resolve: default, a skin's own entry, else the follow
@@ -320,9 +344,11 @@ Total.
 - addon surfaces: the danger button paints its fill, edge and label from the named tokens
 - addon surfaces: the caution callout paints its fill, edge and title from the named tokens
 - addon surfaces: the TreeGroup follows the Scope's settings-panel half, live
-- addon surfaces: the icon border draws icon.borderSize edges in icon.border, per skin
+- addon surfaces: the TreeGroup keeps its 120 height and shows a page (R4-ST2)
+- overlays: the IconBorder sample draws a 1 px edge in icon.outline, in every skin
 - addon surfaces: the settings-style window wears Ka0s Default under Ka0s Default
 - addon surfaces: the settings-style window follows a skin switch and stays skinned back on Ka0s Default
+- R5-WIN: the settings-style window's title and close sit on S.Band in every skin
 
 ### test_showroom_fonts.lua (11)
 
@@ -338,23 +364,30 @@ Total.
 - fonts: /st widths is refused while the addon is disabled
 - fonts: without the skin engine the section builds and the probe says why
 
-### test_showroom_hud.lua (5)
+### test_showroom_hud.lua (10)
 
 - hud: the section is built, one line per skin, in the library's order
 - hud: each skin's line names that skin's own HUD face, all nine of them
 - hud: each skin's line is drawn in its face, at its hud.fontSize, under its hud.outline
 - hud: the worn line follows the skin worn, through BarStyle
 - hud: under Ignore fonts the worn line takes the host's own face, and the skin lines keep theirs
+- hud: the v1.85.0 samples redraw on a skin change, through the drawing setters
+- hud: HudShadow reads as its three answers, and both primitives are shown
+- hud: a skin change redraws each string's font object, the shadow behind the cache included
+- hud: BarGloss shows under a skin with gloss and only there
+- overlays: S.Mark tints its marks and the MarkText line is written again
 
-### test_showroom_widgets.lua (14)
+### test_showroom_widgets.lua (16)
 
 - widgets: the section is built with every sample
 - widgets: the drag handle's tooltip draws gtip.title, gtip.value and gtip.footer, per skin
+- widgets: the chart sample fills the area under its first series (#70)
 - widgets: the drag handle, chart and autocomplete are owned by this addon, off the panel
 - widgets: the resize grip is the client's art under Ka0s Default and icon.grip under Obsidian
 - widgets: a dragged resize grip leaves the box on its cell, at its new size
 - widgets: closing the showroom forgets a drag, and ends one under way
 - widgets: the drawer and nav hover art is the client's under Ka0s Default and list.hoverArt under Glass
+- widgets: S.HoverArt's sample is the client's art under Ka0s Default and list.hoverArt under Glass
 - widgets: the chart's tick labels and the autocomplete rows are in this addon's body face
 - widgets: Ignore fonts gives the chart's tick labels and the autocomplete rows their template face
 - widgets: Ignore settings panel leaves the section skinned (a window, decision D-01)
@@ -403,7 +436,7 @@ Total.
 - picker: not before login
 - picker: the spec names this owner's seams, the General page's Skin tab and the eye
 - picker: closing it marks the profile, and the next login does not show it
-- picker: the eye opens the showroom and leaves the picker up
+- picker: the eye closes the showroom the picker opened and leaves the picker up
 - picker: the gear saves the pick, opens the General page itself, and marks the profile
 - picker: a pick previews: the skin moves live, the profile keeps its own and is not marked
 - picker: Apply saves the pick through the schema runtime and marks the profile
@@ -430,7 +463,23 @@ Total.
 - picker: another addon's picker closed in combat does not bring this one up until combat ends
 - picker: a stand-down while it waits out combat leaves nothing to show after
 
-### test_settings_sample.lua (9)
+### test_skin_picker_preview.lua (13)
+
+- picker preview: the spec passes spec.preview in window mode, and no one-shot onPreview
+- picker preview: enter, exit and the reads go through the showroom's own seam
+- picker preview: the first-run picker with the showroom closed opens it, the eye lit
+- picker preview: the eye closes the showroom and opens it again, the picker staying up
+- picker preview: the close control closes the showroom the picker opened
+- picker preview: Escape closes the showroom the picker opened
+- picker preview: Apply closes the showroom the picker opened
+- picker preview: the gear closes the showroom the picker opened
+- picker preview: HideSkinPicker closes the showroom the picker opened
+- picker preview: the stand-down closes the showroom the picker opened
+- picker preview: a showroom already open is left open, and the close does not hide it
+- picker preview: an eye that closed a showroom open at the start opens it again on close
+- picker preview: a showroom the player closes while the picker is up stays closed
+
+### test_settings_sample.lua (11)
 
 - settings: the sample page carries one row of each widget type
 - settings: the sample page carries one picker of each media kind, on the library's own types
@@ -438,9 +487,11 @@ Total.
 - settings: each sample picker draws on the page, and with no media library it still opens
 - settings: /st set takes a media key the sample picker lists, and refuses one it does not
 - settings: the sample page wears the owner's skin once the panel is skinned
-- settings: on a new profile the sample page is the client's
+- settings: on a new profile the sample page wears the skin (R4-ST1)
+- settings: with Ignore settings panel ticked the sample page is the client's
 - settings: the sample rows stay on their page
 - settings: no copy button on the sample page
+- settings: the sample rows with a skin token carry a companion, default on, showing the skin's value
 
 ### test_panel.lua (37)
 
@@ -482,7 +533,7 @@ Total.
 - panel: Reset position forgets the saved point and centers the showroom
 - panel: the Skin tab is the library's, for this owner, and a pick lands in the profile
 
-### test_profiles.lua (17)
+### test_profiles.lua (18)
 
 - profiles: the page registers this db's AceDBOptions table, as the LAST subcategory
 - profiles: the page has no Defaults button
@@ -501,6 +552,7 @@ Total.
 - profile verb: an unknown name is refused, and no profile is created
 - profile verb: surrounding quotes are stripped, case and inner spaces kept
 - profile verb: a switch in combat is refused and nothing moves
+- profiles: the page hands the group to the skin after AceConfigDialog fills it
 
 ### test_diagnostics.lua (10)
 
@@ -554,6 +606,10 @@ Total.
 - launcher: the row still stores with no broker library at all
 - launcher: with LibKa0s absent the seam answers honestly and the store still moves
 
+### test_launcher_skin_entry.lua (1)
+
+- launcher descriptor passes openSkinPicker, which runs the skin verb
+
 ### test_keybinds.lua (8)
 
 - keybinds: Bindings.xml files every binding in the addon's own category, labeled, brand-titled
@@ -586,7 +642,7 @@ Total.
 - lifecycle: /st resetall asks for confirmation rather than resetting outright
 - lifecycle: /st resetall and the Defaults button share one OnAccept body
 
-### test_debuglog.lua (36)
+### test_debuglog.lua (37)
 
 - debuglog: FONT_MONO points at the library payload's JetBrains Mono TTF
 - debuglog: the console renders in the vendored TTF when the client can fetch it
@@ -624,6 +680,7 @@ Total.
 - debuglog: pin — standing down logs one [Lifecycle] line naming the holds, the library's
 - debuglog: pin — standing back up logs the library's [Lifecycle] stood-up line, once
 - debuglog: a caught error logged while debug was off is still logged once it is on
+- debuglog: neither the console nor its copy window draws a line under its title (R4-SEP)
 
 ### test_library_lines.lua (8)
 
@@ -754,41 +811,268 @@ Total.
 - lizard sighted: parity names every file whose counts differ, and only those
 - lizard sighted: lizard lists every function of a hazard fixture once it is sanitized
 
+### test_skin_values.lua (3)
+
+- skin values: every host row carries its file, substring, why and cause id
+- skin values: no typed value outside the kit's categories and the host's rows
+- skin values: the check is falsifiable, a planted value of each shape is reported
+
+### test_skin_switch.lua (216)
+
+- skin switch: the check is falsifiable, a surface that redraws a literal is reported
+- skin switch: the window's shell changes
+- skin switch: the window's shell changes with the Scope ignored
+- skin switch: the title bar changes
+- skin switch: the title bar changes with the Scope ignored
+- skin switch: the footer changes
+- skin switch: the footer changes with the Scope ignored
+- skin switch: the scroll bar changes
+- skin switch: the scroll bar changes with the Scope ignored
+- skin switch: the skin selector changes
+- skin switch: the skin selector changes with the Scope ignored
+- skin switch: chrome: the title changes
+- skin switch: chrome: the title changes with the Scope ignored
+- skin switch: chrome: Shell, Band, Header, TitleBar, CloseButton, Footer changes
+- skin switch: chrome: Shell, Band, Header, TitleBar, CloseButton, Footer changes with the Scope ignored
+- skin switch: chrome: Tab x3 + SetTabSelection (click one) changes
+- skin switch: chrome: Tab x3 + SetTabSelection (click one) changes with the Scope ignored
+- skin switch: controls: the title changes
+- skin switch: controls: the title changes with the Scope ignored
+- skin switch: controls: Button changes
+- skin switch: controls: Button changes with the Scope ignored
+- skin switch: controls: Button (disabled) changes
+- skin switch: controls: Button (disabled) changes with the Scope ignored
+- skin switch: controls: Button (primary) changes
+- skin switch: controls: Button (primary) changes with the Scope ignored
+- skin switch: controls: Checkbox (checked) changes
+- skin switch: controls: Checkbox (checked) changes with the Scope ignored
+- skin switch: controls: Checkbox (unchecked) changes
+- skin switch: controls: Checkbox (unchecked) changes with the Scope ignored
+- skin switch: controls: Dropdown (click: MenuFrame) changes
+- skin switch: controls: Dropdown (click: MenuFrame) changes with the Scope ignored
+- skin switch: controls: EditBox (SearchBox, with its hint) changes
+- skin switch: controls: EditBox (SearchBox, with its hint) changes with the Scope ignored
+- skin switch: controls: PageButton (prev, next) changes
+- skin switch: controls: PageButton (prev, next) changes with the Scope ignored
+- skin switch: controls: Slider changes
+- skin switch: controls: Slider changes with the Scope ignored
+- skin switch: controls: SquareIcon (crop) + IconBorder changes
+- skin switch: controls: SquareIcon (crop) + IconBorder changes with the Scope ignored
+- skin switch: controls: StateButtonLabel (off) changes
+- skin switch: controls: StateButtonLabel (off) changes with the Scope ignored
+- skin switch: controls: StateButtonLabel (on) changes
+- skin switch: controls: StateButtonLabel (on) changes with the Scope ignored
+- skin switch: controls: WhiteButtonLabel changes
+- skin switch: controls: WhiteButtonLabel changes with the Scope ignored
+- skin switch: controls: WowStyle1DropdownTemplate (its list: stock) changes
+- skin switch: controls: WowStyle1DropdownTemplate (its list: stock) changes with the Scope ignored
+- skin switch: lists: the title changes
+- skin switch: lists: the title changes with the Scope ignored
+- skin switch: lists: ListRow (normal, stripe, hover, selected) changes
+- skin switch: lists: ListRow (normal, stripe, hover, selected) changes with the Scope ignored
+- skin switch: lists: ScrollBar (track, thumb) changes
+- skin switch: lists: ScrollBar (track, thumb) changes with the Scope ignored
+- skin switch: lists: SortHeaderBar changes
+- skin switch: lists: SortHeaderBar changes with the Scope ignored
+- skin switch: text: the title changes
+- skin switch: text: the title changes with the Scope ignored
+- skin switch: text: Font changes
+- skin switch: text: Text (accent) changes
+- skin switch: text: Text (accent) changes with the Scope ignored
+- skin switch: text: Text (body) changes
+- skin switch: text: Text (body) changes with the Scope ignored
+- skin switch: text: Text (disabled) changes
+- skin switch: text: Text (disabled) changes with the Scope ignored
+- skin switch: text: Text (heading) changes
+- skin switch: text: Text (heading) changes with the Scope ignored
+- skin switch: text: Text (headingAlt) changes
+- skin switch: text: Text (headingAlt) changes with the Scope ignored
+- skin switch: text: Text (link) changes
+- skin switch: text: Text (link) changes with the Scope ignored
+- skin switch: text: Text (linkHot) changes
+- skin switch: text: Text (linkHot) changes with the Scope ignored
+- skin switch: text: Text (muted) changes
+- skin switch: text: Text (muted) changes with the Scope ignored
+- skin switch: text: Text (title) changes
+- skin switch: text: Text (title) changes with the Scope ignored
+- skin switch: text: White changes
+- skin switch: text: White changes with the Scope ignored
+- skin switch: panels: the title changes
+- skin switch: panels: the title changes with the Scope ignored
+- skin switch: panels: Card changes
+- skin switch: panels: Card changes with the Scope ignored
+- skin switch: panels: Cover (text) changes
+- skin switch: panels: Cover (text) changes with the Scope ignored
+- skin switch: panels: Divider changes
+- skin switch: panels: Divider changes with the Scope ignored
+- skin switch: panels: Drawer (closed) changes
+- skin switch: panels: Drawer (closed) changes with the Scope ignored
+- skin switch: panels: Drawer (open, set) changes
+- skin switch: panels: Drawer (open, set) changes with the Scope ignored
+- skin switch: panels: Inset changes
+- skin switch: panels: Inset changes with the Scope ignored
+- skin switch: panels: NavItem changes
+- skin switch: panels: NavItem changes with the Scope ignored
+- skin switch: panels: NavItem (selected) changes
+- skin switch: panels: NavItem (selected) changes with the Scope ignored
+- skin switch: panels: Panel changes
+- skin switch: panels: Panel changes with the Scope ignored
+- skin switch: panels: Strip (sim) changes
+- skin switch: panels: Strip (sim) changes with the Scope ignored
+- skin switch: panels: Strip (test) changes
+- skin switch: panels: Strip (test) changes with the Scope ignored
+- skin switch: overlays: the title changes
+- skin switch: overlays: the title changes with the Scope ignored
+- skin switch: overlays: ApplyBarFill changes
+- skin switch: overlays: ApplyBarFill changes with the Scope ignored
+- skin switch: overlays: Confirm popup (Shell, Header + Button) changes
+- skin switch: overlays: Confirm popup (Shell, Header + Button) changes with the Scope ignored
+- skin switch: overlays: FadeRegions (left) beside stock changes
+- skin switch: overlays: FadeRegions (left) beside stock changes with the Scope ignored
+- skin switch: overlays: IconBorder, fromSkin changes
+- skin switch: overlays: IconBorder, fromSkin changes with the Scope ignored
+- skin switch: overlays: Mark (tint, sem.good), MarkText changes
+- skin switch: overlays: Mark (tint, sem.good), MarkText changes with the Scope ignored
+- skin switch: overlays: MenuFrame changes
+- skin switch: overlays: MenuFrame changes with the Scope ignored
+- skin switch: overlays: TestStrip (the library's) changes
+- skin switch: overlays: TestStrip (the library's) changes with the Scope ignored
+- skin switch: overlays: Tooltip (hover) changes
+- skin switch: overlays: Tooltip (hover) changes with the Scope ignored
+- skin switch: addon: the title changes
+- skin switch: addon: the title changes with the Scope ignored
+- skin switch: addon: Button, opts.tokens (danger) changes
+- skin switch: addon: Button, opts.tokens (danger) changes with the Scope ignored
+- skin switch: addon: Card, opts.tokens (caution) changes
+- skin switch: addon: Card, opts.tokens (caution) changes with the Scope ignored
+- skin switch: addon: Owner token (st.note) changes
+- skin switch: addon: Owner token (st.note) changes with the Scope ignored
+- skin switch: addon: Shell on SettingsFrameTemplate changes
+- skin switch: addon: Shell on SettingsFrameTemplate changes with the Scope ignored
+- skin switch: widgets: the title changes
+- skin switch: widgets: the title changes with the Scope ignored
+- skin switch: widgets: Autocomplete (type "o") changes
+- skin switch: widgets: Autocomplete (type "o") changes with the Scope ignored
+- skin switch: widgets: CopyWindow (its grip) changes
+- skin switch: widgets: CopyWindow (its grip) changes with the Scope ignored
+- skin switch: widgets: DragHandle (hover: gtip.title, gtip.value, gtip.footer) changes
+- skin switch: widgets: DragHandle (hover: gtip.title, gtip.value, gtip.footer) changes with the Scope ignored
+- skin switch: widgets: Drawer, opts.chevron + opts.hover changes
+- skin switch: widgets: Drawer, opts.chevron + opts.hover changes with the Scope ignored
+- skin switch: widgets: HoverArt (list.hoverArt) changes
+- skin switch: widgets: HoverArt (list.hoverArt) changes with the Scope ignored
+- skin switch: widgets: LineChart (tick labels: text.disabled, the body face; the first series filled) changes
+- skin switch: widgets: LineChart (tick labels: text.disabled, the body face; the first series filled) changes with the Scope ignored
+- skin switch: widgets: MakeResizable, opts.owner (icon.grip) changes
+- skin switch: widgets: MakeResizable, opts.owner (icon.grip) changes with the Scope ignored
+- skin switch: widgets: NavItem, opts.hover changes
+- skin switch: widgets: NavItem, opts.hover changes with the Scope ignored
+- skin switch: widgets: The debug console (its labels) changes
+- skin switch: widgets: The debug console (its labels) changes with the Scope ignored
+- skin switch: widgets: The skin picker (its layout) changes
+- skin switch: widgets: The skin picker (its layout) changes with the Scope ignored
+- skin switch: values: the title changes
+- skin switch: values: the title changes with the Scope ignored
+- skin switch: values:  changes
+- skin switch: values:  changes with the Scope ignored
+- skin switch: values: BarBorder (stored Solid, hidden, 2) changes
+- skin switch: values: BarBorder (stored Solid, hidden, 2) changes with the Scope ignored
+- skin switch: values: BarStyle changes
+- skin switch: values: BarStyle changes with the Scope ignored
+- skin switch: values: ChartStyle (series) changes
+- skin switch: values: ChartStyle (series) changes with the Scope ignored
+- skin switch: values: FontFlags (From skin: HUD, window; a picked flag) changes
+- skin switch: values: FontFlags (From skin: HUD, window; a picked flag) changes with the Scope ignored
+- skin switch: values: GetAccentColor changes
+- skin switch: values: GetAccentColor changes with the Scope ignored
+- skin switch: values: GetFont changes
+- skin switch: values: GetFont changes with the Scope ignored
+- skin switch: values: GetPanelColor changes
+- skin switch: values: GetPanelColor changes with the Scope ignored
+- skin switch: values: GlowColor changes
+- skin switch: values: GlowColor changes with the Scope ignored
+- skin switch: values: HudFontSize (stored 12, stored 24) changes
+- skin switch: values: HudFontSize (stored 12, stored 24) changes with the Scope ignored
+- skin switch: textures: the title changes
+- skin switch: textures: the title changes with the Scope ignored
+- skin switch: textures: Bar chart (series 1-5) changes
+- skin switch: textures: Bar chart (series 1-5) changes with the Scope ignored
+- skin switch: textures: Stacked bar (series 1-5) changes
+- skin switch: textures: Stacked bar (series 1-5) changes with the Scope ignored
+- skin switch: textures: StatusBar (accent, 72%) changes
+- skin switch: textures: StatusBar (accent, 72%) changes with the Scope ignored
+- skin switch: textures: StatusBar (bad, 88%) changes
+- skin switch: textures: StatusBar (bad, 88%) changes with the Scope ignored
+- skin switch: textures: StatusBar (good, 45%) changes
+- skin switch: textures: StatusBar (good, 45%) changes with the Scope ignored
+- skin switch: fonts: the title changes
+- skin switch: fonts: the title changes with the Scope ignored
+- skin switch: fonts: Azeroth: faces and width ratios changes
+- skin switch: fonts: Azeroth: faces and width ratios changes with the Scope ignored
+- skin switch: fonts: Ember: faces and width ratios changes
+- skin switch: fonts: Ember: faces and width ratios changes with the Scope ignored
+- skin switch: fonts: Glass: faces and width ratios changes
+- skin switch: fonts: Glass: faces and width ratios changes with the Scope ignored
+- skin switch: fonts: High Contrast: faces and width ratios changes
+- skin switch: fonts: High Contrast: faces and width ratios changes with the Scope ignored
+- skin switch: fonts: Ka0s Default: faces and width ratios changes
+- skin switch: fonts: Ka0s Default: faces and width ratios changes with the Scope ignored
+- skin switch: fonts: Obsidian: faces and width ratios changes
+- skin switch: fonts: Obsidian: faces and width ratios changes with the Scope ignored
+- skin switch: fonts: The Skin tab's Font outline, this addon's changes
+- skin switch: fonts: The Skin tab's Font outline, this addon's changes with the Scope ignored
+- skin switch: fonts: WoW Default: faces and width ratios changes
+- skin switch: fonts: WoW Default: faces and width ratios changes with the Scope ignored
+- skin switch: fonts: WoW Forever: faces and width ratios changes
+- skin switch: fonts: WoW Forever: faces and width ratios changes with the Scope ignored
+- skin switch: fonts: WoW Midnight: faces and width ratios changes
+- skin switch: fonts: WoW Midnight: faces and width ratios changes with the Scope ignored
+- skin switch: hud: the title changes
+- skin switch: hud: the title changes with the Scope ignored
+- skin switch: hud: BarFillColor, BarGloss changes
+- skin switch: hud: BarFillColor, BarGloss changes with the Scope ignored
+- skin switch: hud: BarStyle (the skin worn; Ignore fonts gives the host's face back) changes
+- skin switch: hud: BarStyle (the skin worn; Ignore fonts gives the host's face back) changes with the Scope ignored
+- skin switch: hud: HudFont: HudTextColor, HudLabelColor, HudShadow changes
+- skin switch: hud: HudFont: HudTextColor, HudLabelColor, HudShadow changes with the Scope ignored
+
 ## Totals
 
 | Suite | Cases |
 |-------|------:|
 | test_harness.lua | 12 |
-| test_libka0s.lua | 55 |
-| test_surface_parity.lua | 8 |
+| test_libka0s.lua | 56 |
+| test_surface_parity.lua | 9 |
 | test_mediasetup.lua | 13 |
 | test_envsetup.lua | 9 |
 | test_util.lua | 26 |
-| test_database.lua | 11 |
+| test_database.lua | 12 |
 | test_settings.lua | 53 |
 | test_slash.lua | 19 |
-| test_selector.lua | 8 |
-| test_showroom.lua | 11 |
-| test_showroom_coverage.lua | 5 |
+| test_selector.lua | 10 |
+| test_showroom.lua | 27 |
+| test_showroom_coverage.lua | 6 |
 | test_showroom_dropdowns.lua | 8 |
-| test_showroom_values.lua | 13 |
+| test_showroom_values.lua | 15 |
 | test_showroom_textures.lua | 8 |
-| test_showroom_owner.lua | 9 |
+| test_showroom_owner.lua | 11 |
 | test_showroom_fonts.lua | 11 |
-| test_showroom_hud.lua | 5 |
-| test_showroom_widgets.lua | 14 |
+| test_showroom_hud.lua | 10 |
+| test_showroom_widgets.lua | 16 |
 | test_skin_media.lua | 9 |
 | test_skin_outline.lua | 9 |
 | test_skin_verb.lua | 7 |
 | test_skin_picker.lua | 30 |
-| test_settings_sample.lua | 9 |
+| test_skin_picker_preview.lua | 13 |
+| test_settings_sample.lua | 11 |
 | test_panel.lua | 37 |
-| test_profiles.lua | 17 |
+| test_profiles.lua | 18 |
 | test_diagnostics.lua | 10 |
 | test_launcher.lua | 36 |
+| test_launcher_skin_entry.lua | 1 |
 | test_keybinds.lua | 8 |
 | test_lifecycle.lua | 18 |
-| test_debuglog.lua | 36 |
+| test_debuglog.lua | 37 |
 | test_library_lines.lua | 8 |
 | test_docmap.lua | 1 |
 | test_lintconfig.lua | 6 |
@@ -801,5 +1085,7 @@ Total.
 | test_layout_cap.lua | 13 |
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
+| test_skin_values.lua | 3 |
+| test_skin_switch.lua | 216 |
 | Skipped | 1 |
-| **Total** | **616** |
+| **Total** | **886** |

@@ -12,7 +12,7 @@ local OWNER = "LibKa0sSkinTester"
 local installPaint = dofile("tests/_kit/mock_paint.lua")
 
 local function painted()
-    return T.enableAddon{ mock = function(m) installPaint(m) end }
+    return T.enableSeen{ mock = function(m) installPaint(m) end }
 end
 
 local function lib(mock) return mock.LibStub("LibKa0s-Skin-1.0") end
@@ -49,7 +49,7 @@ test("showroom: Paint answers the primitive's answer and records the name once",
 end)
 
 test("showroom: sections lay out in registration order, each under its title", function()
-    local NS = T.enableAddon()
+    local NS = T.enableSeen()
     local order = {}
     NS.Showroom.AddSection("zz_a", "Alpha", function(body, paint)
         order[#order + 1] = "a"
@@ -182,4 +182,290 @@ test("showroom scrollbar: the corridor and the knob are the skin's", function()
     NS.Selector.Pick("contrast")
     assertToken(mock, mock.__paint(f.track).color, "scroll.track", "the corridor under contrast")
     assertTrue(mock.__paint(f.thumb).shown ~= false, "the knob is drawn")
+end)
+
+-- ── cause A5 of Ka0sAddonsCommonTasks docs/2026-11-01-FULL_SKINNING: every sample tells the truth ──
+
+local function opened()
+    local NS, _, mock = painted()
+    NS.Showroom.Show()
+    return NS, mock
+end
+
+local function shadowed(obj, method)
+    local calls, real = {}, obj[method]
+    rawset(obj, method, function(self, ...)
+        calls[#calls + 1] = { ... }
+        return real(self, ...)
+    end)
+    return calls
+end
+
+test("a5: the hover tooltip is a frame of this addon's, in tooltip.* and gtip.*", function()
+    local NS, mock = opened()
+    local tip = NS.Showroom.sampleTooltip
+    assertTrue(tip ~= nil and mock.__paint(tip).frameType ~= "GameTooltip", "never a GameTooltip")
+    local Skin = mock.LibStub("LibKa0s-Skin-1.0")
+    local t = Skin:ResolveSkin("obsidian")
+    NS.Selector.Pick("obsidian")
+    local bd = { tip:GetBackdropColor() }
+    assertEqual(bd[1], t["tooltip.bg"][1], "the frame wears tooltip.bg")
+    local title, line = shadowed(tip.title, "SetTextColor"), shadowed(tip.line, "SetTextColor")
+    NS.Showroom.Section("overlays").tipButton:GetScript("OnEnter")(NS.Showroom.Section("overlays").tipButton)
+    assertToken(mock, title[#title], "gtip.title", "the title")
+    assertToken(mock, line[#line], "gtip.value", "the line")
+end)
+
+test("a5: the ApplyBarFill sample draws the skin's texture and accent, and follows a change", function()
+    local NS, mock = opened()
+    local LSM = mock.LibStub:NewLibrary("LibSharedMedia-3.0", 1) or mock.LibStub("LibSharedMedia-3.0")
+    LSM.Fetch = function(_, kind, key) return ("Media\\%s\\%s"):format(kind, tostring(key)) end
+    local bar = NS.Showroom.Section("overlays").fillBar
+    local tex = shadowed(bar, "SetStatusBarTexture")
+    NS.Selector.Pick("obsidian")
+    assertEqual(#tex >= 1, true, "the bar was given a texture again")
+    local want = NS.Skin.BarStyle().texture
+    assertEqual(tex[#tex][1], want, "the skin's bar.texture")
+    assertTrue(want ~= "Interface\\TargetingFrame\\UI-StatusBar", "not the client's bar")
+    local r = bar:GetStatusBarColor()
+    assertEqual(r, mock.LibStub("LibKa0s-Skin-1.0"):ResolveSkin("obsidian")["text.accent"][1], "the accent")
+end)
+
+test("a5: the fade's label and the icon border follow the skin", function()
+    local NS, mock = opened()
+    local sec = NS.Showroom.Section("overlays")
+    local function edge()   -- the Top edge's height: the first region of the primitive's holder
+        return (select(1, sec.framed:GetChildren())):GetRegions():GetHeight()
+    end
+    -- LibKa0s R3-L3: the outline is 1 px in every skin, whatever its icon.borderSize says.
+    assertEqual(edge(), 1, "Ka0s Default's edge")
+    NS.Selector.Pick("obsidian")
+    local t = mock.LibStub("LibKa0s-Skin-1.0"):ResolveSkin("obsidian")
+    local tc = { sec.faded.text:GetTextColor() }
+    assertEqual(tc[1], t["text.body"][1], "text.body on the label")
+    assertEqual(edge(), 1, "Obsidian's edge")
+end)
+
+test("a5: every IconBorder sample asks for the skin's own edge", function()
+    local NS = painted()
+    local real, asked = NS.Skin.IconBorder, {}
+    NS.Skin.IconBorder = function(frame, opts)
+        asked[#asked + 1] = opts
+        return real(frame, opts)
+    end
+    NS.Showroom.Show()
+    NS.Skin.IconBorder = real
+    -- R4-ST3: Addon surfaces' duplicate beside the caution callout is gone (round 4, image 22).
+    assertEqual(#asked, 2, "Controls' square and Overlays'")
+    for _, opts in ipairs(asked) do assertTrue(opts.fromSkin == true, "fromSkin") end
+end)
+
+test("R4-L4: every IconBorder sample sits in a window, so none asks for the HUD's icon.border edge", function()
+    -- red under: a sample passing opts.hud = true (LibKa0s R4-L4), which would draw the HUD's black
+    -- icon.border under Ka0s Default in place of the window's icon.outline (SHOW-47).
+    local NS = painted()
+    local real, asked = NS.Skin.IconBorder, {}
+    NS.Skin.IconBorder = function(frame, opts)
+        asked[#asked + 1] = opts
+        return real(frame, opts)
+    end
+    NS.Showroom.Show()
+    NS.Skin.IconBorder = real
+    assertEqual(#asked, 2, "Controls' square and Overlays'")
+    for i, opts in ipairs(asked) do assertTrue(opts.hud == nil, "sample " .. i .. " keeps the window outline") end
+end)
+
+test("R3-L3: every IconBorder sample names its icon, so the library's 0.07 zoom reaches it", function()
+    -- red under: an icon texture only a local held, which S.IconBorder does not search for (LibKa0s
+    -- R3-L3 zooms the Texture handed in, opts.icon, else frame.icon / frame.Icon).
+    local NS = painted()
+    local real, frames = NS.Skin.IconBorder, {}
+    NS.Skin.IconBorder = function(frame, opts)
+        frames[#frames + 1] = frame
+        return real(frame, opts)
+    end
+    NS.Showroom.Show()
+    NS.Skin.IconBorder = real
+    assertEqual(#frames, 2, "Controls' square and Overlays'")
+    for i, f in ipairs(frames) do
+        local icon = rawget(f, "icon")
+        assertTrue(type(icon) == "table" and type(icon.SetTexCoord) == "function", "sample " .. i .. " names its icon")
+    end
+end)
+
+test("R3-FIX: Controls' square keeps S.SquareIcon's 0.08 crop through IconBorder's 0.07 zoom and a switch", function()
+    -- red under: a zoom that set 0.07 outright, loosening the host's tighter crop (LibKa0s R3-FIX).
+    local NS = painted()
+    local real, squares = NS.Skin.SquareIcon, {}
+    NS.Skin.SquareIcon = function(frame, ...)
+        squares[#squares + 1] = frame
+        return real(frame, ...)
+    end
+    NS.Showroom.Show()
+    NS.Skin.SquareIcon = real
+    local icon = squares[1] and rawget(squares[1], "icon")
+    assertTrue(type(icon) == "table", "Controls painted a SquareIcon with an icon")
+    local function crop(what)
+        local ulx, uly, _, _, _, _, lrx, lry = icon:GetTexCoord()
+        assertTrue(near(ulx, 0.08) and near(uly, 0.08) and near(lrx, 0.92) and near(lry, 0.92),
+            what .. ": the 0.08 crop stands")
+    end
+    crop("after the show")
+    NS.Selector.Pick("obsidian")
+    crop("after a switch to Obsidian")
+    NS.Selector.Pick("ka0s")
+    crop("after a switch back")
+end)
+
+test("a5: the slider's own track is handed over and a selected nav entry has a fill to tint", function()
+    local NS, mock = opened()
+    local sec = NS.Showroom.Section("controls")
+    assertTrue((mock.__paint(sec.slider.track).alpha or 1) == 0 or mock.__paint(sec.slider.track).shown == false,
+        "the host's track is faded under the primitive's")
+    local item = NS.Showroom.Section("panels").selectedNav
+    assertTrue(mock.__paint(item).color ~= nil, "the selection is a texture with something on it")
+    local vr = mock.__paint(item).vertex
+    assertEqual(vr[1], mock.LibStub("LibKa0s-Skin-1.0"):ResolveSkin("ka0s")["nav.selBg"][1], "in nav.selBg")
+end)
+
+test("a5: the window's title bar stands at title.height", function()
+    local _, mock = opened()
+    local f = mock.frames["LibKa0sSkinTesterShowroom"]
+    assertEqual(f.titleBar:GetHeight(), mock.LibStub("LibKa0s-Skin-1.0"):ResolveSkin("ka0s")["title.height"])
+end)
+
+test("R4-ST4: title.bg is one layer, the bar's, and stays one through a skin switch", function()
+    -- red under: a Shell painted without noTopBar, whose band draws title.bg under the TitleBar's own,
+    -- so a translucent band (Glass at 0.10) reads about twice as strong. The collection's convention,
+    -- as DropWatcher's test_skin_host.lua pins it.
+    local NS, mock = painted()
+    NS.Showroom.Show()
+    local Skin, f = lib(mock), window(mock)
+    local function oneLayer(label)
+        local rec = Skin.painted[f]
+        assertTrue(rec ~= nil, label .. ": the Shell painted the window")
+        local top = rec.regions.top   -- never made under noTopBar, or made and hidden
+        assertTrue(top == nil or not top:IsShown(), label .. ": no Shell band under the bar")
+        local bar = Skin.painted[f.titleBar].regions
+        assertTrue(bar.backdrop ~= nil or bar.fill ~= nil, label .. ": the bar's own box")
+    end
+    oneLayer("Ka0s Default")
+    NS.Selector.Pick("glass")
+    oneLayer("Glass")
+end)
+
+test("a5: the scrollbar stands at scroll.width", function()
+    local _, mock = opened()
+    assertEqual(window(mock).scrollBar:GetWidth(), mock.LibStub("LibKa0s-Skin-1.0"):ResolveSkin("ka0s")["scroll.width"])
+end)
+
+test("a5: every readout line is painted body text", function()
+    local NS, mock = opened()
+    local V = NS.Values
+    local t = mock.LibStub("LibKa0s-Skin-1.0"):ResolveSkin("obsidian")
+    NS.Selector.Pick("obsidian")
+    for name, fs in pairs({ flags = V.flags, hudSize = V.hudSize, color = V.getters.GlowColor, bar = V.barLine,
+                            outline = NS.Fonts.outline, worn = NS.Hud.worn }) do
+        local c = { fs:GetTextColor() }
+        assertEqual(c[1], t["text.body"][1], name .. " is in text.body")
+    end
+end)
+
+test("a5: the BarStyle sample's fill is colored from the skin", function()
+    local NS, mock = opened()
+    local bar = NS.Values.bar
+    local calls = shadowed(bar, "SetStatusBarColor")
+    NS.Selector.Pick("obsidian")
+    assertEqual(calls[#calls][1], mock.LibStub("LibKa0s-Skin-1.0"):ResolveSkin("obsidian")["bar.fill"][1])
+end)
+
+-- R5-L3 (LibKa0s v1.85.0, Ka0sAddonsCommonTasks docs/2026-11-03-SMOKE_ROUND5, feedback item 5): every
+-- header child sits on the title band's own frame at y 0, so it is on the band's geometric middle in
+-- every skin; a child title bar under noTopBar takes the band's rect. Pinned the way LibKa0s's
+-- tests/test_header_band.lua pins it. Frames record SetAllPoints here (the base mock's is a no-op).
+
+local CENTERED = { LEFT = true, CENTER = true, RIGHT = true }
+
+local function bandMock(m)
+    installPaint(m)
+    local create = m.CreateFrame
+    m.CreateFrame = function(...)
+        local f = create(...)
+        if type(f) == "table" then
+            rawset(f, "SetAllPoints", function(self, rel)
+                self.__points, self.__allPoints = {}, rel or self.__parent
+            end)
+            local clear = f.ClearAllPoints
+            rawset(f, "ClearAllPoints", function(self)
+                self.__allPoints = nil
+                return clear(self)
+            end)
+        end
+        return f
+    end
+end
+
+local function bandOpened()
+    local NS, _, mock = T.enableAddon{ mock = bandMock }
+    NS.Showroom.Show()
+    return NS, mock
+end
+
+--- `region` has one or two points, each LEFT, CENTER or RIGHT, on `band` at y 0.
+local function assertOnBand(region, band, what)
+    local n = region:GetNumPoints()
+    assertTrue(n >= 1 and n <= 2, what .. ": anchored")
+    for i = 1, n do
+        local point, rel, relPoint, _, y = region:GetPoint(i)
+        assertTrue(CENTERED[point], ("%s: a %s point, never TOP*"):format(what, tostring(point)))
+        assertEqual(relPoint, point, what .. ": to the band's own " .. tostring(point))
+        assertTrue(rel == band, what .. ": anchored to the band")
+        assertEqual(y, 0, what .. ": y 0, the band's middle")
+    end
+end
+
+test("R5-RV: the showroom's title bar, title and close sit on S.Band in every skin", function()
+    -- red under: the bar at a fixed 0,0 and its title and close anchored to the bar, so a 2 px edge
+    -- (WoW Midnight) or EllesmereUI's 25 px bar leaves them off the band's middle.
+    local NS, mock = bandOpened()
+    local f = window(mock)
+    for _, def in ipairs(lib(mock):Skins()) do
+        NS.Selector.Pick(def.key)
+        local band = NS.Skin.Band(f)
+        assertTrue(band ~= nil, def.key .. ": a band frame")
+        assertTrue(rawget(f.titleBar, "__allPoints") == band, def.key .. ": the bar takes the band's rect")
+        assertOnBand(f.titleBar.title, band, def.key .. ": the title")
+        assertOnBand(f.close, band, def.key .. ": the close mark")
+        assertEqual(select(1, f.close:GetPoint(1)), "RIGHT", def.key .. ": the close mark on the right")
+    end
+    assertTrue(NS.Showroom.used.Band and NS.Showroom.used.Header, "both went through NS.Showroom.Paint")
+end)
+
+test("R5-WIN: the confirm popup's one band carries its question on its middle, in every skin", function()
+    -- red under: the question TOP-anchored at -12 on a popup whose Shell now draws the title band
+    -- over a backdrop window's fill (LibKa0s R5-L2), so it sits off the band's middle.
+    local NS, mock = bandOpened()
+    local pop = NS.Showroom.Section("overlays").confirmPopup
+    assertTrue(pop ~= nil, "the popup is kept")
+    for _, def in ipairs(lib(mock):Skins()) do
+        NS.Selector.Pick(def.key)
+        local band = NS.Skin.Band(pop)
+        assertTrue(band ~= nil, def.key .. ": a band frame")
+        assertOnBand(pop.text, band, def.key .. ": the question")
+        assertEqual(select(1, pop.text:GetPoint(1)), "CENTER", def.key .. ": centered")
+        local top = lib(mock).painted[pop].regions.top
+        assertTrue(top ~= nil and top:IsShown(), def.key .. ": Shell's band is drawn, once (the popup has no bar)")
+    end
+end)
+
+test("R5-WIN: the showroom's body sits 6 px in from its title bar and footer, as LootHistory's content", function()
+    -- red under: the 8 px gutter, 2 px deeper than every other Ka0s window's content inset.
+    local _, mock = bandOpened()
+    local f = window(mock)
+    local p, rel, rp, x, y = f.body:GetPoint(1)
+    assertEqual(p .. rp, "TOPLEFTBOTTOMLEFT", "under the bar"); assertTrue(rel == f.titleBar, "the bar")
+    assertEqual(x, 6, "6 px in"); assertEqual(y, -6, "6 px down")
+    p, rel, rp, x, y = f.body:GetPoint(2)
+    assertEqual(p .. rp, "BOTTOMRIGHTTOPRIGHT", "over the footer"); assertTrue(rel == f.footer, "the footer")
+    assertEqual(x, -6, "6 px in"); assertEqual(y, 6, "6 px up")
 end)

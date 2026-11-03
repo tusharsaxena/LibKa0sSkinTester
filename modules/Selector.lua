@@ -3,14 +3,18 @@ local addonName, NS = ...
 -- in the library's order, each showing the skin's name and its four preview swatches. A click puts
 -- the showroom in that skin; the selected card's name reads in the skin's accent.
 --
--- One skin at a time, and only Ka0s skins. EllesmereUI gets no card: its paint is one-way, so a
--- showroom that tried it on could only be taken back with a reload. The Skin tab still offers
--- the EllesmereUI source, and while it is in force no card reads selected.
+-- One skin at a time, and only Ka0s skins get cards. EllesmereUI gets no card: its paint is one-way,
+-- so a showroom that tried it on could only be taken back with a reload. It gets a "Source" dropdown
+-- at the right of the cards instead (SF-ST-1): Ka0s skins | EllesmereUI. Choosing EllesmereUI takes
+-- the look from it when it can paint this addon; going back after it painted asks for a reload (the
+-- library says so). While the EllesmereUI source is in force no card reads selected.
 --
 --   NS.Selector.Build(parent)  the row, a frame with .cards[key] and .order (each card .key, .label,
 --                              .swatches and .selected); built once, with the showroom.
 --   NS.Selector.Pick(key)      applies that Ka0s skin and saves it; answers changed. The current
 --                              skin is no change: nothing is applied, saved or repainted.
+--   NS.Selector.PickSource(v)  applies and saves the source ("ka0s" or "eui"); answers changed. The
+--                              row's .source dropdown calls it.
 --   NS.Selector.Refresh(row)   re-reads the applied skin and moves the selection, and fits each
 --                              card's name to one line in the skin's type. The showroom calls it on
 --                              every OnLooksChanged, so a pick made in the Skin tab or with
@@ -23,6 +27,8 @@ local CARD_W, CARD_H, GAP = 98, 56, 6
 local LABEL_W = CARD_W - 12
 local SWATCH_H = 14
 local SOURCE = "ka0s"
+local SOURCE_W, SOURCE_H = 130, 26   -- the Source dropdown sits on its own row under the cards (SF-FIX)
+local function widgets() return LibStub and LibStub("LibKa0s-Widgets-1.0", true) end
 
 local function S() return NS.Skin end
 local function Skin() return LibStub and LibStub("LibKa0s-Skin-1.0", true) end
@@ -98,7 +104,21 @@ function M.Build(parent)
         row.cards[def.key] = card
         row.order[i] = card
     end
-    row:SetSize(math.max(1, #row.order) * (CARD_W + GAP) - GAP, CARD_H)
+    local W = widgets()
+    local extra = 0
+    if W and W.Dropdown then
+        local dd = W.Dropdown(row, SOURCE_W, { owner = addonName })
+        dd:SetOptions((function()
+            local o = {}
+            for i, opt in ipairs(NS.SKIN_SOURCE_OPTIONS) do o[i] = { value = opt.value, label = opt.text } end
+            return o
+        end)())
+        dd:SetPoint("TOPLEFT", row, "TOPLEFT", 0, -(CARD_H + GAP))
+        dd.onSelect = function(value) M.PickSource(value) end
+        row.source = dd
+        extra = GAP + SOURCE_H
+    end
+    row:SetSize(math.max(1, #row.order) * (CARD_W + GAP) - GAP, CARD_H + extra)
     M.Refresh(row)
     return row
 end
@@ -106,6 +126,7 @@ end
 function M.Refresh(row)
     if not row then return end
     local source, skin = applied()
+    if row.source then row.source:SelectValue(source) end
     for _, card in ipairs(row.order) do
         local on = source == SOURCE and card.key == skin
         if card.selected ~= on then paintSelection(card, on) end
@@ -117,5 +138,13 @@ function M.Pick(key)
     local changed = NS.ApplySkinChoice(SOURCE, key)
     if changed then NS.WriteSkinChoice(SOURCE, key) end
     NS.Debug("Selector", "pick %s changed=%s", tostring(key), tostring(changed))
+    return changed
+end
+
+function M.PickSource(source)
+    if source ~= "ka0s" and source ~= "eui" then return false end
+    local changed = NS.ApplySkinChoice(source, nil)
+    if changed then NS.WriteSkinChoice(source, nil) end
+    NS.Debug("Selector", "source %s changed=%s", tostring(source), tostring(changed))
     return changed
 end

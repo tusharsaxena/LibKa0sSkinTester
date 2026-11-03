@@ -165,7 +165,7 @@ end)
 -- ── the feature verb ─────────────────────────────────────────────────────────────────────────
 
 test("slash: show toggles the showroom while enabled", function()
-    local NS, _, mock = T.enableAddon()
+    local NS, _, mock = T.enableSeen()
     run(NS, mock, "show")
     assertTrue(mock.frames["LibKa0sSkinTesterShowroom"]:IsShown(), "opened")
     run(NS, mock, "show")
@@ -195,7 +195,7 @@ local function foreignSt(mock)
 end
 
 test("slash: /skintester opens the window", function()
-    local NS, _, mock = T.enableAddon()
+    local NS, _, mock = T.enableSeen()
     local console = mock.__libs["AceConsole-3.0"]
     mock.SlashCmdList[console.commands["skintester"]]("show")
     assertTrue(mock.frames["LibKa0sSkinTesterShowroom"]:IsShown(), "opened")
@@ -205,6 +205,7 @@ end)
 test("slash: a foreign /st is reported once and left alone", function()
     local NS, _, mock = T.bootAddon()
     local calls = foreignSt(mock)
+    NS.addon.db.profile.skin.pickerSeen = true -- no first-run picker, so no showroom it opens (R6-PV)
     local mark = #mock.prints
     NS.addon:OnEnable()
     assertEqual(#mock.prints - mark, 1, "one line")

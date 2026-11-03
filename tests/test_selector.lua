@@ -86,6 +86,16 @@ test("selector: the saved Scope is applied at load, and /st set moves one half",
     assertEqual(panel, true, "the other half kept")
 end)
 
+test("selector: a fresh profile skins this addon's settings panel (R4-ST1, a documented deviation)", function()
+    -- red under: the standard's default (Ignore settings panel on) left in defaults/Profile.lua. The
+    -- tester is the showroom, so its "(Scope: panel)" samples must wear the skin out of the box.
+    local NS, mock = bootWithSkin("ka0s")
+    local panel, fonts = lib(mock):GetIgnore(OWNER)
+    assertEqual(panel, false, "Ignore settings panel is off on a new profile")
+    assertEqual(fonts, false, "Ignore fonts keeps its default")
+    assertEqual(NS.addon.db.profile.skin.ignorePanel, false, "and the profile reads it so")
+end)
+
 test("selector: an unknown saved skin falls back to ka0s", function()
     -- red under: an apply that hands the library any string (cleanSkin keeps every non-empty one).
     local NS, mock = bootWithSkin("nope")
@@ -118,4 +128,17 @@ test("selector: no EllesmereUI card and no copy button", function()
         for _, kid in ipairs(f.__children or {}) do walk(kid) end
     end
     walk(sel)
+end)
+
+test("selector: a source dropdown offers Ka0s skins and EllesmereUI (SF-ST-1)", function()
+    local NS, _, sel = opened()
+    assertTrue(sel.source ~= nil, "the dropdown is on the row")
+    local values = {}
+    for _, o in ipairs(sel.source._options) do values[#values + 1] = o.value end
+    assertEqual(table.concat(values, ","), "ka0s,eui", "both sources")
+    assertEqual(sel.source._value, "ka0s", "reads the applied source")
+    sel.source.onSelect("eui")
+    assertEqual(NS.SkinChoice(), "eui", "EllesmereUI is saved as the source")
+    sel.source.onSelect("ka0s")
+    assertEqual(NS.SkinChoice(), "ka0s", "and Ka0s skins again")
 end)

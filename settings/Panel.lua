@@ -154,14 +154,28 @@ local PICKER_SPEC = {
     set       = NS.WriteSkinChoice,
     page      = "general",
     tab       = "Appearance",
-    -- The eye: the showroom is this addon's own frames, and it has no test mode.
-    onPreview = function() NS.Showroom.Show() end,
+    -- The preview (LibKa0s OptionsSkinPicker minor 11, R6-PV): this addon has no test mode and no
+    -- lock, so the mode is the showroom window itself. A picker that shows with the showroom closed
+    -- opens it, the eye closes and opens it, and every close puts it back as the picker found it.
+    -- Each call goes through NS.Showroom, read live, the seam `/st show`, the launcher's Show window
+    -- entry and the key binding use, so the stand-down refusal still applies. A /reload while the
+    -- picker is up leaves nothing behind: the showroom's shown state is not stored.
+    preview   = {
+        mode     = "window",
+        enter    = function() NS.Showroom.Show() end,
+        exit     = function() NS.Showroom.Hide() end,
+        isActive = function() return NS.Showroom.IsShown() end,
+        isShown  = function() return NS.Showroom.IsShown() end,
+    },
     onClose   = function()
         local S = NS.SchemaRuntime
         if hostHiding or not (S and Tester.db) then return end
         S.Set(PICKER_SEEN_PATH, true)
     end,
-    strings   = { PREVIEW_TIP = NS.L["Preview: open the skin showroom"] },
+    strings   = {
+        PREVIEW_WINDOW_ON  = NS.L["Preview: the skin showroom is open. Click to close it."],
+        PREVIEW_WINDOW_OFF = NS.L["Preview: the skin showroom is closed. Click to open it."],
+    },
 }
 
 --- Take the picker down for the addon, not the player: the profile is not marked seen. A no-op

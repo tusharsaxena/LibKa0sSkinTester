@@ -29,7 +29,7 @@ test("settings: the sample page carries one row of each widget type", function()
     for _, row in ipairs(NS.addon.Settings.Schema) do
         if row.page == "sample" then kinds[row.type] = (kinds[row.type] or 0) + 1 end
     end
-    assertEqual(kinds.bool, 2, "a checkbox, and the color swatch's class-color companion")
+    assertEqual(kinds.bool, 6, "a checkbox, the class-color companion and four skin companions")
     assertEqual(kinds.number, 1, "a slider")
     assertEqual(kinds.string, 6, "a dropdown and the five media pickers")
     assertEqual(kinds.color, 1, "a color swatch")
@@ -103,8 +103,8 @@ test("settings: /st set takes a media key the sample picker lists, and refuses o
 end)
 
 test("settings: the sample page wears the owner's skin once the panel is skinned", function()
-    -- A new profile leaves the settings panel the client's (the Scope's default); the sample page
-    -- is there to show the skin on a settings page, so this case turns that off first.
+    -- A new profile skins this addon's settings panel (R4-ST1, a documented deviation); the set
+    -- below is a no-op kept to pin that the page wears the skin with the panel half cleared.
     local NS, _, mock = T.enableAddon()
     NS.addon:OnSlashCommand("set skin.ignorePanel false")
     NS.Selector.Pick("obsidian")
@@ -116,9 +116,22 @@ test("settings: the sample page wears the owner's skin once the panel is skinned
     assertTrue(st ~= nil and st.owner == OWNER, "and it was painted for this addon")
 end)
 
-test("settings: on a new profile the sample page is the client's", function()
-    -- red under: a default that skins the settings panel.
+test("settings: on a new profile the sample page wears the skin (R4-ST1)", function()
+    -- red under: the standard's default (Ignore settings panel on), which this addon deviates from.
     local _, _, mock = openSample("obsidian")
+    local cb = widget(mock, "CheckBox", "A checkbox")
+    assertTrue(cb ~= nil, "the checkbox rendered")
+    local st = mock.LibStub("LibKa0s-Skin-1.0").__ace[cb]
+    assertTrue(st ~= nil and st.owner == OWNER, "and it was painted for this addon")
+end)
+
+test("settings: with Ignore settings panel ticked the sample page is the client's", function()
+    -- red under: a Scope whose panel half no longer reaches the sample page.
+    local NS, _, mock = T.enableAddon()
+    NS.addon:OnSlashCommand("set skin.ignorePanel true")
+    NS.Selector.Pick("obsidian")
+    mock.frames["LibKa0sSkinTesterSamplePanel"]:Show()
+    mock.fireCTimers()
     local cb = widget(mock, "CheckBox", "A checkbox")
     assertTrue(cb ~= nil, "the checkbox rendered")
     local st = mock.LibStub("LibKa0s-Skin-1.0").__ace[cb]
@@ -142,4 +155,25 @@ test("settings: no copy button on the sample page", function()
         return (w.text or w.labelText or ""):find("Copy to every", 1, true) ~= nil
     end)
     assertTrue(copy == nil, "the copy action is the Skin tab's, not this page's")
+end)
+
+-- Cause A5, row 49: the bar, font and border rows and the swatch carry the companion a real row
+-- carries, on by default, and the picker shows the skin's value while it is on.
+test("settings: the sample rows with a skin token carry a companion, default on, showing the skin's value", function()
+    local NS, _, mock = openSample("obsidian")
+    local t = mock.LibStub("LibKa0s-Skin-1.0"):ResolveSkin("obsidian")
+    for path, token in pairs({ ["sample.font"] = "hud.font", ["sample.statusbar"] = "bar.texture",
+                               ["sample.border"] = "bar.borderStyle" }) do
+        local row, comp = rowAt(NS, path), rowAt(NS, path .. "FromSkin")
+        assertTrue(comp ~= nil and comp.type == "bool" and comp.default == true, path .. "'s companion")
+        assertEqual(row.disabledIf, path .. "FromSkin")
+        assertEqual(row.skinValue(row), t[token], path .. " shows the skin's")
+    end
+    local swatch = rowAt(NS, "sample.colorFromSkin")
+    assertTrue(swatch ~= nil and swatch.default == true, "the swatch's companion")
+    assertEqual(rowAt(NS, "sample.color").disabledIf, nil, "a swatch stays live (options-ui-17)")
+    assertEqual(rowAt(NS, "sample.background").skinValue, nil, "a background has no skin token")
+    assertEqual(NS.addon.db.profile.sample.statusbar, "Ka0s Default", "the pick under the companion")
+    NS.addon.Settings.Helpers.Set("sample.statusbarFromSkin", false)
+    assertEqual(rowAt(NS, "sample.statusbar").skinValue(rowAt(NS, "sample.statusbar")), nil, "off: the pick shows")
 end)

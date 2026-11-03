@@ -11,7 +11,9 @@ login; each page's body builds on its first show.
   - **Master controls**, composed by the library: Enable Skin Tester; Master scale and Master
     opacity (the showroom's); Debug console and Minimap button; Reset position and Reset all
     settings. No Lock frame, Test mode or General visibility, because the showroom is a window the
-    player opens, not a positionable display.
+    player opens, not a positionable display. No Sim mode box either: the library draws it only
+    for a host that passes `isSimMode` and `toggleSim` (OptionsCompose minor 19), and this addon
+    has no simulation (PANEL-19).
   - **Skin** (the library's own tab, keyed `Appearance` and labeled "Skin"): the skin source;
     "Look", with the library's note and the nine skins (the tab's own name is not repeated); "Font
     and texture" (two preview pickers, each row in its face or beside its bar, each list led by
@@ -25,11 +27,13 @@ login; each page's body builds on its first show.
 - **Sample controls**: one row of each widget type the renderer draws, bar the dim `note` row (a checkbox, a slider, a
   dropdown, a color swatch and its Use class color companion) and one `Ka0sMedia_*` picker of each
   media kind (font, bar texture, border, background, sound; LibKa0s v1.83.0, options-ui-§23), under
-  one group heading, untabbed. The descriptor's `getLSM` feeds the pickers' lists. It
-  shows the skin on a settings page once Ignore settings panel is off (a new profile has it on, so
-  the page starts in the client's look); the rows are read by nothing. No Skin tab and no copy
+  one group heading, untabbed. The swatch and the font, bar and border pickers carry the skin
+  companion a real row carries, on by default; a background and a sound have no skin token. The descriptor's `getLSM` feeds the pickers' lists. It
+  shows the skin on a settings page while Ignore settings panel is off (a new profile has it off
+  in this addon, a documented deviation from skinning-§3, R4-ST1, so the page starts skinned); the rows are read by nothing. No Skin tab and no copy
   action: the skin is picked on General.
-- **Profiles**: AceDBOptions' profile controls, last.
+- **Profiles**: AceDBOptions' profile controls, last. `NS.SkinPaintAceTree` follows each `Open`, so
+  the page follows the Scope and the delete confirmation wears the skin (LibKa0s v1.85.0).
 
 A row with no `page` is the General page's; the sample rows carry `page = "sample"`, and the host's
 `rowsForPage` (settings/OptionsSetup.lua) hands each page only its own rows.
@@ -52,7 +56,7 @@ as that fourth argument's `outline`, which writes `skin.outline`; its row's `onC
 
 ## The first-run skin picker
 
-The library's `O.SkinPicker` (OptionsSkinPicker minor 4), shown by `NS.MaybeShowSkinPicker`
+The library's `O.SkinPicker` (OptionsSkinPicker minor 11), shown by `NS.MaybeShowSkinPicker`
 (settings/Panel.lua) while the profile's `skin.pickerSeen` is false: once from `OnEnable`, after the
 stored skin is applied, and after every profile switch, copy or reset. The addon never asks for it
 while disabled or in combat; it registers no game event, so a trigger in combat is skipped and the
@@ -67,9 +71,9 @@ which is safe because the stand-down and every profile event take it out of the 
 nothing and prints a gray line on every call; while the addon is disabled the dispatcher refuses it.
 
 The window sits with its center 75% of the way up the screen, clear of the middle, at DIALOG
-strata and raised after the eye runs, so the showroom the eye opens does not cover it. It holds the title "Choose a skin", the addon's label on a line of its own, a
+strata and raised after it opens the showroom and after the eye runs, so the showroom does not cover it. It holds the title "Choose a skin", the addon's label on a line of its own, a
 dropdown of every skin (three swatches and the name in that skin's own face), the eye (the
-showroom), the gear, the Skin tab's rows ("Font and texture": Font and Texture, each a full-width
+showroom, below), the gear, the Skin tab's rows ("Font and texture": Font and Texture, each a full-width
 picker with a reset icon, then Font outline; "Scope": Ignore settings panel and Ignore fonts),
 "Apply", "Apply to all Ka0s addons" (only while another Ka0s addon is loaded) and the close control.
 
@@ -87,6 +91,19 @@ picker with a reset icon, then Font outline; "Scope": Ignore settings panel and 
   previewed. They write nothing, and close.
 - **Apply to all Ka0s addons** saves here, gives every other Ka0s addon the same source, skin,
   scope, font, texture and font outline, and closes this window and every picker still waiting.
+
+**The eye and the showroom (`spec.preview`, LibKa0s OptionsSkinPicker minor 11, R6-PV).** This
+addon has no test mode and no lock, so its preview mode is `"window"`: the showroom itself. When the
+picker shows with the showroom closed, the showroom opens with it. The eye closes and opens the
+showroom, lit while it is open and dimmed while it is closed, its tooltip "Preview: the skin showroom
+is open. Click to close it." or "... is closed. Click to open it.". Every close (Apply, Apply to all,
+the gear, the close control, Escape and the addon's own take-down) puts the showroom back as it was
+when the picker opened: closed again if the picker or the eye opened it, open again if it was open
+and the eye closed it. A picker opened from the showroom's own "Show the picker" button finds it open
+and leaves it so. The picker and the eye call `NS.Showroom.Show`, `NS.Showroom.Hide` and
+`NS.Showroom.IsShown`, the calls `/st show`, the launcher's Show window entry and the key binding make,
+so the stand-down refusal still applies. The showroom's shown state is not stored, so a `/reload` while
+the picker is up leaves nothing behind.
 
 A write on the Skin tab while the window is up first drops a preview left unapplied here, so the
 profile never stores what the picker only previewed.
@@ -109,6 +126,9 @@ not written into the new profile and does not overwrite the skin the new profile
 
 ## The launcher
 
-Left-click opens this panel; right-click opens the options menu, whose entries are Enabled and Show
-window (the skin showroom). The Show window binding is set under Options -> Keybindings ->
+Left-click opens this panel; right-click opens the options menu, whose entries are the toggles
+Enabled and Show window (the skin showroom), then the actions Open settings and Open skin selector
+(the skin picker, through `NS.RunSkinVerb`; the library adds it because the descriptor passes
+`openSkinPicker` and the addon is a registered skin owner, LibKa0s-Launcher minor 6, SF-F2). Show
+window and Open skin selector gray while the addon is disabled. The Show window binding is set under Options -> Keybindings ->
 Ka0s Skin Tester, or on General -> Keybindings here.

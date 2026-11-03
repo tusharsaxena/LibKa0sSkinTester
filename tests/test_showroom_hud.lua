@@ -55,7 +55,7 @@ test("hud: each skin's line names that skin's own HUD face, all nine of them", f
     assertEqual(NS.Hud.lines.ka0s.faceKey, "Ka0s Prototype")
     assertEqual(NS.Hud.lines.obsidian.faceKey, "Ka0s Expressway")
     assertEqual(NS.Hud.lines.ember.faceKey, "Ka0s Emblem")
-    assertEqual(NS.Hud.lines.wow.faceKey, "Ka0s Friz Quadrata TT", "WoW Default names the shipped face (D-01)")
+    assertEqual(NS.Hud.lines.wow.faceKey, "Ka0s Ubuntu", "WoW Default names the shipped face (LibKa0s R3-L6)")
     local n = 0
     for _ in pairs(faces) do n = n + 1 end
     assertEqual(n, 9, "nine skins, nine faces")
@@ -103,4 +103,137 @@ test("hud: under Ignore fonts the worn line takes the host's own face, and the s
     NS.ApplySkinIgnore(nil, false)
     assertEqual(NS.Hud.worn.faceKey, face, "turning it off gives the skin's face back")
     assertEqual(lib(mock):Token(OWNER, "hud.font"), face)
+end)
+
+local function spyDraw(obj, method)
+    local calls, real = {}, obj[method]
+    rawset(obj, method, function(self, ...)
+        calls[#calls + 1] = table.concat({ tostring(select(1, ...)), tostring(select(2, ...)), tostring(select(3, ...)) }, ",")
+        return real(self, ...)
+    end)
+    return calls
+end
+
+test("hud: the v1.85.0 samples redraw on a skin change, through the drawing setters", function()
+    local NS, mock = opened()
+    local s, Skin = NS.Hud.surface, lib(mock)
+    local text = spyDraw(s.text, "SetTextColor")
+    local label = spyDraw(s.label, "SetTextColor")
+    local shadow = spyDraw(s.shadow, "SetTextColor")
+    local fill = spyDraw(s.bar, "SetStatusBarColor")
+    NS.Selector.Pick("obsidian")
+    local want = Skin:ResolveSkin("obsidian")
+    local function rgb(c) return table.concat({ tostring(c[1]), tostring(c[2]), tostring(c[3]) }, ",") end
+    assertEqual(text[#text], rgb(want["hud.text"]), "HudTextColor drew Obsidian's")
+    assertEqual(label[#label], rgb(want["hud.label"]), "HudLabelColor drew Obsidian's")
+    assertEqual(shadow[#shadow], rgb(want["hud.text"]), "the shadow readout in HudTextColor")
+    assertEqual(fill[#fill], rgb(want["bar.fill"]), "BarFillColor drew Obsidian's")
+end)
+
+test("hud: HudShadow reads as its three answers, and both primitives are shown", function()
+    local NS, mock = opened()
+    assertTrue(NS.Showroom.used.HudFont == true and NS.Showroom.used.HudShadow == true, "both shown")
+    assertTrue(NS.Hud.surface.shadow:GetText():find("none", 1, true) ~= nil, "Ka0s Default draws none")
+    NS.Selector.Pick("obsidian")
+    local t = lib(mock):ResolveSkin("obsidian")
+    assertTrue(NS.Hud.surface.shadow:GetText():find(("%s, %s"):format(t["hud.shadowX"], t["hud.shadowY"]), 1, true) ~= nil,
+        "Obsidian's offset")
+    NS.ApplySkinIgnore(nil, true)
+    assertTrue(NS.Hud.surface.shadow:GetText():find("nil", 1, true) ~= nil, "Ignore fonts: the host's")
+    NS.ApplySkinIgnore(nil, false)
+end)
+
+--- Font objects that remember what S.HudFont writes. The library keeps one per string, so the three
+--- strings' drawn objects are dropped first or this fake would see nothing (the Options doc's note).
+local function fakeFontObjects(mock, strings)
+    local cache, made = lib(mock).__hudFonts, {}
+    for _, fs in ipairs(strings) do cache[fs] = nil end
+    mock.CreateFont = function(name)
+        local o = { name = name }
+        function o:SetFont(...) self.font = { ... } end
+        function o:SetShadowColor(...) self.shadowColor = { ... } end
+        function o:SetShadowOffset(x, y) self.shadowX, self.shadowY = x, y end
+        -- A real font object answers its face (LibKa0s R3-DR-1L reads it back to hold the face).
+        function o:GetFont() return unpack(self.font or {}) end
+        if name:find("LibKa0sHud_", 1, true) then made[#made + 1] = o end
+        return o
+    end
+    return made
+end
+
+test("hud: a skin change redraws each string's font object, the shadow behind the cache included", function()
+    local NS, mock = opened()
+    fakeLSM(mock)
+    local s, Skin = NS.Hud.surface, lib(mock)
+    local strings = { s.text, s.label, s.shadow }
+    local made = fakeFontObjects(mock, strings)
+    local tex
+    rawset(s.bar, "SetStatusBarTexture", function(_, path) tex = path end)
+    NS.Selector.Pick("obsidian")
+    assertEqual(#made, 1, "one object per look, shared by the three strings")
+    local want = Skin:ResolveSkin("obsidian")
+    local objects = {}
+    for i, fs in ipairs(strings) do
+        local o = fs:GetFontObject()
+        objects[i] = o
+        assertTrue(type(o) == "table" and o.font ~= nil, i .. ": the string wears its object")
+        assertEqual(o.font[1], ("Fonts\\font\\%s.ttf"):format(want["hud.font"]), i .. "'s face")
+        assertEqual(o.font[2], NS.Skin.BarStyle().fontSize, i .. "'s size")
+        assertEqual(o.font[3], want["hud.outline"], i .. "'s outline")
+        assertEqual(o.shadowX, want["hud.shadowX"], i .. "'s shadow x")
+        assertEqual(o.shadowY, want["hud.shadowY"], i .. "'s shadow y")
+        assertEqual(o.shadowColor[1], want["hud.shadow"][1], i .. "'s shadow color")
+    end
+    assertEqual(tex, NS.Skin.BarStyle().texture, "the bar sample draws the skin's texture")
+    NS.Selector.Pick("ka0s")   -- Ka0s Default draws no shadow, so each string moves to a look without one
+    local plain = strings[1]:GetFontObject()
+    for i, fs in ipairs(strings) do
+        assertTrue(fs:GetFontObject() == plain, i .. " shares the new look")
+        assertTrue(plain ~= objects[i], i .. " leaves the shadowed look")
+    end
+    assertEqual(plain.shadowX, 0, "the new look's shadow is off")
+    assertEqual(plain.shadowY, 0, "the new look's shadow is off")
+    assertEqual(#made, 2, "one object per look")
+    NS.Selector.Pick("obsidian")
+    assertTrue(strings[1]:GetFontObject() == objects[1], "a look worn before keeps its object")
+    assertEqual(#made, 2, "a repeat draw makes no object")
+    NS.Selector.Pick("ka0s")
+    assertEqual(tex, NS.Skin.BarStyle().texture, "and the bar follows back")
+end)
+
+test("hud: BarGloss shows under a skin with gloss and only there", function()
+    local NS, mock = opened()
+    local bar = NS.Hud.surface.bar
+    local function gloss()
+        for _, region in ipairs({ bar:GetRegions() }) do
+            local p = mock.__paint(region)
+            if p.gradient then return region end
+        end
+    end
+    local g = gloss()
+    assertTrue(g == nil or not g:IsShown(), "no gloss under Ka0s Default")
+    NS.Selector.Pick("glass")
+    g = gloss()
+    assertTrue(g ~= nil and g:IsShown(), "Glass shines the bar")
+    NS.Selector.Pick("ka0s")
+    assertTrue(not g:IsShown(), "and a change away hides it")
+end)
+
+test("overlays: S.Mark tints its marks and the MarkText line is written again", function()
+    local NS, mock = opened()
+    local body = NS.Showroom.Section("overlays")
+    assertTrue(NS.Showroom.used.Mark == true and NS.Showroom.used.MarkText == true, "both shown")
+    assertTrue(mock.__paint(body.mark).texture ~= nil, "the Ka0s icon is on the sample")
+    local Skin = lib(mock)
+    assertEqual(mock.__paint(body.markGood).vertex[1], Skin:ResolveSkin("ka0s")["sem.good"][1], "sem.good")
+    local stale = body.markLine:GetText()
+    NS.Selector.Pick("obsidian")
+    local t = Skin:ResolveSkin("obsidian")
+    assertEqual(mock.__paint(body.mark).vertex[1], t["icon.tint"][1], "follows a change")
+    local line = body.markLine:GetText()
+    assertEqual(line, NS.Skin.MarkText(NS.Icon("info"), 14) .. " in a line", "written in Obsidian's tint")
+    assertTrue(line ~= stale, "not the line Ka0s Default wrote")
+    local c = { body.markLine:GetTextColor() }
+    assertEqual(table.concat({ c[1], c[2], c[3] }, ","),
+        table.concat({ t["text.body"][1], t["text.body"][2], t["text.body"][3] }, ","), "the line in text.body")
 end)

@@ -8,10 +8,11 @@ local _, NS = ...
 --   a caution callout     Card with opts.tokens naming the fill, edge and title
 --   an AceGUI TreeGroup   acquired here and handed to the library's PaintAce. An AceGUI widget is
 --                         a settings-panel surface, so it follows the Scope's "settings panel"
---                         half: stock while the Scope leaves the panel the client's (the default),
+--                         half: stock while the Scope leaves the panel the client's (off by default here),
 --                         painted once it is cleared. PaintAce is asked again on every
---                         OnLooksChanged, so a Scope change or a skin switch shows at once.
---   an icon border        IconBorder with opts.fromSkin: icon.borderStyle and icon.borderSize
+--                         OnLooksChanged, so a Scope change or a skin switch shows at once. Its
+--                         height is the host's (no auto-height) and its content pane holds a
+--                         placeholder page (R4-ST2).
 --   a template window     a SettingsFrameTemplate miniature painted like any window: its art faded
 --                         and the skin's drawn under every skin, Ka0s Default included (LibKa0s
 --                         v1.81.0 retired opts.stockDefault, ruling R-2: the client's look is the
@@ -20,7 +21,6 @@ local _, NS = ...
 -- Built only through the sample's own frames: no GameTooltip, no StaticPopup, no Blizzard window.
 
 local R, L = NS.Showroom, NS.L
-local ICON = "Interface\\Icons\\INV_Misc_QuestionMark"
 local STOCK_TEMPLATE = "SettingsFrameTemplate"
 
 local tree   -- the TreeGroup sample, once built; repainted on every OnLooksChanged
@@ -78,6 +78,15 @@ local function treeGroup(g, paint)
     end
     if type(tree.SetTreeWidth) == "function" then tree:SetTreeWidth(120, false) end
     if type(tree.SelectByValue) == "function" then tree:SelectByValue("general") end
+    -- R4-ST2: the host owns the height, as PrettyChat's TreeGroup does (settings/Panel.lua). Left
+    -- on, AceGUI's auto-height takes an empty List layout's 0 and collapses both panes to 20 px,
+    -- with the tree's rows hanging below them. A Fill page in the content pane makes it read as a
+    -- settings page, the selected row's.
+    tree:SetAutoAdjustHeight(false)
+    tree:SetLayout("Fill")
+    local page = AceGUI:Create("Label")
+    page:SetText(L["The General page"])
+    tree:AddChild(page)
     tree:SetWidth(300)
     tree:SetHeight(120)
     local f = tree.frame
@@ -86,15 +95,6 @@ local function treeGroup(g, paint)
     f:SetPoint("TOPLEFT", cell, "TOPLEFT", 0, 0)
     f:Show()
     return tree, cell, paint("PaintAce", tree)
-end
-
-local function iconBorder(g, paint)
-    local framed = boxed(g:Add(36, 36, "IconBorder, fromSkin"), 36, 36)
-    local icon = framed:CreateTexture(nil, "ARTWORK")
-    icon:SetAllPoints(framed)
-    icon:SetTexture(ICON)
-    paint("IconBorder", framed, { fromSkin = true })
-    return framed
 end
 
 -- A template's parentKey child: a raw field holding a frame or region, else nil.
@@ -129,6 +129,10 @@ local function stockWindow(g, paint)
         close:SetScript("OnClick", nil)   -- a sample: its parent is a showroom cell, not a window
         paint("CloseButton", close)
     end
+    -- The template keeps its own anchors for the title and close (TOP and TOPRIGHT, placed for its
+    -- 24 px header), off Shell's band. Both go onto the band's middle (LibKa0s R5-L3, R5-WIN), and a
+    -- switch places them again.
+    paint("Header", win, { title = nine and child(nine, "Text"), right = { close } })
     local body = line(win, "The skin's art in every skin", "GameFontHighlightSmall")
     body:SetPoint("CENTER", win, "CENTER", 0, -6)
     paint("Text", body, "body")
@@ -140,7 +144,6 @@ R.AddSection("addon", L["Addon surfaces"], function(body, paint)
     body.note = ownerToken(g, paint)
     body.danger = dangerButton(g, paint)
     body.callout = cautionCallout(g, paint)
-    body.iconFrame = iconBorder(g, paint)
     g:Break()
     body.tree, body.treeCell, body.treePainted = treeGroup(g, paint)
     body.stockWindow = stockWindow(g, paint)

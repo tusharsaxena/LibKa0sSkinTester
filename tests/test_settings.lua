@@ -404,7 +404,7 @@ test("settings: RestoreAllDefaults leaves db.global untouched", function()
     local NS = T.bootAddon()
     NS.addon.db.global.windows.showroom = { point = "CENTER", relPoint = "CENTER", x = 1, y = 2 }
     NS.addon.Settings.Helpers.RestoreAllDefaults()
-    assertEqual(NS.addon.db.global.schemaVersion, 1)
+    assertEqual(NS.addon.db.global.schemaVersion, 2)
     assertTrue(NS.addon.db.global.windows.showroom ~= nil,
         "window geometry is account-wide and survives a profile reset")
 end)
@@ -741,18 +741,22 @@ local STORED_SETTINGS = {
     "global.minimap.shown = bool|true|nil|nil|nil|general|false",
     "sample.background = string|Blizzard Tooltip|nil|nil|nil|sample|false",
     "sample.border = string|Blizzard Tooltip|nil|nil|nil|sample|false",
+    "sample.borderFromSkin = bool|true|nil|nil|nil|sample|false",
     "sample.checked = bool|true|nil|nil|nil|sample|false",
     "sample.color = color|0.2,0.6,1,1|nil|nil|nil|sample|false",
+    "sample.colorFromSkin = bool|true|nil|nil|nil|sample|false",
     "sample.font = string|Ka0s Prototype|nil|nil|nil|sample|false",
+    "sample.fontFromSkin = bool|true|nil|nil|nil|sample|false",
     "sample.mode = string|medium|nil|nil|nil|sample|false",
     "sample.size = number|5|1|10|1|sample|false",
     "sample.sound = string|None|nil|nil|nil|sample|false",
-    "sample.statusbar = string|Blizzard|nil|nil|nil|sample|false",
+    "sample.statusbar = string|Ka0s Default|nil|nil|nil|sample|false",
+    "sample.statusbarFromSkin = bool|true|nil|nil|nil|sample|false",
     "sample.useClassColor = bool|false|nil|nil|nil|sample|false",
     "scale = number|1|0.5|2|0.05|general|false",
     "skin.font = string||nil|nil|nil|skin|false",
     "skin.ignoreFonts = bool|false|nil|nil|nil|skin|false",
-    "skin.ignorePanel = bool|true|nil|nil|nil|skin|false",
+    "skin.ignorePanel = bool|false|nil|nil|nil|skin|false",
     "skin.outline = string|hud|nil|nil|nil|skin|false",
     "skin.pickerSeen = bool|false|nil|nil|nil|skin|false",
     "skin.skin = string|ka0s|nil|nil|nil|skin|false",

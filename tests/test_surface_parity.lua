@@ -222,3 +222,21 @@ test("parity: the Lifecycle stub carries the whole live surface", function()
     T.assertSurfaceParity(degraded.Lifecycle, "LibKa0s-Lifecycle-1.0")
 end)
 
+
+-- ---------------------------------------------------------------------------
+-- Skin facade
+-- ---------------------------------------------------------------------------
+
+test("parity: the degraded Skin facade carries every live lib.VOCAB name, in the library's order", function()
+    -- red under: a primitive added upstream (LibKa0s v1.85.0 R5-L3's Band and Header) and not copied
+    -- into NS.SKIN_VOCAB (core/SkinSetup.lua), so the degraded facade raises where the live one
+    -- answers. The live half is the vendored library's own list; the degraded half is a real load
+    -- with the library's files omitted.
+    local _, env = T.newAddon()
+    local vocab = env.LibStub("LibKa0s-Skin-1.0").VOCAB
+    local degraded = T.newAddon{ skip = NO_LIBKA0S }
+    T.assertEqual(table.concat(degraded.SKIN_VOCAB, ","), table.concat(vocab, ","), "NS.SKIN_VOCAB is lib.VOCAB")
+    for _, name in ipairs(vocab) do
+        T.assertEqual(type(degraded.Skin[name]), "function", "the degraded facade's " .. name)
+    end
+end)

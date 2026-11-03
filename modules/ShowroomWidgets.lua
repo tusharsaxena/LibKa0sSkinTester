@@ -10,7 +10,7 @@ local addonName, NS = ...
 --   an autocomplete      type in the box: the suggestion rows in menu.text and the body face (LK-06a)
 --   a line chart         its tick labels in text.disabled and the body face (LK-06a)
 --   a resize grip        Core.MakeResizable with opts.owner: icon.grip, the client's art where a
---                        skin leaves it false (LK-06b); back on its cell after a drag (ST-D2)
+--                        skin leaves it false (LK-06b); back on its cell after a drag (LibKa0s #72)
 --   a drawer head        its chevron in icon.arrow, its label and summary in the body face, and its
 --                        hover art in list.hoverArt (LK-06c)
 --   a nav entry          its hover art in list.hoverArt (LK-06c)
@@ -36,7 +36,7 @@ local function Skin() return LibStub and LibStub("LibKa0s-Skin-1.0", true) end
 local function boxed(cell, w, h)
     local f = CreateFrame("Frame", nil, cell, "BackdropTemplate")
     f:SetSize(w, h)
-    f:SetPoint("TOPLEFT")
+    f:SetPoint("TOPLEFT", cell, "TOPLEFT", 0, 0)
     return f
 end
 
@@ -105,7 +105,7 @@ end
 
 local function lineChart(g, body)
     local w, h = 260, 110
-    local cell = g:Add(w, h, "LineChart (tick labels: text.disabled, the body face)")
+    local cell = g:Add(w, h, "LineChart (tick labels: text.disabled, the body face; the first series filled)")
     local W = widgets()
     if not (W and W.LineChart) then return end
     local chart = W.LineChart(cell, { owner = addonName })
@@ -118,16 +118,14 @@ local function lineChart(g, body)
         b[#b + 1] = { x = x0 + i * DAY, y = 12 + (i * 11) % 17 }
     end
     chart:SetData({ xMin = x0, xMax = x0 + 6 * DAY, integer = true,
-        series = { { points = a, colorIndex = 1 }, { points = b, colorIndex = 2 } } })
+        series = { { points = a, colorIndex = 1, fill = true }, { points = b, colorIndex = 2 } } })
     chart:Render(w, h)
     body.chart = chart
 end
 
--- The client's StartSizing takes a sized frame off its anchors and leaves it on a screen position,
--- and MakeResizable, written for windows, puts the user-placed flag back but not the anchors. A
--- window wants that; this box lives in a scrolling cell, so it goes back on its cell when a drag ends
--- (or it stops scrolling). The window is only ever hidden, so nothing else would undo a drag either:
--- closing puts the size back too, and a close in the middle of a drag ends the drag.
+-- MakeResizable (Core minor 15, #72) puts the box back on its cell when a drag ends. The window is
+-- only ever hidden, so nothing else would undo a drag: closing puts the size back, and a close in the
+-- middle of a drag ends the drag and seats the box on its cell again.
 local function resizeGrip(g, body, paint)
     local cell = g:Add(GRIP_W, GRIP_H, "MakeResizable, opts.owner (icon.grip)")
     local box = boxed(cell, GRIP_W, GRIP_H)
@@ -140,7 +138,7 @@ local function resizeGrip(g, body, paint)
         box:ClearAllPoints()
         box:SetPoint("TOPLEFT", cell, "TOPLEFT", 0, 0)
     end
-    C.MakeResizable(box, { owner = addonName, onResizeStop = seat })
+    C.MakeResizable(box, { owner = addonName })
     box:HookScript("OnHide", function()
         box:StopMovingOrSizing()
         box:SetUserPlaced(false)
@@ -171,6 +169,16 @@ local function navEntry(g, body, paint)
     local hover = hoverArt(item)
     paint("NavItem", item, { label = label(item, "Hover me"), hover = hover })
     body.nav, body.navHover = item, hover
+end
+
+-- S.HoverArt on its own (LibKa0s v1.85.0, SkinPaintExtras minor 16), as a host's row draws it.
+local function hoverSample(g, body, paint)
+    local box = boxed(g:Add(160, 22, "HoverArt (list.hoverArt)"), 160, 22)
+    box:EnableMouse(true)
+    paint("Text", label(box, "Hover me"), "body")
+    local art = hoverArt(box)
+    paint("HoverArt", art)
+    body.hoverSample, body.hoverSampleArt = box, art
 end
 
 local function launcher(g, caption, text, onClick, paint)
@@ -207,6 +215,7 @@ R.AddSection("widgets", L["Library widgets"], function(body, paint)
     lineChart(g, body)
     drawerHead(g, body, paint)
     navEntry(g, body, paint)
+    hoverSample(g, body, paint)
     g:Break()
     launchers(g, body, paint)
     return g:Height()

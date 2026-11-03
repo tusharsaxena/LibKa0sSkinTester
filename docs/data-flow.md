@@ -15,7 +15,7 @@
   library keeps any non-empty string.
 - A Scope tick (Ignore settings panel, Ignore fonts) runs the same way: the tab calls
   `Skin:SetIgnore`, which repaints this owner live, then writes the pair through
-  `NS.WriteSkinChoice`'s third argument; `/st set skin.ignorePanel false` goes through the row's
+  `NS.WriteSkinChoice`'s third argument; `/st set skin.ignorePanel true` goes through the row's
   `onChange`, `NS.ApplySkinIgnore`, one half at a time.
 - A Font or Texture pick on the Skin tab calls `Skin:SetOverride`, which lays the key over the
   owner's tokens (`font.body`, `font.title`, `hud.font`; `bar.texture`), repaints every recorded
@@ -33,7 +33,7 @@
   previews with the overrides cleared. Apply or the gear then hands what moved to
   `NS.WriteSkinChoice`, and the close control or Escape puts the rows back and calls
   `Skin:SetChoice` back to the pair the profile stores at the close (the spec's `get`,
-  `NS.SkinChoice`), so only the unsaved preview is undone. Every close then runs the spec's `onClose`, which sets `skin.pickerSeen`.
+  `NS.SkinChoice`), so only the unsaved preview is undone. Every close then puts the showroom back as the picker found it (`spec.preview`, window mode: `NS.Showroom.Show` or `Hide`, R6-PV) and runs the spec's `onClose`, which sets `skin.pickerSeen`.
   "Apply to all Ka0s addons" (this addon's or another's) reaches every other owner through
   `Skin:WriteChoice`, as the tab's copy does, and carries the same source, skin, Scope, font,
   texture and Font outline.

@@ -119,6 +119,16 @@ test("widgets: the drag handle's tooltip draws gtip.title, gtip.value and gtip.f
     check("azeroth")
 end)
 
+test("widgets: the chart sample fills the area under its first series (#70)", function()
+    -- red under: a sample with no series[1].fill, whose line count is the lines and grid alone.
+    local _, _, sec = opened()
+    local chart = sec.chart
+    local filled = chart.__lineUsed
+    chart.__data.series[1].fill = nil
+    chart:Render(260, 110)
+    assertTrue(filled > chart.__lineUsed + 10, "the fill adds a column of lines under the first series")
+end)
+
 test("widgets: the drag handle, chart and autocomplete are owned by this addon, off the panel", function()
     local _, _, sec = opened()
     assertEqual(sec.handleSpec.owner, OWNER)
@@ -213,6 +223,17 @@ test("widgets: the drawer and nav hover art is the client's under Ka0s Default a
     end
     local arrow = lib(mock):Token(OWNER, "icon.arrow")
     assertTrue(sameColor(mock.__paint(sec.drawerChevron).vertex, arrow), "the chevron is icon.arrow")
+end)
+
+test("widgets: S.HoverArt's sample is the client's art under Ka0s Default and list.hoverArt under Glass", function()
+    -- red under: a sample that skips the primitive, which the coverage suite reads off R.used.
+    local NS, mock, sec = opened()
+    assertTrue(NS.Showroom.used.HoverArt, "through the wrapper")
+    assertTrue(mock.__paint(sec.hoverSampleArt).desaturated ~= true, "the client's art under Ka0s Default")
+    NS.Selector.Pick("glass")
+    assertTrue(mock.__paint(sec.hoverSampleArt).desaturated == true, "desaturated under Glass")
+    assertTrue(sameColor(mock.__paint(sec.hoverSampleArt).vertex, lib(mock):Token(OWNER, "list.hoverArt")),
+        "tinted list.hoverArt")
 end)
 
 --- A LibSharedMedia stand-in: every font key fetches as a path named after it, so a skin's face

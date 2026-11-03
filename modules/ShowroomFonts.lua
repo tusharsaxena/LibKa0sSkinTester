@@ -212,6 +212,7 @@ R.AddSection("fonts", L["Faces and widths"], function(body)
     local cell = g:Add(LINE_W, LINE_H, L["The Skin tab's Font outline, this addon's"])
     F.outline = newString(cell)
     F.outline:SetPoint("LEFT")
+    R.Paint("Text", F.outline, "body")
     g:Break()
     local lib = Skin()
     for _, def in ipairs(lib and lib:Skins() or {}) do

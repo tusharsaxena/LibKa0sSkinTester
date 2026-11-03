@@ -43,6 +43,17 @@ local function enableAddon(opts)
     return NS, env, m
 end
 
+-- The full lifecycle for a returning player: the profile has closed the first-run skin picker, so
+-- OnEnable shows none. Since R6-PV a first-run picker opens the showroom with it (spec.preview,
+-- window mode), so a case about the showroom, the launcher or the panel that expects a closed,
+-- unbuilt window at login starts here rather than on a fresh profile.
+local function enableSeen(opts)
+    local NS, env, m = bootAddon(opts)
+    NS.addon.db.profile.skin.pickerSeen = true
+    NS.addon:OnEnable()
+    return NS, env, m
+end
+
 -- Where Kit.assertSurfaceParity's by-name form looks the LIVE half up (kit 15, vendored by M4-01).
 --
 -- Registered explicitly, and the explicitness is doing two jobs at once. `Kit.expose` auto-wires a
@@ -92,6 +103,7 @@ _G.SKINTESTER_TEST = Kit.expose{
     newAddon    = newAddon,
     bootAddon   = bootAddon,
     enableAddon = enableAddon,
+    enableSeen  = enableSeen,
     loadAddon   = loadAddon,
     root        = root,
     LibStub     = surfaceMock.LibStub,
@@ -119,6 +131,22 @@ Kit.diagnostics = {
     setDisabled = function(off) diagNS.addon.Settings.Helpers.Set("enabled", not off) end,
     reset       = function() diagNS = enableAddon() end,
 }
+
+-- The typed-value gate and the skin-switch test (skinning-§1, kit revision 50). The rows name what
+-- no kit category takes; a stale one fails. The surfaces are tests/skin_surfaces.lua's, off one
+-- opened showroom kept for the suite: the facts need the instance's own library at load, and a
+-- surface's frames have to be the ones that library repaints.
+Kit.skinValues = {
+    rows = {
+        { file = "modules/ShowroomPanels.lua", substring = "sel:SetColorTexture(1, 1, 1, 1)",
+          why = "the white base S.NavItem tints nav.selected, a blank texture draws no fill",
+          cause = "A5" },
+        { file = "modules/ShowroomWidgets.lua", substring = "UI-QuestLogTitleHighlight",
+          why = "the client's hover art a skin tints through list.hoverArt and never replaces",
+          cause = "D9" },
+    },
+}
+Kit.skinSwitch = dofile("tests/skin_surfaces.lua")(enableAddon)
 
 -- Order is load-order-sensitive; keep it stable.
 --
@@ -163,11 +191,13 @@ Kit.run{
         "test_skin_outline",
         "test_skin_verb",
         "test_skin_picker",
+        "test_skin_picker_preview",
         "test_settings_sample",
         "test_panel",
         "test_profiles",
         "test_diagnostics",
         "test_launcher",
+        "test_launcher_skin_entry",
         "test_keybinds",
         "test_lifecycle",
         "test_debuglog",
@@ -199,5 +229,9 @@ Kit.run{
         -- The sighted complexity shadow (automated-tests-§3), new in kit revision 35: pins the
         -- sanitizer the runner's complexity suite measures through, and the parity check.
         { name = "test_lizard_sighted", dir = "tests/_kit/" },
+        -- The typed-value gate and the skin-switch test (skinning-§1), new in kit revision 50: their
+        -- facts are Kit.skinValues and Kit.skinSwitch, set above.
+        { name = "test_skin_values", dir = "tests/_kit/" },
+        { name = "test_skin_switch", dir = "tests/_kit/" },
     },
 }

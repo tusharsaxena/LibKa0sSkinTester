@@ -1,11 +1,11 @@
-# Ka0s Skin Tester
+# Skin Tester
 
 ![WoW](https://img.shields.io/badge/WoW-Midnight_12.1.5-purple)
 ![License](https://img.shields.io/badge/License-MIT-orange)
 ![Standard](https://img.shields.io/badge/Ka0s-WoW_Addon_Standard-yellow)
-![Tests](https://img.shields.io/badge/Tests-616%2F616_passing-green)
+![Tests](https://img.shields.io/badge/Tests-886%2F886_passing-green)
 
-Ka0s Skin Tester is a fitting room for the Ka0s skins. Pick a skin and one window shows you what that skin does to buttons, tabs, lists, scrollbars, tooltips and everything else it can paint, so you don't have to open five other addons to see how a scrollbar came out.
+Skin Tester is a fitting room for the Ka0s skins. Pick a skin and one window shows you what that skin does to buttons, tabs, lists, scrollbars, tooltips and everything else it can paint, so you don't have to open five other addons to see how a scrollbar came out.
 
 It's a tool for people working on the skins, which is why it isn't on CurseForge. Otherwise it installs and updates like any other Ka0s addon.
 
@@ -19,17 +19,17 @@ Type `/st` to open the settings, and `/st show` to open the showroom. `/skintest
 
 Across the top of the showroom is a row of nine cards, one per Ka0s skin, each with four color swatches. Click one and the window repaints in it. The General page's Skin tab picks the same thing, and either way the choice is saved with your profile, so a second profile can wear a different skin.
 
-The first time a profile runs, a small "Choose a skin" window, with "Ka0s Skin Tester" on its own line above the list, opens high on the screen, above where the showroom opens. Pick a skin from its list (each one shows three of its colors and its name in its own font) and the tester wears it at once, as a preview. Under the list sit the Skin tab's Font, Texture, Font outline and Ignore boxes, and they preview the same way. Press the eye to see it in the showroom, Apply to keep it, or the gear to keep it and go to the Skin tab. The close button and Escape put back what you had. With another Ka0s addon loaded, "Apply to all Ka0s addons" gives every one of them the same skin, font, texture, font outline and Ignore boxes. Whichever way you close the window, you won't see it again on that profile. A new profile, or one you reset, shows it again.
+The first time a profile runs, a small "Choose a skin" window, with "Ka0s Skin Tester" on its own line above the list, opens high on the screen, above where the showroom opens. Pick a skin from its list (each one shows three of its colors and its name in its own font) and the tester wears it at once, as a preview. Under the list sit the Skin tab's Font, Texture, Font outline and Ignore boxes, and they preview the same way. The showroom opens with the window if it was closed, so you see the skin on it; the eye closes and opens it again. Press Apply to keep it, or the gear to keep it and go to the Skin tab. The close button and Escape put back what you had. With another Ka0s addon loaded, "Apply to all Ka0s addons" gives every one of them the same skin, font, texture, font outline and Ignore boxes. Whichever way you close the window, the showroom goes back to how it was when the window opened, and you won't see the window again on that profile. A new profile, or one you reset, shows it again.
 
 When several Ka0s addons start on new profiles at once, their skin windows come one at a time, and "Apply to all Ka0s addons" answers all of them.
 
-Below the cards, the showroom scrolls through the window chrome, controls, lists, text, panels and overlays, then the extras an addon can ask a skin for (its own colors, a danger button, a caution box, a settings tree, an icon border, a window built on one of the game's own frames), then the library's own widgets (a drag handle with its tooltip, a suggestion list, a line chart, a resize grip, a settings drawer and nav entry, and buttons that open a copy window, the debug console and the skin picker), then the skin's raw colors, item quality colors, tooltip colors and art tints, then the bar textures: three status bars, a bar chart and a stacked bar, each labeled with the texture it is drawn with. Then the faces and widths: what the Skin tab's Font outline gives this addon's text, and one line per skin in its own body and title fonts, each with how wide its text measures against Ka0s Default (`/st widths` prints the same numbers in chat). Last come the HUD faces: one line in each skin's own HUD font, side by side, and one in the font the skin you wear gives a HUD. Every sample has a small label under it naming the part it shows.
+Below the cards, the showroom scrolls through the window chrome, controls, lists, text, panels and overlays, then the extras an addon can ask a skin for (its own colors, a danger button, a caution box, a settings tree, a window built on one of the game's own frames), then the library's own widgets (a drag handle with its tooltip, a suggestion list, a line chart, a resize grip, a settings drawer and nav entry, and buttons that open a copy window, the debug console and the skin picker), then the skin's raw colors, item quality colors, tooltip colors and art tints, then the bar textures: three status bars, a bar chart and a stacked bar, each labeled with the texture it is drawn with. Then the faces and widths: what the Skin tab's Font outline gives this addon's text, and one line per skin in its own body and title fonts, each with how wide its text measures against Ka0s Default (`/st widths` prints the same numbers in chat). Last come the HUD faces: one line in each skin's own HUD font, side by side, and one in the font the skin you wear gives a HUD. Every sample has a small label under it naming the part it shows.
 
-The settings have a Sample controls page too: a checkbox, a slider, a dropdown and a color swatch, then one picker each for fonts, bar textures, borders, backgrounds and sounds, so you can see a skin on a settings page. Each picker shows what it offers: fonts in their own faces, bars and art beside a swatch, sounds with a play button. None of them does anything. A new profile keeps the tester's own settings pages in the game's look, so untick Ignore settings panel on the Skin tab before you judge a skin there. Ignore fonts, next to it, gives every piece of text in the tester back the game's font and leaves the skin's colors on it.
+The settings have a Sample controls page too: a checkbox, a slider, a dropdown and a color swatch, then one picker each for fonts, bar textures, borders, backgrounds and sounds, so you can see a skin on a settings page. Each picker shows what it offers: fonts in their own faces, bars and art beside a swatch, sounds with a play button. None of them does anything. Unlike the other Ka0s addons, the tester starts with Ignore settings panel unticked on the Skin tab, so its own settings pages and the showroom's settings-panel samples wear the skin from the first run; tick it to see them in the game's look. Ignore fonts, next to it, gives every piece of text in the tester back the game's font and leaves the skin's colors on it.
 
 The Skin tab's Font and Texture menus put a font, or a bar texture, of your choice over the skin's own. They list every font and bar texture your addons have registered, each font in its own face and each texture beside a swatch, so a media pack adds to them. A Reset button under each goes back to the skin's own. Texture changes every bar of data, which is what the showroom's Textures section shows. Ignore fonts still wins over a chosen font. Choosing another skin puts both back to that skin's own. Font outline, under them, says where the skin outlines text: on HUD text only (the default), on all of it, or nowhere; Ignore fonts wins over it too. `/st skin` opens the skin picker again whenever you want it.
 
-The minimap button opens the settings on a left-click and a small menu on a right-click, where Show window opens the showroom. You can also bind a key to it from the game's Keybindings menu (the Ka0s Skin Tester header) or from the General page's Keybindings tab.
+The minimap button opens the settings on a left-click and a small menu on a right-click, where Show window opens the showroom and Open skin selector brings back the skin picker. You can also bind a key to it from the game's Keybindings menu (the Ka0s Skin Tester header) or from the General page's Keybindings tab.
 
 Everything else is in Settings, AddOns, Ka0s Skin Tester, and `/st help` lists the slash commands.
 
@@ -76,6 +76,6 @@ Bugs, feature requests and outstanding work are all tracked at [https://github.c
 
 ## Credits
 
-**Open Iconic** icons (the debug console's copy, clear and close marks, and the skin picker's eye
-and gear), by Waybury, MIT license
+**Open Iconic** icons (the debug console's copy, clear and close marks, the skin picker's eye and
+gear, and the small marks LibKa0s draws beside skinned controls), by Waybury, MIT license
 (<https://github.com/iconic/open-iconic>), with the license beside them in the bundled payload.

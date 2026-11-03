@@ -31,7 +31,7 @@ end
 --- `opts.prepare(mock)` runs after the addon's load and before the showroom's first open.
 local function opened(opts)
     opts = opts or {}
-    local NS, _, mock = T.enableAddon{ mock = function(m)
+    local NS, _, mock = T.enableSeen{ mock = function(m)
         installPaint(m)
         modelTemplate(m)
         if opts.mock then opts.mock(m) end
@@ -86,11 +86,12 @@ test("controls: AceGUI's Dropdown is in its cell and follows the Scope's panel h
     local w = sec.aceDropdown
     assertEqual(w.type, "Dropdown")
     assertInCell(w.frame, "the AceGUI dropdown", sec)
-    assertTrue(not owned(mock, w), "stock while the Scope leaves the panel the client's (the default)")
-    NS.ApplySkinIgnore(false, nil)
-    assertTrue(owned(mock, w), "painted once the Scope is cleared")
+    -- R4-ST1: this addon's Scope leaves the panel skinned by default (a documented deviation).
+    assertTrue(owned(mock, w), "painted by default: the tester's Scope leaves the panel skinned")
     NS.ApplySkinIgnore(true, nil)
-    assertTrue(not owned(mock, w), "handed back when the Scope leaves the panel again")
+    assertTrue(not owned(mock, w), "handed back while the panel is ignored")
+    NS.ApplySkinIgnore(false, nil)
+    assertTrue(owned(mock, w), "painted again once the Scope is cleared")
 end)
 
 test("controls: the media pickers are the library's types, painted and handed back like the Dropdown", function()
@@ -99,10 +100,9 @@ test("controls: the media pickers are the library's types, painted and handed ba
     local font, bar = sec.fontPicker, sec.barPicker
     assertEqual(font.type, "Ka0sMedia_Font")
     assertEqual(bar.type, "Ka0sMedia_Statusbar")
-    NS.ApplySkinIgnore(false, nil)
     for name, w in pairs({ font = font, bar = bar }) do
         assertInCell(w.frame, name, sec)
-        assertTrue(owned(mock, w), name .. " painted once the Scope is cleared")
+        assertTrue(owned(mock, w), name .. " painted by default (R4-ST1)")
     end
     NS.ApplySkinIgnore(true, nil)
     assertTrue(not owned(mock, font), "handed back")
@@ -120,28 +120,23 @@ test("controls: each media picker reads a real key, and no other media kind has 
     -- second media widget, which the owner ruled out on 2026-11-01.
     local _, _, sec = opened{ prepare = withPickers }
     assertEqual(sec.fontPicker.value, "Ka0s Prototype")
-    assertEqual(sec.barPicker.value, "Blizzard")
+    assertEqual(sec.barPicker.value, "Ka0s Default")
     assertTrue(sec.lsmFont == nil and sec.lsmBar == nil, "Ka0sMedia_* is the only media picker")
 end)
 
 test("controls: the Blizzard dropdown drops the template's art and wears the skin", function()
-    -- red under: S.Dropdown with no opts.stock: its list knows no Background, and the template's Arrow
-    -- is the whole gold button, so it would be tinted in place of faded.
-    local NS, mock, sec = opened()
+    -- LibKa0s minor 16 (#71): the library fades Background and the whole-button Arrow itself, with no
+    -- opts.stock and no glyph of the sample's own; red under the old sample, which drew its own.
+    local NS, _, sec = opened()
     local dd = sec.blizzDropdown
     assertInCell(dd, "the Blizzard dropdown", sec)
     assertEqual(dd.Background:GetAlpha(), 0, "the text holder is faded")
     assertEqual(dd.Arrow:GetAlpha(), 0, "the gold button is faded")
-    assertTrue(not rawequal(dd.arrow, dd.Arrow), "the glyph is the sample's own texture")
-    local function checkArrow(skin)
-        local want, got = lib(mock):ResolveSkin(skin)["icon.arrow"], mock.__paint(dd.arrow).vertex
-        assertEqual(type(want), "table", skin .. " has an arrow color")
-        for i = 1, 3 do assertTrue(math.abs(got[i] - want[i]) < 1e-3, skin .. ": the glyph wears icon.arrow") end
-    end
+    assertTrue(rawget(dd, "arrow") == nil, "the sample draws no glyph of its own")
     NS.Selector.Pick("obsidian")
-    checkArrow("obsidian")
+    assertEqual(dd.Arrow:GetAlpha(), 0, "still faded under Obsidian")
     NS.Selector.Pick("ember")
-    checkArrow("ember")
+    assertEqual(dd.Background:GetAlpha(), 0, "still faded under Ember")
     NS.ApplySkinIgnore(true, nil)
     assertEqual(dd.Background:GetAlpha(), 0, "a window's: the panel half of the Scope leaves it skinned")
 end)

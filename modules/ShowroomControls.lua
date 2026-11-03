@@ -10,27 +10,25 @@ local addonName, NS = ...
 --
 --   W.Dropdown            the library's button, owned by this addon: a window's, every skin paints it
 --   AceGUI Dropdown       acquired here and handed to PaintAce; a settings-panel surface, so stock
---   Ka0sMedia_Font,       while the Scope leaves the panel the client's (the default), and repainted
+--   Ka0sMedia_Font,       while the Scope leaves the panel the client's (off by default here), and repainted
 --   Ka0sMedia_Statusbar   on every OnLooksChanged, as the TreeGroup is. The pickers are the ones the
 --                         settings renderer draws, each showing a real key; their faces load on the
 --                         first open. The only media picker in the collection (the owner's ruling
 --                         of 2026-11-01), so no other kind has a cell
 --   WowStyle1Dropdown...  a Blizzard DropdownButton as PremadeGroupsFilterExtension's panel draws
---                         one: a window's, painted with S.Dropdown. S.Dropdown's own list knows
---                         neither of the template's textures, and its Arrow is the whole gold button,
---                         so both go in opts.stock and a glyph of the sample's own is the arrow. The
---                         list it opens is the client's Menu, which no primitive paints
+--                         one: a window's, painted with S.Dropdown. S.Dropdown fades the
+--                         template's Background and its whole-button Arrow and lays its own chevron
+--                         over it (LibKa0s minor 16, #71). The list it opens is the client's Menu, which no primitive paints
 --
 -- A surface this client lacks gets its cell all the same, a label saying what is missing (unavailable).
 
 local R, L = NS.Showroom, NS.L
 local ICON = "Interface\\Icons\\INV_Misc_QuestionMark"
-local CHEVRON = "Interface\\ChatFrame\\ChatFrameExpandArrow"   -- points right; the sample turns it down
 local BLIZZ_TEMPLATE = "WowStyle1DropdownTemplate"
 local CHOICES = { "First choice", "Second choice" }
 local ACE_W, ACE_H = 200, 26
 local CELL_W = 270   -- a dropdown's cell: wider than the dropdown, so its caption clears the next one
-local FONT_KEY, BAR_KEY = "Ka0s Prototype", "Blizzard"
+local FONT_KEY, BAR_KEY = "Ka0s Prototype", "Ka0s Default"
 
 local aceSamples = {}   -- the widgets PaintAce paints, once built; repainted on every OnLooksChanged
 
@@ -133,14 +131,15 @@ local function blizzardDropdown(g, paint)
             root:CreateRadio(text, function() return chosen == i end, function() chosen = i end)
         end
     end)
-    local glyph = dd:CreateTexture(nil, "OVERLAY")
-    glyph:SetSize(12, 12)
-    glyph:SetPoint("RIGHT", dd, "RIGHT", -6, 0)
-    glyph:SetTexture(CHEVRON)
-    glyph:SetRotation(-math.pi / 2)
-    dd.arrow = glyph
-    paint("Dropdown", dd, { stock = { dd.Background, dd.Arrow } })
+    paint("Dropdown", dd)
     return dd
+end
+
+--- A white texture in `token`'s color, what a host's own slider part is before the primitive tints it.
+local function tinted(tex, token)
+    tex:SetColorTexture(1, 1, 1, 1)
+    local r, g, b, a = NS.Skin.Color(token)
+    if r then tex:SetVertexColor(r, g, b, a) end
 end
 
 local function dropdownRow(g, body, paint)
@@ -194,13 +193,16 @@ R.AddSection("controls", L["Controls"], function(body, paint)
         paint("PageButton", btn, dir)
     end
 
-    local square = CreateFrame("Button", nil, g:Add(32, 32, "SquareIcon (crop)"), "BackdropTemplate")
+    local square = CreateFrame("Button", nil, g:Add(32, 32, "SquareIcon (crop) + IconBorder"), "BackdropTemplate")
     square:SetSize(32, 32)
     square:SetPoint("TOPLEFT")
     square.icon = square:CreateTexture(nil, "ARTWORK")
     square.icon:SetAllPoints(square)
     square.icon:SetTexture(ICON)
     paint("SquareIcon", square, { crop = true })
+    -- S.SquareIcon crops to 0.08; IconBorder's 0.07 zoom only tightens, so the 0.08 crop stands, and it
+    -- draws its 1 px outline in icon.outline, in every skin (LibKa0s R3-L3, R3-FIX, R4-L3).
+    paint("IconBorder", square, { fromSkin = true })
 
     local box = searchBox(g:Add(180, 22, "EditBox (SearchBox, with its hint)"))
     box:SetPoint("TOPLEFT")
@@ -223,25 +225,24 @@ R.AddSection("controls", L["Controls"], function(body, paint)
     slider:SetOrientation("HORIZONTAL")
     slider:SetMinMaxValues(0, 100)
     slider:SetValue(40)
-    -- Drawn the way a host draws its own slider: white textures in the host's tints, which the
-    -- primitive re-tints with SetVertexColor in every skin (Ka0s Default sets its slider tokens since
-    -- LibKa0s SkinDefs minor 8); blank textures would show nothing where a skin leaves one alone.
+    -- Drawn the way a host draws its own slider: white textures tinted, which the primitive re-tints
+    -- with SetVertexColor in every skin (every skin sets its slider tokens); blank textures would show
+    -- nothing where a skin left one alone.
+    -- The track is the host's own, so it goes in opts.stock: faded where the skin draws one.
     slider.track = slider:CreateTexture(nil, "BACKGROUND")
     slider.track:SetPoint("LEFT", slider, "LEFT", 0, 0)
     slider.track:SetPoint("RIGHT", slider, "RIGHT", 0, 0)
     slider.track:SetHeight(4)
-    slider.track:SetColorTexture(0.24, 0.24, 0.27, 0.9)
+    tinted(slider.track, "slider.track")
     local fill = slider:CreateTexture(nil, "ARTWORK")
     fill:SetPoint("LEFT", slider.track, "LEFT", 0, 0)
     fill:SetSize(72, 4)
-    fill:SetColorTexture(1, 1, 1, 1)
-    fill:SetVertexColor(1, 0.82, 0)
+    tinted(fill, "slider.fill")
     local thumb = slider:CreateTexture(nil, "OVERLAY")
     thumb:SetSize(10, 16)
-    thumb:SetColorTexture(1, 1, 1, 1)
-    thumb:SetVertexColor(0.9, 0.9, 0.9)
+    tinted(thumb, "slider.thumb")
     slider:SetThumbTexture(thumb)
-    paint("Slider", slider, { fill = fill, thumb = thumb })
+    paint("Slider", slider, { fill = fill, thumb = thumb, stock = { slider.track } })
     body.slider, slider.thumb = slider, thumb
 
     return g:Height()

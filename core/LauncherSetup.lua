@@ -53,6 +53,7 @@ NS.Launcher = lib:New({
     label   = NS.BRAND_NAME,
     minimap = minimapStore,
     openSettings = function() NS.addon:OpenSettings() end,
+    openSkinPicker = function() if NS.RunSkinVerb then NS.RunSkinVerb() end end,
     isEnabled  = function() return not NS.IsStoodDown() end,
     setEnabled = function(on) NS.addon:SlashEnabled(on) end,
     print = function(line) NS.Print(line) end,

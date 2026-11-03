@@ -56,8 +56,8 @@ test("picker: the spec names this owner's seams, the General page's Skin tab and
     assertTrue(spec.set == NS.WriteSkinChoice, "set is the write seam")
     assertEqual(spec.page, "general")
     assertEqual(spec.tab, "Appearance", "the tab's key, not its label")
-    assertEqual(type(spec.onPreview), "function")
-    assertEqual(spec.strings.PREVIEW_TIP, "Preview: open the skin showroom")
+    assertEqual(type(spec.preview), "table", "the eye's mode (R6-PV; tests/test_skin_picker_preview.lua)")
+    assertEqual(spec.preview.mode, "window")
 end)
 
 test("picker: closing it marks the profile, and the next login does not show it", function()
@@ -72,12 +72,14 @@ test("picker: closing it marks the profile, and the next login does not show it"
     assertFalse(shown(mock), "a profile that closed it does not see it again")
 end)
 
-test("picker: the eye opens the showroom and leaves the picker up", function()
+test("picker: the eye closes the showroom the picker opened and leaves the picker up", function()
+    -- Since R6-PV the first-run picker opens the showroom and the eye toggles it.
     local NS, _, mock = T.enableAddon()
     local f = picker(mock)
     assertTrue(f.preview ~= nil and f.preview:IsShown(), "the eye is drawn")
+    assertTrue(NS.Showroom.IsShown(), "the picker opened the showroom")
     f.preview:GetScript("OnClick")(f.preview, "LeftButton")
-    assertTrue(NS.Showroom.IsShown(), "the showroom is open")
+    assertFalse(NS.Showroom.IsShown(), "the eye closed it")
     assertTrue(shown(mock), "the picker stays")
     assertFalse(seen(NS))
 end)

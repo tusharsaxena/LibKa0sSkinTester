@@ -147,6 +147,9 @@ if not lib then
     H.NavRail              = function() end
     -- Drawer, new at LibKa0s v1.73.0 (OptionsDrawer minor 1): no call site here, so inert for the shape reason.
     H.Drawer               = function() end
+    -- A label's font (LibKa0s v1.85.0, OptionsWidgets minor 43), owed by every Options stub. No
+    -- library, no widget to set it on.
+    H.LabelFont            = function() end
     -- LibKa0s v1.77.0's four instance members: OptionsKeybinds minor 2's KeybindingsTab, KeybindRows
     -- and KEYBINDS_UNCHANGED, and OptionsCompose minor 8's StrataTooltip. The library's "What a
     -- consumer owes" list for v1.77.0 names them, and tests/test_surface_parity.lua holds the stub to
@@ -176,6 +179,7 @@ if not lib then
     -- The reserved `skin` verb (LibKa0s v1.82.0, OptionsSkinPicker minor 3, D-16): no picker on
     -- this path, so SkinVerb opens nothing and answers nil, "absent".
     H.SkinVerb             = function() return nil, "absent" end
+    H.SkinNotice = function() return nil, "unavailable" end
     -- The Position block (LibKa0s v1.84.0, OptionsCompose minor 15): no rows and no hook on this
     -- path, the hollow composer's answer.
     H.PositionBlock        = function() return {}, nil end

@@ -386,3 +386,23 @@ test("profile verb: a switch in combat is refused and nothing moves", function()
     verb(NS, mock, "profile Alt")
     assertEqual(db:GetCurrentProfile(), "Alt", "and after combat it switches")
 end)
+
+test("profiles: the page hands the group to the skin after AceConfigDialog fills it", function()
+    -- red under: a page that never calls PaintAceTree, whose delete box stays stock (cause A4; the
+    -- one exception v1.85.0's CHANGELOG names).
+    local rec, install = fakes()
+    local NS, _, mock = T.enableAddon({ mock = install })
+    local opensAtPaint
+    local real = NS.SkinPaintAceTree
+    local painted = {}
+    NS.SkinPaintAceTree = function(c)
+        painted[#painted + 1] = c
+        opensAtPaint = #rec.opened
+        return real(c)
+    end
+    mock.frames["LibKa0sSkinTesterProfilesPanel"]:Show()
+    mock.fireCTimers()
+    assertEqual(#painted, 1, "one paint for one render")
+    assertEqual(opensAtPaint, 1, "after the Open")
+    assertTrue(painted[1] == rec.opened[1].container, "the same container")
+end)

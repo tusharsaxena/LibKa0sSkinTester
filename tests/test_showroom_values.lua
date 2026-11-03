@@ -8,7 +8,7 @@ local test, assertEqual, assertTrue = T.test, T.assertEqual, T.assertTrue
 local OWNER = "LibKa0sSkinTester"
 local installPaint = dofile("tests/_kit/mock_paint.lua")
 local GETTERS = { "GetAccentColor", "GetPanelColor", "GetFont", "GlowColor", "ChartStyle", "BarStyle",
-                  "FontFlags", "HudFontSize" }
+                  "FontFlags", "HudFontSize", "BarBorder" }
 
 local function opened()
     local NS, _, mock = T.enableAddon{ mock = function(m) installPaint(m) end }
@@ -220,4 +220,24 @@ test("values: without the skin engine FontFlags and HudFontSize still answer wha
     assertEqual(NS.Skin.HudFontSize(nil), 12, "no size")
     NS.Showroom.Show()
     assertEqual(NS.Values.hudSize:GetText(), "12 draws at 12   24 draws at 24")
+end)
+
+test("values: BarBorder defers to the stored three under None and a real style wins", function()
+    -- red under: a sample that reads the token, which would hide what a skin's None hands back.
+    local NS, mock = opened()
+    assertEqual(NS.Values.barBorder:GetText(), "Draws Solid, shown false, 2 thick", "Ka0s Default's None")
+    NS.Selector.Pick("azeroth")
+    local Skin = mock.LibStub("LibKa0s-Skin-1.0")
+    local style, size = Skin:Token(OWNER, "bar.borderStyle"), Skin:Token(OWNER, "bar.borderSize")
+    assertTrue(style ~= "None", "Azeroth states a real style")
+    assertEqual(NS.Values.barBorder:GetText(),
+        ("Draws %s, shown true, %s thick"):format(style, tostring(size)), "the skin's own")
+end)
+
+test("values: without the skin engine BarBorder answers the stored three", function()
+    local NS = T.enableAddon{ skip = { "libs/LibKa0s/Skin.lua" } }
+    local style, show, size = NS.Skin.BarBorder("Solid", false, 2, true)
+    assertEqual(style, "Solid", "the style")
+    assertEqual(show, false, "the show")
+    assertEqual(size, 2, "the size")
 end)

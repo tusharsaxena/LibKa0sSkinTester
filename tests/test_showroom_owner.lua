@@ -1,9 +1,9 @@
 -- tests/test_showroom_owner.lua — the Addon surfaces section (ST-01 of Ka0sAddonsCommonTasks
 -- docs/2026-10-29-SKINNING_ROLLOUT): LibKa0s v1.80.0's rollout surfaces, each on show and painted
 -- through NS.Showroom.Paint. An owner token this addon registers, a danger button and a caution callout
--- through opts.tokens, an AceGUI TreeGroup through PaintAce, an icon border that follows
--- icon.borderStyle / icon.borderSize, and a settings-style window skinned in every skin (LibKa0s
--- v1.81.0 retired opts.stockDefault, ruling R-2).
+-- through opts.tokens, an AceGUI TreeGroup through PaintAce, and a settings-style window skinned in
+-- every skin (LibKa0s v1.81.0 retired opts.stockDefault, ruling R-2). Its icon border went in R4-ST3
+-- (a duplicate of Overlays'); the 1 px edge case below runs on Overlays' sample instead.
 --
 -- The skin assertions run under the kit's paint recorder (tests/_kit/mock_paint.lua). The
 -- stock-window cases also model SettingsFrameTemplate's anatomy (a NineSlice with the title on it, a
@@ -26,7 +26,12 @@ local function modelSettingsTemplate(m)
             f.NineSlice.Text = f.NineSlice:CreateFontString(nil, "OVERLAY", "GameFontNormal")
             -- Not Ka0s Default's title.text (gold), so a title the library recolored shows.
             f.NineSlice.Text:SetTextColor(0.9, 0.9, 0.9, 1)
+            -- The template's own anchors (R5-WIN): the title TOP-anchored a few px down, the close
+            -- mark in the top-right corner. Seeded, so a band test is red against them and not
+            -- vacuously green on a region with no points.
+            f.NineSlice.Text:SetPoint("TOP", f, "TOP", 0, -5)
             local close = create("Button", nil, f)
+            close:SetPoint("TOPRIGHT", f, "TOPRIGHT", 0, 0)
             local art = close:CreateTexture()
             rawset(close, "GetNormalTexture", function() return art end)
             f.ClosePanelButton, f.closeArt = close, art
@@ -76,10 +81,12 @@ end
 test("addon surfaces: the section is built, and every sample went through the wrapper", function()
     local NS, _, sec = opened()
     assertTrue(sec ~= nil and (sec:GetHeight() or 0) > 0, "built, with a height")
-    for _, key in ipairs({ "note", "danger", "callout", "iconFrame", "tree", "stockWindow" }) do
+    for _, key in ipairs({ "note", "danger", "callout", "tree", "stockWindow" }) do
         assertTrue(sec[key] ~= nil, key .. " is on show")
     end
-    for _, name in ipairs({ "Text", "Button", "Card", "IconBorder", "PaintAce", "Shell" }) do
+    -- R4-ST3: no icon border here; Overlays' and Controls' samples show it (round 4, image 22).
+    assertTrue(sec.iconFrame == nil, "no duplicate IconBorder beside the caution callout")
+    for _, name in ipairs({ "Text", "Button", "Card", "PaintAce", "Shell" }) do
         assertTrue(NS.Showroom.used[name] == true, name .. " went through NS.Showroom.Paint")
     end
 end)
@@ -139,32 +146,51 @@ test("addon surfaces: the TreeGroup follows the Scope's settings-panel half, liv
     local NS, mock, sec = opened()
     local Skin = lib(mock)
     assertEqual(sec.tree.type, "TreeGroup")
-    assertTrue(sec.treePainted ~= true, "stock while the Scope leaves the panel the client's (the default)")
-    NS.ApplySkinIgnore(false, nil)
+    -- R4-ST1: this addon's Scope leaves the panel skinned by default (a documented deviation).
     local st = Skin.__ace[sec.tree]
-    assertTrue(st ~= nil and st.owner == OWNER, "painted for this owner once the Scope is cleared")
+    assertTrue(st ~= nil and st.owner == OWNER, "painted for this owner by default")
     NS.ApplySkinIgnore(true, nil)
     st = Skin.__ace[sec.tree]
-    assertTrue(st == nil or st.owner ~= OWNER, "handed back when the Scope leaves the panel again")
+    assertTrue(st == nil or st.owner ~= OWNER, "handed back while the panel is ignored")
+    NS.ApplySkinIgnore(false, nil)
+    st = Skin.__ace[sec.tree]
+    assertTrue(st ~= nil and st.owner == OWNER, "painted again once the Scope is cleared")
+end)
+
+test("addon surfaces: the TreeGroup keeps its 120 height and shows a page (R4-ST2)", function()
+    -- red under: AceGUI's auto-height left on, which an empty List layout collapses to 20 px with
+    -- the tree's rows hanging below both panes (round 4, images 4-7). The headless AceGUI is a stub
+    -- with no LayoutFinished, so the call is pinned here and the geometry is the owner's smoke check.
+    local _, _, sec = opened()
+    local t = sec.tree
+    assertEqual(t.autoAdjustHeight, false, "SetAutoAdjustHeight(false): the host owns the height")
+    assertEqual(t.height, 120, "and the height it asked for")
+    assertEqual(t.layout, "Fill", "the content pane fills with its page")
+    assertEqual(#t.children, 1, "one placeholder page")
+    assertEqual(t.children[1].type, "Label")
+    assertEqual(t.children[1].text, "The General page", "reads as the selected row's page")
 end)
 
 -- ── the icon border ──────────────────────────────────────────────────────────────────────────
+-- R4-ST3 removed Addon surfaces' own sample (a duplicate); the edge is pinned on Overlays' one.
 
-test("addon surfaces: the icon border draws icon.borderSize edges in icon.border, per skin", function()
-    local NS, mock, sec = opened()
+test("overlays: the IconBorder sample draws a 1 px edge in icon.outline, in every skin", function()
+    local NS, mock = opened()
     local Skin = lib(mock)
+    local framed = NS.Showroom.Section("overlays").framed
     local function edges()
-        local rec = Skin.painted[sec.iconFrame]
+        local rec = Skin.painted[framed]
         return rec and rec.regions or {}
     end
     local top = edges().edgeTop
     assertTrue(top ~= nil and mock.__paint(top).shown, "a top edge is drawn under Ka0s Default")
-    assertToken(mock, mock.__paint(top).color, "icon.border", "the edge color")
-    assertEqual(Skin:Token(OWNER, "icon.borderSize"), 2, "Ka0s Default's icon border is 2px")
-    assertEqual(top:GetHeight(), 2, "the edge is icon.borderSize thick")
+    -- LibKa0s R4-L3: the frame edge reads icon.outline (#4D4D57 under Ka0s Default); icon.border stays the HUD's.
+    assertToken(mock, mock.__paint(top).color, "icon.outline", "the edge color")
+    -- LibKa0s R3-L3: 1 px in every skin; since R3-FIX every skin's icon.borderSize says 1 too.
+    assertEqual(Skin:Token(OWNER, "icon.borderSize"), 1, "Ka0s Default's token says 1")
+    assertEqual(top:GetHeight(), 1, "the edge is 1 px all the same")
     NS.Selector.Pick("obsidian")
-    assertEqual(Skin:Token(OWNER, "icon.borderSize"), 1, "Obsidian's is 1px")
-    assertEqual(edges().edgeTop:GetHeight(), 1, "and the edge follows the switch")
+    assertEqual(edges().edgeTop:GetHeight(), 1, "and 1 px after the switch")
 end)
 
 -- ── a template window, skinned in every skin (R-2) ──────────────────────────────────────────
@@ -187,3 +213,36 @@ test("addon surfaces: the settings-style window follows a skin switch and stays 
     assertTrue(not isStock(mock, win), "back on Ka0s Default it is still skinned")
     assertToken(mock, mock.__paint(win.NineSlice.Text).textColor, "title.text", "the title back on Ka0s Default")
 end)
+
+-- ── the template window's header on its band (R5-WIN; LibKa0s R5-L3) ─────────────────────────
+
+local CENTERED = { LEFT = true, CENTER = true, RIGHT = true }
+
+--- `region` has one or two points, each LEFT, CENTER or RIGHT, on `band` at y 0.
+local function assertOnBand(region, band, what)
+    local n = region:GetNumPoints()
+    assertTrue(n >= 1 and n <= 2, what .. ": anchored")
+    for i = 1, n do
+        local point, rel, relPoint, _, y = region:GetPoint(i)
+        assertTrue(CENTERED[point], ("%s: a %s point, never TOP*"):format(what, tostring(point)))
+        assertEqual(relPoint, point, what .. ": to the band's own " .. tostring(point))
+        assertTrue(rel == band, what .. ": anchored to the band")
+        assertEqual(y, 0, what .. ": y 0, the band's middle")
+    end
+end
+
+test("R5-WIN: the settings-style window's title and close sit on S.Band in every skin", function()
+    -- red under: NineSlice.Text and ClosePanelButton left on SettingsFrameTemplate's own TOP and
+    -- TOPRIGHT anchors, off the 30 px band's middle (the class of bug behind PGFE's image 42).
+    local NS, mock, sec = opened{ template = true }
+    local win = sec.stockWindow
+    for _, def in ipairs(lib(mock):Skins()) do
+        NS.Selector.Pick(def.key)
+        local band = NS.Skin.Band(win)
+        assertTrue(band ~= nil, def.key .. ": a band frame")
+        assertOnBand(win.NineSlice.Text, band, def.key .. ": the title")
+        assertOnBand(win.ClosePanelButton, band, def.key .. ": the close mark")
+        assertEqual(select(1, win.ClosePanelButton:GetPoint(1)), "RIGHT", def.key .. ": the close on the right")
+    end
+end)
+
