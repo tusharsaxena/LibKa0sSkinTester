@@ -319,6 +319,26 @@ test("a5: the window's title bar stands at title.height", function()
     assertEqual(f.titleBar:GetHeight(), mock.LibStub("LibKa0s-Skin-1.0"):ResolveSkin("ka0s")["title.height"])
 end)
 
+test("R4-ST4: title.bg is one layer, the bar's, and stays one through a skin switch", function()
+    -- red under: a Shell painted without noTopBar, whose band draws title.bg under the TitleBar's own,
+    -- so a translucent band (Glass at 0.10) reads about twice as strong. The collection's convention,
+    -- as DropWatcher's test_skin_host.lua pins it.
+    local NS, mock = painted()
+    NS.Showroom.Show()
+    local Skin, f = lib(mock), window(mock)
+    local function oneLayer(label)
+        local rec = Skin.painted[f]
+        assertTrue(rec ~= nil, label .. ": the Shell painted the window")
+        local top = rec.regions.top   -- never made under noTopBar, or made and hidden
+        assertTrue(top == nil or not top:IsShown(), label .. ": no Shell band under the bar")
+        local bar = Skin.painted[f.titleBar].regions
+        assertTrue(bar.backdrop ~= nil or bar.fill ~= nil, label .. ": the bar's own box")
+    end
+    oneLayer("Ka0s Default")
+    NS.Selector.Pick("glass")
+    oneLayer("Glass")
+end)
+
 test("a5: the scrollbar stands at scroll.width", function()
     local _, mock = opened()
     assertEqual(window(mock).scrollBar:GetWidth(), mock.LibStub("LibKa0s-Skin-1.0"):ResolveSkin("ka0s")["scroll.width"])

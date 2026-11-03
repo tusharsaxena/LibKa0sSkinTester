@@ -286,7 +286,9 @@ local function build()
     buildScrollBar(f, body)
 
     frame = f
-    R.Paint("Shell", f)
+    -- noTopBar: the TitleBar paints title.bg itself, so the Shell's band under it would paint it a
+    -- second time (a translucent band reading twice as strong). The collection's convention (R4-ST4).
+    R.Paint("Shell", f, { noTopBar = true })
     R.Paint("TitleBar", bar, { text = bar.title })
     if close then R.Paint("CloseButton", close) end
     R.Paint("Footer", footer, { text = footer.text })

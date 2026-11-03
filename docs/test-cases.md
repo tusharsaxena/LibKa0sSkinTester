@@ -256,7 +256,7 @@ Total.
 - selector: no EllesmereUI card and no copy button
 - selector: a source dropdown offers Ka0s skins and EllesmereUI (SF-ST-1)
 
-### test_showroom.lua (22)
+### test_showroom.lua (23)
 
 - showroom: the window is painted through the wrapper
 - showroom: Paint answers the primitive's answer and records the name once
@@ -277,6 +277,7 @@ Total.
 - R3-FIX: Controls' square keeps S.SquareIcon's 0.08 crop through IconBorder's 0.07 zoom and a switch
 - a5: the slider's own track is handed over and a selected nav entry has a fill to tint
 - a5: the window's title bar stands at title.height
+- R4-ST4: title.bg is one layer, the bar's, and stays one through a skin switch
 - a5: the scrollbar stands at scroll.width
 - a5: every readout line is painted body text
 - a5: the BarStyle sample's fill is colored from the skin
@@ -1026,7 +1027,7 @@ Total.
 | test_settings.lua | 53 |
 | test_slash.lua | 19 |
 | test_selector.lua | 10 |
-| test_showroom.lua | 22 |
+| test_showroom.lua | 23 |
 | test_showroom_coverage.lua | 6 |
 | test_showroom_dropdowns.lua | 8 |
 | test_showroom_values.lua | 15 |
@@ -1063,4 +1064,4 @@ Total.
 | test_skin_values.lua | 3 |
 | test_skin_switch.lua | 216 |
 | Skipped | 1 |
-| **Total** | **865** |
+| **Total** | **866** |
