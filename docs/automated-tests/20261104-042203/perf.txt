@@ -1,0 +1,14 @@
+Ka0s Skin Tester — offline perf  (v0.1.0, label 'offline')
+
+scenario                iters     ms/iter  api/iter  bytes/iter
+showroomToggle           2000     0.00099       1.0        64.0
+skinRepaint               500     4.35391    1415.0    249621.7
+applyScale               2000     0.00027       2.0         0.0
+applyAlpha               2000     0.00048       2.0         0.0
+
+timings are for orientation only — compare scenarios within a run, never across machines
+
+2 assertions FAILED:
+  - skinRepaint made 1415.0 API calls, over its pinned 1360
+  - skinRepaint allocated 249621.7 bytes/iter, over its 221880-byte ceiling
+wrote docs/automated-tests/20261104-042203/perf.json
