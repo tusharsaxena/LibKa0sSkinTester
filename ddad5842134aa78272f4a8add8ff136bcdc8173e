@@ -1,0 +1,6 @@
+ka0s-review (R6 follow-up, independent adversarial reviewer, 2026-11-04): R6-RV2 ddad584 PASS.
+- libs/LibKa0s equals git archive of LibKa0s v1.85.0 (550ef68) byte for byte, excluding media/icons; the 13 vendored icon files match the tag and the declared set; tests/_kit equals the tag's testkit.
+- OptionsCompose minor 19 draws the Sim mode row only when isSimMode and toggleSim are both functions; this addon passes neither (its only 'sim' is a ShowroomPanels sample label), so no Sim checkbox and nothing persisted. R6-SIM correctly has no commit here.
+- PANEL-19 added with a blank Result; it cites the diagnostics 'LibKa0s running:' line, which exists (DebugLogDiagnostics.lua:323). Owed list and R6-RV2 note updated; CRLF kept.
+- Fresh gate: 886 passed, 0 failed, 1 skipped; luacheck 0/0 in 83 files; largest own Lua file 1060 lines.
+- No test pins the payload delta, so no red-first test exists; acceptable for a byte-for-byte re-vendor.
