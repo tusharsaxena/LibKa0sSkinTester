@@ -11,7 +11,7 @@ its theme, and a retired number is never reused.
 |---|---|---|
 | INSTALL-1..3 | Install | Load, reload, first run |
 | SLASH-1..6 | Slash commands | `/st`, `/skintester`, help, the disabled refusal, a foreign `/st`, `/st skin`, `/st widths` |
-| PANEL-1..16 | Settings panel | Landing page, General's tabs, Skin, Keybindings, Sample controls, the Scope, Font and texture, the settings chrome's face and tooltips, the Font outline, the media pickers |
+| PANEL-1..18 | Settings panel | Landing page, General's tabs, Skin, Keybindings, Sample controls, the Scope, Font and texture, the settings chrome's face and tooltips, the Font outline, the media pickers, a dropdown list closing on an outside press |
 | PROFILE-1..3 | Profiles | The Profiles page and the `profile` verb |
 | STATE-1..2 | Enable and disable | The stand-down and its refusal |
 | COMBAT-1..2 | Combat | The showroom and the panel in combat |
@@ -153,6 +153,25 @@ restart the client: new font and texture files are only seen at client start.
   it → they take the skin again. Open another Ka0s addon's Skin tab on a new profile → its Ignore
   settings panel is still ticked. Fail: any of the four stock with the box unticked, or another addon
   defaulting the box off. Result:
+- **PANEL-17. A dropdown list on a Ka0s surface closes on a press outside it (R4-L1; LibKa0s R4-L1,
+  OptionsCombat minor 4; round 4, image 1).** Settings -> AddOns -> Ka0s Skin Tester -> Sample controls.
+  Open the AceGUI dropdown's list, then left-click an empty part of the page. → The list closes and
+  the click does nothing else. Do the same with A font picker (Ka0sMedia_Font) and A bar texture picker
+  (Ka0sMedia_Statusbar). → Each closes. Open one list and click another dropdown on the page. → The
+  first closes and the second opens. Open a list and click inside it, scroll it, drag its scrollbar,
+  then click the dropdown that owns it. → It stays open until the owning dropdown toggles it shut or a
+  row is picked, and a pick applies and closes as before. On Profiles, open Existing Profiles and click
+  outside it. → It closes. In the showroom (`/st show`, Controls), open each of the five dropdowns and
+  click the showroom's body outside it. → Each closes. Repeat one of them in combat. → The same, with
+  no `ADDON_ACTION_BLOCKED`. Escape is not part of this change: on a settings page it still closes the
+  panel. Fail: a list that stays open after an outside press, an outside press that also lands as a
+  pick, a press inside the list that closes it without a pick, or a Lua error. Result:
+- **PANEL-18. Another author's AceGUI dropdown keeps its stock behavior (R4-L1; LibKa0s R4-L1).**
+  With a non-Ka0s addon installed whose settings use AceGUI dropdowns (any Ace3 addon's AceConfig
+  page), open one of its dropdown lists and click outside it. → It behaves as it did before this
+  round (AceGUI's own behavior: the list stays open until it is toggled, a row is picked, or the page
+  hides). Then open a Ka0s dropdown (PANEL-17) and click outside it. → The Ka0s one closes. Fail: the
+  other author's list now closing on an outside press, or a Lua error naming LibKa0s. Result:
 
 ## Profiles
 
@@ -619,7 +638,7 @@ Ubuntu) adds SHOW-40 and re-opens SHOW-13 and SHOW-19, whose WoW Default face ch
 
 Owed: PANEL-5, PANEL-6, PANEL-13, PANEL-14, PANEL-15, PROFILE-3, SHOW-9, SHOW-13, SHOW-19, SHOW-28, SHOW-29, SHOW-30, SHOW-31,
 SHOW-32, SHOW-33, SHOW-34, SHOW-35, SHOW-36, SHOW-37, SHOW-38, SHOW-39, SHOW-40, SHOW-41, PANEL-16, SHOW-42, SHOW-43, SHOW-44,
-DIAG-4, SHOW-45, SHOW-46, SHOW-47.
+DIAG-4, SHOW-45, SHOW-46, SHOW-47, PANEL-17, PANEL-18.
 
 On 2026-11-02 the owner reported that every check on the smoke lists of the full skinning run and its smoke feedback batch (Ka0sAddonsCommonTasks `docs/2026-11-01-FULL_SKINNING/` and `docs/2026-11-01-SMOKE_FEEDBACK/`) passed, apart from DpsRace's clock font, the skinned look of the AceGUI Dropdown and the Ka0sMedia_Font and Ka0sMedia_Statusbar pickers, FadeNineSlice and IconBorder (`docs/2026-11-02-SMOKE_ROUND3/`, R3-SMOKE). Passed, recorded on each `Result:` line as `Passed (owner, 2026-11-02)`: PANEL-6, PANEL-13, PANEL-15, PROFILE-3, SHOW-5, SHOW-9, SHOW-29, SHOW-30, SHOW-31, SHOW-33, SHOW-34, SHOW-35, SHOW-36, SHOW-37 and SHOW-38. Failed, re-opened as R3-L3 (IconBorder's 1 px outline and zoom) and recorded as `Failed (owner, 2026-11-02): re-opened as R3-L3`: SHOW-32. Failed, re-opened as R3-L1 (the skinned AceGUI and media-picker dropdowns) and recorded as `Failed (owner, 2026-11-02): re-opened as R3-L1`: PANEL-5 and PANEL-14. Still owed: SHOW-28, whose expected result the third smoke round itself changed after the owner's run.
 
@@ -648,3 +667,8 @@ R4-RV3 of the same round (2026-11-03) re-vendors LibKa0s v1.85.0 at its fifteent
 which brings R4-L4: S.IconBorder's `opts.hud = true` draws a HUD icon's edge in `icon.border` and
 never `icon.outline`. Both of this addon's IconBorder samples sit in the showroom window, so they keep
 the outline and pass no `hud`; R4-HUD needs no host change here. It adds SHOW-47.
+
+R4-L1 of the same round (LibKa0s OptionsCombat minor 4, 2026-11-03; LibKa0s has no smoke file, so its
+in-client steps live here) adds PANEL-17, a dropdown list on a Ka0s settings page, the Profiles page
+or a Ka0s window closing on a press outside it, and PANEL-18, another author's AceGUI dropdown keeping
+its stock behavior.
