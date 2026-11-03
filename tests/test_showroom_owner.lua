@@ -150,6 +150,20 @@ test("addon surfaces: the TreeGroup follows the Scope's settings-panel half, liv
     assertTrue(st ~= nil and st.owner == OWNER, "painted again once the Scope is cleared")
 end)
 
+test("addon surfaces: the TreeGroup keeps its 120 height and shows a page (R4-ST2)", function()
+    -- red under: AceGUI's auto-height left on, which an empty List layout collapses to 20 px with
+    -- the tree's rows hanging below both panes (round 4, images 4-7). The headless AceGUI is a stub
+    -- with no LayoutFinished, so the call is pinned here and the geometry is the owner's smoke check.
+    local _, _, sec = opened()
+    local t = sec.tree
+    assertEqual(t.autoAdjustHeight, false, "SetAutoAdjustHeight(false): the host owns the height")
+    assertEqual(t.height, 120, "and the height it asked for")
+    assertEqual(t.layout, "Fill", "the content pane fills with its page")
+    assertEqual(#t.children, 1, "one placeholder page")
+    assertEqual(t.children[1].type, "Label")
+    assertEqual(t.children[1].text, "The General page", "reads as the selected row's page")
+end)
+
 -- ── the icon border ──────────────────────────────────────────────────────────────────────────
 
 test("addon surfaces: the icon border draws a 1 px edge in icon.border, in every skin", function()

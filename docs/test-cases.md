@@ -330,7 +330,7 @@ Total.
 - textures: the section builds without the skin engine
 - textures: Ka0s Default draws its own Ka0s Default bar, shipped in the vendored copy
 
-### test_showroom_owner.lua (9)
+### test_showroom_owner.lua (10)
 
 - addon surfaces: the section is built, and every sample went through the wrapper
 - addon surfaces: the owner tokens resolve: default, a skin's own entry, else the follow
@@ -338,6 +338,7 @@ Total.
 - addon surfaces: the danger button paints its fill, edge and label from the named tokens
 - addon surfaces: the caution callout paints its fill, edge and title from the named tokens
 - addon surfaces: the TreeGroup follows the Scope's settings-panel half, live
+- addon surfaces: the TreeGroup keeps its 120 height and shows a page (R4-ST2)
 - addon surfaces: the icon border draws a 1 px edge in icon.border, in every skin
 - addon surfaces: the settings-style window wears Ka0s Default under Ka0s Default
 - addon surfaces: the settings-style window follows a skin switch and stays skinned back on Ka0s Default
@@ -1032,7 +1033,7 @@ Total.
 | test_showroom_dropdowns.lua | 8 |
 | test_showroom_values.lua | 15 |
 | test_showroom_textures.lua | 8 |
-| test_showroom_owner.lua | 9 |
+| test_showroom_owner.lua | 10 |
 | test_showroom_fonts.lua | 11 |
 | test_showroom_hud.lua | 10 |
 | test_showroom_widgets.lua | 16 |
@@ -1064,4 +1065,4 @@ Total.
 | test_skin_values.lua | 3 |
 | test_skin_switch.lua | 218 |
 | Skipped | 1 |
-| **Total** | **866** |
+| **Total** | **867** |

@@ -10,7 +10,9 @@ local _, NS = ...
 --                         a settings-panel surface, so it follows the Scope's "settings panel"
 --                         half: stock while the Scope leaves the panel the client's (off by default here),
 --                         painted once it is cleared. PaintAce is asked again on every
---                         OnLooksChanged, so a Scope change or a skin switch shows at once.
+--                         OnLooksChanged, so a Scope change or a skin switch shows at once. Its
+--                         height is the host's (no auto-height) and its content pane holds a
+--                         placeholder page (R4-ST2).
 --   an icon border        IconBorder with opts.fromSkin: a 1 px outline in icon.border and the
 --                         icon zoomed 0.07, in every skin (LibKa0s R3-L3)
 --   a template window     a SettingsFrameTemplate miniature painted like any window: its art faded
@@ -79,6 +81,15 @@ local function treeGroup(g, paint)
     end
     if type(tree.SetTreeWidth) == "function" then tree:SetTreeWidth(120, false) end
     if type(tree.SelectByValue) == "function" then tree:SelectByValue("general") end
+    -- R4-ST2: the host owns the height, as PrettyChat's TreeGroup does (settings/Panel.lua). Left
+    -- on, AceGUI's auto-height takes an empty List layout's 0 and collapses both panes to 20 px,
+    -- with the tree's rows hanging below them. A Fill page in the content pane makes it read as a
+    -- settings page, the selected row's.
+    tree:SetAutoAdjustHeight(false)
+    tree:SetLayout("Fill")
+    local page = AceGUI:Create("Label")
+    page:SetText(L["The General page"])
+    tree:AddChild(page)
     tree:SetWidth(300)
     tree:SetHeight(120)
     local f = tree.frame
