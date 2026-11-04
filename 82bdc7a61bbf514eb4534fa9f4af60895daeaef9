@@ -1,0 +1,5 @@
+R7-RD review (independent, 2026-11-04): PASS.
+- README Usage names /st skin (settings/Slash.lua:30 -> NS.RunSkinVerb) and says it opens the picker any time; pick previews (OptionsSkinPicker pick() -> Skin:SetChoice), Apply keeps it, the eye toggles the window-mode preview (settings/Panel.lua PICKER_SPEC.preview mode=window, enter/exit via NS.Showroom). True to the code; hover only highlights a row, so 'picking' is correct.
+- Display-name-only rename from R6-NAME intact; no command table; CRLF kept; docs-only, so no red test or smoke check owed.
+- Note for lead: Usage has 10 paragraphs (9 on master) against documentation-§1's five-or-fewer; pre-existing, not fixed here.
+- Gate fresh: lua tests/run.lua 886 passed, 0 failed, 1 skipped (887); luacheck 0/0 in 83 files.
