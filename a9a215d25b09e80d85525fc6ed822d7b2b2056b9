@@ -1,0 +1,1 @@
+R7 review (independent, 2026-11-04): reviewer's own R7-RD fix to 82bdc7a. README-only, CRLF kept; matches previewOpen/previewRestore in libs/LibKa0s/OptionsSkinPicker.lua. Gate: 886 passed, 0 failed, 1 skipped; luacheck 0/0.
