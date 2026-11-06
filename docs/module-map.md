@@ -42,6 +42,7 @@ LibDataBroker, LibDBIcon, LibKa0s) and `tests/_kit/` are vendored and never edit
 | `settings/Panel.lua` | The landing spec, the General page and its tabs, the Sample controls page, the first-run skin picker (`NS.MaybeShowSkinPicker`, `NS.StandDownSkinPicker`) and its spec's `preview` (window mode: the showroom through `NS.Showroom.Show`, `Hide` and `IsShown`), the reserved `/st skin` verb's act (`NS.RunSkinVerb`) and the showroom's on-demand showing (`NS.ShowSkinPicker`), `Settings.Register` | After OptionsSetup |
 | `settings/Slash.lua` | `COMMANDS`, the host verbs, the LibKa0s-Slash-1.0 dispatcher, `NS.CheckSlashCollision` | Conventional within `# Settings` |
 | `settings/Profiles.lua` | The Profiles page (AceDBOptions) | Last, so it is the last subcategory |
+| `Bindings.xml` | The Show window key: one `CLICK` binding on `LibKa0sSkinTesterToggleShowroom` (created in `modules/Showroom.lua`), in the addon's own category, with no default key | Not in the TOC; the client reads it from the addon root |
 
 ## Events
 
