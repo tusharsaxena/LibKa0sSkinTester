@@ -735,3 +735,9 @@ SF1-RV-ST and SF1-ST of the same run (the owner's first smoke feedback, `SF1_SMO
 (SF1-L1; feedback item 3, the EditBox edge), and register this addon's skin owner with `keepScope =
 true` (SF1-L2; feedback item 2), so another addon's Apply to all or Skin-tab copy brings the skin and
 media but never the Scope. It adds PANEL-20, the bundle's SM-10.
+
+FU-RV-ST of the v1.91.0 follow-ups (Ka0sAddonsCommonTasks `docs/2026-11-06-FOLLOWUPS_V1_91/`,
+2026-11-06) re-vendors LibKa0s v1.91.0, whose line chart draws its axis, grid, markers, crosshair and
+series in physical pixels at any UI scale (FU-L1); its four new files (CorePixel, SkinPaintHud,
+SkinAceConfirm, WidgetsDropdown) are peels that move code and change no behavior. It adds no check
+here: the bundle's SM-1 covered the showroom's chart and SM-2 the peels.
