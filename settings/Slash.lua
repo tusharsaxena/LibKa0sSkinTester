@@ -76,16 +76,16 @@ if not lib then
         end,
         PrintHelp = function()
             NS.Print("v" .. NS.Version() .. " slash commands")
-            for _, entry in ipairs(COMMANDS) do NS.Print("  /st " .. entry[1] .. " — " .. entry[2]) end
+            for _, entry in ipairs(COMMANDS) do NS.Print("  /st " .. entry[1] .. "  " .. entry[2]) end
         end,
         HelpRows = function()
             local out = {}
-            for i, entry in ipairs(COMMANDS) do out[i] = "  /st " .. entry[1] .. " — " .. entry[2] end
+            for i, entry in ipairs(COMMANDS) do out[i] = "  /st " .. entry[1] .. "  " .. entry[2] end
             return out
         end,
         LandingRows = function()
             local out = {}
-            for i, entry in ipairs(COMMANDS) do out[i] = "/st " .. entry[1] .. " — " .. entry[2] end
+            for i, entry in ipairs(COMMANDS) do out[i] = "/st " .. entry[1] .. "  " .. entry[2] end
             return out
         end,
         HelpHeader      = function() return "v" .. NS.Version() .. " slash commands" end,

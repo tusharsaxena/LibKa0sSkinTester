@@ -181,6 +181,21 @@ test("slash: degraded, the CLI verbs name the missing library and nothing raises
     assertTrue(anyLine(out, "/st enable is unavailable"), "enable takes route (b): the library-absent line")
 end)
 
+test("slash: degraded, a help row is plain `cmd  desc`, never FormatRow's em-dash row", function()
+    -- red under: the stub joining command and description with " — " (slash-commands-§1: the stub
+    -- MUST NOT copy FormatRow; a degraded help row prints `cmd  desc` plainly, no em dash).
+    local NS = T.newAddon{ skip = T.loadAddon.libFiles }
+    NS.addon:OnInitialize()
+    local COMMANDS, Sl = NS.addon.COMMANDS, NS.SlashCommands
+    local help, landing = Sl:HelpRows(), Sl:LandingRows()
+    assertEqual(#help, #COMMANDS, "one help row per command")
+    assertEqual(#landing, #COMMANDS, "one landing row per command")
+    for i, entry in ipairs(COMMANDS) do
+        assertEqual(help[i], "  /st " .. entry[1] .. "  " .. entry[2], "chat help row " .. entry[1])
+        assertEqual(landing[i], "/st " .. entry[1] .. "  " .. entry[2], "landing row " .. entry[1])
+    end
+end)
+
 
 -- ── the /st collision ────────────────────────────────────────────────────────────────────────
 -- `/st` is two letters and another addon may hold it. The check runs at PLAYER_LOGIN (OnEnable),
