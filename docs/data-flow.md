@@ -19,7 +19,7 @@
   `onChange`, `NS.ApplySkinIgnore`, one half at a time.
 - A Font or Texture pick on the Skin tab calls `Skin:SetOverride`, which lays the key over the
   owner's tokens (`font.body`, `font.title`, `hud.font`; `bar.texture`), repaints every recorded
-  frame and fires `OnLooksChanged` (the showroom's Values, Textures, Faces and widths and HUD faces sections redraw, and Addon surfaces repaints its TreeGroup), then writes
+  frame and fires `OnLooksChanged` (the showroom's Values, Textures, Faces and widths and HUD faces sections redraw, Addon surfaces repaints its TreeGroup, and Library widgets closes its menu cascade with `W.CloseMenu`), then writes
   both halves through `NS.WriteSkinChoice`'s fourth argument; `/st set skin.texture <key>` goes
   through the row's `onChange`, `NS.ApplySkinMedia`. Another addon's copy reaches the same seam
   through `Skin:WriteChoice`.

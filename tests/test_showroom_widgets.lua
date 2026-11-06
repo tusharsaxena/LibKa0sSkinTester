@@ -3,7 +3,9 @@
 -- LK-08), each owned by this addon and on a window, so neither Scope switch's panel half reaches it:
 -- a drag handle whose tooltip takes gtip.title / gtip.value / gtip.footer, an autocomplete, a line
 -- chart, a resize grip in icon.grip, a drawer head and a nav entry whose hover art takes
--- list.hoverArt, and three launchers: a copy window, the debug console and the skin picker.
+-- list.hoverArt, and three launchers: a copy window, the debug console and the skin picker. V89A-ST
+-- (LibKa0s v1.89.0, Widgets 23) adds a W.ContextMenu cascade: the rows it hands the library, what the
+-- real menu draws (the arrow, the tick column, stacked levels), its picks and its closes.
 
 local T = _G.SKINTESTER_TEST
 local test, assertEqual, assertTrue, assertFalse = T.test, T.assertEqual, T.assertTrue, T.assertFalse
@@ -97,7 +99,7 @@ test("widgets: the section is built with every sample", function()
     local _, _, sec = opened()
     assertTrue(sec ~= nil and (sec:GetHeight() or 0) > 0, "built, with a height")
     for _, key in ipairs({ "handle", "complete", "chart", "gripBox", "drawer", "nav",
-                           "copyButton", "consoleButton", "pickerButton" }) do
+                           "copyButton", "consoleButton", "pickerButton", "cascadeButton" }) do
         assertTrue(sec[key] ~= nil, key .. " is on show")
     end
 end)
@@ -354,4 +356,135 @@ test("widgets: the picker button does nothing in combat", function()
     sec.pickerButton.__fire("OnClick", "LeftButton")
     local f = pickerFrame(mock)
     assertTrue(f == nil or not f:IsShown(), "no picker mid-combat")
+end)
+
+-- ── the cascade sample (V89A-ST; LibKa0s v1.89.0, Widgets 23) ──────────────────────────────────
+
+local CASCADE = { "A plain row", "A disabled row", "Size", "Shown", "Bags", "Bank", "Mail", "Nested" }
+
+--- What the button handed W.ContextMenu on a click: { anchor, rows, opts }, and the real menu opened.
+local function openCascade(mock, sec)
+    local W, seen = mock.LibStub("LibKa0s-Widgets-1.0"), {}
+    local real = W.ContextMenu
+    W.ContextMenu = function(anchor, rows, opts)
+        seen[#seen + 1] = { anchor = anchor, rows = rows, opts = opts }
+        return real(anchor, rows, opts)
+    end
+    sec.cascadeButton.__fire("OnClick", "LeftButton")
+    W.ContextMenu = real
+    assertEqual(#seen, 1, "one open per click")
+    return seen[1], W
+end
+
+local function rowNamed(rows, label)
+    for _, row in ipairs(rows) do
+        if row.label == label or row.title == label then return row end
+    end
+end
+
+local function shownRow(menu, label)
+    for _, b in ipairs(menu.buttons) do
+        if b:IsShown() and b.fs:GetText() == label then return b end
+    end
+end
+
+local function ticked(b) return b.__tick ~= nil and b.__tick:IsShown() and (b.__tick:GetText() or "") ~= "" end
+
+test("widgets: the cascade sample hands W.ContextMenu a plain, a disabled, a radio submenu, a multi group and a nested submenu", function()
+    -- red under: a section with no cascade sample (LibKa0s v1.89.0 brought the rows, V89A-ST).
+    local _, mock, sec = opened()
+    local call = openCascade(mock, sec)
+    assertTrue(call.anchor == sec.cascadeButton, "anchored on the sample's button")
+    assertEqual(call.opts.owner, OWNER, "owned by this addon")
+    assertTrue(call.opts.panel ~= true, "a window's menu, not the settings panel's")
+    local labels = {}
+    for _, row in ipairs(call.rows) do
+        if not row.divider then labels[#labels + 1] = row.label or row.title end
+    end
+    assertEqual(table.concat(labels, "|"), table.concat(CASCADE, "|"))
+    local plain, off = rowNamed(call.rows, "A plain row"), rowNamed(call.rows, "A disabled row")
+    assertTrue(type(plain.onClick) == "function" and not plain.submenu and not plain.radio, "a plain row")
+    assertTrue(off.disabled == true, "a disabled row")
+    local size = rowNamed(call.rows, "Size")
+    assertTrue(type(size.submenu) == "table" and #size.submenu == 3, "Size opens three rows")
+    local on = 0
+    for _, row in ipairs(size.submenu) do
+        assertTrue(row.radio == true, row.label .. ": a radio row")
+        assertTrue(type(row.selected) == "function", row.label .. ": selected is a predicate")
+        if row.selected(row) then on = on + 1 end
+    end
+    assertEqual(on, 1, "one radio is selected")
+    assertTrue(rowNamed(call.rows, "Shown").title ~= nil, "the multi group has a heading")
+    for _, label in ipairs({ "Bags", "Bank", "Mail" }) do
+        local row = rowNamed(call.rows, label)
+        assertTrue(row.keepOpen == true, label .. ": keepOpen")
+        assertTrue(type(row.selected) == "function" and row.radio ~= true, label .. ": a multi-select tick")
+    end
+    local nested = rowNamed(call.rows, "Nested").submenu
+    local deeper = nested and rowNamed(nested, "Deeper")
+    assertTrue(deeper ~= nil and type(deeper.submenu) == "table" and #deeper.submenu >= 1,
+        "a submenu row inside a submenu: a second depth")
+end)
+
+test("widgets: the cascade draws the arrow, the tick column and a child level beside its row, the parent kept", function()
+    -- red under: no cascade sample, or LibKa0s before Widgets 23 (one shared frame, no tick column).
+    local _, mock, sec = opened()
+    local _, W = openCascade(mock, sec)
+    local menu = sec.cascadeMenu
+    assertTrue(menu ~= nil and menu:IsShown(), "the menu is up")
+    local size = shownRow(menu, "Size")
+    assertTrue(size.__sub ~= nil and size.__sub:IsShown(), "the submenu row draws its arrow")
+    assertTrue(ticked(shownRow(menu, "Bags")), "a selected multi row is ticked")
+    assertFalse(ticked(shownRow(menu, "Bank")), "an unselected one is not")
+    size:GetScript("OnClick")(size)
+    local child = menu.__child
+    assertTrue(child ~= nil and child:IsShown() and menu:IsShown(), "the child is up and the parent stays")
+    assertTrue(ticked(shownRow(child, "Medium")), "the selected radio is ticked")
+    assertFalse(ticked(shownRow(child, "Large")), "another is not")
+    local nested = shownRow(menu, "Nested")
+    nested:GetScript("OnClick")(nested)
+    local deeper = shownRow(menu.__child, "Deeper")
+    deeper:GetScript("OnClick")(deeper)
+    local third = menu.__child.__child
+    assertTrue(third ~= nil and third:IsShown() and menu.__child:IsShown() and menu:IsShown(),
+        "three levels stacked")
+    W.CloseMenu()
+end)
+
+test("widgets: the cascade's picks change only the sample's own state", function()
+    -- red under: picks that do nothing, or a multi row that closes the menu.
+    local _, mock, sec = opened()
+    openCascade(mock, sec)
+    local menu, state = sec.cascadeMenu, sec.cascadeState
+    local bank = shownRow(menu, "Bank")
+    bank:GetScript("OnClick")(bank)
+    assertTrue(state.shown.Bank == true, "Bank is on")
+    assertTrue(menu:IsShown(), "keepOpen holds the menu")
+    assertTrue(ticked(shownRow(menu, "Bank")), "and its tick follows")
+    local size = shownRow(menu, "Size")
+    size:GetScript("OnClick")(size)
+    local large = shownRow(menu.__child, "Large")
+    large:GetScript("OnClick")(large)
+    assertEqual(state.size, "Large")
+    assertFalse(menu:IsShown(), "a radio pick closes every level")
+    openCascade(mock, sec)
+    local plain = shownRow(sec.cascadeMenu, "A plain row")
+    plain:GetScript("OnClick")(plain)
+    assertEqual(state.last, "A plain row", "the plain row's pick is recorded")
+end)
+
+test("widgets: the cascade closes when the showroom hides and when the skin changes", function()
+    -- red under: a menu left floating over the game after Escape (W.CloseMenu's header) or a switch.
+    local NS, mock, sec = opened()
+    openCascade(mock, sec)
+    local menu = sec.cascadeMenu
+    shownRow(menu, "Size"):GetScript("OnClick")(shownRow(menu, "Size"))
+    local child = menu.__child
+    sec.cascadeButton.__fire("OnHide")
+    assertFalse(menu:IsShown(), "closed with the showroom")
+    assertFalse(child:IsShown(), "every level")
+    openCascade(mock, sec)
+    assertTrue(sec.cascadeMenu:IsShown(), "open again")
+    NS.Selector.Pick("glass")
+    assertFalse(sec.cascadeMenu:IsShown(), "closed by a skin change")
 end)
