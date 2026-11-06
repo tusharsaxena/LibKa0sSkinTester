@@ -97,7 +97,7 @@ generated directories are named once each and never enumerated per run: `docs/au
 | `debug.md` | Present | The diagnostics report (`/st diagnostics`, debug-logging-§14); never Not applicable |
 | `profiles.md` | Present | The Profiles sub-page (`settings/Profiles.lua`) is a profile control in the options UI |
 | `perf-analysis/README.md` | Present | The performance harness is wired (`core/PerfSetup.lua`) |
-| `midnight-quirks.md` | Not applicable | The addon carries no client-version workaround of its own |
+| `midnight-quirks.md` | Present | Always: carries the vendored client-quirks catalog (client-quirks-§1), then the addon's own section, which is empty |
 | `compat-layer.md` | Not applicable | No compat family: the addon makes no deprecated or version-variant client call outside LibKa0s's majors (compat's applicability condition), so there is no `core/Compat.lua` |
 | `message-bus.md` | Not applicable | No messages defined (see `## Message Bus`) |
 | `known-limitations.md` | Not applicable | `## Known Limitations` is well under the spill threshold |
