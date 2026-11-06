@@ -11,7 +11,7 @@ its theme, and a retired number is never reused.
 |---|---|---|
 | INSTALL-1..3 | Install | Load, reload, first run |
 | SLASH-1..6 | Slash commands | `/st`, `/skintester`, help, the disabled refusal, a foreign `/st`, `/st skin`, `/st widths` |
-| PANEL-1..19 | Settings panel | Landing page, General's tabs, Skin, Keybindings, Sample controls, the Scope, Font and texture, the settings chrome's face and tooltips, the Font outline, the media pickers, a dropdown list closing on an outside press, no Sim mode box |
+| PANEL-1..20 | Settings panel | Landing page, General's tabs, Skin, Keybindings, Sample controls, the Scope, Font and texture, the settings chrome's face and tooltips, the Font outline, the media pickers, a dropdown list closing on an outside press, no Sim mode box, the Scope kept through another addon's copy |
 | PROFILE-1..3 | Profiles | The Profiles page and the `profile` verb |
 | STATE-1..2 | Enable and disable | The stand-down and its refusal |
 | COMBAT-1..2 | Combat | The showroom and the panel in combat |
@@ -178,6 +178,17 @@ restart the client: new font and texture files are only seen at client start.
   The Master controls rows are exactly the ones round 5 drew: this addon has no simulation and passes no
   sim hooks, so no Sim mode checkbox appears beside any of them. Fail: `OptionsCompose 18`, a Sim mode box,
   a moved or missing Master controls row, or a Lua error. Result:
+- **PANEL-20. Another addon's copy leaves this addon's Scope alone (SF1-ST; LibKa0s v1.90.0, SF1-L2;
+  the run bundle's SM-10).** With Ka0s Loot History (or any other Ka0s addon) loaded, tick Ignore
+  settings panel in that addon's Skin tab, and check this addon's General -> Skin shows Ignore settings
+  panel unticked. In the other addon, pick Obsidian and press "Apply to all Ka0s addons" in its skin
+  picker (`/<its slash> skin`). → This addon wears Obsidian, and its Ignore settings panel and Ignore
+  fonts boxes are as they were (unticked); open the showroom on Controls → the three "PaintAce (Scope:
+  panel)" cells (AceGUI Dropdown, Ka0sMedia_Font, Ka0sMedia_Statusbar) and the TreeGroup wear Obsidian.
+  Repeat with the other addon's Skin tab "Copy to every Ka0s addon..." and Glass. → The same: the skin
+  moves, the boxes and the painted cells stay. Then from this addon's own Skin tab, copy to every Ka0s
+  addon. → The other addon takes this addon's Scope as before. Fail: either box ticked here after a copy
+  from the other addon, a stock "(Scope: panel)" cell, the skin not arriving, or a Lua error. Result:
 
 ## Profiles
 
@@ -653,7 +664,7 @@ Ubuntu) adds SHOW-40 and re-opens SHOW-13 and SHOW-19, whose WoW Default face ch
 
 Owed: PANEL-5, PANEL-6, PANEL-13, PANEL-14, PANEL-15, PROFILE-3, SHOW-9, SHOW-13, SHOW-19, SHOW-28, SHOW-29, SHOW-30, SHOW-31,
 SHOW-32, SHOW-33, SHOW-34, SHOW-35, SHOW-36, SHOW-37, SHOW-38, SHOW-39, SHOW-40, SHOW-41, PANEL-16, SHOW-42, SHOW-43, SHOW-44,
-DIAG-4, SHOW-45, SHOW-46, SHOW-47, PANEL-17, PANEL-18, SHOW-48, SHOW-49, DIAG-5, PICKER-24, PICKER-25, SHOW-50, PICKER-26, PICKER-3, PICKER-27, PANEL-19, SHOW-51.
+DIAG-4, SHOW-45, SHOW-46, SHOW-47, PANEL-17, PANEL-18, SHOW-48, SHOW-49, DIAG-5, PICKER-24, PICKER-25, SHOW-50, PICKER-26, PICKER-3, PICKER-27, PANEL-19, SHOW-51, PANEL-20.
 
 On 2026-11-02 the owner reported that every check on the smoke lists of the full skinning run and its smoke feedback batch (Ka0sAddonsCommonTasks `docs/2026-11-01-FULL_SKINNING/` and `docs/2026-11-01-SMOKE_FEEDBACK/`) passed, apart from DpsRace's clock font, the skinned look of the AceGUI Dropdown and the Ka0sMedia_Font and Ka0sMedia_Statusbar pickers, FadeNineSlice and IconBorder (`docs/2026-11-02-SMOKE_ROUND3/`, R3-SMOKE). Passed, recorded on each `Result:` line as `Passed (owner, 2026-11-02)`: PANEL-6, PANEL-13, PANEL-15, PROFILE-3, SHOW-5, SHOW-9, SHOW-29, SHOW-30, SHOW-31, SHOW-33, SHOW-34, SHOW-35, SHOW-36, SHOW-37 and SHOW-38. Failed, re-opened as R3-L3 (IconBorder's 1 px outline and zoom) and recorded as `Failed (owner, 2026-11-02): re-opened as R3-L3`: SHOW-32. Failed, re-opened as R3-L1 (the skinned AceGUI and media-picker dropdowns) and recorded as `Failed (owner, 2026-11-02): re-opened as R3-L1`: PANEL-5 and PANEL-14. Still owed: SHOW-28, whose expected result the third smoke round itself changed after the owner's run.
 
@@ -718,3 +729,9 @@ neither and owes nothing; it adds PANEL-19.
 V89A-ST of the LibKa0s v1.89.0 re-vendor (Ka0sAddonsCommonTasks `docs/2026-11-06-REVENDOR_LIBKA0S_V1_89/`,
 2026-11-06) adds a skinned `W.ContextMenu` cascade to Library widgets (Widgets 23's `submenu`, `radio`,
 `selected` and stacked levels). It adds SHOW-51, the bundle's SM-06.
+
+SF1-RV-ST and SF1-ST of the same run (the owner's first smoke feedback, `SF1_SMOKE_FEEDBACK.md`,
+2026-11-06) re-vendor LibKa0s v1.90.0, whose Widgets edges are one physical pixel at any UI scale
+(SF1-L1; feedback item 3, the EditBox edge), and register this addon's skin owner with `keepScope =
+true` (SF1-L2; feedback item 2), so another addon's Apply to all or Skin-tab copy brings the skin and
+media but never the Scope. It adds PANEL-20, the bundle's SM-10.

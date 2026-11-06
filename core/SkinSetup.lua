@@ -198,11 +198,15 @@ end
 
 NS.Skin = Skin:For(addonName)
 NS.SkinAvailable = true
+-- keepScope (LibKa0s Skin minor 17, SF1-ST): another addon's Apply to all or Skin-tab copy brings
+-- this owner its skin and media but never its Scope, so the documented `ignorePanel = false`
+-- (docs/ARCHITECTURE.md, Documented deviations) survives a copy from an addon that ignores its panel.
 Skin:RegisterOwner(addonName, {
     label = NS.BRAND_NAME,
     get   = NS.SkinChoice,
     set   = NS.WriteSkinChoice,
     tokens = NS.SKIN_OWNER_TOKENS,
+    keepScope = true,
 })
 
 -- The one line a reload request earns where no popup of the library's says it (a profile event

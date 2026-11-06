@@ -36,7 +36,9 @@
   `NS.SkinChoice`), so only the unsaved preview is undone. Every close then puts the showroom back as the picker found it (`spec.preview`, window mode: `NS.Showroom.Show` or `Hide`, R6-PV) and runs the spec's `onClose`, which sets `skin.pickerSeen`.
   "Apply to all Ka0s addons" (this addon's or another's) reaches every other owner through
   `Skin:WriteChoice`, as the tab's copy does, and carries the same source, skin, Scope, font,
-  texture and Font outline.
+  texture and Font outline. The one exception is the Scope coming here: this addon registers with
+  `keepScope = true` (LibKa0s Skin minor 17, SF1-ST), so another addon's copy or Apply to all brings
+  it the source, skin and media and leaves its Ignore boxes as they are.
 
 ## Opening the showroom
 
