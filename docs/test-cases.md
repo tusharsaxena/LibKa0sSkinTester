@@ -245,7 +245,7 @@ Total.
 - slash: a foreign /st is reported once and left alone
 - slash: with no foreign /st, nothing is said and both commands stay
 
-### test_selector.lua (10)
+### test_selector.lua (11)
 
 - selector: one card per Ka0s skin, in Skins() order
 - selector: clicking a card applies and saves the skin
@@ -253,6 +253,7 @@ Total.
 - selector: the saved skin is applied at load
 - selector: the saved Scope is applied at load, and /st set moves one half
 - selector: a fresh profile skins this addon's settings panel (R4-ST1, a documented deviation)
+- selector: another addon's skin copy brings the skin, never the Scope (SF1-ST, keepScope)
 - selector: an unknown saved skin falls back to ka0s
 - selector: clicking the current card does nothing
 - selector: no EllesmereUI card and no copy button
@@ -378,7 +379,7 @@ Total.
 - hud: BarGloss shows under a skin with gloss and only there
 - overlays: S.Mark tints its marks and the MarkText line is written again
 
-### test_showroom_widgets.lua (16)
+### test_showroom_widgets.lua (20)
 
 - widgets: the section is built with every sample
 - widgets: the drag handle's tooltip draws gtip.title, gtip.value and gtip.footer, per skin
@@ -396,6 +397,10 @@ Total.
 - widgets: the console button opens the debug console
 - widgets: the picker button shows the skin picker on a profile that has closed it
 - widgets: the picker button does nothing in combat
+- widgets: the cascade sample hands W.ContextMenu a plain, a disabled, a radio submenu, a multi group and a nested submenu
+- widgets: the cascade draws the arrow, the tick column and a child level beside its row, the parent kept
+- widgets: the cascade's picks change only the sample's own state
+- widgets: the cascade closes when the showroom hides and when the skin changes
 
 ### test_skin_media.lua (9)
 
@@ -818,7 +823,7 @@ Total.
 - skin values: no typed value outside the kit's categories and the host's rows
 - skin values: the check is falsifiable, a planted value of each shape is reported
 
-### test_skin_switch.lua (216)
+### test_skin_switch.lua (218)
 
 - skin switch: the check is falsifiable, a surface that redraws a literal is reported
 - skin switch: the window's shell changes
@@ -954,6 +959,8 @@ Total.
 - skin switch: widgets: the title changes with the Scope ignored
 - skin switch: widgets: Autocomplete (type "o") changes
 - skin switch: widgets: Autocomplete (type "o") changes with the Scope ignored
+- skin switch: widgets: ContextMenu cascade (arrow, ticks) changes
+- skin switch: widgets: ContextMenu cascade (arrow, ticks) changes with the Scope ignored
 - skin switch: widgets: CopyWindow (its grip) changes
 - skin switch: widgets: CopyWindow (its grip) changes with the Scope ignored
 - skin switch: widgets: DragHandle (hover: gtip.title, gtip.value, gtip.footer) changes
@@ -1050,7 +1057,7 @@ Total.
 | test_database.lua | 12 |
 | test_settings.lua | 53 |
 | test_slash.lua | 20 |
-| test_selector.lua | 10 |
+| test_selector.lua | 11 |
 | test_showroom.lua | 27 |
 | test_showroom_coverage.lua | 6 |
 | test_showroom_dropdowns.lua | 8 |
@@ -1059,7 +1066,7 @@ Total.
 | test_showroom_owner.lua | 11 |
 | test_showroom_fonts.lua | 11 |
 | test_showroom_hud.lua | 10 |
-| test_showroom_widgets.lua | 16 |
+| test_showroom_widgets.lua | 20 |
 | test_skin_media.lua | 9 |
 | test_skin_outline.lua | 9 |
 | test_skin_verb.lua | 7 |
@@ -1087,6 +1094,6 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | test_skin_values.lua | 3 |
-| test_skin_switch.lua | 216 |
+| test_skin_switch.lua | 218 |
 | Skipped | 1 |
-| **Total** | **887** |
+| **Total** | **894** |

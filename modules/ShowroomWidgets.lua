@@ -16,6 +16,12 @@ local addonName, NS = ...
 --   a nav entry          its hover art in list.hoverArt (LK-06c)
 --   three launchers      a copy window (its grip, LK-06b), the debug console (its title-bar labels,
 --                        LK-06b) and the skin picker ("Choose a skin" over the addon's name, LK-11)
+--   a menu cascade       a button opening an owned W.ContextMenu (Widgets 23, LibKa0s v1.89.0,
+--                        V89A-ST): a plain row, a disabled one, a `submenu` of `radio` rows with one
+--                        `selected`, a multi-select group (`selected` predicates, `keepOpen`) and a
+--                        submenu inside a submenu, so the arrow, the tick column (`confirm` in
+--                        icon.hot) and the stacked levels show. Picks change only the sample's own
+--                        state; W.CloseMenu closes it when the showroom hides or the skin changes
 --
 -- Built only through the sample's own frames; the tooltip is the client's GameTooltip, as the drag
 -- handle draws it in every host.
@@ -206,6 +212,57 @@ local function launchers(g, body, paint)
     end, paint)
 end
 
+-- The cascade sample's rows (Widgets 23). The predicates read `state` on every paint, so a pick shows
+-- at once; nothing outside the sample reads or writes it.
+local function cascadeRows(state)
+    local function pick(value) state.last = value end
+    local function size(row) return state.size == row.value end
+    local function shown(row) return state.shown[row.value] == true end
+    local function setSize(value) state.size = value end
+    local function toggle(value) state.shown[value] = not state.shown[value] end
+    local function sizeRow(name)
+        return { label = name, value = name, radio = true, selected = size, onClick = setSize }
+    end
+    local function shownRow(name)
+        return { label = name, value = name, selected = shown, keepOpen = true, onClick = toggle }
+    end
+    return {
+        { label = "A plain row", value = "A plain row", onClick = pick },
+        { label = "A disabled row", disabled = true, tooltip = "A disabled row keeps its tooltip." },
+        { label = "Size", submenu = { sizeRow("Small"), sizeRow("Medium"), sizeRow("Large") } },
+        { divider = true },
+        { title = "Shown" },
+        shownRow("Bags"), shownRow("Bank"), shownRow("Mail"),
+        { divider = true },
+        { label = "Nested", submenu = {
+            { label = "Deeper", submenu = {
+                { label = "The third level", value = "The third level", onClick = pick },
+            } },
+        } },
+    }
+end
+
+local CASCADE_W = 180
+
+local function cascade(g, body, paint)
+    local state = { size = "Medium", shown = { Bags = true }, last = nil }
+    local rows = cascadeRows(state)
+    local btn = R.SampleButton(g:Add(CASCADE_W, 24, "ContextMenu cascade (arrow, ticks)"), CASCADE_W, 24,
+        "Open a menu cascade")
+    btn:SetPoint("TOPLEFT")
+    btn:SetScript("OnClick", function(self)
+        local W = widgets()
+        if W and W.ContextMenu then body.cascadeMenu = W.ContextMenu(self, rows, { owner = addonName }) end
+    end)
+    -- The menu is the library's, parented to UIParent: the window's hide never reaches it.
+    btn:HookScript("OnHide", function()
+        local W = widgets()
+        if W and W.CloseMenu then W.CloseMenu() end
+    end)
+    paint("Button", btn)
+    body.cascadeButton, body.cascadeState, body.cascadeRows = btn, state, rows
+end
+
 R.AddSection("widgets", L["Library widgets"], function(body, paint)
     local g = R.Grid(body)
     dragHandle(g, body)
@@ -218,5 +275,15 @@ R.AddSection("widgets", L["Library widgets"], function(body, paint)
     hoverSample(g, body, paint)
     g:Break()
     launchers(g, body, paint)
+    cascade(g, body, paint)
     return g:Height()
 end)
+
+-- An open menu wears the skin it opened in, so a switch closes the sample's cascade: the next open
+-- draws the new one. Only while the showroom is up, which is when the sample's menu can be open.
+if NS.Skin and NS.Skin.OnLooksChanged then
+    NS.Skin.OnLooksChanged(function()
+        local W = widgets()
+        if R.IsShown() and W and W.CloseMenu then W.CloseMenu() end
+    end)
+end

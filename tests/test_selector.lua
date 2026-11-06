@@ -96,6 +96,25 @@ test("selector: a fresh profile skins this addon's settings panel (R4-ST1, a doc
     assertEqual(NS.addon.db.profile.skin.ignorePanel, false, "and the profile reads it so")
 end)
 
+test("selector: another addon's skin copy brings the skin, never the Scope (SF1-ST, keepScope)", function()
+    -- red under: RegisterOwner without `keepScope = true`. Apply to all, or a Skin-tab copy, from an
+    -- addon that ignores its panel ran lib.__copySkinTo (OptionsAppearance minor 7), which turned on
+    -- this addon's documented `ignorePanel = false` (SF1 feedback item 2).
+    local NS, mock = bootWithSkin("ka0s")
+    local Skin = lib(mock)
+    assertEqual(Skin.owners[OWNER].keepScope, true, "registered with the Scope opt-out")
+    mock.LibStub("LibKa0s-Options-1.0").__copySkinTo(Skin, OWNER, "ka0s", "obsidian",
+        { panel = true, fonts = true })
+    local _, skin = Skin:GetChoice(OWNER)
+    assertEqual(skin, "obsidian", "the copy still brings the skin")
+    assertEqual(NS.addon.db.profile.skin.skin, "obsidian", "and stores it")
+    local panel, fonts = Skin:GetIgnore(OWNER)
+    assertEqual(panel, false, "Ignore settings panel stays off, live")
+    assertEqual(fonts, false, "Ignore fonts stays as it was, live")
+    assertEqual(NS.addon.db.profile.skin.ignorePanel, false, "and in the profile")
+    assertEqual(NS.addon.db.profile.skin.ignoreFonts, false)
+end)
+
 test("selector: an unknown saved skin falls back to ka0s", function()
     -- red under: an apply that hands the library any string (cleanSkin keeps every non-empty one).
     local NS, mock = bootWithSkin("nope")

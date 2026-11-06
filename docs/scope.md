@@ -26,7 +26,7 @@ never published on CurseForge.
   measured width against Ka0s Default, the library's own custom
   widgets as an owned window draws them (a drag handle and its tooltip, an autocomplete, a line
   chart, a resize grip, a drawer head and nav entry with their hover art, a copy window, the debug
-  console and the skin picker), and the surfaces an adopting addon gets beyond the vocabulary (its own owner tokens,
+  console, the skin picker and a context-menu cascade), and the surfaces an adopting addon gets beyond the vocabulary (its own owner tokens,
   the `opts.tokens` slot remap, an AceGUI TreeGroup, a window
   built on a Blizzard template and skinned in every skin), each sample captioned with the primitive and state it shows; a Sample controls settings page shows the skin on the
   settings renderer's widgets while the Skin tab's Ignore settings panel is off (a new profile
