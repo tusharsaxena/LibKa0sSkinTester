@@ -20,10 +20,11 @@
 -- WHY THE THRESHOLD CASE EXEMPTS TWO SECTIONS. `## Documentation map` and `## Documented deviations`
 -- are REGISTERS: documentation-§3 makes the hub their single home, so their storage IS the hub and they have no
 -- canonical topic doc to spill into. Holding them to the spill threshold would be asking them to
--- move somewhere the same section forbids. Every other mandated section has a named home —
--- Overview → scope.md, Module Map → module-map.md, Settings Schema → schema.md, Message Bus →
--- message-bus.md, Slash Commands → slash-dispatch.md, Taint Notes → midnight-quirks.md, Known
--- Limitations → scope.md, Event Subscriptions → module-map.md — and is held.
+-- move somewhere the same section forbids. Every content section has a named spill target —
+-- Module Map → module-map.md, Settings Schema → schema.md, Message Bus → message-bus.md, Slash
+-- Commands → slash-dispatch.md, Event Subscriptions → data-flow.md, Taint Notes → taint.md, Known
+-- Limitations → known-limitations.md — and is held. (The standard also says Overview never spills;
+-- this gate still holds it to the threshold.)
 --
 -- WHAT IT DOES NOT DO, DELIBERATELY. It does not assert the 400-line whole-file SHOULD: the two
 -- registers are legitimately large here and the section says an audit "reports the shape, not the

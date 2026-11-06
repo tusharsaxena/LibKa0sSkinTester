@@ -222,7 +222,7 @@ Total.
 - settings: every color row is followed by its class-color companion, and none is disabled
 - settings: the stored settings are exactly the pinned ones
 
-### test_slash.lua (19)
+### test_slash.lua (20)
 
 - slash: COMMANDS order is the help order, seventeen positional triples
 - slash: every description has an enUS entry
@@ -240,6 +240,7 @@ Total.
 - slash: perf is registered by the addon and answers through the library
 - slash: show toggles the showroom while enabled
 - slash: degraded, the CLI verbs name the missing library and nothing raises
+- slash: degraded, a help row is plain `cmd  desc`, never FormatRow's em-dash row
 - slash: /skintester opens the window
 - slash: a foreign /st is reported once and left alone
 - slash: with no foreign /st, nothing is said and both commands stay
@@ -1048,7 +1049,7 @@ Total.
 | test_util.lua | 26 |
 | test_database.lua | 12 |
 | test_settings.lua | 53 |
-| test_slash.lua | 19 |
+| test_slash.lua | 20 |
 | test_selector.lua | 10 |
 | test_showroom.lua | 27 |
 | test_showroom_coverage.lua | 6 |
@@ -1088,4 +1089,4 @@ Total.
 | test_skin_values.lua | 3 |
 | test_skin_switch.lua | 216 |
 | Skipped | 1 |
-| **Total** | **886** |
+| **Total** | **887** |
