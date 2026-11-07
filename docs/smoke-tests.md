@@ -653,7 +653,7 @@ Forever's SavedVariables are `_forever_/WTF/Account/<ACCOUNT>/SavedVariables/Lib
 - **FOREVER-13. The default skin is WoW Forever.** Move `LibKa0sSkinTester.lua` out of Forever's
   SavedVariables and log in → the first-run picker and `/st show` wear **WoW Forever**, its card
   selected. On **Retail**, the same with Retail's SavedVariables → **Ka0s Default** (LibKa0s v1.94.0,
-  skinning-§2). Result: owed
+  skinning-§2). Result: passed (owner, 2026-11-08)
 
 ## Non-English client
 
