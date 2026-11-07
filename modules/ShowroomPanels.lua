@@ -50,7 +50,7 @@ R.AddSection("panels", L["Panels"], function(body, paint)
 
     for _, kind in ipairs({ "test", "sim" }) do
         local strip = boxed(g:Add(220, 18, ("Strip (%s)"):format(kind)), 220, 18)
-        paint("Text", label(strip, kind == "sim" and "Simulation" or "Test mode", "GameFontNormalSmall"), "body")
+        paint("Text", label(strip, kind == "sim" and "SIM" or "Test mode", "GameFontNormalSmall"), "body")
         paint("Strip", strip, { kind = kind })
     end
 
