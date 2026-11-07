@@ -22,6 +22,15 @@ Addon surfaces, Library widgets, Values, Textures, Faces and widths, HUD faces),
 [`module-map.md`](./module-map.md). The load order itself is
 the TOC, where each load-bearing position carries the reason.
 
+### Per-client features
+
+The addon serves Retail and WoW Forever (clients-§1; the roster's Clients value is `Retail · Forever`).
+**All features serve both clients.** No module, settings page or tab, slash verb, launcher entry, key
+binding or event registration carries a `clients` declaration, and the addon never asks which client it
+is on. It paints LibKa0s widgets and reads no game data, so it ships no seed list (clients-§5). The
+headless suite runs under both kit profiles (clients-§6), and the kit's missing-globals suite checks the
+tracked source against both clients' API sets.
+
 ## Settings Schema
 
 One schema (`settings/Schema.lua`) drives the panel, the `/st list|get|set|reset` CLI and the

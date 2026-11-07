@@ -1044,6 +1044,12 @@ Total.
 - skin switch: hud: HudFont: HudTextColor, HudLabelColor, HudShadow changes
 - skin switch: hud: HudFont: HudTextColor, HudLabelColor, HudShadow changes with the Scope ignored
 
+### test_client_globals.lua (3)
+
+- client globals: no call of a global a client lacks
+- client globals: every allowlist row has a reason and a finding to excuse
+- client globals: the check is falsifiable, a planted bare call is flagged for both clients
+
 ## Totals
 
 | Suite | Cases |
@@ -1095,5 +1101,6 @@ Total.
 | test_lizard_sighted.lua | 8 |
 | test_skin_values.lua | 3 |
 | test_skin_switch.lua | 218 |
+| test_client_globals.lua | 3 |
 | Skipped | 1 |
-| **Total** | **894** |
+| **Total** | **897** |
