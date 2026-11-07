@@ -8,11 +8,13 @@ How to verify the addon out of the game. What to install first is the root
 Before every commit, from the repo root:
 
 ```sh
-lua tests/run.lua                                   # every suite green
+lua tests/run.lua                                   # every suite green, as Retail
+KA0S_KIT_CLIENT=forever lua tests/run.lua           # and as WoW Forever
 ~/.claude/dev-copilot/bin/ka0s-bounded luacheck .   # 0 warnings / 0 errors
 ```
 
-The vendored kit bounds the suite itself on load (testing-§15); `luacheck` loads no kit, so it runs
+The addon serves Retail and WoW Forever, so the suite gates under **both** kit profiles; `KA0S_KIT_CLIENT`
+picks the profile and `retail` is the default (clients-§6). The vendored kit bounds the suite itself on load (testing-§15); `luacheck` loads no kit, so it runs
 through the bounded runner. No authored `.lua` file may pass 1500 lines (layout-§1;
 `tests/_kit/test_layout_cap.lua` enforces it).
 

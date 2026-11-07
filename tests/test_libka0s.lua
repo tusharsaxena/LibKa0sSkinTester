@@ -7,6 +7,9 @@
 -- measuring its own fallback stub is green and proves nothing), and that no descriptor was handed
 -- this addon's locale table.
 local T = _G.SKINTESTER_TEST
+-- The client's default skin under the active kit profile (LibKa0s v1.94.0, skinning-§2): WoW Forever
+-- on forever, Ka0s Default on retail. Pinned from the profile, never read back from the addon.
+local CLIENT_SKIN = dofile("tests/_kit/mock_client.lua").current() == "forever" and "forever" or "ka0s"
 local test, assertEqual, assertTrue, assertFalse, assertNil =
     T.test, T.assertEqual, T.assertTrue, T.assertFalse, T.assertNil
 
@@ -691,6 +694,12 @@ test("degraded: the STORED profile is the same shape with the library absent", f
             end
         end
     end
+    -- The one value the two paths may differ in: the default skin is the library's answer
+    -- (Skin:DefaultSkin, LibKa0s v1.94.0), WoW Forever on Forever, and Ka0s Default without it,
+    -- where no skin draws at all. Each is pinned, then the shapes are compared without it.
+    assertEqual(a.skin.skin, CLIENT_SKIN, "with the library: the client's default skin")
+    assertEqual(b.skin.skin, "ka0s", "without it: Ka0s Default")
+    b.skin.skin = a.skin.skin
     sameShape(a, b, "")
     sameShape(b, a, "")
 end)

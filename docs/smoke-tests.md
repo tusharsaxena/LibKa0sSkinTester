@@ -19,12 +19,18 @@ its theme, and a retired number is never reused.
 | DEGRADED-1 | Degraded install | The library-absent load |
 | SHOW-1..51 | Showroom | The window, the swatch selector, the sections, position and scale, the textures, Ka0s Default's face and bar, the addon surfaces, the library widgets, the tooltip colors and art tints, the HUD faces, the faces and widths, FontFlags and HudFontSize, the icon samples, a stored pick of the deleted Friz, Ka0s Default's header, the icon outline colors, the window edge beside the HUD's, round 5's darker header, the header on its band, every window like Loot History's, the menu cascade |
 | PICKER-1..27 | First-run skin picker | When and where it shows, its title, preview, Apply, close, the gear, Apply to all, one window across addons, taking it down, combat, a preview meeting another write, the reload popup, the list closing on an outside press, the title on its band, the eye's window mode |
+| FOREVER-1..12 | WoW Forever | The checks re-run on a live WoW Forever client: the AddOns list, a clean load, the showroom and its sections, skins, the panel and its widgets, profiles across a full restart, the picker, the launcher and diagnostics |
 | LOC-1 | Non-English client | Locale-dependent behavior |
 
 ## Before you start
 
 Symlink the repo into `World of Warcraft\_retail_\Interface\AddOns\LibKa0sSkinTester` and fully
 restart the client: new font and texture files are only seen at client start.
+
+**Clients (clients-§6).** The addon serves Retail and WoW Forever. Every check outside the WoW Forever
+section runs on **Retail**, where its recorded result was taken. The **WoW Forever** section names the
+checks to re-run on a live **Forever** client; nothing in this addon is absent on either client, so there
+is no absence check.
 
 ## Install
 
@@ -603,6 +609,51 @@ restart the client: new font and texture files are only seen at client start.
 - **PICKER-25. The picker's title sits on its band (R5-RV; LibKa0s R5-L3).** `/st skin` in Ka0s Default, then WoW Midnight. → "Choose a skin" and the close mark are vertically centered on the window's title band. Fail: the title TOP-aligned above the band's middle, or the close mark off it. Result:
 - **PICKER-26. The picker's file runs at minor 11 (R6-RV; LibKa0s R6-L1).** `/st diagnostics`. → The identity header's Options line lists `OptionsSkinPicker 11`, not 10, with every other Ka0s addon loaded too (Outfitter's own copy stays at 10, and the client runs 11). Fail: `OptionsSkinPicker 10`, or a Lua error on load. Result:
 - **PICKER-27. The eye is the showroom: window mode (R6-PV; LibKa0s R6-L1; round 6, images 62, 63 and 66).** Close the showroom, then `/st skin`. → The showroom opens with the picker (the mode is the showroom window: this addon has no test mode and no unlock), and the picker stays in front of it; the eye is lit and its tooltip reads "Preview: the skin showroom is open. Click to close it." Click the eye. → The showroom closes, the eye dims and its tooltip reads "... is closed. Click to open it." Click it again. → The showroom opens, the eye lit. Close the picker with its close control. → The showroom closes again. Repeat with Escape, Apply, the gear and the launcher's Open skin selector entry followed by Apply: each close puts the showroom back to closed. Now open the showroom (`/st show`) and press its "Show the picker" button. → The showroom stays open and the eye is lit. Click the eye (the showroom closes), then close the picker. → The showroom opens again, as it was when the picker opened. With the picker up and the showroom open, close the showroom with its own close mark, then close the picker. → The showroom stays closed. `/reload` while the picker is up. → Nothing is left open: the showroom's shown state is not stored. Fail: the picker opening over a closed showroom, the eye only ever opening it, a showroom left open after a close that the picker or the eye opened, a showroom the player had open hidden by the close, or a Lua error. Result:
+
+## WoW Forever
+
+**Client: WoW Forever** (1.60.1, interface 16001), every check here. The rest of this file is Retail's;
+these checks re-run its core on Forever, which draws its own Blizzard frames and keeps its own `WTF`.
+A check fails on any Lua error.
+
+**Setup.** Link the checkout into the Forever client once, from an elevated Windows prompt, then fully
+restart the client:
+`mklink /d "G:\Games\Blizzard\World of Warcraft\_forever_\Interface\AddOns\LibKa0sSkinTester" "D:\Profile\Users\Tushar\Documents\GIT\LibKa0sSkinTester"`.
+Forever's SavedVariables are `_forever_/WTF/Account/<ACCOUNT>/SavedVariables/LibKa0sSkinTester.lua`.
+
+- **FOREVER-1. The AddOns list.** At character select → **Ka0s Skin Tester** is listed with its logo
+  and is **not** marked *Out of date*. Result: passed (owner, 2026-11-08)
+- **FOREVER-2. A clean first load.** With no `LibKa0sSkinTester.lua` in Forever's SavedVariables, log
+  in → no Lua error, the minimap button shows the fanned-swatch logo, and the first-run skin picker
+  shows as PICKER-1 describes. Result: passed (owner, 2026-11-08)
+- **FOREVER-3. The showroom.** `/st show` → the window opens centered, as SHOW-1. Scroll through every
+  section, Chrome to HUD faces → each draws, with no Lua error and no blank or white-square sample.
+  Result: passed (owner, 2026-11-08)
+- **FOREVER-4. Every skin.** Click each swatch card in turn → the showroom repaints in that skin each
+  time, its faces and textures included; WoW Forever's card draws Fira Sans. Result: passed (owner, 2026-11-08)
+- **FOREVER-5. Checkboxes and the color picker.** In the showroom's Controls and the panel's Sample
+  controls, tick and untick the checkboxes, a disabled one among them → each draws its check and its
+  grayed state, with no `SetDesaturation` error (the Ace3 CheckBox fix). Open a color swatch, set its
+  opacity to about 25% and accept → the sample is faint, not nearly opaque (the ColorPicker alpha fix).
+  Result: passed (owner, 2026-11-08)
+- **FOREVER-6. The panel.** Settings -> AddOns -> Ka0s Skin Tester → the landing page, as PANEL-1; open
+  General's tabs, Skin and Keybindings → each draws. Bare `/st` → the same landing page. Result: passed (owner, 2026-11-08)
+- **FOREVER-7. Profiles across a full restart.** Create a profile, give it another skin, then **exit the
+  client completely** and start it again → the same profile and skin are active, as PROFILE-1. The
+  Profiles page names this character's profile key with no error. Result: passed (owner, 2026-11-08)
+- **FOREVER-8. Position.** Drag the showroom, `/reload`, reopen → the same place, as SHOW-2. Result: passed (owner, 2026-11-08)
+- **FOREVER-9. The launcher.** Right-click the minimap button → the menu with **Enabled** and **Show
+  window**; **Show window** toggles the showroom. Result: passed (owner, 2026-11-08)
+- **FOREVER-10. Combat.** In combat, open the showroom and switch skins → as COMBAT-1 on Retail, with no
+  Lua error and no taint warning. Result: passed (owner, 2026-11-08)
+- **FOREVER-11. Enable and disable.** With the showroom open, untick Enable → it closes, as STATE-1;
+  tick it → `/st show` opens it again. Result: passed (owner, 2026-11-08)
+- **FOREVER-12. Diagnostics.** `/st debug`, then `/st diagnostics` → the console opens and the report's
+  `client:` line reads `version=1.60.1` and `interface=16001`, with no Lua error. Result: passed (owner, 2026-11-08)
+- **FOREVER-13. The default skin is WoW Forever.** Move `LibKa0sSkinTester.lua` out of Forever's
+  SavedVariables and log in → the first-run picker and `/st show` wear **WoW Forever**, its card
+  selected. On **Retail**, the same with Retail's SavedVariables → **Ka0s Default** (LibKa0s v1.94.0,
+  skinning-§2). Result: passed (owner, 2026-11-08)
 
 ## Non-English client
 

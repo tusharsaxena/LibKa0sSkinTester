@@ -1,4 +1,4 @@
-## Interface: 120105
+## Interface: 120105, 16001
 ## Title: Ka0s Skin Tester
 ## Notes: A showroom of everything a Ka0s skin can paint: pick a skin, see every element in it
 ## Author: add1kted2ka0s

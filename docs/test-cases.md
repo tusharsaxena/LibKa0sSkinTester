@@ -254,10 +254,15 @@ Total.
 - selector: the saved Scope is applied at load, and /st set moves one half
 - selector: a fresh profile skins this addon's settings panel (R4-ST1, a documented deviation)
 - selector: another addon's skin copy brings the skin, never the Scope (SF1-ST, keepScope)
-- selector: an unknown saved skin falls back to ka0s
+- selector: an unknown saved skin falls back to the client's default skin
 - selector: clicking the current card does nothing
 - selector: no EllesmereUI card and no copy button
 - selector: a source dropdown offers Ka0s skins and EllesmereUI (SF-ST-1)
+
+### test_skin_default.lua (2)
+
+- skin default: a fresh profile stores and wears the client's default skin
+- skin default: Reset puts the profile back on the client's default skin
 
 ### test_showroom.lua (27)
 
@@ -1044,6 +1049,12 @@ Total.
 - skin switch: hud: HudFont: HudTextColor, HudLabelColor, HudShadow changes
 - skin switch: hud: HudFont: HudTextColor, HudLabelColor, HudShadow changes with the Scope ignored
 
+### test_client_globals.lua (3)
+
+- client globals: no call of a global a client lacks
+- client globals: every allowlist row has a reason and a finding to excuse
+- client globals: the check is falsifiable, a planted bare call is flagged for both clients
+
 ## Totals
 
 | Suite | Cases |
@@ -1058,6 +1069,7 @@ Total.
 | test_settings.lua | 53 |
 | test_slash.lua | 20 |
 | test_selector.lua | 11 |
+| test_skin_default.lua | 2 |
 | test_showroom.lua | 27 |
 | test_showroom_coverage.lua | 6 |
 | test_showroom_dropdowns.lua | 8 |
@@ -1095,5 +1107,6 @@ Total.
 | test_lizard_sighted.lua | 8 |
 | test_skin_values.lua | 3 |
 | test_skin_switch.lua | 218 |
+| test_client_globals.lua | 3 |
 | Skipped | 1 |
-| **Total** | **894** |
+| **Total** | **899** |

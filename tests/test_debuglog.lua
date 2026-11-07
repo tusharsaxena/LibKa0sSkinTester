@@ -221,7 +221,7 @@ local function dirtyTwoRows(NS)
 end
 
 test("debuglog: RestoreAllDefaults logs one [Set] reset profile line counting the rows it changed (debug-logging-§10)", function()
-    local NS = T.bootAddon()
+    local NS = T.bootAddon{ clientDefault = true }   -- a pristine profile: the client's own default skin
     dirtyTwoRows(NS)
     NS.State.debug = true
     local setBefore = countLines(NS, "[Set]")
@@ -240,7 +240,7 @@ test("debuglog: RestoreAllDefaults logs one [Set] reset profile line counting th
 end)
 
 test("debuglog: RestoreAllDefaults on a pristine profile counts 0 rows (debug-logging-§10)", function()
-    local NS = T.bootAddon()
+    local NS = T.bootAddon{ clientDefault = true }   -- a pristine profile: the client's own default skin
     NS.State.debug = true
     local setBefore = countLines(NS, "[Set]")
     NS.addon.Settings.Helpers.RestoreAllDefaults()
@@ -267,7 +267,7 @@ end)
 -- overrides the library's, and the Defaults button goes through the popup rather than the library's
 -- per-page RestoreDefaults. It is wired anyway, so a future caller of either logs to debug-logging-§10.
 test("debuglog: the library's page reset is one [Set] line counting the rows it changed (debug-logging-§10)", function()
-    local NS = T.bootAddon()
+    local NS = T.bootAddon{ clientDefault = true }   -- a pristine profile: the client's own default skin
     dirtyTwoRows(NS)
     NS.State.debug = true
     local H = NS.addon.Settings.Helpers
@@ -283,7 +283,7 @@ test("debuglog: the library's page reset is one [Set] line counting the rows it 
 end)
 
 test("debuglog: an all-default page reset logs 0 rows, not a line per row (debug-logging-§10)", function()
-    local NS = T.bootAddon()
+    local NS = T.bootAddon{ clientDefault = true }   -- a pristine profile: the client's own default skin
     NS.State.debug = true
     local before = countLines(NS, "[Set]")
     NS.addon.Settings.Helpers.RestoreDefaults("general")

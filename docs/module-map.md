@@ -90,6 +90,7 @@ generated case inventory.
 | `tests/test_skin_media.lua` | The font and texture overrides (`skin.font`, `skin.texture`), written only through the skin write seam |
 | `tests/test_skin_outline.lua` | The font outline (`skin.outline`) |
 | `tests/test_selector.lua` | The swatch selector: one card per Ka0s skin, and a click that moves the showroom's skin |
+| `tests/test_skin_default.lua` | The default skin per client: a fresh profile stores and wears WoW Forever on Forever and Ka0s Default on Retail, and a reset lands on it |
 | `tests/test_showroom.lua` | The showroom window and its paint wrapper |
 | `tests/test_showroom_coverage.lua` | The showroom's claim: every name in the skin's vocabulary is on show |
 | `tests/test_showroom_dropdowns.lua` | The Controls section's dropdown row: every dropdown kind the collection draws |

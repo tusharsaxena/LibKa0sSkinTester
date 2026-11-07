@@ -9,6 +9,9 @@ local T = _G.SKINTESTER_TEST
 local test, assertEqual, assertTrue, assertFalse = T.test, T.assertEqual, T.assertTrue, T.assertFalse
 
 local OWNER = "LibKa0sSkinTester"
+-- The client's default skin under the active kit profile (LibKa0s v1.94.0, skinning-§2): WoW Forever
+-- on forever, Ka0s Default on retail. Pinned from the profile, never read back from the addon.
+local CLIENT_SKIN = dofile("tests/_kit/mock_client.lua").current() == "forever" and "forever" or "ka0s"
 
 local function lib(mock) return mock.LibStub("LibKa0s-Skin-1.0") end
 
@@ -115,13 +118,13 @@ test("selector: another addon's skin copy brings the skin, never the Scope (SF1-
     assertEqual(NS.addon.db.profile.skin.ignoreFonts, false)
 end)
 
-test("selector: an unknown saved skin falls back to ka0s", function()
+test("selector: an unknown saved skin falls back to the client's default skin", function()
     -- red under: an apply that hands the library any string (cleanSkin keeps every non-empty one).
     local NS, mock = bootWithSkin("nope")
     local _, skin = lib(mock):GetChoice(OWNER)
-    assertEqual(skin, "ka0s")
+    assertEqual(skin, CLIENT_SKIN)
     NS.Showroom.Show()
-    assertTrue(NS.Showroom.Selector().cards.ka0s.selected, "and the Default card reads selected")
+    assertTrue(NS.Showroom.Selector().cards[CLIENT_SKIN].selected, "and the default's card reads selected")
 end)
 
 test("selector: clicking the current card does nothing", function()

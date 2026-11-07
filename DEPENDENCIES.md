@@ -8,7 +8,8 @@ Every entry says what needs it and how that is known.
 
 ## Runtime (in-game) — what a player needs
 
-- **World of Warcraft (Retail).** Single `## Interface:` line in `LibKa0sSkinTester.toc`, Retail only.
+- **World of Warcraft, Retail or WoW Forever.** One unsuffixed `LibKa0sSkinTester.toc` whose `## Interface:` line
+  carries both clients' numbers, `120105, 16001`, Retail's first (toc-file-§3). One codebase serves both clients.
 - **Nothing else.** Every library is vendored under `libs/` and committed (library-stack), so no
   separate library addon is installed. `## OptionalDeps:` names the vendored libraries for load
   ordering, not as downloads.
