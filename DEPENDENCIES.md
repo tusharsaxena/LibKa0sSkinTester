@@ -12,6 +12,7 @@ Every entry says what needs it and how that is known.
 - **Nothing else.** Every library is vendored under `libs/` and committed (library-stack), so no
   separate library addon is installed. `## OptionalDeps:` names the vendored libraries for load
   ordering, not as downloads.
+  Ace3: WoWUIDev/Ace3@ac3d1225 (untagged master; LibKa0s#76).
 - **EllesmereUI, optional.** Named in `## OptionalDeps:` so it loads first when present; with it, the
   General -> Skin tab offers EllesmereUI as a skin source (the library's `SkinEUI.lua` checks
   for it). Without it the source is Ka0s skins only.
