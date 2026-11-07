@@ -11,7 +11,7 @@ capture ring, outside AceDB, written only by the harness).
 | `scale` | number | `1` | Master controls (composed) | The showroom's scale, 0.5 to 2 |
 | `alpha` | number | `1` | Master controls (composed) | The showroom's opacity |
 | `skin.source` | string | `ka0s` | Skin | `ka0s` or `eui` |
-| `skin.skin` | string | `ka0s` | Skin | Any registered Ka0s skin key; an unregistered one applies Ka0s Default |
+| `skin.skin` | string | `NS.DEFAULT_SKIN`: `forever` on WoW Forever, `ka0s` on Retail (LibKa0s v1.94.0, skinning-§2) | Skin | Any registered Ka0s skin key; an unregistered one applies the client's default |
 | `skin.font` | string | `""` | Skin (Font and texture) | A LibSharedMedia font key over the skin's own (`Skin:SetOverride`); `""` is the skin's own. No `values`: the keys are whatever media packs registered |
 | `skin.texture` | string | `""` | Skin (Font and texture) | A LibSharedMedia statusbar key for every bar of data; `""` is the skin's own |
 | `skin.outline` | string | `hud` | Skin (Font and texture) | The Font outline (`Skin:SetOutline`, LibKa0s v1.82.0; the default since v1.83.0): `hud` text only, `all` text, or `off`; Ignore fonts wins |

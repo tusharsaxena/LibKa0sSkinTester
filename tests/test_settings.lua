@@ -1,5 +1,8 @@
 -- tests/test_settings.lua — schema defaults, validation, Get/Set, reset.
 local T = _G.SKINTESTER_TEST
+-- The client's default skin under the active kit profile (LibKa0s v1.94.0, skinning-§2): WoW Forever
+-- on forever, Ka0s Default on retail. Pinned from the profile, never read back from the addon.
+local CLIENT_SKIN = dofile("tests/_kit/mock_client.lua").current() == "forever" and "forever" or "ka0s"
 local test, assertEqual, assertNil, assertTrue = T.test, T.assertEqual, T.assertNil, T.assertTrue
 
 test("settings: BuildDefaults threads profile + global defaults", function()
@@ -7,7 +10,7 @@ test("settings: BuildDefaults threads profile + global defaults", function()
     local d = NS.addon.Settings.BuildDefaults()
     assertEqual(d.profile.enabled, true)
     assertEqual(d.profile.scale, 1)
-    assertEqual(d.profile.skin.skin, "ka0s")
+    assertEqual(d.profile.skin.skin, CLIENT_SKIN, "WoW Forever on Forever, Ka0s Default on Retail")
     assertEqual(d.profile.skin.source, "ka0s")
     assertEqual(d.global.schemaVersion, 0)
 end)
@@ -759,7 +762,7 @@ local STORED_SETTINGS = {
     "skin.ignorePanel = bool|false|nil|nil|nil|skin|false",
     "skin.outline = string|hud|nil|nil|nil|skin|false",
     "skin.pickerSeen = bool|false|nil|nil|nil|skin|false",
-    "skin.skin = string|ka0s|nil|nil|nil|skin|false",
+    "skin.skin = string|" .. CLIENT_SKIN .. "|nil|nil|nil|skin|false",
     "skin.source = string|ka0s|nil|nil|nil|skin|false",
     "skin.texture = string||nil|nil|nil|skin|false",
     "state.debugConsole = bool|false|nil|nil|nil|general|true",

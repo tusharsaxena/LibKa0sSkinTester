@@ -622,34 +622,38 @@ restart the client:
 Forever's SavedVariables are `_forever_/WTF/Account/<ACCOUNT>/SavedVariables/LibKa0sSkinTester.lua`.
 
 - **FOREVER-1. The AddOns list.** At character select → **Ka0s Skin Tester** is listed with its logo
-  and is **not** marked *Out of date*. Result: owed
+  and is **not** marked *Out of date*. Result: passed (owner, 2026-11-08)
 - **FOREVER-2. A clean first load.** With no `LibKa0sSkinTester.lua` in Forever's SavedVariables, log
   in → no Lua error, the minimap button shows the fanned-swatch logo, and the first-run skin picker
-  shows as PICKER-1 describes. Result: owed
+  shows as PICKER-1 describes. Result: passed (owner, 2026-11-08)
 - **FOREVER-3. The showroom.** `/st show` → the window opens centered, as SHOW-1. Scroll through every
   section, Chrome to HUD faces → each draws, with no Lua error and no blank or white-square sample.
-  Result: owed
+  Result: passed (owner, 2026-11-08)
 - **FOREVER-4. Every skin.** Click each swatch card in turn → the showroom repaints in that skin each
-  time, its faces and textures included; WoW Forever's card draws Fira Sans. Result: owed
+  time, its faces and textures included; WoW Forever's card draws Fira Sans. Result: passed (owner, 2026-11-08)
 - **FOREVER-5. Checkboxes and the color picker.** In the showroom's Controls and the panel's Sample
   controls, tick and untick the checkboxes, a disabled one among them → each draws its check and its
   grayed state, with no `SetDesaturation` error (the Ace3 CheckBox fix). Open a color swatch, set its
   opacity to about 25% and accept → the sample is faint, not nearly opaque (the ColorPicker alpha fix).
-  Result: owed
+  Result: passed (owner, 2026-11-08)
 - **FOREVER-6. The panel.** Settings -> AddOns -> Ka0s Skin Tester → the landing page, as PANEL-1; open
-  General's tabs, Skin and Keybindings → each draws. Bare `/st` → the same landing page. Result: owed
+  General's tabs, Skin and Keybindings → each draws. Bare `/st` → the same landing page. Result: passed (owner, 2026-11-08)
 - **FOREVER-7. Profiles across a full restart.** Create a profile, give it another skin, then **exit the
   client completely** and start it again → the same profile and skin are active, as PROFILE-1. The
-  Profiles page names this character's profile key with no error. Result: owed
-- **FOREVER-8. Position.** Drag the showroom, `/reload`, reopen → the same place, as SHOW-2. Result: owed
+  Profiles page names this character's profile key with no error. Result: passed (owner, 2026-11-08)
+- **FOREVER-8. Position.** Drag the showroom, `/reload`, reopen → the same place, as SHOW-2. Result: passed (owner, 2026-11-08)
 - **FOREVER-9. The launcher.** Right-click the minimap button → the menu with **Enabled** and **Show
-  window**; **Show window** toggles the showroom. Result: owed
+  window**; **Show window** toggles the showroom. Result: passed (owner, 2026-11-08)
 - **FOREVER-10. Combat.** In combat, open the showroom and switch skins → as COMBAT-1 on Retail, with no
-  Lua error and no taint warning. Result: owed
+  Lua error and no taint warning. Result: passed (owner, 2026-11-08)
 - **FOREVER-11. Enable and disable.** With the showroom open, untick Enable → it closes, as STATE-1;
-  tick it → `/st show` opens it again. Result: owed
+  tick it → `/st show` opens it again. Result: passed (owner, 2026-11-08)
 - **FOREVER-12. Diagnostics.** `/st debug`, then `/st diagnostics` → the console opens and the report's
-  `client:` line reads `version=1.60.1` and `interface=16001`, with no Lua error. Result: owed
+  `client:` line reads `version=1.60.1` and `interface=16001`, with no Lua error. Result: passed (owner, 2026-11-08)
+- **FOREVER-13. The default skin is WoW Forever.** Move `LibKa0sSkinTester.lua` out of Forever's
+  SavedVariables and log in → the first-run picker and `/st show` wear **WoW Forever**, its card
+  selected. On **Retail**, the same with Retail's SavedVariables → **Ka0s Default** (LibKa0s v1.94.0,
+  skinning-§2). Result: owed
 
 ## Non-English client
 

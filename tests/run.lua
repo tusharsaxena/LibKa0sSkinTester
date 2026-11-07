@@ -27,9 +27,21 @@ local function newAddon(opts)
 end
 
 -- Fresh addon that has also run OnInitialize (db built, migrations run).
+-- THE SUITE'S BASELINE IS KA0S DEFAULT ON BOTH KIT PROFILES. Under forever the client's default skin
+-- is WoW Forever (LibKa0s v1.94.0, Skin minor 18; skinning-§2), and the showroom's cases pin Ka0s
+-- Default's values, so a boot whose profile stores no skin of its own wears Ka0s Default by name, as
+-- a Forever player who picked it would. `opts.clientDefault` keeps the client's default instead: the
+-- cases that pin what a fresh Forever profile wears (tests/test_skin_default.lua) boot with it. The
+-- profile here is always fresh (the loader wipes the SavedVariables); a case that seeds one calls
+-- OnInitialize itself and never comes through this boot.
 local function bootAddon(opts)
     local NS, env, m = newAddon(opts)
     NS.addon:OnInitialize()
+    local skin = NS.addon.db and NS.addon.db.profile and NS.addon.db.profile.skin
+    if not (opts and opts.clientDefault) and type(skin) == "table" and NS.DEFAULT_SKIN ~= "ka0s" then
+        skin.skin = "ka0s"
+        if NS.ApplySkinChoice then NS.ApplySkinChoice() end
+    end
     return NS, env, m
 end
 
@@ -178,6 +190,7 @@ Kit.run{
         "test_settings",
         "test_slash",
         "test_selector",
+        "test_skin_default",
         "test_showroom",
         "test_showroom_coverage",
         "test_showroom_dropdowns",

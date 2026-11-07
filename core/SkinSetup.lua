@@ -6,7 +6,9 @@ local addonName, NS = ...
 --                           and Token / Color / Resolve / OnLooksChanged. Every sample the showroom
 --                           draws is painted through it.
 --   NS.SkinChoice()         the stored (source, skin) pair, read through the schema runtime;
---                           "ka0s", "ka0s" before AceDB exists.
+--                           "ka0s" and NS.DEFAULT_SKIN before AceDB exists.
+--   NS.DEFAULT_SKIN         the client's default skin, Skin:DefaultSkin(): "forever" on WoW Forever,
+--                           "ka0s" on Retail and without the library.
 --   NS.WriteSkinChoice(s,k,i,m) the write seam: each half through the schema runtime's Set, the one
 --                           seam `/st set` and the panel write through (architecture-§5); `i`, the
 --                           Scope's `{ panel, fonts }`, writes the two exceptions; `m`, the font and
@@ -24,7 +26,7 @@ local addonName, NS = ...
 --   NS.ApplySkinChoice(s,k) moves the applied skin with Skin:SetChoice, which repaints every frame
 --                           recorded for this owner and then fires OnLooksChanged. No argument applies
 --                           the stored pair, the stored Scope and the stored overrides; a nil half keeps that half. A skin key no registered
---                           skin carries applies Ka0s Default: the library keeps any non-empty
+--                           skin carries applies the client's default skin: the library keeps any non-empty
 --                           string, and a hand-edited or stale profile must not wear a skin nobody
 --                           can pick.
 --   NS.SKIN_OPTIONS         the skin row's values, every registered skin in the library's order,
@@ -53,6 +55,9 @@ local PANEL_PATH, FONTS_PATH = "skin.ignorePanel", "skin.ignoreFonts"
 local FONT_PATH, TEXTURE_PATH = "skin.font", "skin.texture"
 local OUTLINE_PATH = "skin.outline"
 local DEFAULT = "ka0s"
+-- The client's default skin (LibKa0s v1.94.0, Skin minor 18; skinning-§2): WoW Forever on the Forever
+-- client, Ka0s Default on Retail. defaults/Profile.lua stores it, and a profile with no skin reads it.
+NS.DEFAULT_SKIN = (Skin and type(Skin.DefaultSkin) == "function") and Skin:DefaultSkin() or DEFAULT
 NS.SKIN_SOURCE_PATH, NS.SKIN_PATH = SOURCE_PATH, SKIN_PATH
 
 NS.SKIN_SOURCE_OPTIONS = {
@@ -89,8 +94,8 @@ local function runtime() return NS.SchemaRuntime end
 
 function NS.SkinChoice()
     local S = runtime()
-    if not (NS.addon and NS.addon.db and S) then return DEFAULT, DEFAULT end
-    return S.Get(SOURCE_PATH) or DEFAULT, S.Get(SKIN_PATH) or DEFAULT
+    if not (NS.addon and NS.addon.db and S) then return DEFAULT, NS.DEFAULT_SKIN end
+    return S.Get(SOURCE_PATH) or DEFAULT, S.Get(SKIN_PATH) or NS.DEFAULT_SKIN
 end
 
 function NS.WriteSkinChoice(source, skin, ignore, media)
@@ -256,7 +261,7 @@ end
 function NS.ApplySkinChoice(source, skin)
     local whole = source == nil and skin == nil
     if whole then source, skin = NS.SkinChoice() end
-    if skin ~= nil and not KNOWN[skin] then skin = DEFAULT end
+    if skin ~= nil and not KNOWN[skin] then skin = NS.DEFAULT_SKIN end
     local changed, reload = Skin:SetChoice(addonName, source, skin)
     if reload and NS.Print then NS.Print(RELOAD_LINE) end
     if whole then

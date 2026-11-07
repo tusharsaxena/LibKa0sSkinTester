@@ -11,7 +11,7 @@ NS.C = {
     alpha   = 1,             -- the showroom's opacity (0 .. 1)
     skin = {
         source = "ka0s",     -- where the look comes from: Ka0s skins, or EllesmereUI
-        skin   = "ka0s",     -- the Ka0s skin worn, and so shown in the showroom
+        skin   = NS.DEFAULT_SKIN or "ka0s", -- the Ka0s skin worn: WoW Forever on Forever, else Ka0s Default
         -- The Scope: OFF here, so the showroom's "(Scope: panel)" samples and the settings pages wear
         -- the skin. An accepted deviation from skinning-§3/§9 (owner ruling of 2026-11-03, R4-ST1;
         -- docs/ARCHITECTURE.md, Documented deviations). No migration: a stored value is kept.
