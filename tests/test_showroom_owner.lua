@@ -146,15 +146,15 @@ test("addon surfaces: the TreeGroup follows the Scope's settings-panel half, liv
     local NS, mock, sec = opened()
     local Skin = lib(mock)
     assertEqual(sec.tree.type, "TreeGroup")
-    -- R4-ST1: this addon's Scope leaves the panel skinned by default (a documented deviation).
+    -- QFE-ST2: a new profile ignores the panel (skinning-§3), so the tree starts the client's.
     local st = Skin.__ace[sec.tree]
-    assertTrue(st ~= nil and st.owner == OWNER, "painted for this owner by default")
-    NS.ApplySkinIgnore(true, nil)
-    st = Skin.__ace[sec.tree]
-    assertTrue(st == nil or st.owner ~= OWNER, "handed back while the panel is ignored")
+    assertTrue(st == nil or st.owner ~= OWNER, "the client's by default: Ignore settings panel is on")
     NS.ApplySkinIgnore(false, nil)
     st = Skin.__ace[sec.tree]
-    assertTrue(st ~= nil and st.owner == OWNER, "painted again once the Scope is cleared")
+    assertTrue(st ~= nil and st.owner == OWNER, "painted for this owner once the Scope is cleared")
+    NS.ApplySkinIgnore(true, nil)
+    st = Skin.__ace[sec.tree]
+    assertTrue(st == nil or st.owner ~= OWNER, "handed back while the panel is ignored again")
 end)
 
 test("addon surfaces: the TreeGroup keeps its 120 height and shows a page (R4-ST2)", function()

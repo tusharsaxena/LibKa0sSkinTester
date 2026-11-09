@@ -15,7 +15,7 @@ capture ring, outside AceDB, written only by the harness).
 | `skin.font` | string | `""` | Skin (Font and texture) | A LibSharedMedia font key over the skin's own (`Skin:SetOverride`); `""` is the skin's own. No `values`: the keys are whatever media packs registered |
 | `skin.texture` | string | `""` | Skin (Font and texture) | A LibSharedMedia statusbar key for every bar of data; `""` is the skin's own |
 | `skin.outline` | string | `hud` | Skin (Font and texture) | The Font outline (`Skin:SetOutline`, LibKa0s v1.82.0; the default since v1.83.0): `hud` text only, `all` text, or `off`; Ignore fonts wins |
-| `skin.ignorePanel` | bool | `false` | Skin (Scope) | Leave this addon's settings pages the client's (`Skin:SetIgnore`); off by default here, a documented deviation from skinning-§3 (R4-ST1) |
+| `skin.ignorePanel` | bool | `true` | Skin (Scope) | Leave this addon's settings pages and the showroom's "(Scope: panel)" samples the client's (`Skin:SetIgnore`); on by default, as skinning-§3 has it (QFE-ST2, retiring R4-ST1's off). A stored value is kept |
 | `skin.ignoreFonts` | bool | `false` | Skin (Scope) | Leave every font the client's; the skin still colors text, and a font override has no effect |
 | `skin.pickerSeen` | bool | `false` | none (skip-render) | The first-run skin picker was closed on this profile (Apply, the gear, the close control, Escape, or another addon's Apply to all); set by its `onClose` |
 

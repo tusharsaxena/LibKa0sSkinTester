@@ -11,7 +11,7 @@ its theme, and a retired number is never reused.
 |---|---|---|
 | INSTALL-1..3 | Install | Load, reload, first run |
 | SLASH-1..6 | Slash commands | `/st`, `/skintester`, help, the disabled refusal, a foreign `/st`, `/st skin`, `/st widths` |
-| PANEL-1..20 | Settings panel | Landing page, General's tabs, Skin, Keybindings, the Scope, Font and texture, the settings chrome's face and tooltips, the Font outline, the media pickers, a dropdown list closing on an outside press, no Sim mode box, the Scope kept through another addon's copy |
+| PANEL-1..21 | Settings panel | Landing page, General's tabs, Skin, Keybindings, the Scope, Font and texture, the settings chrome's face and tooltips, the Font outline, the media pickers, a dropdown list closing on an outside press, no Sim mode box, the Scope kept through another addon's copy, the settings panel in the game's look by default |
 | PROFILE-1..3 | Profiles | The Profiles page and the `profile` verb |
 | STATE-1..2 | Enable and disable | The stand-down and its refusal |
 | COMBAT-1..2 | Combat | The showroom and the panel in combat |
@@ -85,11 +85,10 @@ is no absence check.
   back. → The page follows. (Amended by FS-ST-FIX, 2026-11-01: the four companions; the pass of
   2026-10-31 was against the old rows.) Result: Failed (owner, 2026-11-02): re-opened as R3-L1
 - **PANEL-6. The Scope.** On a fresh profile open General -> Skin with the showroom open. →
-  Neither Ignore settings panel nor Ignore fonts is ticked (this addon defaults the panel half off,
-  a documented deviation, R4-ST1); the settings pages and the showroom wear the skin. Tick Ignore
-  settings panel. → The settings pages go to the client's look at once, no reload; untick it → they
-  take the skin again. Pick Azeroth and tick Ignore fonts. → The showroom's Open Sans text and titles go
-  back to the game's fonts at once and keep the skin's colors. `/reload`. → Both ticks are as you left them. (Amended by R4-ST1, 2026-11-03: the new default; the pass of 2026-11-02 was against the old one.) Result:
+  Ignore settings panel is ticked and Ignore fonts is not (QFE-ST2, skinning-§3); the settings pages
+  are in the client's look and the showroom wears the skin. Untick Ignore settings panel. → The
+  settings pages take the skin at once, no reload; tick it → they go back to the client's look. Pick Azeroth and tick Ignore fonts. → The showroom's Open Sans text and titles go
+  back to the game's fonts at once and keep the skin's colors. `/reload`. → Both ticks are as you left them. (Amended by R4-ST1, 2026-11-03: the new default; the pass of 2026-11-02 was against the old one. Amended again by QFE-ST2, 2026-11-10: the panel half starts ticked again.) Result:
 - **PANEL-7. Font and texture rows.** Open General -> Skin. → A "Font and texture" section between
   the skins and the Scope, with a Font and a Texture dropdown. Each list starts with "Skin's default
   (<key>)" naming the current skin's own font or texture, then every font or statusbar texture
@@ -106,7 +105,7 @@ is no absence check.
   here, press "Copy to every Ka0s addon..." and confirm. → Loot History's Skin tab shows the same
   skin, font, texture and Scope, and its window wears them. Result: pass (owner-marked 2026-10-30)
 - **PANEL-11. The settings rows' tooltips (ST-01; LibKa0s v1.81.0, LK-06d).** On General -> Skin,
-  with Ignore settings panel unticked (the tester's default since R4-ST1), pick Glass. Hover a row's label on any of the tester's pages → its
+  with Ignore settings panel unticked (a new profile has it ticked since QFE-ST2, so clear it first), pick Glass. Hover a row's label on any of the tester's pages → its
   tooltip title is white, Glass's `gtip.value`. Tick Ignore settings panel and hover it again → the
   client's own tooltip title color. The tester's pages draw no nav rail and no drawer, so LK-06c's
   hover art and chevron are checked on the showroom's Library widgets samples (SHOW-22), which wear
@@ -151,7 +150,7 @@ is no absence check.
   texture picker comes alive on Ka0s Default. A background picker and A sound picker carry no
   companion, because no skin token names one. Fail: a grayed row showing a value that is not the
   skin's, or a live row with its companion ticked. Result: Passed (owner, 2026-11-02)
-- **PANEL-16. The tester skins its own panel by default (R4-ST1, owner ruling of 2026-11-03).** With
+- **PANEL-16. The tester skins its own panel by default (R4-ST1, owner ruling of 2026-11-03).** **Retired by QFE-ST2 (2026-11-10): the owner's ruling R8 puts the default back to ticked; PANEL-21 checks the new one. Nothing to run, and the number is not reused.** Was: With
   no profile reset, `/reload` and open General -> Skin. → Ignore settings panel is unticked. Open the
   showroom on Controls under Ka0s Default, then Obsidian and Glass. → AceGUI Dropdown, Ka0sMedia_Font
   and Ka0sMedia_Statusbar (images 2 and 3 of round 4) and the Addon surfaces TreeGroup wear the skin.
@@ -187,8 +186,8 @@ is no absence check.
   a moved or missing Master controls row, or a Lua error. Result:
 - **PANEL-20. Another addon's copy leaves this addon's Scope alone (SF1-ST; LibKa0s v1.90.0, SF1-L2;
   the run bundle's SM-10).** With Ka0s Loot History (or any other Ka0s addon) loaded, tick Ignore
-  settings panel in that addon's Skin tab, and check this addon's General -> Skin shows Ignore settings
-  panel unticked. In the other addon, pick Obsidian and press "Apply to all Ka0s addons" in its skin
+  settings panel in that addon's Skin tab, and untick Ignore settings panel on this addon's General ->
+  Skin (a new profile has it ticked since QFE-ST2, so clear it first). In the other addon, pick Obsidian and press "Apply to all Ka0s addons" in its skin
   picker (`/<its slash> skin`). → This addon wears Obsidian, and its Ignore settings panel and Ignore
   fonts boxes are as they were (unticked); open the showroom on Controls → the three "PaintAce (Scope:
   panel)" cells (AceGUI Dropdown, Ka0sMedia_Font, Ka0sMedia_Statusbar) and the TreeGroup wear Obsidian.
@@ -196,6 +195,20 @@ is no absence check.
   moves, the boxes and the painted cells stay. Then from this addon's own Skin tab, copy to every Ka0s
   addon. → The other addon takes this addon's Scope as before. Fail: either box ticked here after a copy
   from the other addon, a stock "(Scope: panel)" cell, the skin not arriving, or a Lua error. Result:
+- **PANEL-21. Only the showroom window wears the skin on a fresh profile (QFE-ST2; owner ruling R8 of
+  2026-11-10).** Create a new profile on the Profiles page (or reset this one) and `/reload`. Close
+  the first-run skin picker with Apply on Obsidian. → General -> Skin shows Ignore settings panel
+  ticked and Ignore fonts unticked. Every page of Settings -> AddOns -> Ka0s Skin Tester (the landing
+  page, General's tabs, Profiles) is in the game's own look: stock checkboxes, dropdowns, tabs and
+  tooltip colors. `/st show` → the showroom window wears Obsidian, and its "(Scope: panel)" cells on
+  Controls (AceGUI Dropdown, Ka0sMedia_Font, Ka0sMedia_Statusbar) and the Addon surfaces TreeGroup are
+  in the game's look. Untick Ignore settings panel. → The settings pages and those four cells take
+  Obsidian at once, no reload; tick it → they go back. Untick it once more and exit the client
+  completely, then start it again. → It is still unticked (a stored choice is kept). A profile from
+  before this change takes the ticked default unless it had stored the box ticked: AceDB never stored
+  the old unticked default. Fail:
+  a skinned settings page or "(Scope: panel)" cell on the fresh profile, a showroom window in the
+  game's look, a toggle that needs a reload, or a stored unticked box flipped back on. Result:
 
 ## Profiles
 
@@ -204,7 +217,7 @@ is no absence check.
 - **PROFILE-2. The verb.** `/st profile`, then `/st profile <name>`. → Lists, then switches.
   Result: pass (owner-marked 2026-10-30)
 - **PROFILE-3. The delete confirmation (FS-ST-FIX, cause A4; LibKa0s v1.85.0).** With two profiles,
-  with Ignore settings panel unticked (the tester's default since R4-ST1), pick Obsidian, open Profiles and press Delete a Profile on the spare
+  with Ignore settings panel unticked (a new profile has it ticked since QFE-ST2, so clear it first), pick Obsidian, open Profiles and press Delete a Profile on the spare
   one. → The confirmation wears Obsidian; nothing else on the page moved. Cancel it, tick Ignore
   settings panel and press Delete again. → The stock box. Open another, non-Ka0s addon's Ace dialog
   that raises the same box. → Stock under every setting. Fail: a Ka0s box stock with the panel skinned,
@@ -263,7 +276,7 @@ is no absence check.
 - **SHOW-39. The icon samples zoom and wear a 1 px outline (R3-L3; LibKa0s R3-L3).** With the re-vendored LibKa0s, `/st show` in Ka0s Default, then Azeroth, WoW Default and Obsidian. → The Overlays IconBorder sample and Controls' SquareIcon (crop) + IconBorder (the Addon surfaces duplicate is gone, R4-ST3) each show the question-mark icon zoomed in, its own art edge gone, inside a 1 px outline in the skin's icon outline color (icon.outline since R4-L3, SHOW-46), the same thickness in every skin. Fail: the icon's own gray frame showing inside the outline, a 2 px edge in Ka0s Default, Azeroth or WoW Midnight, or a tooltip-style edge in WoW Default. Result: not run
 - **SHOW-40. A stored pick of the deleted Friz lands on Ka0s Ubuntu (R3-FRIZ).** Before you update, set General's A font picker to Ka0s Friz Quadrata TT and log out. Install the re-vendored build and fully restart the client (a new font file), then `/st show` and open the settings panel. → A font picker reads Ka0s Ubuntu, drawn in Ubuntu, and `/dump LibKa0sSkinTesterDB.global.schemaVersion` prints 2. A profile that picked Blizzard's own Friz Quadrata TT keeps it. Fail: the picker empty, on the game's default face, or still naming Ka0s Friz Quadrata TT. Result: not run
 - **SHOW-41. The zoom keeps a tighter crop, and the outline stays 1 px after a scale change (R3-FIX; LibKa0s R3-FIX).** `/st show`, Controls, in Obsidian: look at SquareIcon (crop) + IconBorder, then switch skins twice. → Its icon stays cropped as tightly as SquareIcon left it (no more of the art's edge showing after a switch), inside a 1 px outline. Then change Options → Graphics → UI Scale and come back. → Every IconBorder outline and FadeNineSlice edge in the showroom is still exactly 1 px. Fail: the art's own edge creeping back in after a switch, or a 2 px or blurred edge after the scale change. Result: not run
-- **SHOW-42. The TreeGroup sample keeps its height and shows a page (R4-ST2; round 4, images 4-7).** `/st show`, Addon surfaces, the "TreeGroup via PaintAce (Scope: panel)" cell, in each of the nine skins with Ignore settings panel unticked (the sample skinned, the default here), then again with it ticked (the client's look). → Both boxes are the full 120 tall, side by side; General, Skin, Strings and About sit inside the left box; the right box reads "The General page". Fail: either box collapsed to a thin strip, a row hanging below the boxes, or an empty right pane. Result:
+- **SHOW-42. The TreeGroup sample keeps its height and shows a page (R4-ST2; round 4, images 4-7).** `/st show`, Addon surfaces, the "TreeGroup via PaintAce (Scope: panel)" cell, in each of the nine skins with Ignore settings panel unticked (the sample skinned; a new profile has it ticked since QFE-ST2), then again with it ticked (the client's look). → Both boxes are the full 120 tall, side by side; General, Skin, Strings and About sit inside the left box; the right box reads "The General page". Fail: either box collapsed to a thin strip, a row hanging below the boxes, or an empty right pane. Result:
 - **SHOW-43. One IconBorder sample in Overlays, none beside the caution box (R4-ST3; round 4, image 22).** `/st show` in Ka0s Default, then Obsidian. → Overlays shows its "IconBorder, fromSkin" sample beside ApplyBarFill, and Controls shows SquareIcon (crop) + IconBorder; in Addon surfaces the "Waiting for the pull" box is followed by the next row (the TreeGroup), with no icon cell beside it. Fail: an icon border cell beside the Waiting for the pull box, or either remaining sample missing. Result:
 - **SHOW-44. The showroom's title band is painted once (R4-ST4).** `/st show` in Glass, then Ka0s Default and Obsidian, and compare the title band with Drop Watcher's or Loot History's window in the same skin. → The band is the same strength in all of them; Glass's reads as a faint white wash (title.bg at 0.10), not a noticeably brighter strip. Fail: the showroom's band clearly brighter or more opaque than another Ka0s window's in the same skin. Result:
 - **SHOW-45. Ka0s Default's header is the dark gold band (R4-L2; LibKa0s R4-L2; owner's mockup option E).** With the re-vendored LibKa0s, `/st show` in Ka0s Default. → The showroom's title band is a dark gold gradient, lighter at the top than at the bottom, with no line under it, and the Ka0s Default card's second swatch is the same dark gold, not black. (Option E's shade is retired by R5-L1; SHOW-48 checks round 5's darker one.) Fail: a black or near-black band, a flat band where the other Ka0s windows show the gradient, or a black second swatch. Result:
@@ -348,10 +361,11 @@ is no absence check.
   is in Ka0s Default's colors again, never the client's frame. Clicking its close button does
   nothing. Fail: a sample in another skin's colors, the client's settings-window frame showing under
   any skin, or an error. (Since 2026-11-03 the section has no icon border, R4-ST3, and its
-  TreeGroup starts skinned, R4-ST1; the pass of 2026-10-30 stands for the rest.) Result: pass (owner-marked 2026-10-30)
+  TreeGroup started skinned from R4-ST1 until QFE-ST2 put it back to the client's look on a new
+  profile; the pass of 2026-10-30 stands for the rest.) Result: pass (owner-marked 2026-10-30)
 - **SHOW-18. The TreeGroup follows the Scope (ST-01).** With the showroom open on Addon surfaces,
   open General -> Skin, set Scope -> Ignore settings panel, then clear it (a new profile has it
-  clear in this addon, R4-ST1). → The TreeGroup sample repaints at once: both panes in the skin's navigation fill and edge, the row labels in the skin's navigation
+  set, QFE-ST2). → The TreeGroup sample repaints at once: both panes in the skin's navigation fill and edge, the row labels in the skin's navigation
   text and body font, the selected row (General) tinted. Click a row → the selection moves and stays
   tinted. Click Glass → it follows. Set Ignore settings panel again → the TreeGroup is stock again.
   Fail: a TreeGroup that needs a reload to change, a row that loses its paint after a click, or a
@@ -438,8 +452,8 @@ is no absence check.
   Prototype, Ka0s Default), and no LSM30 cell anywhere. The first two wear
   Obsidian's input fill and edge, with a small down arrow in its arrow color and no gold button; hover
   and open the WowStyle1 one → it stays that way, and its list is the client's own, as its caption
-  says. AceGUI Dropdown and the two pickers wear the skin too, because a new profile has Scope ->
-  Ignore settings panel clear in this addon (R4-ST1). Open General -> Skin, tick Scope -> Ignore
+  says. AceGUI Dropdown and the two pickers wear the skin too once Scope -> Ignore settings panel is
+  clear (a new profile has it set since QFE-ST2). Open General -> Skin, tick Scope -> Ignore
   settings panel → those three go to the client's stock look; clear it. → Those three repaint at once
   like the first two (LibKa0s R3-L1): the
   skin's input fill and edge, the text left-aligned, one chevron in the skin's arrow color and no gold
@@ -602,7 +616,7 @@ is no absence check.
 - **PICKER-21. Apply to all carries them,** with a second Ka0s addon loaded. Pick a skin, font,
   texture, outline and scope, then Apply to all. → The second addon wears all of them, and its Skin
   tab shows them after a `/reload`. Result: Owner reported pass, 2026-10-31
-- **PICKER-22. Ignore settings panel on.** Tick it in the picker (it starts unticked in this addon, R4-ST1). → The picker's own rows keep the
+- **PICKER-22. Ignore settings panel on.** Untick it in the picker if a new profile shows it ticked (the default since QFE-ST2), then tick it. → The picker's own rows keep the
   skin, as the window does; the settings pages go to the game's look. Result: Owner reported pass, 2026-10-31
 - **PICKER-23. Combat.** Start combat with the picker up, then change a row. → Refused, the row reads
   what is worn, one gray line. A picker raised in combat draws its rows disabled. Result: Owner reported pass, 2026-10-31
@@ -802,3 +816,12 @@ PANEL-15, which ran only on that page; their numbers are not reused and their re
 record. PANEL-17 moves to the Skin tab's dropdowns and FOREVER-5 to the General page's checkboxes;
 the checkbox half is unchanged and its color swatch half has nowhere left to run, so FOREVER-5's pass stands as the record. The showroom window's settings-panel
 samples are untouched.
+
+QFE-ST2 of the same run (2026-11-10, the owner's ruling R8) puts Ignore settings panel back on by
+default, as skinning-§3 has it, and keeps the toggle: a new profile shows the tester's settings
+pages and the showroom's "(Scope: panel)" samples in the game's look and skins only the showroom
+window. It retires R4-ST1's deviation, retires PANEL-16, which checked the old default, adds
+PANEL-21 and re-opens PANEL-6, whose starting state changed. The other steps that said the box starts
+unticked now say to clear it first; what they check is unchanged, so their results stand. A box
+ticked or unticked from now on is stored and kept; a profile from before the change that left the box
+at the old unticked default takes the new one, since AceDB never stored the old default.

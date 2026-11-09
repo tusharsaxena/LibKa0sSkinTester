@@ -246,14 +246,15 @@ Total.
 - slash: a foreign /st is reported once and left alone
 - slash: with no foreign /st, nothing is said and both commands stay
 
-### test_selector.lua (11)
+### test_selector.lua (12)
 
 - selector: one card per Ka0s skin, in Skins() order
 - selector: clicking a card applies and saves the skin
 - selector: a pick made elsewhere moves the selection
 - selector: the saved skin is applied at load
 - selector: the saved Scope is applied at load, and /st set moves one half
-- selector: a fresh profile skins this addon's settings panel (R4-ST1, a documented deviation)
+- selector: a fresh profile leaves this addon's settings panel the game's (QFE-ST2, skinning-§3)
+- selector: a stored Ignore settings panel off is kept (QFE-ST2)
 - selector: another addon's skin copy brings the skin, never the Scope (SF1-ST, keepScope)
 - selector: an unknown saved skin falls back to the client's default skin
 - selector: clicking the current card does nothing
@@ -1055,7 +1056,7 @@ Total.
 | test_database.lua | 12 |
 | test_settings.lua | 54 |
 | test_slash.lua | 20 |
-| test_selector.lua | 11 |
+| test_selector.lua | 12 |
 | test_skin_default.lua | 2 |
 | test_showroom.lua | 27 |
 | test_showroom_coverage.lua | 6 |
@@ -1095,4 +1096,4 @@ Total.
 | test_skin_switch.lua | 218 |
 | test_client_globals.lua | 3 |
 | Skipped | 1 |
-| **Total** | **889** |
+| **Total** | **890** |

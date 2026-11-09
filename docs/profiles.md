@@ -6,8 +6,7 @@ AceDBOptions' controls (`settings/Profiles.lua`), and `/st profile [name]` lists
 ## What a profile holds
 
 Everything in [`schema.md`](./schema.md)'s Profile table: `enabled`, the showroom's scale and
-opacity, the skin (`skin.source`, `skin.skin`, its Scope, `skin.ignorePanel` (off by default in this
-addon, a documented deviation, R4-ST1) and `skin.ignoreFonts`, its overrides, `skin.font` and `skin.texture`, and its Font outline,
+opacity, the skin (`skin.source`, `skin.skin`, its Scope, `skin.ignorePanel` (on by default) and `skin.ignoreFonts`, its overrides, `skin.font` and `skin.texture`, and its Font outline,
 `skin.outline`) and `skin.pickerSeen`. So a profile can carry
 a skin: switching profiles switches the skin the showroom shows.
 

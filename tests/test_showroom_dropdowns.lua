@@ -86,12 +86,12 @@ test("controls: AceGUI's Dropdown is in its cell and follows the Scope's panel h
     local w = sec.aceDropdown
     assertEqual(w.type, "Dropdown")
     assertInCell(w.frame, "the AceGUI dropdown", sec)
-    -- R4-ST1: this addon's Scope leaves the panel skinned by default (a documented deviation).
-    assertTrue(owned(mock, w), "painted by default: the tester's Scope leaves the panel skinned")
-    NS.ApplySkinIgnore(true, nil)
-    assertTrue(not owned(mock, w), "handed back while the panel is ignored")
+    -- QFE-ST2: a new profile ignores the panel (skinning-§3), so the cell starts the client's.
+    assertTrue(not owned(mock, w), "the client's by default: Ignore settings panel is on")
     NS.ApplySkinIgnore(false, nil)
-    assertTrue(owned(mock, w), "painted again once the Scope is cleared")
+    assertTrue(owned(mock, w), "painted once the Scope is cleared")
+    NS.ApplySkinIgnore(true, nil)
+    assertTrue(not owned(mock, w), "handed back while the panel is ignored again")
 end)
 
 test("controls: the media pickers are the library's types, painted and handed back like the Dropdown", function()
@@ -102,8 +102,10 @@ test("controls: the media pickers are the library's types, painted and handed ba
     assertEqual(bar.type, "Ka0sMedia_Statusbar")
     for name, w in pairs({ font = font, bar = bar }) do
         assertInCell(w.frame, name, sec)
-        assertTrue(owned(mock, w), name .. " painted by default (R4-ST1)")
+        assertTrue(not owned(mock, w), name .. " the client's by default (QFE-ST2)")
     end
+    NS.ApplySkinIgnore(false, nil)
+    assertTrue(owned(mock, font) and owned(mock, bar), "painted once the Scope is cleared")
     NS.ApplySkinIgnore(true, nil)
     assertTrue(not owned(mock, font), "handed back")
 end)
