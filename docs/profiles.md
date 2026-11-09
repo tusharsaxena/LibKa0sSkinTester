@@ -8,7 +8,7 @@ AceDBOptions' controls (`settings/Profiles.lua`), and `/st profile [name]` lists
 Everything in [`schema.md`](./schema.md)'s Profile table: `enabled`, the showroom's scale and
 opacity, the skin (`skin.source`, `skin.skin`, its Scope, `skin.ignorePanel` (off by default in this
 addon, a documented deviation, R4-ST1) and `skin.ignoreFonts`, its overrides, `skin.font` and `skin.texture`, and its Font outline,
-`skin.outline`), `skin.pickerSeen` and the Sample controls rows (`sample.*`). So a profile can carry
+`skin.outline`) and `skin.pickerSeen`. So a profile can carry
 a skin: switching profiles switches the skin the showroom shows.
 
 ## What survives a switch, a copy or a reset

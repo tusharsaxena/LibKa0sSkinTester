@@ -247,8 +247,7 @@ local O = lib:New({
 
     -- One page, so the page key is ignored and every row belongs to it. `filter` (ctx.unit) is
     -- never set: this addon has no per-unit pages.
-    -- A row with no `page` is the General page's (the skin rows); the Sample controls rows carry
-    -- page = "sample" and draw only there.
+    -- A row with no `page` is the General page's (the skin rows); no row of this addon carries one.
     rowsForPage = function(pageKey)
         local out = {}
         for _, row in ipairs(Settings.Schema) do
@@ -258,8 +257,8 @@ local O = lib:New({
     end,
     allRows     = function() return Settings.Schema end,
 
-    -- For LSMValues (the Sample controls page's five media pickers) and the font preload every
-    -- panel show runs, which a font picker's rows rely on to draw their faces first time.
+    -- For the font preload every panel show runs, which the Skin tab's Font and Texture menus rely
+    -- on to draw their faces first time.
     getLSM      = function() return LibStub and LibStub("LibSharedMedia-3.0", true) end,
 
     -- Runs once, before the page builders. settings/Schema.lua's own shape check, which PRINTS its
@@ -300,10 +299,9 @@ local O = lib:New({
     -- Deliberately NOT passed, each for a reason worth writing down rather than leaving as an
     -- absence:
     --
-    --   colorDecode / colorEncode — the one color row, sample.color, stores the library's default
-    --     {r,g,b,a} shape, so there is no other shape to declare.
-    --   scheduleTimer             — the sliders are release-only, and the color drag it would
-    --     throttle only writes sample.color, which changes nothing.
+    --   colorDecode / colorEncode — this addon has no color row, so there is no shape to declare.
+    --   scheduleTimer             — the sliders are release-only, and there is no color drag for
+    --     it to throttle.
     --   afterRestoreAll — the global reset is host-owned (see below), so the library's
     --     RestoreAllDefaults is not on the path, and nothing sits outside both the profile and
     --     the schema for a hook to restore.

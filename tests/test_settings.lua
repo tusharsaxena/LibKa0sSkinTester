@@ -211,7 +211,7 @@ test("settings: a broken row does not stop the panel registering", function()
     local S = NS.addon.Settings.Schema
     S[#S + 1] = { type = "vector", label = 42 }
     NS.addon.Settings.Register()
-    assertEqual(#mock.categories, 3,
+    assertEqual(#mock.categories, 2,
         "a bad row is an author bug: report it, but still ship the panel")
 end)
 
@@ -580,10 +580,21 @@ test("settings: every row's group is one of the designed tabs", function()
     -- The partition case above pins the counts; this one pins the NAMES, so a typo'd group on a
     -- new row reads as "Notificatons is not a tab" rather than as a count that happens to still add up.
     local NS = T.newAddon()
-    local known = { ["Master controls"] = true, Appearance = true, ["Sample controls"] = true }
+    local known = { ["Master controls"] = true, Appearance = true }
     for _, row in ipairs(NS.addon.Settings.Schema) do
         assertTrue(known[row.group] == true, row.path .. " is filed under " .. tostring(row.group))
     end
+end)
+
+test("settings: there is no Sample controls page and no sample row (QFE-ST1)", function()
+    -- red under: the retired page's rows, or its canvas, still registered.
+    local NS, _, mock = T.enableAddon()
+    for _, row in ipairs(NS.addon.Settings.Schema) do
+        assertTrue(row.page ~= "sample", row.path .. " is on the retired sample page")
+        assertTrue(not tostring(row.path):find("^sample%."), row.path .. " is a retired sample row")
+    end
+    assertTrue(NS.C.sample == nil, "no sample defaults")
+    assertTrue(mock.frames["LibKa0sSkinTesterSamplePanel"] == nil, "no Sample controls canvas")
 end)
 
 -- ---------------------------------------------------------------------------
@@ -742,20 +753,6 @@ local STORED_SETTINGS = {
     "alpha = number|1|0|1|0.05|general|false",
     "enabled = bool|true|nil|nil|nil|general|false",
     "global.minimap.shown = bool|true|nil|nil|nil|general|false",
-    "sample.background = string|Blizzard Tooltip|nil|nil|nil|sample|false",
-    "sample.border = string|Blizzard Tooltip|nil|nil|nil|sample|false",
-    "sample.borderFromSkin = bool|true|nil|nil|nil|sample|false",
-    "sample.checked = bool|true|nil|nil|nil|sample|false",
-    "sample.color = color|0.2,0.6,1,1|nil|nil|nil|sample|false",
-    "sample.colorFromSkin = bool|true|nil|nil|nil|sample|false",
-    "sample.font = string|Ka0s Prototype|nil|nil|nil|sample|false",
-    "sample.fontFromSkin = bool|true|nil|nil|nil|sample|false",
-    "sample.mode = string|medium|nil|nil|nil|sample|false",
-    "sample.size = number|5|1|10|1|sample|false",
-    "sample.sound = string|None|nil|nil|nil|sample|false",
-    "sample.statusbar = string|Ka0s Default|nil|nil|nil|sample|false",
-    "sample.statusbarFromSkin = bool|true|nil|nil|nil|sample|false",
-    "sample.useClassColor = bool|false|nil|nil|nil|sample|false",
     "scale = number|1|0.5|2|0.05|general|false",
     "skin.font = string||nil|nil|nil|skin|false",
     "skin.ignoreFonts = bool|false|nil|nil|nil|skin|false",

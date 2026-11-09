@@ -28,9 +28,7 @@ never published on CurseForge.
   chart, a resize grip, a drawer head and nav entry with their hover art, a copy window, the debug
   console, the skin picker and a context-menu cascade), and the surfaces an adopting addon gets beyond the vocabulary (its own owner tokens,
   the `opts.tokens` slot remap, an AceGUI TreeGroup, a window
-  built on a Blizzard template and skinned in every skin), each sample captioned with the primitive and state it shows; a Sample controls settings page shows the skin on the
-  settings renderer's widgets while the Skin tab's Ignore settings panel is off (a new profile
-  has it off in this addon, a documented deviation from skinning-§3, R4-ST1).
+  built on a Blizzard template and skinned in every skin), each sample captioned with the primitive and state it shows.
 - Everything is painted through the addon's own skin facade, so what the showroom shows is what an
   adopting addon gets.
 

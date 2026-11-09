@@ -166,7 +166,7 @@ Total.
 - database: the profile is untouched by a migration pass
 - database: a stored pick of Ka0s Friz Quadrata TT moves to Ka0s Ubuntu, in every profile (R3-FRIZ)
 
-### test_settings.lua (53)
+### test_settings.lua (54)
 
 - settings: BuildDefaults threads profile + global defaults
 - settings: defaults source from NS.C (defaults/Profile.lua, WhatGroup WG-24)
@@ -212,6 +212,7 @@ Total.
 - settings: the page's tabs are the designed ones, in order, at the designed size
 - settings: no tab holds fewer than two controls
 - settings: every row's group is one of the designed tabs
+- settings: there is no Sample controls page and no sample row (QFE-ST1)
 - settings: the Master controls block is the FIRST group, in canonical order
 - settings: the Master controls rows are the COMPOSER's, not hand-written
 - settings: Enable names the addon, and the rows it has no state for are omitted
@@ -489,20 +490,6 @@ Total.
 - picker preview: a showroom already open is left open, and the close does not hide it
 - picker preview: an eye that closed a showroom open at the start opens it again on close
 - picker preview: a showroom the player closes while the picker is up stays closed
-
-### test_settings_sample.lua (11)
-
-- settings: the sample page carries one row of each widget type
-- settings: the sample page carries one picker of each media kind, on the library's own types
-- settings: each sample picker lists what LibSharedMedia holds of its kind
-- settings: each sample picker draws on the page, and with no media library it still opens
-- settings: /st set takes a media key the sample picker lists, and refuses one it does not
-- settings: the sample page wears the owner's skin once the panel is skinned
-- settings: on a new profile the sample page wears the skin (R4-ST1)
-- settings: with Ignore settings panel ticked the sample page is the client's
-- settings: the sample rows stay on their page
-- settings: no copy button on the sample page
-- settings: the sample rows with a skin token carry a companion, default on, showing the skin's value
 
 ### test_panel.lua (37)
 
@@ -1066,7 +1053,7 @@ Total.
 | test_envsetup.lua | 9 |
 | test_util.lua | 26 |
 | test_database.lua | 12 |
-| test_settings.lua | 53 |
+| test_settings.lua | 54 |
 | test_slash.lua | 20 |
 | test_selector.lua | 11 |
 | test_skin_default.lua | 2 |
@@ -1084,7 +1071,6 @@ Total.
 | test_skin_verb.lua | 7 |
 | test_skin_picker.lua | 30 |
 | test_skin_picker_preview.lua | 13 |
-| test_settings_sample.lua | 11 |
 | test_panel.lua | 37 |
 | test_profiles.lua | 18 |
 | test_diagnostics.lua | 10 |
@@ -1109,4 +1095,4 @@ Total.
 | test_skin_switch.lua | 218 |
 | test_client_globals.lua | 3 |
 | Skipped | 1 |
-| **Total** | **899** |
+| **Total** | **889** |

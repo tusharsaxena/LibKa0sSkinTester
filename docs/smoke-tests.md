@@ -11,7 +11,7 @@ its theme, and a retired number is never reused.
 |---|---|---|
 | INSTALL-1..3 | Install | Load, reload, first run |
 | SLASH-1..6 | Slash commands | `/st`, `/skintester`, help, the disabled refusal, a foreign `/st`, `/st skin`, `/st widths` |
-| PANEL-1..20 | Settings panel | Landing page, General's tabs, Skin, Keybindings, Sample controls, the Scope, Font and texture, the settings chrome's face and tooltips, the Font outline, the media pickers, a dropdown list closing on an outside press, no Sim mode box, the Scope kept through another addon's copy |
+| PANEL-1..20 | Settings panel | Landing page, General's tabs, Skin, Keybindings, the Scope, Font and texture, the settings chrome's face and tooltips, the Font outline, the media pickers, a dropdown list closing on an outside press, no Sim mode box, the Scope kept through another addon's copy |
 | PROFILE-1..3 | Profiles | The Profiles page and the `profile` verb |
 | STATE-1..2 | Enable and disable | The stand-down and its refusal |
 | COMBAT-1..2 | Combat | The showroom and the panel in combat |
@@ -78,7 +78,7 @@ is no absence check.
   survives a `/reload`. Result: pass (owner-marked 2026-10-30)
 - **PANEL-4. Keybindings.** Bind a key on General -> Keybindings, then press it. → The showroom
   toggles; the same key shows under Options -> Keybindings -> Ka0s Skin Tester. Result: pass (owner-marked 2026-10-30)
-- **PANEL-5. Sample controls.** On General -> Skin check Ignore settings panel is unticked (a new
+- **PANEL-5. Sample controls.** **Retired by QFE-ST1 (2026-11-10): the Sample controls page was removed at the owner's request; nothing to run, and the number is not reused.** Was: On General -> Skin check Ignore settings panel is unticked (a new
   profile has it unticked in this addon, R4-ST1, so the page wears the skin), pick Obsidian, then open Settings ->
   AddOns -> Ka0s Skin Tester -> Sample controls. → One group heading over a checkbox, a slider, a dropdown, a color swatch and Use
   class color, Use the skin's color, then the five media pickers (PANEL-13) with three skin companions, all in Obsidian; no Skin tab and no copy button. Pick Glass on General and come
@@ -122,7 +122,7 @@ is no absence check.
   grayed and the mode line ends "(Ignore fonts wins)". Pick HUD text only and untick Ignore fonts
   afterwards. Fail: an outline under Off, a mode that does not survive the reload, or a change that
   needs a reload. Result: Owner reported pass, 2026-10-31
-- **PANEL-13. The media pickers (ST-F01; LibKa0s v1.83.0, LK-F03, D-08, D-09).** Fully restart the
+- **PANEL-13. The media pickers (ST-F01; LibKa0s v1.83.0, LK-F03, D-08, D-09).** **Retired by QFE-ST1 (2026-11-10): the Sample controls page was removed at the owner's request; nothing to run, and the number is not reused.** Was: Fully restart the
   client (new font files), check Ignore settings panel is unticked on General -> Skin (the tester's default since R4-ST1), pick Obsidian and open
   Sample controls. Untick Use the skin's font, texture and border (PANEL-15). → Five pickers under the
   color swatch: A font picker on Ka0s Prototype, drawn in Prototype; A bar texture picker on Ka0s
@@ -137,13 +137,13 @@ is no absence check.
   the no-media entry. (Amended by FS-ST-FIX, 2026-11-01: the companions, and the bar default moved
   from Blizzard to Ka0s Default; the pass of 2026-10-31 was against the old rows.) Result: Passed (owner, 2026-11-02)
 - **PANEL-14. A font row and a border row are the pickers (M3-MEDIA; LibKa0s v1.84.0, the owner's
-  ruling of 2026-11-01).** With Ignore settings panel unticked on General -> Skin (the tester's default since R4-ST1), pick Obsidian and open
+  ruling of 2026-11-01).** **Retired by QFE-ST1 (2026-11-10): the Sample controls page was removed at the owner's request; nothing to run, and the number is not reused.** Was: With Ignore settings panel unticked on General -> Skin (the tester's default since R4-ST1), pick Obsidian and open
   Sample controls. → A font picker reads a font name in that face, and A border picker reads a border
   name beside its swatch, both lined up with the rows around them, with no extra tile to the
   left. Open each. → Both pull-outs wear Obsidian, with a preview on every row. Pick Glass on General
   and open them again. → Both follow. Fail: a stock pull-out on either row, a blank closed row, or a
   border row sitting further right than the rows around it. Result: Failed (owner, 2026-11-02): re-opened as R3-L1
-- **PANEL-15. The sample rows follow the skin (FS-ST-FIX, cause A5).** With Ignore settings panel
+- **PANEL-15. The sample rows follow the skin (FS-ST-FIX, cause A5).** **Retired by QFE-ST1 (2026-11-10): the Sample controls page was removed at the owner's request; nothing to run, and the number is not reused.** Was: With Ignore settings panel
   unticked (the tester's default since R4-ST1), pick Obsidian and open Sample controls on a new profile. → Use the skin's color, font, texture and
   border are ticked, and A font picker, A bar texture picker and A border picker are grayed, showing
   Obsidian's HUD font, bar texture and border style. A color swatch stays live. Pick Glass on General
@@ -160,10 +160,11 @@ is no absence check.
   settings panel is still ticked. Fail: any of the four stock with the box unticked, or another addon
   defaulting the box off. Result:
 - **PANEL-17. A dropdown list on a Ka0s surface closes on a press outside it (R4-L1; LibKa0s R4-L1,
-  OptionsCombat minor 4; round 4, image 1).** Settings -> AddOns -> Ka0s Skin Tester -> Sample controls.
-  Open the AceGUI dropdown's list, then left-click an empty part of the page. → The list closes and
-  the click does nothing else. Do the same with A font picker (Ka0sMedia_Font) and A bar texture picker
-  (Ka0sMedia_Statusbar). → Each closes. Open one list and click another dropdown on the page. → The
+  OptionsCombat minor 4; round 4, image 1).** Settings -> AddOns -> Ka0s Skin Tester -> General -> Skin.
+  Open the Font outline dropdown's list, then left-click an empty part of the page. → The list closes and
+  the click does nothing else. Do the same with the Font and Texture pickers. → Each closes. (Amended by
+  QFE-ST1, 2026-11-10: the Sample controls page it ran on is gone, so the Skin tab's dropdowns take its
+  place.) Open one list and click another dropdown on the page. → The
   first closes and the second opens. Open a list and click inside it, scroll it, drag its scrollbar,
   then click the dropdown that owns it. → It stays open until the owning dropdown toggles it shut or a
   row is picked, and a pick applies and closes as before. On Profiles, open Existing Profiles and click
@@ -631,10 +632,12 @@ Forever's SavedVariables are `_forever_/WTF/Account/<ACCOUNT>/SavedVariables/Lib
   Result: passed (owner, 2026-11-08)
 - **FOREVER-4. Every skin.** Click each swatch card in turn → the showroom repaints in that skin each
   time, its faces and textures included; WoW Forever's card draws Fira Sans. Result: passed (owner, 2026-11-08)
-- **FOREVER-5. Checkboxes and the color picker.** In the showroom's Controls and the panel's Sample
-  controls, tick and untick the checkboxes, a disabled one among them → each draws its check and its
+- **FOREVER-5. Checkboxes and the color picker.** In the showroom's Controls and the panel's General
+  page, tick and untick the checkboxes, a disabled one among them → each draws its check and its
   grayed state, with no `SetDesaturation` error (the Ace3 CheckBox fix). Open a color swatch, set its
   opacity to about 25% and accept → the sample is faint, not nearly opaque (the ColorPicker alpha fix).
+  (The color swatch half ran on the Sample controls page, retired by QFE-ST1 on 2026-11-10, and has
+  nowhere left to run; the pass below stands for both halves as run.)
   Result: passed (owner, 2026-11-08)
 - **FOREVER-6. The panel.** Settings -> AddOns -> Ka0s Skin Tester → the landing page, as PANEL-1; open
   General's tabs, Skin and Keybindings → each draws. Bare `/st` → the same landing page. Result: passed (owner, 2026-11-08)
@@ -792,3 +795,10 @@ FU-RV-ST of the v1.91.0 follow-ups (Ka0sAddonsCommonTasks `docs/2026-11-06-FOLLO
 series in physical pixels at any UI scale (FU-L1); its four new files (CorePixel, SkinPaintHud,
 SkinAceConfirm, WidgetsDropdown) are peels that move code and change no behavior. It adds no check
 here: the bundle's SM-1 covered the showroom's chart and SM-2 the peels.
+
+QFE-ST1 (Ka0sAddonsCommonTasks `docs/2026-11-10-QUICKCOMMS_FOREVER_EMOTES/`, 2026-11-10) removes the
+Sample controls settings page at the owner's request. It retires PANEL-5, PANEL-13, PANEL-14 and
+PANEL-15, which ran only on that page; their numbers are not reused and their results stay as the
+record. PANEL-17 moves to the Skin tab's dropdowns and FOREVER-5 to the General page's checkboxes;
+the checkbox half is unchanged and its color swatch half has nowhere left to run, so FOREVER-5's pass stands as the record. The showroom window's settings-panel
+samples are untouched.

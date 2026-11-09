@@ -38,8 +38,7 @@ defaults, over one write seam, `NS.SchemaRuntime.Set` (LibKa0s-Schema-1.0, or th
 `settings/SchemaSetup.lua`). Rows: the composed Master controls (`enabled`, `scale`, `alpha`, the
 session-only `state.debugConsole`, the global `global.minimap.shown`), the eight Skin tab rows
 (`skin.source`, `skin.skin`, the overrides `skin.font` and `skin.texture`, the font outline `skin.outline`, the Scope's `skin.ignorePanel`,
-`skin.ignoreFonts`, and the picker's `skin.pickerSeen`) and the fourteen Sample controls rows (`sample.*`, on their own page and read
-by nothing). The one piece of state outside the seam is the showroom window's
+`skin.ignoreFonts`, and the picker's `skin.pickerSeen`). The one piece of state outside the seam is the showroom window's
 position, `db.global.windows.LibKa0sSkinTesterShowroom`, written only by `NS.Windows.Save` from the
 window's drag stop and cleared by `NS.Windows.Forget` (Reset position), both in `core/Util.lua`.
 Every path, default and the migration seam: [`schema.md`](./schema.md).
@@ -94,7 +93,7 @@ generated directories are named once each and never enumerated per run: `docs/au
 | `scope.md` | What the showroom is for, who uses it, and what it deliberately is not |
 | `module-map.md` | Every non-vendored file, its responsibility, and its load-order constraint |
 | `schema.md` | The persisted shape, every default, the window position and the migration seam |
-| `settings-panel.md` | The panel tree, the General page's tabs, the Sample controls page, and the write seam |
+| `settings-panel.md` | The panel tree, the General page's tabs, and the write seam |
 | `data-flow.md` | A skin pick (card, tab or `/st set`) to a repainted showroom; `/st` to an open window; login |
 | `common-tasks.md` | Recipes for the changes made most often here |
 
