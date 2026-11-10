@@ -126,12 +126,12 @@ end)
 test("database: a stored pick of Ka0s Friz Quadrata TT moves to Ka0s Ubuntu, in every profile (R3-FRIZ)", function()
     local NS = T.bootAddon()
     local sv = NS.addon.db.sv
-    NS.addon.db.profile.sample.font = "Ka0s Friz Quadrata TT"
+    NS.addon.db.profile.skin.font = "Ka0s Friz Quadrata TT"
     sv.profiles.Alt = { sample = { font = "Ka0s Friz Quadrata TT" }, skin = { font = "Ka0s Friz Quadrata TT" } }
     sv.profiles.Other = { sample = { font = "Friz Quadrata TT" } }
     NS.addon.db.global.schemaVersion = 1
     NS.addon:RunMigrations()
-    assertEqual(NS.addon.db.profile.sample.font, "Ka0s Ubuntu", "the active profile's pick")
+    assertEqual(NS.addon.db.profile.skin.font, "Ka0s Ubuntu", "the active profile's pick")
     assertEqual(sv.profiles.Alt.sample.font, "Ka0s Ubuntu", "a profile never activated")
     assertEqual(sv.profiles.Alt.skin.font, "Ka0s Ubuntu", "the stored skin override too")
     assertEqual(sv.profiles.Other.sample.font, "Friz Quadrata TT", "Blizzard's own Friz stays")

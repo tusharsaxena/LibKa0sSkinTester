@@ -8,7 +8,7 @@ local _, NS = ...
 --   a caution callout     Card with opts.tokens naming the fill, edge and title
 --   an AceGUI TreeGroup   acquired here and handed to the library's PaintAce. An AceGUI widget is
 --                         a settings-panel surface, so it follows the Scope's "settings panel"
---                         half: stock while the Scope leaves the panel the client's (off by default here),
+--                         half: stock while the Scope leaves the panel the client's (a new profile does),
 --                         painted once it is cleared. PaintAce is asked again on every
 --                         OnLooksChanged, so a Scope change or a skin switch shows at once. Its
 --                         height is the host's (no auto-height) and its content pane holds a

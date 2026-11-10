@@ -233,23 +233,6 @@ function NS.ShowSkinPicker()
     return false, why
 end
 
--- ── Sample controls ──────────────────────────────────────────────────────────────────────────
--- One row of each widget type, untabbed, under its group heading. No Skin tab and no copy
--- action: the skin is picked on General, and this page only shows it.
-local function buildSamplePage(parentCategory)
-    local ctx = Helpers.CreatePanel("LibKa0sSkinTesterSamplePanel", "Sample controls", {
-        pageKey        = "sample",
-        defaultsButton = true,
-    })
-    Helpers.SetRenderer(ctx, function(c)
-        Helpers.ClearScroll(c)
-        Helpers.RenderSchema(c, "sample")
-    end)
-    return _G.Settings.RegisterCanvasLayoutSubcategory(parentCategory, ctx.panel, "Sample controls")
-end
-
-Helpers.RegisterOptionsPage("sample", "Sample controls", buildSamplePage)
-
 --- Registers the settings category, once; called from OnEnable and from `/st config`.
 function Settings.Register()
     if Tester._settingsRegistered or not _G.Settings

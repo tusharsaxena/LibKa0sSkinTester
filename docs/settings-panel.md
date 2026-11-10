@@ -24,19 +24,13 @@ login; each page's body builds on its first show.
     do the font, the texture, the outline and Ignore fonts. Ignore fonts wins over a font override
     and disables the Font outline.
   - **Keybindings**, the library's own tab, last: the Show window binding (`NS.BINDINGS`).
-- **Sample controls**: one row of each widget type the renderer draws, bar the dim `note` row (a checkbox, a slider, a
-  dropdown, a color swatch and its Use class color companion) and one `Ka0sMedia_*` picker of each
-  media kind (font, bar texture, border, background, sound; LibKa0s v1.83.0, options-ui-§23), under
-  one group heading, untabbed. The swatch and the font, bar and border pickers carry the skin
-  companion a real row carries, on by default; a background and a sound have no skin token. The descriptor's `getLSM` feeds the pickers' lists. It
-  shows the skin on a settings page while Ignore settings panel is off (a new profile has it off
-  in this addon, a documented deviation from skinning-§3, R4-ST1, so the page starts skinned); the rows are read by nothing. No Skin tab and no copy
-  action: the skin is picked on General.
 - **Profiles**: AceDBOptions' profile controls, last. `NS.SkinPaintAceTree` follows each `Open`, so
   the page follows the Scope and the delete confirmation wears the skin (LibKa0s v1.85.0).
 
-A row with no `page` is the General page's; the sample rows carry `page = "sample"`, and the host's
-`rowsForPage` (settings/OptionsSetup.lua) hands each page only its own rows.
+A row with no `page` is the General page's, and the host's `rowsForPage` (settings/OptionsSetup.lua)
+hands each page only its own rows. The Sample controls page, one row of each widget type the
+renderer draws, was removed at the owner's request (QFE-ST1, 2026-11-10); the showroom window's
+settings-panel samples remain.
 
 ## The write seam
 

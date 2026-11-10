@@ -38,8 +38,7 @@ defaults, over one write seam, `NS.SchemaRuntime.Set` (LibKa0s-Schema-1.0, or th
 `settings/SchemaSetup.lua`). Rows: the composed Master controls (`enabled`, `scale`, `alpha`, the
 session-only `state.debugConsole`, the global `global.minimap.shown`), the eight Skin tab rows
 (`skin.source`, `skin.skin`, the overrides `skin.font` and `skin.texture`, the font outline `skin.outline`, the Scope's `skin.ignorePanel`,
-`skin.ignoreFonts`, and the picker's `skin.pickerSeen`) and the fourteen Sample controls rows (`sample.*`, on their own page and read
-by nothing). The one piece of state outside the seam is the showroom window's
+`skin.ignoreFonts`, and the picker's `skin.pickerSeen`). The one piece of state outside the seam is the showroom window's
 position, `db.global.windows.LibKa0sSkinTesterShowroom`, written only by `NS.Windows.Save` from the
 window's drag stop and cleared by `NS.Windows.Forget` (Reset position), both in `core/Util.lua`.
 Every path, default and the migration seam: [`schema.md`](./schema.md).
@@ -94,7 +93,7 @@ generated directories are named once each and never enumerated per run: `docs/au
 | `scope.md` | What the showroom is for, who uses it, and what it deliberately is not |
 | `module-map.md` | Every non-vendored file, its responsibility, and its load-order constraint |
 | `schema.md` | The persisted shape, every default, the window position and the migration seam |
-| `settings-panel.md` | The panel tree, the General page's tabs, the Sample controls page, and the write seam |
+| `settings-panel.md` | The panel tree, the General page's tabs, and the write seam |
 | `data-flow.md` | A skin pick (card, tab or `/st set`) to a repainted showroom; `/st` to an open window; login |
 | `common-tasks.md` | Recipes for the changes made most often here |
 
@@ -136,7 +135,6 @@ deviation not in this table is not ratified. **Re-check trigger** is the conditi
 |---|---|---|---|---|
 | `options-ui-§1` | **Route (b), not the SHOULD route (a), for `enabled` on a library-absent load.** Without LibKa0s the Master controls block is not composed (the hollow composer), so `enabled` has no schema row and the seam refuses the row-less path. No `writeThrough` list is passed, and `/st enable` and `/st disable` print `<verb> is unavailable: the LibKa0s library did not load.` instead (`settings/Slash.lua`), with no Lua error, no write and no acknowledgment. | The tester is born from the same settings runtime as Ka0s WhatGroup, which took this route under its owner's ruling (WhatGroup#22); a skin tester with no skin library has nothing to enable, so the switch it would gain shows nothing. | 2026-10-26 | A report of a library-absent install that needs the switch, or `options-ui-§1` raising (a) to a MUST |
 | `slash-commands-§7` | **Step 1 pins `R_on` empty, and step 6 (no handler runs on a fire) has nothing to fire.** The conformance suite asks for a non-empty registration set while enabled, torn down to empty by the stand-down. This addon registers no event, message or bucket, so `tests/test_disabled.lua` asserts `R_on` is empty enabled and disabled alike, and step 6 is not applicable. The library's own EllesmereUI watcher frame (`Skin.__euiEventFrame`) is excluded, because it is LibKa0s's registration, not this addon's. | The showroom is a window the player opens: it watches nothing. Inventing a registration to tear down would be test theater. The stand-down is still real: the window closes and every route back to the screen refuses. | 2026-10-26 | The first event, message or bucket this addon registers: step 1 turns red, and its teardown arrives with it |
-| `skinning-§3`, `skinning-§9` | **Ignore settings panel defaults to off** (`skin.ignorePanel = false`, `defaults/Profile.lua`). The standard has it on in every profile, so a settings panel stays stock until the player clears it. No migration writes it: a profile that stored `true` keeps it, and AceDB strips a stored `false` as equal to the new default. The Skin tab's "Copy to every Ka0s addon..." still carries this addon's Scope to the others as the library does, but another addon's copy or Apply to all never writes this addon's Scope: it registers with `keepScope = true` (LibKa0s Skin minor 17, `core/SkinSetup.lua`; SF1-ST, after an Apply to all from an addon that ignores its panel turned the box on). | The tester is the skin showroom. Its AceGUI Dropdown, Ka0sMedia_Font and Ka0sMedia_Statusbar samples and its TreeGroup go through PaintAce, which paints nothing while the panel is ignored, so by default they hid the very skin they exist to show. Owner ruling of 2026-11-03 (smoke round 4, item 2): "for the skin tester addon ONLY, set ignore settings panel = off - treat this as an accepted deviation". | 2026-11-03 | The standard letting a showroom or developer addon default the Scope off, or the showroom's AceGUI samples moving to a window paint (`Skin:__PaintAceWindow`), which ends the need |
 
 ### Files over the 1500-line cap
 

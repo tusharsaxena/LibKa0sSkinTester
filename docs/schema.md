@@ -15,23 +15,9 @@ capture ring, outside AceDB, written only by the harness).
 | `skin.font` | string | `""` | Skin (Font and texture) | A LibSharedMedia font key over the skin's own (`Skin:SetOverride`); `""` is the skin's own. No `values`: the keys are whatever media packs registered |
 | `skin.texture` | string | `""` | Skin (Font and texture) | A LibSharedMedia statusbar key for every bar of data; `""` is the skin's own |
 | `skin.outline` | string | `hud` | Skin (Font and texture) | The Font outline (`Skin:SetOutline`, LibKa0s v1.82.0; the default since v1.83.0): `hud` text only, `all` text, or `off`; Ignore fonts wins |
-| `skin.ignorePanel` | bool | `false` | Skin (Scope) | Leave this addon's settings pages the client's (`Skin:SetIgnore`); off by default here, a documented deviation from skinning-§3 (R4-ST1) |
+| `skin.ignorePanel` | bool | `true` | Skin (Scope) | Leave this addon's settings pages and the showroom's "(Scope: panel)" samples the client's (`Skin:SetIgnore`); on by default, as skinning-§3 has it (QFE-ST2, retiring R4-ST1's off). A stored value is kept |
 | `skin.ignoreFonts` | bool | `false` | Skin (Scope) | Leave every font the client's; the skin still colors text, and a font override has no effect |
 | `skin.pickerSeen` | bool | `false` | none (skip-render) | The first-run skin picker was closed on this profile (Apply, the gear, the close control, Escape, or another addon's Apply to all); set by its `onClose` |
-| `sample.checked` | bool | `true` | Sample controls | Shown, read by nothing |
-| `sample.size` | number | `5` | Sample controls | 1 to 10, step 1; read by nothing |
-| `sample.mode` | string | `medium` | Sample controls | `small`, `medium`, `large`; read by nothing |
-| `sample.color` | color | `{ r = 0.2, g = 0.6, b = 1, a = 1 }` | Sample controls | Read by nothing |
-| `sample.useClassColor` | bool | `false` | Sample controls | The swatch's class-color companion (options-ui-§17), `classColorSource = "player"` |
-| `sample.colorFromSkin` | bool | `true` | Sample controls | The swatch's skin companion; read by nothing, and the swatch stays live |
-| `sample.font` | string | `Ka0s Prototype` | Sample controls | `Ka0sMedia_Font`; a LibSharedMedia key, read by nothing |
-| `sample.fontFromSkin` | bool | `true` | Sample controls | While on, `sample.font` is disabled and shows `hud.font` |
-| `sample.statusbar` | string | `Ka0s Default` | Sample controls | `Ka0sMedia_Statusbar`; a LibSharedMedia key, read by nothing |
-| `sample.statusbarFromSkin` | bool | `true` | Sample controls | While on, `sample.statusbar` is disabled and shows `bar.texture` |
-| `sample.border` | string | `Blizzard Tooltip` | Sample controls | `Ka0sMedia_Border`; a LibSharedMedia key, read by nothing |
-| `sample.borderFromSkin` | bool | `true` | Sample controls | While on, `sample.border` is disabled and shows `bar.borderStyle` |
-| `sample.background` | string | `Blizzard Tooltip` | Sample controls | `Ka0sMedia_Background`; a LibSharedMedia key, read by nothing |
-| `sample.sound` | string | `None` | Sample controls | `Ka0sMedia_Sound`; a LibSharedMedia key, read by nothing |
 
 Defaults live in `defaults/Profile.lua` (`NS.C`); each row reads its default from there. Every
 `skin.*` row is `skipRender`: the library's Skin tab (keyed `Appearance`) draws them, and they stay
@@ -59,3 +45,7 @@ tab writes them only through `NS.WriteSkinChoice`.
 `Ka0s Friz Quadrata TT`, which LibKa0s v1.85.0 deleted, to `Ka0s Ubuntu` in every stored profile, at
 any depth; Blizzard's own `Friz Quadrata TT` stays. A new step goes in `NS.MIGRATIONS` and is
 idempotent against a fresh default profile.
+
+The Sample controls page's fourteen `sample.*` rows were retired with the page (QFE-ST1, 2026-11-10).
+No step removes them: a profile that stored one keeps it, read by nothing and harmless, and step 2
+still walks it.

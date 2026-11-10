@@ -204,8 +204,9 @@ end
 NS.Skin = Skin:For(addonName)
 NS.SkinAvailable = true
 -- keepScope (LibKa0s Skin minor 17, SF1-ST): another addon's Apply to all or Skin-tab copy brings
--- this owner its skin and media but never its Scope, so the documented `ignorePanel = false`
--- (docs/ARCHITECTURE.md, Documented deviations) survives a copy from an addon that ignores its panel.
+-- this owner its skin and media but never its Scope, so a player who cleared Ignore settings panel
+-- here, to see the panel samples skinned, keeps that through a copy from an addon that ignores its
+-- panel.
 Skin:RegisterOwner(addonName, {
     label = NS.BRAND_NAME,
     get   = NS.SkinChoice,

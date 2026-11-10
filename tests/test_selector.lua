@@ -89,21 +89,34 @@ test("selector: the saved Scope is applied at load, and /st set moves one half",
     assertEqual(panel, true, "the other half kept")
 end)
 
-test("selector: a fresh profile skins this addon's settings panel (R4-ST1, a documented deviation)", function()
-    -- red under: the standard's default (Ignore settings panel on) left in defaults/Profile.lua. The
-    -- tester is the showroom, so its "(Scope: panel)" samples must wear the skin out of the box.
+test("selector: a fresh profile leaves this addon's settings panel the game's (QFE-ST2, skinning-§3)", function()
+    -- red under: R4-ST1's retired `ignorePanel = false` left in defaults/Profile.lua. The owner's
+    -- ruling R8 of 2026-11-10: only the showroom window wears the skin out of the box.
     local NS, mock = bootWithSkin("ka0s")
     local panel, fonts = lib(mock):GetIgnore(OWNER)
-    assertEqual(panel, false, "Ignore settings panel is off on a new profile")
+    assertEqual(panel, true, "Ignore settings panel is on on a new profile")
     assertEqual(fonts, false, "Ignore fonts keeps its default")
-    assertEqual(NS.addon.db.profile.skin.ignorePanel, false, "and the profile reads it so")
+    assertEqual(NS.addon.db.profile.skin.ignorePanel, true, "and the profile reads it so")
+end)
+
+test("selector: a stored Ignore settings panel off is kept (QFE-ST2)", function()
+    -- red under: a migration or load step that forces the new default over a player's choice.
+    local NS, _, mock = T.newAddon()
+    _G.LibKa0sSkinTesterDB = { profiles = { Default = { skin = { source = "ka0s", skin = "ka0s",
+        ignorePanel = false } } } }
+    NS.addon:OnInitialize()
+    NS.addon:OnEnable()
+    local panel = lib(mock):GetIgnore(OWNER)
+    assertEqual(panel, false, "the stored choice is applied")
+    assertEqual(NS.addon.db.profile.skin.ignorePanel, false, "and read back")
 end)
 
 test("selector: another addon's skin copy brings the skin, never the Scope (SF1-ST, keepScope)", function()
     -- red under: RegisterOwner without `keepScope = true`. Apply to all, or a Skin-tab copy, from an
     -- addon that ignores its panel ran lib.__copySkinTo (OptionsAppearance minor 7), which turned on
-    -- this addon's documented `ignorePanel = false` (SF1 feedback item 2).
+    -- this addon's Ignore settings panel when the player had cleared it (SF1 feedback item 2).
     local NS, mock = bootWithSkin("ka0s")
+    NS.addon:OnSlashCommand("set skin.ignorePanel false")
     local Skin = lib(mock)
     assertEqual(Skin.owners[OWNER].keepScope, true, "registered with the Scope opt-out")
     mock.LibStub("LibKa0s-Options-1.0").__copySkinTo(Skin, OWNER, "ka0s", "obsidian",

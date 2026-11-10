@@ -205,7 +205,6 @@ Kit.run{
         "test_skin_verb",
         "test_skin_picker",
         "test_skin_picker_preview",
-        "test_settings_sample",
         "test_panel",
         "test_profiles",
         "test_diagnostics",

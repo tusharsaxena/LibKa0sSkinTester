@@ -69,10 +69,9 @@ test("profiles: the page registers this db's AceDBOptions table, as the LAST sub
     assertTrue(rec.db == NS.addon.db, "the options are this addon's database")
     assertEqual(rec.app, APP)
     assertTrue(rec.registered == rec.options, "the table AceDBOptions built is the one registered")
-    assertEqual(#mock.categories, 4, "parent, General, Sample controls, Profiles")
+    assertEqual(#mock.categories, 3, "parent, General, Profiles (no Sample controls, QFE-ST1)")
     assertEqual(mock.categories[2].label, "General")
-    assertEqual(mock.categories[3].label, "Sample controls")
-    assertEqual(mock.categories[4].label, "Profiles")
+    assertEqual(mock.categories[3].label, "Profiles")
 end)
 
 test("profiles: the page has no Defaults button", function()
@@ -90,7 +89,7 @@ test("profiles: without any one of the three libraries the page opts out", funct
     -- instead of at registration.
     for _, omit in ipairs({ "AceDBOptions-3.0", "AceConfig-3.0", "AceConfigDialog-3.0" }) do
         local _, _, mock = withProfiles(omit)
-        assertEqual(#mock.categories, 3, "no Profiles subcategory without " .. omit)
+        assertEqual(#mock.categories, 2, "no Profiles subcategory without " .. omit)
     end
 end)
 
