@@ -88,7 +88,7 @@ is no absence check.
   Ignore settings panel is ticked and Ignore fonts is not (QFE-ST2, skinning-§3); the settings pages
   are in the client's look and the showroom wears the skin. Untick Ignore settings panel. → The
   settings pages take the skin at once, no reload; tick it → they go back to the client's look. Pick Azeroth and tick Ignore fonts. → The showroom's Open Sans text and titles go
-  back to the game's fonts at once and keep the skin's colors. `/reload`. → Both ticks are as you left them. (Amended by R4-ST1, 2026-11-03: the new default; the pass of 2026-11-02 was against the old one. Amended again by QFE-ST2, 2026-11-10: the panel half starts ticked again.) Result:
+  back to the game's fonts at once and keep the skin's colors. `/reload`. → Both ticks are as you left them. (Amended by R4-ST1, 2026-11-03: the new default; the pass of 2026-11-02 was against the old one. Amended again by QFE-ST2, 2026-11-10: the panel half starts ticked again.) Result: passed (owner, 2026-11-10)
 - **PANEL-7. Font and texture rows.** Open General -> Skin. → A "Font and texture" section between
   the skins and the Scope, with a Font and a Texture dropdown. Each list starts with "Skin's default
   (<key>)" naming the current skin's own font or texture, then every font or statusbar texture
@@ -171,7 +171,7 @@ is no absence check.
   click the showroom's body outside it. → Each closes. Repeat one of them in combat. → The same, with
   no `ADDON_ACTION_BLOCKED`. Escape is not part of this change: on a settings page it still closes the
   panel. Fail: a list that stays open after an outside press, an outside press that also lands as a
-  pick, a press inside the list that closes it without a pick, or a Lua error. Result:
+  pick, a press inside the list that closes it without a pick, or a Lua error. Result: passed (owner, 2026-11-10)
 - **PANEL-18. Another author's AceGUI dropdown keeps its stock behavior (R4-L1; LibKa0s R4-L1).**
   With a non-Ka0s addon installed whose settings use AceGUI dropdowns (any Ace3 addon's AceConfig
   page), open one of its dropdown lists and click outside it. → It behaves as it did before this
@@ -208,7 +208,7 @@ is no absence check.
   before this change takes the ticked default unless it had stored the box ticked: AceDB never stored
   the old unticked default. Fail:
   a skinned settings page or "(Scope: panel)" cell on the fresh profile, a showroom window in the
-  game's look, a toggle that needs a reload, or a stored unticked box flipped back on. Result:
+  game's look, a toggle that needs a reload, or a stored unticked box flipped back on. Result: passed (owner, 2026-11-10)
 
 ## Profiles
 
@@ -825,3 +825,5 @@ PANEL-21 and re-opens PANEL-6, whose starting state changed. The other steps tha
 unticked now say to clear it first; what they check is unchanged, so their results stand. A box
 ticked or unticked from now on is stored and kept; a profile from before the change that left the box
 at the old unticked default takes the new one, since AceDB never stored the old default.
+
+On 2026-11-10 the owner reported that every check owed from the same run passed: PANEL-6, PANEL-17 and PANEL-21, recorded on each `Result:` line as `passed (owner, 2026-11-10)`.
