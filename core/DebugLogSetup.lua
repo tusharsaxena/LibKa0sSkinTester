@@ -71,6 +71,22 @@ if not lib then
             return 0
         end,
         BuildDiagnostics = function() return { lines = {}, dropped = 0, capped = false, capsHit = false } end,
+        -- The report seam and its serializer (LibKa0s v1.105.0, DebugLogDiagnostics minor 11). No
+        -- console on this path, so a report streams to chat with no pointer and answers its line
+        -- count; Serialize answers one line, a table as a placeholder (it writes nothing either way).
+        Report          = function(_, _, _, fn)
+            local n = 0
+            if type(fn) == "function" then
+                fn(function(line)
+                    n = n + 1
+                    if NS.Print then NS.Print(NS.SafeToString(line)) end
+                end)
+            end
+            return n
+        end,
+        Serialize       = function(_, v)
+            return { NS.SafeToString(type(v) == "table" and "<table>" or v) }, false
+        end,
         -- The host's own routing of the debug words (the live DebugVerb's contract): `diagnostics`
         -- first, then `on` / `off`; any other word answers false and the caller toggles the window.
         DebugVerb       = function(self, rest)
