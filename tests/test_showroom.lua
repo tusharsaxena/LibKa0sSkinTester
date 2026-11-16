@@ -469,3 +469,85 @@ test("R5-WIN: the showroom's body sits 6 px in from its title bar and footer, as
     assertEqual(p .. rp, "BOTTOMRIGHTTOPRIGHT", "over the footer"); assertTrue(rel == f.footer, "the footer")
     assertEqual(x, -6, "6 px in"); assertEqual(y, 6, "6 px up")
 end)
+
+-- SR-ST (smoke round 1, rulings 3 and 4): the showroom is the one window this addon draws itself with a
+-- title bar, and its close X is that bar's one control (Core.MakeCloseButton with this addon as owner).
+-- Every title-bar control shows a one-line tooltip in the owner's gtip.title, rests in icon.tint and
+-- lights close.hot under the pointer, in every skin.
+
+--- The showroom's title-bar controls: every clickable frame on the bar or its band, the close X included.
+local function titleControls(NS, f)
+    local seen, out = {}, {}
+    local function add(c)
+        if c and not seen[c] then seen[c] = true; out[#out + 1] = c end
+    end
+    add(f.close)
+    for _, holder in ipairs({ f.titleBar, NS.Skin.Band(f) }) do
+        if holder and holder.GetChildren then
+            for _, c in ipairs({ holder:GetChildren() }) do
+                if type(c) == "table" and c.GetScript and c:GetScript("OnClick") then add(c) end
+            end
+        end
+    end
+    return out
+end
+
+--- The tooltip `control` shows on hover, as { text, color }; nil when it shows none.
+local function titleTip(mock, control)
+    local tip, got = mock.GameTooltip, nil
+    local saved = rawget(tip, "SetText")
+    rawset(tip, "SetText", function(self, text, r, g, b, ...)
+        got = { text = text, color = { r, g, b } }
+        return saved and saved(self, text, r, g, b, ...) or self
+    end)
+    local ok, err = pcall(function() control.__fire("OnEnter") end)
+    pcall(function() control.__fire("OnLeave") end)
+    rawset(tip, "SetText", saved)
+    assertTrue(ok, tostring(err))
+    return got
+end
+
+--- The color `control`'s art is painted: its icon's vertex color, else its glyph's text color.
+local function artColor(mock, control)
+    local art = rawget(control, "icon") or rawget(control, "glyph")
+    assertTrue(art ~= nil, "the control draws art")
+    local rec = mock.__paint(art)
+    return rec.vertex or rec.textColor
+end
+
+test("SR-ST: every showroom title-bar control shows a tooltip in gtip.title, in every skin", function()
+    -- red under: LibKa0s before SR-L2 (Core minor 18), whose MakeCloseButton close showed no tooltip.
+    local NS, mock = opened()
+    local f = window(mock)
+    local controls = titleControls(NS, f)
+    assertTrue(#controls >= 1 and f.close ~= nil, "the title bar carries its close X")
+    for _, def in ipairs(lib(mock):Skins()) do
+        NS.Selector.Pick(def.key)
+        for i, c in ipairs(controls) do
+            local what = ("%s: title-bar control %d"):format(def.key, i)
+            local got = titleTip(mock, c)
+            assertTrue(got ~= nil and type(got.text) == "string" and got.text ~= "", what .. ": a tooltip")
+            assertToken(mock, got.color, "gtip.title", what .. "'s tooltip")
+        end
+    end
+    assertEqual(titleTip(mock, f.close).text, "Close", "the close says Close")
+end)
+
+test("SR-ST: the showroom's close X rests in icon.tint and lights close.hot, in Ka0s Default and every skin", function()
+    -- red under: LibKa0s before SR-L3, where a skin's own close.rest left the X off the other marks' tint.
+    local NS, mock = opened()
+    local f = window(mock)
+    local keys = { "ka0s" }
+    for _, def in ipairs(lib(mock):Skins()) do
+        if def.key ~= "ka0s" then keys[#keys + 1] = def.key end
+    end
+    assertTrue(#keys >= 2, "Ka0s Default and at least one other skin")
+    for _, key in ipairs(keys) do
+        NS.Selector.Pick(key)
+        assertToken(mock, artColor(mock, f.close), "icon.tint", key .. ": the X at rest")
+        f.close.__fire("OnEnter")
+        assertToken(mock, artColor(mock, f.close), "close.hot", key .. ": the X under the pointer")
+        f.close.__fire("OnLeave")
+        assertToken(mock, artColor(mock, f.close), "icon.tint", key .. ": the X at rest again")
+    end
+end)

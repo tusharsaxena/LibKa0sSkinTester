@@ -266,7 +266,7 @@ Total.
 - skin default: a fresh profile stores and wears the client's default skin
 - skin default: Reset puts the profile back on the client's default skin
 
-### test_showroom.lua (27)
+### test_showroom.lua (29)
 
 - showroom: the window is painted through the wrapper
 - showroom: Paint answers the primitive's answer and records the name once
@@ -295,6 +295,8 @@ Total.
 - R5-RV: the showroom's title bar, title and close sit on S.Band in every skin
 - R5-WIN: the confirm popup's one band carries its question on its middle, in every skin
 - R5-WIN: the showroom's body sits 6 px in from its title bar and footer, as LootHistory's content
+- SR-ST: every showroom title-bar control shows a tooltip in gtip.title, in every skin
+- SR-ST: the showroom's close X rests in icon.tint and lights close.hot, in Ka0s Default and every skin
 
 ### test_showroom_coverage.lua (6)
 
@@ -1061,7 +1063,7 @@ Total.
 | test_slash.lua | 20 |
 | test_selector.lua | 12 |
 | test_skin_default.lua | 2 |
-| test_showroom.lua | 27 |
+| test_showroom.lua | 29 |
 | test_showroom_coverage.lua | 6 |
 | test_showroom_dropdowns.lua | 8 |
 | test_showroom_values.lua | 15 |
@@ -1099,4 +1101,4 @@ Total.
 | test_skin_switch.lua | 220 |
 | test_client_globals.lua | 3 |
 | Skipped | 1 |
-| **Total** | **893** |
+| **Total** | **895** |
