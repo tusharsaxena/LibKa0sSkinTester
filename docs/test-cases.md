@@ -373,7 +373,7 @@ Total.
 - fonts: /st widths is refused while the addon is disabled
 - fonts: without the skin engine the section builds and the probe says why
 
-### test_showroom_hud.lua (10)
+### test_showroom_hud.lua (11)
 
 - hud: the section is built, one line per skin, in the library's order
 - hud: each skin's line names that skin's own HUD face, all nine of them
@@ -385,6 +385,7 @@ Total.
 - hud: a skin change redraws each string's font object, the shadow behind the cache included
 - hud: BarGloss shows under a skin with gloss and only there
 - overlays: S.Mark tints its marks and the MarkText line is written again
+- overlays: the hot row shows rest, hot, heading and the row washes, in every skin
 
 ### test_showroom_widgets.lua (20)
 
@@ -816,7 +817,7 @@ Total.
 - skin values: no typed value outside the kit's categories and the host's rows
 - skin values: the check is falsifiable, a planted value of each shape is reported
 
-### test_skin_switch.lua (218)
+### test_skin_switch.lua (220)
 
 - skin switch: the check is falsifiable, a surface that redraws a literal is reported
 - skin switch: the window's shell changes
@@ -928,6 +929,8 @@ Total.
 - skin switch: overlays: Confirm popup (Shell, Header + Button) changes with the Scope ignored
 - skin switch: overlays: FadeRegions (left) beside stock changes
 - skin switch: overlays: FadeRegions (left) beside stock changes with the Scope ignored
+- skin switch: overlays: Hot: mark rest, hot; at text.heading, hot; ListRow stripe, hover, both changes
+- skin switch: overlays: Hot: mark rest, hot; at text.heading, hot; ListRow stripe, hover, both changes with the Scope ignored
 - skin switch: overlays: IconBorder, fromSkin changes
 - skin switch: overlays: IconBorder, fromSkin changes with the Scope ignored
 - skin switch: overlays: Mark (tint, sem.good), MarkText changes
@@ -1065,7 +1068,7 @@ Total.
 | test_showroom_textures.lua | 8 |
 | test_showroom_owner.lua | 11 |
 | test_showroom_fonts.lua | 11 |
-| test_showroom_hud.lua | 10 |
+| test_showroom_hud.lua | 11 |
 | test_showroom_widgets.lua | 20 |
 | test_skin_media.lua | 9 |
 | test_skin_outline.lua | 9 |
@@ -1093,7 +1096,7 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | test_skin_values.lua | 3 |
-| test_skin_switch.lua | 218 |
+| test_skin_switch.lua | 220 |
 | test_client_globals.lua | 3 |
 | Skipped | 1 |
-| **Total** | **890** |
+| **Total** | **893** |

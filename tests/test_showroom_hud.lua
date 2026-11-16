@@ -237,3 +237,50 @@ test("overlays: S.Mark tints its marks and the MarkText line is written again", 
     assertEqual(table.concat({ c[1], c[2], c[3] }, ","),
         table.concat({ t["text.body"][1], t["text.body"][2], t["text.body"][3] }, ","), "the line in text.body")
 end)
+
+-- ST-82 (Ka0sAddonsCommonTasks docs/2026-11-16-LIBKA0S_ISSUES_75_PLUS, design 3.4, R5 D-9): one
+-- Overlays row shows the hot state, so LibKa0s#82 and #84 are smoked in one window: a mark at rest and
+-- hot, a mark at text.heading beside a heading and hot, and a striped row, a hovered row and a striped
+-- row under the pointer. Red under: an Overlays section with no hot row, or a mark tinted by name.
+local function rgb(c) return c and ("%.4f,%.4f,%.4f"):format(c[1], c[2], c[3]) or "nil" end
+
+--- The colors of the shown washes on a row, sorted, for a set compare.
+local function washes(mock, row)
+    local out = {}
+    for _, region in ipairs({ row:GetRegions() }) do
+        local p = mock.__paint(region)
+        if p.color and p.shown ~= false then out[#out + 1] = rgb(p.color) end
+    end
+    table.sort(out)
+    return table.concat(out, " | ")
+end
+
+local function set(...)
+    local out = { ... }
+    for i, c in ipairs(out) do out[i] = rgb(c) end
+    table.sort(out)
+    return table.concat(out, " | ")
+end
+
+test("overlays: the hot row shows rest, hot, heading and the row washes, in every skin", function()
+    local NS, mock = opened()
+    local hot = NS.Showroom.Section("overlays").hot
+    assertTrue(type(hot) == "table", "the hot row is built")
+    local Skin = lib(mock)
+    local n = 0
+    for _, def in ipairs(Skin:Skins()) do
+        NS.Selector.Pick(def.key)
+        local t, what = Skin:ResolveSkin(def.key), def.key .. ": "
+        assertEqual(rgb(mock.__paint(hot.rest).vertex), rgb(t["icon.tint"]), what .. "the rest mark")
+        assertEqual(rgb(mock.__paint(hot.hot).vertex), rgb(t["icon.hot"]), what .. "the hot mark")
+        assertEqual(rgb(mock.__paint(hot.headRest).vertex), rgb(t["text.heading"]), what .. "the heading mark")
+        assertEqual(rgb(mock.__paint(hot.headHot).vertex), rgb(t["icon.hot"]), what .. "the hot mark by it")
+        assertEqual(rgb(mock.__paint(hot.heading).textColor), rgb(t["text.heading"]), what .. "the heading")
+        assertTrue(mock.__paint(hot.rest).texture ~= nil, what .. "the Ka0s icon on the sample")
+        assertEqual(washes(mock, hot.stripe), set(t["list.stripe"]), what .. "the striped row")
+        assertEqual(washes(mock, hot.hover), set(t["list.hover"]), what .. "the hovered row")
+        assertEqual(washes(mock, hot.both), set(t["list.stripe"], t["list.hover"]), what .. "stripe + hover")
+        n = n + 1
+    end
+    assertEqual(n, 9, "every shipped skin")
+end)
