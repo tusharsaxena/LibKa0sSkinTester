@@ -267,7 +267,7 @@ Total.
 - skin default: a fresh profile stores and wears the client's default skin
 - skin default: Reset puts the profile back on the client's default skin
 
-### test_showroom.lua (29)
+### test_showroom.lua (33)
 
 - showroom: the window is painted through the wrapper
 - showroom: Paint answers the primitive's answer and records the name once
@@ -298,6 +298,10 @@ Total.
 - R5-WIN: the showroom's body sits 6 px in from its title bar and footer, as LootHistory's content
 - SR-ST: every showroom title-bar control shows a tooltip in gtip.title, in every skin
 - SR-ST: the showroom's close X rests in icon.tint and lights close.hot, in Ka0s Default and every skin
+- AD-89-ST: the showroom's footer is W.Footer, FOOTER.HEIGHT tall, the skin worn on its left line
+- AD-89-ST: the body ends FOOTER.HEIGHT plus its 6 px gap above the window's bottom edge
+- AD-89-ST: with no library widgets the footer is a bare frame of the same height and line
+- AD-89-ST: the facade's Footer band is on show as a specimen in the Window chrome section
 
 ### test_showroom_coverage.lua (6)
 
@@ -820,7 +824,7 @@ Total.
 - skin values: no typed value outside the kit's categories and the host's rows
 - skin values: the check is falsifiable, a planted value of each shape is reported
 
-### test_skin_switch.lua (220)
+### test_skin_switch.lua (222)
 
 - skin switch: the check is falsifiable, a surface that redraws a literal is reported
 - skin switch: the window's shell changes
@@ -835,8 +839,10 @@ Total.
 - skin switch: the skin selector changes with the Scope ignored
 - skin switch: chrome: the title changes
 - skin switch: chrome: the title changes with the Scope ignored
-- skin switch: chrome: Shell, Band, Header, TitleBar, CloseButton, Footer changes
-- skin switch: chrome: Shell, Band, Header, TitleBar, CloseButton, Footer changes with the Scope ignored
+- skin switch: chrome: Footer (the facade's band, a specimen) changes
+- skin switch: chrome: Footer (the facade's band, a specimen) changes with the Scope ignored
+- skin switch: chrome: Shell, Band, Header, TitleBar, CloseButton, W.Footer changes
+- skin switch: chrome: Shell, Band, Header, TitleBar, CloseButton, W.Footer changes with the Scope ignored
 - skin switch: chrome: Tab x3 + SetTabSelection (click one) changes
 - skin switch: chrome: Tab x3 + SetTabSelection (click one) changes with the Scope ignored
 - skin switch: controls: the title changes
@@ -1064,7 +1070,7 @@ Total.
 | test_slash.lua | 20 |
 | test_selector.lua | 13 |
 | test_skin_default.lua | 2 |
-| test_showroom.lua | 29 |
+| test_showroom.lua | 33 |
 | test_showroom_coverage.lua | 6 |
 | test_showroom_dropdowns.lua | 8 |
 | test_showroom_values.lua | 15 |
@@ -1099,7 +1105,7 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | test_skin_values.lua | 3 |
-| test_skin_switch.lua | 220 |
+| test_skin_switch.lua | 222 |
 | test_client_globals.lua | 3 |
 | Skipped | 1 |
-| **Total** | **896** |
+| **Total** | **902** |

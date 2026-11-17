@@ -17,7 +17,8 @@ CurseForge. Purpose, audience and non-goals: [`scope.md`](./scope.md).
 ## Module Map
 
 One shell, the setup files that wire LibKa0s, the swatch selector, the showroom window with its paint
-wrapper and section registry, twelve section files (Chrome, Controls, Lists, Text, Panels, Overlays,
+wrapper and section registry (its footer the library's `W.Footer`, 24 px with no fill, standalone-windows'
+*The footer*; AD-89-ST), twelve section files (Chrome, Controls, Lists, Text, Panels, Overlays,
 Addon surfaces, Library widgets, Values, Textures, Faces and widths, HUD faces), and the settings pages with the first-run skin picker. Every file, its job and its load-order constraint:
 [`module-map.md`](./module-map.md). The load order itself is
 the TOC, where each load-bearing position carries the reason.

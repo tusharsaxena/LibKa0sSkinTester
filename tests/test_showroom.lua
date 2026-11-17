@@ -91,7 +91,7 @@ test("showroom: a skin change repaints the open window", function()
     NS.Selector.Pick("contrast")
     assertToken(mock, mock.__paint(window(mock)).backdropColor, "win.bg", "the shell under contrast")
     assertToken(mock, mock.__paint(caption).textColor, "text.muted", "a caption under contrast")
-    assertTrue(window(mock).footer.text:GetText():find("High Contrast", 1, true) ~= nil,
+    assertTrue(window(mock).footer.left:GetText():find("High Contrast", 1, true) ~= nil,
         "the footer names the skin worn")
 end)
 
@@ -550,4 +550,58 @@ test("SR-ST: the showroom's close X rests in icon.tint and lights close.hot, in 
         f.close.__fire("OnLeave")
         assertToken(mock, artColor(mock, f.close), "icon.tint", key .. ": the X at rest again")
     end
+end)
+
+-- AD-89-ST (LibKa0s#89; standalone-windows' *The footer*, v2.110.0): the showroom's footer is the
+-- library's W.Footer, FOOTER.HEIGHT (24 px) tall with no fill, a hairline in the skin's `divider` and
+-- the skin worn on its muted left line. The facade's Footer primitive, a band, stays on show as a
+-- specimen in the Window chrome section, so the coverage claim still sees it.
+
+test("AD-89-ST: the showroom's footer is W.Footer, FOOTER.HEIGHT tall, the skin worn on its left line", function()
+    -- red under: the hand-built 22 px band (a BackdropTemplate frame with its own font string).
+    local NS, _, mock = painted()
+    NS.Showroom.Show()
+    local f = window(mock)
+    local W = mock.LibStub("LibKa0s-Widgets-1.0")
+    assertEqual(W.FOOTER.HEIGHT, 24, "the library's footer is 24 px")
+    assertEqual(f.footer:GetHeight(), W.FOOTER.HEIGHT, "the footer is FOOTER.HEIGHT tall")
+    assertTrue(f.footer.line ~= nil and f.footer.left ~= nil and f.footer.SetLeft ~= nil, "built by W.Footer")
+    assertEqual(f.footer.left:GetText(), "Wearing Ka0s Default", "the left line names the skin worn")
+    assertTrue(mock.__paint(f.footer).backdropColor == nil, "no fill: the window shows through")
+    assertToken(mock, mock.__paint(f.footer.left).textColor, "text.muted", "the left line")
+    NS.Selector.Pick("contrast")
+    assertTrue(f.footer.left:GetText():find("High Contrast", 1, true) ~= nil, "a skin change rewrites it")
+    assertToken(mock, mock.__paint(f.footer.left).textColor, "text.muted", "the left line under contrast")
+end)
+
+test("AD-89-ST: the body ends FOOTER.HEIGHT plus its 6 px gap above the window's bottom edge", function()
+    local NS, _, mock = painted()
+    NS.Showroom.Show()
+    local f = window(mock)
+    local p, rel, rp, _, y = f.body:GetPoint(2)
+    assertEqual(p .. rp, "BOTTOMRIGHTTOPRIGHT", "over the footer"); assertTrue(rel == f.footer, "the footer")
+    assertEqual(y, 6, "6 px up from its top")
+    p, rel, rp = f.footer:GetPoint(1)
+    assertEqual(p .. rp, "BOTTOMLEFTBOTTOMLEFT", "the footer sits on the window's bottom edge")
+    assertTrue(rel == f, "on the window")
+end)
+
+test("AD-89-ST: with no library widgets the footer is a bare frame of the same height and line", function()
+    -- red under: a footer that indexes LibKa0s-Widgets-1.0 without checking it loaded.
+    local NS, _, mock = T.enableAddon{ skip = { "libs/LibKa0s/Widgets.lua" } }
+    NS.Showroom.Show()
+    local f = window(mock)
+    assertEqual(f.footer:GetHeight(), 24, "24 px, the library's figure")
+    assertEqual(f.footer.left:GetText(), "Wearing Ka0s Default", "the left line names the skin worn")
+end)
+
+test("AD-89-ST: the facade's Footer band is on show as a specimen in the Window chrome section", function()
+    -- red under: the band dropped with the hand-built footer, so lib.VOCAB's Footer goes unshown.
+    local NS, _, mock = painted()
+    NS.Showroom.Show()
+    local cell = NS.Showroom.Section("chrome").cells["Footer (the facade's band, a specimen)"]
+    assertTrue(cell ~= nil, "the specimen cell")
+    assertTrue(NS.Showroom.used.Footer == true, "Footer went through NS.Showroom.Paint")
+    assertToken(mock, mock.__paint(cell).backdropColor, "foot.bg", "the specimen's band")
+    assertTrue(mock.__paint(window(mock).footer).backdropColor == nil, "and not on the window's footer")
 end)
