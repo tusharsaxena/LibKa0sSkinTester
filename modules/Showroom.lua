@@ -359,6 +359,11 @@ function R.ResetPosition()
     NS.Debug("Showroom", "position reset")
 end
 
+--- The showroom window itself, the window group its body tooltips open beside; nil before the first open.
+function R.Frame()
+    return frame
+end
+
 --- The swatch selector of the built window; nil before the first open.
 function R.Selector()
     return frame and frame.selector

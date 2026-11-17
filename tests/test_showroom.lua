@@ -216,6 +216,127 @@ test("a5: the hover tooltip is a frame of this addon's, in tooltip.* and gtip.*"
     assertToken(mock, line[#line], "gtip.value", "the line")
 end)
 
+-- ── AD-92-ST (LibKa0s#92): the sample tooltip opens by the body rule (standalone-windows' *Tooltip
+-- placement*). "Hover me" is a control in the showroom's content, so its tooltip is a body element's:
+-- beside the window group (the showroom alone), right then left, its top level with the button's
+-- top, through LibKa0s-Tooltip-1.0's PlaceBeside. Before it the frame sat on the button's top-right
+-- corner, 4 px off (a corner offset, which the rule names as ruled out).
+
+--- Gives `f` a rect in screen units (scale 1), read through the client's geometry methods.
+local function placeAt(f, left, bottom, width, height)
+    rawset(f, "GetLeft", function() return left end)
+    rawset(f, "GetBottom", function() return bottom end)
+    rawset(f, "GetRight", function() return left + width end)
+    rawset(f, "GetTop", function() return bottom + height end)
+    rawset(f, "GetWidth", function() return width end)
+    rawset(f, "GetHeight", function() return height end)
+    rawset(f, "GetEffectiveScale", function() return 1 end)
+end
+
+--- Hovers "Hover me" and answers the sample tooltip, every SetPoint it took on that hover, the button.
+local function hoverSample(NS)
+    local btn = NS.Showroom.Section("overlays").tipButton
+    local tip = NS.Showroom.sampleTooltip
+    local points = shadowed(tip, "SetPoint")
+    btn:GetScript("OnEnter")(btn)
+    return tip, points, btn
+end
+
+test("AD-92-ST: the sample tooltip is placed by PlaceBeside, on the button, against the showroom", function()
+    -- red under: the corner anchor (BOTTOMLEFT on the button's TOPRIGHT, 4, 4) with no placer call.
+    local NS, mock = opened()
+    local Tip = mock.LibStub("LibKa0s-Tooltip-1.0")
+    local calls, real, shownFirst = {}, Tip.PlaceBeside, nil
+    rawset(Tip, "PlaceBeside", function(tip, element, group, o)
+        calls[#calls + 1] = { tip = tip, element = element, group = group, opts = o }
+        shownFirst = tip:IsShown() == true
+        return real(tip, element, group, o)
+    end)
+    local ok, err = pcall(hoverSample, NS)
+    rawset(Tip, "PlaceBeside", real)
+    assertTrue(ok, tostring(err))
+    assertEqual(#calls, 1, "one PlaceBeside per hover")
+    local c = calls[1]
+    assertEqual(c.tip, NS.Showroom.sampleTooltip, "the sample's own frame")
+    assertEqual(c.element, NS.Showroom.Section("overlays").tipButton, "placed by the hovered button")
+    assertEqual(c.group, window(mock), "the window group is the showroom")
+    assertTrue(shownFirst, "shown before it is placed, so its size is known")
+    assertTrue(type(c.opts) == "table" and c.opts.comparisons == false,
+        "no comparison anchor type: it is no item tooltip")
+end)
+
+test("AD-92-ST: the sample tooltip opens right of the showroom, top level with the button, 2 px off",
+    function()
+    local NS, mock = opened()
+    local scr = dofile("tests/_kit/mock_screen.lua")(mock, { width = 1920, height = 1080 })
+    placeAt(window(mock), 400, 200, 600, 600)
+    placeAt(NS.Showroom.Section("overlays").tipButton, 450, 500, 120, 24)
+    placeAt(NS.Showroom.sampleTooltip, 0, 0, 170, 48)
+    local ok, tip, points = pcall(hoverSample, NS)
+    scr.restore()
+    assertTrue(ok, tostring(tip))
+    local p = points[#points]
+    assertTrue(p ~= nil, "the tooltip was placed")
+    assertEqual(p[1], "TOPLEFT", "its top-left")
+    assertEqual(p[2], mock.UIParent, "one absolute point on UIParent")
+    assertEqual(p[3], "BOTTOMLEFT")
+    assertEqual(p[4], 1000 + 2, "at the showroom's right edge + TIP_GAP")
+    assertEqual(p[5], 524, "its top level with the button's top")
+end)
+
+test("AD-92-ST: with no room on the right the sample tooltip opens left of the showroom", function()
+    local NS, mock = opened()
+    local scr = dofile("tests/_kit/mock_screen.lua")(mock, { width = 1920, height = 1080 })
+    placeAt(window(mock), 1300, 200, 600, 600)
+    placeAt(NS.Showroom.Section("overlays").tipButton, 1350, 500, 120, 24)
+    placeAt(NS.Showroom.sampleTooltip, 0, 0, 170, 48)
+    local ok, tip, points = pcall(hoverSample, NS)
+    scr.restore()
+    assertTrue(ok, tostring(tip))
+    local p = points[#points]
+    assertTrue(p ~= nil, "the tooltip was placed")
+    assertEqual(p[1], "TOPRIGHT", "its top-right")
+    assertEqual(p[4], 1300 - 2, "at the showroom's left edge - TIP_GAP")
+    assertEqual(p[5], 524, "its top level with the button's top")
+end)
+
+test("AD-92-ST: unreadable geometry attaches the sample above the button, never a corner or the cursor",
+    function()
+    -- red under: the corner anchor kept as the fallback, or any cursor read.
+    local NS, mock = opened()
+    local Tip = mock.LibStub("LibKa0s-Tooltip-1.0")
+    local beside, attached = Tip.PlaceBeside, Tip.PlaceAttached
+    rawset(Tip, "PlaceBeside", function() return nil end)
+    rawset(Tip, "PlaceAttached", function() return nil end)
+    local ok, tip, points, btn = pcall(hoverSample, NS)
+    rawset(Tip, "PlaceBeside", beside); rawset(Tip, "PlaceAttached", attached)
+    assertTrue(ok, tostring(tip))
+    assertEqual(#points, 1, "one point")
+    local p = points[1]
+    assertEqual(p[1], "BOTTOM"); assertEqual(p[2], btn); assertEqual(p[3], "TOP")
+    assertEqual(p[4], 0); assertEqual(p[5], Tip.TIP_GAP, "TIP_GAP above the button")
+end)
+
+test("AD-92-ST: no tooltip of this addon follows the cursor or sits on a corner offset", function()
+    -- The addon's own code: core/, modules/ and settings/ (libs/ and the kit are the library's).
+    local files = {}
+    for _, dir in ipairs({ "core", "modules", "settings" }) do
+        local p = io.popen('ls "' .. (T.root or ".") .. "/" .. dir .. '"')
+        for name in p:lines() do
+            if name:match("%.lua$") then files[#files + 1] = dir .. "/" .. name end
+        end
+        p:close()
+    end
+    assertTrue(#files > 10, "the addon's sources were listed")
+    for _, rel in ipairs(files) do
+        local fh = assert(io.open((T.root or ".") .. "/" .. rel, "rb"))
+        local src = fh:read("*a"); fh:close()
+        for _, bad in ipairs({ "ANCHOR_CURSOR", "GetCursorPosition", '"BOTTOMLEFT", self, "TOPRIGHT"' }) do
+            assertTrue(src:find(bad, 1, true) == nil, rel .. " carries " .. bad)
+        end
+    end
+end)
+
 test("a5: the ApplyBarFill sample draws the skin's texture and accent, and follows a change", function()
     local NS, mock = opened()
     local LSM = mock.LibStub:NewLibrary("LibSharedMedia-3.0", 1) or mock.LibStub("LibSharedMedia-3.0")

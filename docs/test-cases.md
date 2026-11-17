@@ -267,7 +267,7 @@ Total.
 - skin default: a fresh profile stores and wears the client's default skin
 - skin default: Reset puts the profile back on the client's default skin
 
-### test_showroom.lua (38)
+### test_showroom.lua (43)
 
 - showroom: the window is painted through the wrapper
 - showroom: Paint answers the primitive's answer and records the name once
@@ -281,6 +281,11 @@ Total.
 - showroom scrollbar: dragging the knob scrolls the sections, and a sync does not scroll back
 - showroom scrollbar: the corridor and the knob are the skin's
 - a5: the hover tooltip is a frame of this addon's, in tooltip.* and gtip.*
+- AD-92-ST: the sample tooltip is placed by PlaceBeside, on the button, against the showroom
+- AD-92-ST: the sample tooltip opens right of the showroom, top level with the button, 2 px off
+- AD-92-ST: with no room on the right the sample tooltip opens left of the showroom
+- AD-92-ST: unreadable geometry attaches the sample above the button, never a corner or the cursor
+- AD-92-ST: no tooltip of this addon follows the cursor or sits on a corner offset
 - a5: the ApplyBarFill sample draws the skin's texture and accent, and follows a change
 - a5: the fade's label and the icon border follow the skin
 - a5: every IconBorder sample asks for the skin's own edge
@@ -1075,7 +1080,7 @@ Total.
 | test_slash.lua | 20 |
 | test_selector.lua | 13 |
 | test_skin_default.lua | 2 |
-| test_showroom.lua | 38 |
+| test_showroom.lua | 43 |
 | test_showroom_coverage.lua | 6 |
 | test_showroom_dropdowns.lua | 8 |
 | test_showroom_values.lua | 15 |
@@ -1113,4 +1118,4 @@ Total.
 | test_skin_switch.lua | 222 |
 | test_client_globals.lua | 3 |
 | Skipped | 1 |
-| **Total** | **907** |
+| **Total** | **912** |

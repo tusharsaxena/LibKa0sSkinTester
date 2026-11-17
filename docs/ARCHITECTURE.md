@@ -92,6 +92,32 @@ The Library widgets section's `W.DragHandle` is a specimen of the widget, not a 
 (it moves its own cell and has no display behind it), so it does not turn on `spec.settings`; the
 drag-handle settings mark is the library's to show and its own suite's to pin.
 
+### Tooltip placement (LibKa0s#92, AD-92-ST)
+
+standalone-windows' *Tooltip placement* binds every tooltip this addon places itself. There is one:
+the Overlays section's sample tooltip (`modules/ShowroomOverlays.lua`, `placeTip`), a frame of this
+addon's shown on hover of "Hover me". The button is a control in the showroom's content, so it is a
+**body** element: the frame is shown, then placed by `LibKa0s-Tooltip-1.0`'s `PlaceBeside` against the
+showroom window (`R.Frame()`, a group of one: nothing docks to it), right of the window and else left,
+its top level with the button's top, `TIP_GAP` off, `comparisons = false` (it is no item tooltip). When
+the placers cannot read the geometry it takes `PlaceAttached`, then a plain `BOTTOM` on the button's
+`TOP` + `TIP_GAP`. It used to sit on the button's top-right corner, 4 px off, the corner offset the rule
+rules out. No code of this addon anchors a tooltip at the cursor or follows it (pinned by the AD-92-ST
+cases in `tests/test_showroom.lua`).
+
+Placed by the library, through its own placers, and so not this addon's to move: the showroom's
+title marks (`W.HeaderButtons`, chrome, above the mark), the Library widgets specimens (the
+`W.DragHandle` strip, the `W.ContextMenu` cascade's entries, the line chart's hover), the skin picker's
+toolbar and the minimap button's tooltip (`PlaceLauncher`).
+
+Left where they are, outside the rule's reach (*What it does not bind*):
+
+| Tooltip | Why it stays |
+|---|---|
+| The settings pages' row tooltips and the header's Reset all settings tooltip (`settings/`) | Pages inside Blizzard's Settings canvas, which options-ui governs. |
+| The launcher's options menu entries (`core/LauncherSetup.lua`) | A `MenuUtil.CreateContextMenu` menu: the client's menu code places its tooltips. |
+| The Addon surfaces section's `SettingsFrameTemplate` miniature and other Blizzard-template specimens (`modules/ShowroomOwner.lua`) | They raise no tooltip of this addon's; any tooltip on them is the client's own frame. |
+
 ## Known Limitations
 
 - With another installed addon that vendors a newer LibKa0s, LibStub runs that copy's files, so the
