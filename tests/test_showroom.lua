@@ -605,3 +605,73 @@ test("AD-89-ST: the facade's Footer band is on show as a specimen in the Window 
     assertToken(mock, mock.__paint(cell).backdropColor, "foot.bg", "the specimen's band")
     assertTrue(mock.__paint(window(mock).footer).backdropColor == nil, "and not on the window's footer")
 end)
+
+-- AD-86-ST (LibKa0s#86; standalone-windows' *Title-bar controls*, v2.113.0): the showroom's title marks
+-- are the library's W.HeaderButtons strip, left to right settings · close, 18 px marks 6 px from the
+-- corner and 6 px apart. Settings opens this addon's settings through the opener its launcher
+-- registered; the showroom (MEDIUM) sits under the settings panel, so it stays shown.
+
+test("AD-86-ST: the showroom's marks are W.HeaderButtons', settings beside the close", function()
+    -- red under: the hand-placed Core close alone, with no settings mark.
+    local _, mock = opened()
+    local f = window(mock)
+    local W = mock.LibStub("LibKa0s-Widgets-1.0")
+    local hb = f.headerButtons
+    assertTrue(hb ~= nil, "built by W.HeaderButtons")
+    assertTrue(hb.close ~= nil and hb.close == f.close, "the strip's close is the window's close")
+    assertTrue(hb.settings ~= nil and hb.settings == f.settings, "a settings mark")
+    assertEqual(table.concat(hb.order, ","), "settings,close", "left to right: settings, close")
+    assertEqual(hb.offsets.close, -W.HEADER.PAD, "the close 6 px from the corner")
+    assertEqual(hb.offsets.settings, -(W.HEADER.PAD + W.HEADER.SIZE + W.HEADER.GAP), "settings 6 px inward of it")
+    assertTrue(hb.optOut == nil, "no opt-out")
+end)
+
+test("AD-86-ST: the settings mark sits on S.Band's middle with the close, in every skin", function()
+    local NS, mock = bandOpened()
+    local f = window(mock)
+    for _, def in ipairs(lib(mock):Skins()) do
+        NS.Selector.Pick(def.key)
+        local band = NS.Skin.Band(f)
+        assertOnBand(f.settings, band, def.key .. ": the settings mark")
+        assertEqual(select(1, f.settings:GetPoint(1)), "RIGHT", def.key .. ": on the right, inward of the close")
+    end
+end)
+
+test("AD-86-ST: the settings mark opens this addon's settings, and the showroom stays shown", function()
+    -- red under: no settings mark on the showroom's title bar.
+    local NS, mock = opened()
+    local f = window(mock)
+    local opens = 0
+    local saved = NS.addon.OpenSettings
+    NS.addon.OpenSettings = function() opens = opens + 1 end
+    local ok, err = pcall(function() f.settings.__fire("OnClick", "LeftButton") end)
+    NS.addon.OpenSettings = saved
+    assertTrue(ok, tostring(err))
+    assertEqual(opens, 1, "the launcher's registered opener ran once")
+    assertTrue(f:IsShown(), "the showroom sits under the settings panel, so it is not hidden")
+end)
+
+test("AD-86-ST: the settings mark says Open settings, rests in icon.tint and lights text.link, in every skin", function()
+    local NS, mock = opened()
+    local f = window(mock)
+    for _, def in ipairs(lib(mock):Skins()) do
+        NS.Selector.Pick(def.key)
+        local got = titleTip(mock, f.settings)
+        assertEqual(got and got.text, "Open settings", def.key .. ": the tooltip")
+        assertToken(mock, got.color, "gtip.title", def.key .. ": the tooltip's color")
+        assertToken(mock, artColor(mock, f.settings), "icon.tint", def.key .. ": at rest")
+        f.settings.__fire("OnEnter")
+        assertToken(mock, artColor(mock, f.settings), "text.link", def.key .. ": under the pointer")
+        f.settings.__fire("OnLeave")
+        assertToken(mock, artColor(mock, f.settings), "icon.tint", def.key .. ": at rest again")
+    end
+end)
+
+test("AD-86-ST: with no library widgets the close alone, on the bar's right", function()
+    -- red under: a title bar that indexes W.HeaderButtons without checking it loaded.
+    local NS, _, mock = T.enableAddon{ skip = { "libs/LibKa0s/Widgets.lua" } }
+    NS.Showroom.Show()
+    local f = window(mock)
+    assertTrue(f.settings == nil, "no settings mark without the library's strip")
+    assertTrue(rawget(f, "headerButtons") == nil, "no strip")
+end)

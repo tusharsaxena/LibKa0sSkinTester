@@ -267,7 +267,7 @@ Total.
 - skin default: a fresh profile stores and wears the client's default skin
 - skin default: Reset puts the profile back on the client's default skin
 
-### test_showroom.lua (33)
+### test_showroom.lua (38)
 
 - showroom: the window is painted through the wrapper
 - showroom: Paint answers the primitive's answer and records the name once
@@ -302,6 +302,11 @@ Total.
 - AD-89-ST: the body ends FOOTER.HEIGHT plus its 6 px gap above the window's bottom edge
 - AD-89-ST: with no library widgets the footer is a bare frame of the same height and line
 - AD-89-ST: the facade's Footer band is on show as a specimen in the Window chrome section
+- AD-86-ST: the showroom's marks are W.HeaderButtons', settings beside the close
+- AD-86-ST: the settings mark sits on S.Band's middle with the close, in every skin
+- AD-86-ST: the settings mark opens this addon's settings, and the showroom stays shown
+- AD-86-ST: the settings mark says Open settings, rests in icon.tint and lights text.link, in every skin
+- AD-86-ST: with no library widgets the close alone, on the bar's right
 
 ### test_showroom_coverage.lua (6)
 
@@ -1070,7 +1075,7 @@ Total.
 | test_slash.lua | 20 |
 | test_selector.lua | 13 |
 | test_skin_default.lua | 2 |
-| test_showroom.lua | 33 |
+| test_showroom.lua | 38 |
 | test_showroom_coverage.lua | 6 |
 | test_showroom_dropdowns.lua | 8 |
 | test_showroom_values.lua | 15 |
@@ -1108,4 +1113,4 @@ Total.
 | test_skin_switch.lua | 222 |
 | test_client_globals.lua | 3 |
 | Skipped | 1 |
-| **Total** | **902** |
+| **Total** | **907** |

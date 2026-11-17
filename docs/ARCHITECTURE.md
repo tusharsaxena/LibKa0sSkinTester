@@ -18,7 +18,8 @@ CurseForge. Purpose, audience and non-goals: [`scope.md`](./scope.md).
 
 One shell, the setup files that wire LibKa0s, the swatch selector, the showroom window with its paint
 wrapper and section registry (its footer the library's `W.Footer`, 24 px with no fill, standalone-windows'
-*The footer*; AD-89-ST), twelve section files (Chrome, Controls, Lists, Text, Panels, Overlays,
+*The footer*; AD-89-ST; its title marks the library's `W.HeaderButtons` strip, settings · close,
+standalone-windows' *Title-bar controls*; AD-86-ST), twelve section files (Chrome, Controls, Lists, Text, Panels, Overlays,
 Addon surfaces, Library widgets, Values, Textures, Faces and widths, HUD faces), and the settings pages with the first-run skin picker. Every file, its job and its load-order constraint:
 [`module-map.md`](./module-map.md). The load order itself is
 the TOC, where each load-bearing position carries the reason.
@@ -71,6 +72,22 @@ Nothing here is secure. The showroom is a plain frame (standalone-windows), open
 repainted in combat freely; the key binding clicks a plain hidden button. The settings panel's open is
 refused in combat by the library (options-ui-§2), and a page shown in combat is locked by it.
 `UISpecialFrames` is written once, at the first show, never at load.
+
+### Title-bar marks (LibKa0s#86, AD-86-ST)
+
+The showroom is the one window this addon builds with a title bar. Its marks are `W.HeaderButtons`'
+(`modules/Showroom.lua`, `buildMarks`): left to right settings · close, with this addon's folder as
+`owner`. The close is Core's `MakeCloseButton` (three arguments, built by the strip) and hides the
+showroom. The settings mark opens this addon's settings through the opener its launcher registered
+(`spec.settings` nil, Core's `OpenSettings(addonName)`, which calls `NS.addon:OpenSettings`). It passes
+no `hideOnSettings`: the showroom sits in MEDIUM, under the settings panel, and the Skin tab is meant to
+be read beside it. With no library widgets the close alone is placed by hand, as before. The confirm
+popup and the sample tooltip in the Overlays section are specimens, not this addon's windows, and carry
+no title marks.
+
+The Library widgets section's `W.DragHandle` is a specimen of the widget, not a strip of this addon's
+(it moves its own cell and has no display behind it), so it does not turn on `spec.settings`; the
+drag-handle settings mark is the library's to show and its own suite's to pin.
 
 ## Known Limitations
 

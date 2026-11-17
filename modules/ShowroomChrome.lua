@@ -1,7 +1,7 @@
 local _, NS = ...
 -- modules/ShowroomChrome.lua — the Chrome section: the tab strip and the facade's Footer band. The
 -- window around every section is the rest of the chrome (Shell, Band, Header, TitleBar, CloseButton),
--- painted by modules/Showroom.lua; its footer is the library's W.Footer (AD-89-ST), which draws no
+-- painted by modules/Showroom.lua, its title marks the library's W.HeaderButtons (AD-86-ST); its footer is the library's W.Footer (AD-89-ST), which draws no
 -- band, so the facade's Footer primitive is shown here as a specimen (lib.VOCAB keeps it).
 
 local R, L = NS.Showroom, NS.L

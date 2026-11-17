@@ -248,6 +248,29 @@ local function buildSections(content, width)
     content:SetHeight(math.max(1, y))
 end
 
+-- The title marks (AD-86-ST, LibKa0s#86; standalone-windows' *Title-bar controls*): the library's
+-- W.HeaderButtons strip, left to right settings . close, 6 px from the bar's right corner and 6 px
+-- apart. The close is Core's, built with this addon as owner, and hides the showroom; the settings
+-- mark opens this addon's settings through the opener its launcher registered (Core's OpenSettings
+-- by this folder). No hideOnSettings: the showroom is MEDIUM, under the settings panel, and the skin
+-- rows there are meant to be read beside it. With no library widgets, the close alone, as before.
+-- Answers the close and the Header's `right` list (the strip's, outermost first).
+local function buildMarks(f, bar)
+    local W = widgets()
+    if W and type(W.HeaderButtons) == "function" then
+        local hb = W.HeaderButtons(bar, { owner = addonName, frame = f, close = function() R.Hide() end })
+        f.headerButtons = hb   -- spec.frame's record, kept explicit for the reader
+        f.close, f.settings = hb.close, hb.settings
+        return hb.close, hb.right
+    end
+    local close = NS.MakeCloseButton(bar, function() R.Hide() end)
+    if close then
+        close:SetPoint("RIGHT", bar, "RIGHT", -6, 0)
+        f.close = close
+    end
+    return close, { close }
+end
+
 local function build()
     local t0 = Perf.on and debugprofilestop()
     local f = CreateFrame("Frame", WINDOW_NAME, UIParent, "BackdropTemplate")
@@ -273,11 +296,7 @@ local function build()
     bar.title:SetText(NS.BRAND_NAME .. " \226\128\148 " .. L["Skin showroom"])
     f.titleBar = bar
 
-    local close = NS.MakeCloseButton(bar, function() R.Hide() end)
-    if close then
-        close:SetPoint("RIGHT", bar, "RIGHT", -6, 0)
-        f.close = close
-    end
+    local close, right = buildMarks(f, bar)
 
     local footer = buildFooter(f)
     f.footer = footer
@@ -314,7 +333,7 @@ local function build()
     -- close sit on its middle at y 0, in every skin, a 2 px edge and EllesmereUI's 25 px bar included.
     -- The anchors above stay as the no-library fallback, where both calls are no-ops.
     f.band = R.Paint("Band", f)
-    R.Paint("Header", f, { title = bar.title, right = { close }, bars = { bar } })
+    R.Paint("Header", f, { title = bar.title, right = right, bars = { bar } })
     if close then R.Paint("CloseButton", close) end
     R.Paint("ScrollBar", f.scrollBar, { track = f.track, thumb = f.thumb })
     buildSections(content, SECTIONS_W)
