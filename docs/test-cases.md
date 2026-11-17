@@ -246,14 +246,15 @@ Total.
 - slash: a foreign /st is reported once and left alone
 - slash: with no foreign /st, nothing is said and both commands stay
 
-### test_selector.lua (12)
+### test_selector.lua (13)
 
 - selector: one card per Ka0s skin, in Skins() order
 - selector: clicking a card applies and saves the skin
 - selector: a pick made elsewhere moves the selection
 - selector: the saved skin is applied at load
 - selector: the saved Scope is applied at load, and /st set moves one half
-- selector: a fresh profile leaves this addon's settings panel the game's (QFE-ST2, skinning-§3)
+- selector: a fresh profile skins this addon's settings panel (SR2-STP, a documented deviation)
+- selector: a stored Ignore settings panel on is kept (SR2-STP)
 - selector: a stored Ignore settings panel off is kept (QFE-ST2)
 - selector: another addon's skin copy brings the skin, never the Scope (SF1-ST, keepScope)
 - selector: an unknown saved skin falls back to the client's default skin
@@ -266,7 +267,7 @@ Total.
 - skin default: a fresh profile stores and wears the client's default skin
 - skin default: Reset puts the profile back on the client's default skin
 
-### test_showroom.lua (27)
+### test_showroom.lua (29)
 
 - showroom: the window is painted through the wrapper
 - showroom: Paint answers the primitive's answer and records the name once
@@ -295,6 +296,8 @@ Total.
 - R5-RV: the showroom's title bar, title and close sit on S.Band in every skin
 - R5-WIN: the confirm popup's one band carries its question on its middle, in every skin
 - R5-WIN: the showroom's body sits 6 px in from its title bar and footer, as LootHistory's content
+- SR-ST: every showroom title-bar control shows a tooltip in gtip.title, in every skin
+- SR-ST: the showroom's close X rests in icon.tint and lights close.hot, in Ka0s Default and every skin
 
 ### test_showroom_coverage.lua (6)
 
@@ -373,7 +376,7 @@ Total.
 - fonts: /st widths is refused while the addon is disabled
 - fonts: without the skin engine the section builds and the probe says why
 
-### test_showroom_hud.lua (10)
+### test_showroom_hud.lua (11)
 
 - hud: the section is built, one line per skin, in the library's order
 - hud: each skin's line names that skin's own HUD face, all nine of them
@@ -385,6 +388,7 @@ Total.
 - hud: a skin change redraws each string's font object, the shadow behind the cache included
 - hud: BarGloss shows under a skin with gloss and only there
 - overlays: S.Mark tints its marks and the MarkText line is written again
+- overlays: the hot row shows rest, hot, heading and the row washes, in every skin
 
 ### test_showroom_widgets.lua (20)
 
@@ -816,7 +820,7 @@ Total.
 - skin values: no typed value outside the kit's categories and the host's rows
 - skin values: the check is falsifiable, a planted value of each shape is reported
 
-### test_skin_switch.lua (218)
+### test_skin_switch.lua (220)
 
 - skin switch: the check is falsifiable, a surface that redraws a literal is reported
 - skin switch: the window's shell changes
@@ -928,6 +932,8 @@ Total.
 - skin switch: overlays: Confirm popup (Shell, Header + Button) changes with the Scope ignored
 - skin switch: overlays: FadeRegions (left) beside stock changes
 - skin switch: overlays: FadeRegions (left) beside stock changes with the Scope ignored
+- skin switch: overlays: Hot: mark rest, hot; at text.heading, hot; ListRow stripe, hover, both changes
+- skin switch: overlays: Hot: mark rest, hot; at text.heading, hot; ListRow stripe, hover, both changes with the Scope ignored
 - skin switch: overlays: IconBorder, fromSkin changes
 - skin switch: overlays: IconBorder, fromSkin changes with the Scope ignored
 - skin switch: overlays: Mark (tint, sem.good), MarkText changes
@@ -1056,16 +1062,16 @@ Total.
 | test_database.lua | 12 |
 | test_settings.lua | 54 |
 | test_slash.lua | 20 |
-| test_selector.lua | 12 |
+| test_selector.lua | 13 |
 | test_skin_default.lua | 2 |
-| test_showroom.lua | 27 |
+| test_showroom.lua | 29 |
 | test_showroom_coverage.lua | 6 |
 | test_showroom_dropdowns.lua | 8 |
 | test_showroom_values.lua | 15 |
 | test_showroom_textures.lua | 8 |
 | test_showroom_owner.lua | 11 |
 | test_showroom_fonts.lua | 11 |
-| test_showroom_hud.lua | 10 |
+| test_showroom_hud.lua | 11 |
 | test_showroom_widgets.lua | 20 |
 | test_skin_media.lua | 9 |
 | test_skin_outline.lua | 9 |
@@ -1093,7 +1099,7 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | test_skin_values.lua | 3 |
-| test_skin_switch.lua | 218 |
+| test_skin_switch.lua | 220 |
 | test_client_globals.lua | 3 |
 | Skipped | 1 |
-| **Total** | **890** |
+| **Total** | **896** |

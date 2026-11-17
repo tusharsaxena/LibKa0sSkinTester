@@ -89,14 +89,27 @@ test("selector: the saved Scope is applied at load, and /st set moves one half",
     assertEqual(panel, true, "the other half kept")
 end)
 
-test("selector: a fresh profile leaves this addon's settings panel the game's (QFE-ST2, skinning-§3)", function()
-    -- red under: R4-ST1's retired `ignorePanel = false` left in defaults/Profile.lua. The owner's
-    -- ruling R8 of 2026-11-10: only the showroom window wears the skin out of the box.
+test("selector: a fresh profile skins this addon's settings panel (SR2-STP, a documented deviation)", function()
+    -- red under: QFE-ST2's retired `ignorePanel = true` left in defaults/Profile.lua. The owner's
+    -- answer 4 of smoke round 2 (2026-11-17): the showroom's "(Scope: panel)" samples show skinned
+    -- out of the box, because stock samples defeat the tester's purpose.
     local NS, mock = bootWithSkin("ka0s")
     local panel, fonts = lib(mock):GetIgnore(OWNER)
-    assertEqual(panel, true, "Ignore settings panel is on on a new profile")
+    assertEqual(panel, false, "Ignore settings panel is off on a new profile")
     assertEqual(fonts, false, "Ignore fonts keeps its default")
-    assertEqual(NS.addon.db.profile.skin.ignorePanel, true, "and the profile reads it so")
+    assertEqual(NS.addon.db.profile.skin.ignorePanel, false, "and the profile reads it so")
+end)
+
+test("selector: a stored Ignore settings panel on is kept (SR2-STP)", function()
+    -- red under: a migration or load step that forces the new default over a player's choice.
+    local NS, _, mock = T.newAddon()
+    _G.LibKa0sSkinTesterDB = { profiles = { Default = { skin = { source = "ka0s", skin = "ka0s",
+        ignorePanel = true } } } }
+    NS.addon:OnInitialize()
+    NS.addon:OnEnable()
+    local panel = lib(mock):GetIgnore(OWNER)
+    assertEqual(panel, true, "the stored choice is applied")
+    assertEqual(NS.addon.db.profile.skin.ignorePanel, true, "and read back")
 end)
 
 test("selector: a stored Ignore settings panel off is kept (QFE-ST2)", function()

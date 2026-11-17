@@ -2,7 +2,8 @@ local addonName, NS = ...
 -- modules/ShowroomOverlays.lua — the Overlays section: a tooltip on hover (a frame of this addon's,
 -- never GameTooltip, in tooltip.* with its lines in gtip.*), a standing menu, a confirm popup as a miniature (a plain frame painted
 -- Shell and Button, never a StaticPopup), the library's test strip, the fades beside an unfaded twin,
--- an icon border and a bar fill, and a small mark on a texture (S.Mark) and in a line (S.MarkText).
+-- an icon border and a bar fill, a small mark on a texture (S.Mark) and in a line (S.MarkText), and the
+-- hot state: marks at rest and hot, by a heading, and the list washes striped, hovered and both.
 
 local R, L = NS.Showroom, NS.L
 local ICON = "Interface\\Icons\\INV_Misc_QuestionMark"
@@ -131,6 +132,47 @@ local function marks(cell, paint)
     return mark, good, line
 end
 
+-- The hot state in one row (ST-82; LibKa0s#82 and #84): a mark at rest beside it hot, a mark resting
+-- at the heading color beside a heading and beside it hot, then a striped row, a hovered row and a
+-- striped row under the pointer. Every piece is a recorded primitive, so a skin change repaints it.
+local HOT_ROW_W, HOT_ROW_H = 96, 20
+
+local function hotMark(cell, anchor, token, gap)
+    local tex = cell:CreateTexture(nil, "ARTWORK")
+    tex:SetSize(16, 16)
+    if anchor then tex:SetPoint("LEFT", anchor, "RIGHT", gap or 4, 0) else tex:SetPoint("TOPLEFT") end
+    R.Paint("Mark", tex, { art = NS.Icon("info"), token = token })
+    return tex
+end
+
+local function hotWash(cell, i, text, state)
+    local row = CreateFrame("Frame", nil, cell)
+    row:SetSize(HOT_ROW_W, HOT_ROW_H)
+    row:SetPoint("TOPLEFT", cell, "TOPLEFT", (i - 1) * (HOT_ROW_W + 6), -22)
+    local fs = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    fs:SetPoint("LEFT", row, "LEFT", 6, 0)
+    fs:SetText(text)
+    R.Paint("Text", fs, "body")
+    R.Paint("ListRow", row, state)
+    return row
+end
+
+local function hotRow(cell)
+    local hot = {}
+    hot.rest = hotMark(cell, nil, "icon.tint")
+    hot.hot = hotMark(cell, hot.rest, "icon.hot")
+    hot.heading = cell:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    hot.heading:SetPoint("LEFT", hot.hot, "RIGHT", 16, 0)
+    hot.heading:SetText("A heading")
+    R.Paint("Text", hot.heading, "heading")
+    hot.headRest = hotMark(cell, hot.heading, "text.heading", 6)
+    hot.headHot = hotMark(cell, hot.headRest, "icon.hot")
+    hot.stripe = hotWash(cell, 1, "Striped", "stripe")
+    hot.hover = hotWash(cell, 2, "Hovered", "hover")
+    hot.both = hotWash(cell, 3, "Both", { stripe = true, hover = true })
+    return hot
+end
+
 R.AddSection("overlays", L["Overlays"], function(body, paint)
     local g = R.Grid(body)
 
@@ -175,6 +217,8 @@ R.AddSection("overlays", L["Overlays"], function(body, paint)
     drawFillBar()
 
     body.mark, body.markGood, body.markLine = marks(g:Add(160, 16, "Mark (tint, sem.good), MarkText"), paint)
+    body.hot = hotRow(g:Add(HOT_ROW_W * 3 + 12, 42,
+        "Hot: mark rest, hot; at text.heading, hot; ListRow stripe, hover, both"))
 
     return g:Height()
 end)

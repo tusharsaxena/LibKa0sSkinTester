@@ -12,11 +12,11 @@ NS.C = {
     skin = {
         source = "ka0s",     -- where the look comes from: Ka0s skins, or EllesmereUI
         skin   = NS.DEFAULT_SKIN or "ka0s", -- the Ka0s skin worn: WoW Forever on Forever, else Ka0s Default
-        -- The Scope: ON, as skinning-§3 has it, so the settings pages and the showroom's
-        -- "(Scope: panel)" samples keep the game's look and only the showroom window wears the skin
-        -- (owner ruling R8 of 2026-11-10, QFE-ST2, retiring R4-ST1's off). No migration: a stored
-        -- value is kept.
-        ignorePanel = true,
+        -- The Scope: OFF here, a documented deviation from skinning-§3 (docs/ARCHITECTURE.md), so
+        -- the settings pages and the showroom's "(Scope: panel)" samples wear the skin from the
+        -- first run (the owner's answer 4 of smoke round 2, 2026-11-17, SR2-STP, retiring QFE-ST2's
+        -- on). No migration: a stored value is kept.
+        ignorePanel = false,
         ignoreFonts = false, -- the Scope: leave every font the client's (the skin still colors)
         font    = "",        -- the font override, a LibSharedMedia key; "" is the skin's own
         texture = "",        -- the bar texture override, a LibSharedMedia key; "" is the skin's own
