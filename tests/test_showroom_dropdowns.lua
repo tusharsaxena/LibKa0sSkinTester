@@ -86,12 +86,12 @@ test("controls: AceGUI's Dropdown is in its cell and follows the Scope's panel h
     local w = sec.aceDropdown
     assertEqual(w.type, "Dropdown")
     assertInCell(w.frame, "the AceGUI dropdown", sec)
-    -- QFE-ST2: a new profile ignores the panel (skinning-§3), so the cell starts the client's.
-    assertTrue(not owned(mock, w), "the client's by default: Ignore settings panel is on")
-    NS.ApplySkinIgnore(false, nil)
-    assertTrue(owned(mock, w), "painted once the Scope is cleared")
+    -- SR2-STP: a new profile skins the panel (a documented deviation), so the cell starts painted.
+    assertTrue(owned(mock, w), "painted by default: Ignore settings panel is off")
     NS.ApplySkinIgnore(true, nil)
-    assertTrue(not owned(mock, w), "handed back while the panel is ignored again")
+    assertTrue(not owned(mock, w), "handed back while the panel is ignored")
+    NS.ApplySkinIgnore(false, nil)
+    assertTrue(owned(mock, w), "painted again once the Scope is cleared")
 end)
 
 test("controls: the media pickers are the library's types, painted and handed back like the Dropdown", function()
@@ -102,12 +102,12 @@ test("controls: the media pickers are the library's types, painted and handed ba
     assertEqual(bar.type, "Ka0sMedia_Statusbar")
     for name, w in pairs({ font = font, bar = bar }) do
         assertInCell(w.frame, name, sec)
-        assertTrue(not owned(mock, w), name .. " the client's by default (QFE-ST2)")
+        assertTrue(owned(mock, w), name .. " painted by default (SR2-STP)")
     end
-    NS.ApplySkinIgnore(false, nil)
-    assertTrue(owned(mock, font) and owned(mock, bar), "painted once the Scope is cleared")
     NS.ApplySkinIgnore(true, nil)
-    assertTrue(not owned(mock, font), "handed back")
+    assertTrue(not owned(mock, font) and not owned(mock, bar), "handed back while the panel is ignored")
+    NS.ApplySkinIgnore(false, nil)
+    assertTrue(owned(mock, font) and owned(mock, bar), "painted again once the Scope is cleared")
 end)
 
 test("controls: a media picker this client lacks is the plain Dropdown, and says so", function()
