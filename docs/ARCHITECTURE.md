@@ -83,7 +83,10 @@ showroom. The settings mark opens this addon's settings through the opener its l
 no `hideOnSettings`: the showroom sits in MEDIUM, under the settings panel, and the Skin tab is meant to
 be read beside it. With no library widgets the close alone is placed by hand, as before. The confirm
 popup and the sample tooltip in the Overlays section are specimens, not this addon's windows, and carry
-no title marks.
+no title marks. The Addon surfaces section's `SettingsFrameTemplate` miniature
+(`modules/ShowroomOwner.lua`, `stockWindow`) is a specimen too: it has a title and the template's own
+`ClosePanelButton` (its click cleared), shown to be skinned, and is deliberately not given a
+`W.HeaderButtons` strip.
 
 The Library widgets section's `W.DragHandle` is a specimen of the widget, not a strip of this addon's
 (it moves its own cell and has no display behind it), so it does not turn on `spec.settings`; the
