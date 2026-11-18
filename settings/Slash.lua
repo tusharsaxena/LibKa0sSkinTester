@@ -24,7 +24,7 @@ local runShow, runConfig, runSkin, runDebug, runReset, runResetAll, runEnabled, 
 local COMMANDS = {
     {"help",        L["List available commands"],                  function() Sl:PrintHelp() end},
     {"show",        L["Show or hide the skin showroom"],           function() runShow() end},
-    {"widths",      L["Print each skin's text widths against Ka0s Default"],
+    {"widths",      L["Write each skin's text widths to the debug console"],
         function() NS.Fonts.PrintWidths() end},
     {"config",      L["Open the Ka0s Skin Tester settings"],       function() runConfig() end},
     {"skin",        L["Choose a skin: open the skin picker"],      function() runSkin() end},

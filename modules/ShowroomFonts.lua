@@ -11,7 +11,7 @@ local addonName, NS = ...
 --                can be told apart here, live.
 --   the widths   each skin's text is meant to be as wide as Ka0s Default's (D-08). Every face line
 --                carries its measured width ratio against Ka0s Default for a fixed corpus, per role
---                (body, title, HUD); `/st widths` prints the same numbers to chat.
+--                (body, title, HUD); `/st widths` writes the same numbers to the debug console.
 --
 --   NS.Fonts.CORPUS    the fixed strings measured, summed
 --   NS.Fonts.ROLES     the three roles: their face, size and outline tokens
@@ -19,7 +19,7 @@ local addonName, NS = ...
 --                      { face, size, width, ratio } (width nil where the face does not resolve,
 --                      ratio nil where Ka0s Default's width is unknown or zero)
 --   NS.Fonts.Probe()   the hidden FontString the widths are measured on
---   NS.Fonts.Lines()   the probe's printed lines; NS.Fonts.PrintWidths() prints them
+--   NS.Fonts.Lines()   the probe's report lines; NS.Fonts.PrintWidths() writes them as a report
 --   NS.Fonts.order / .lines [skin key] = { body, title, ratio } FontStrings; .outline the mode line
 --
 -- Widths are measured with each skin's own stated outline (OUTLINE in every skin), as D-08 measured
@@ -122,8 +122,7 @@ local function roleText(m)
     return ("%s %s %s"):format(tostring(m.face), tostring(m.size), ratioText(m))
 end
 
-function F.Lines()
-    local rows = F.Measure()
+local function linesFor(rows)
     if #rows == 0 then return { L["Widths: the skin engine did not load."] } end
     local out = { L["Widths of a fixed corpus against Ka0s Default (1.000x is parity):"] }
     for _, row in ipairs(rows) do
@@ -133,9 +132,22 @@ function F.Lines()
     return out
 end
 
+function F.Lines() return linesFor(F.Measure()) end
+
+--- `/st widths`: a report (LibKa0s#79, the owner's routing ruling of 2026-11-08). The lines go to
+--- the debug console through D:Report, ungated, which reveals the console and prints one chat
+--- pointer; without the skin engine there is nothing to measure, and that one line is an error,
+--- so it stays in chat and nothing is written. Returns the lines measured.
 function F.PrintWidths()
-    local out = F.Lines()
-    for _, line in ipairs(out) do NS.Print(line) end
+    local rows = F.Measure()
+    local out = linesFor(rows)
+    if #rows == 0 then
+        NS.Print(out[1])
+        return out
+    end
+    NS.DebugLog:Report("Widths", "widths", function(write)
+        for _, line in ipairs(out) do write(line) end
+    end)
     return out
 end
 

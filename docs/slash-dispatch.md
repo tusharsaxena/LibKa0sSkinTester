@@ -7,7 +7,7 @@ table in `settings/Slash.lua`. Bare `/st` opens the settings panel.
 |---|---|---|
 | `help` | Lists the commands | answers |
 | `show` | Shows or hides the skin showroom | refused with the disabled line |
-| `widths` | Prints each skin's measured widths of a fixed corpus per role (body, title, HUD) against Ka0s Default (`NS.Fonts.PrintWidths`, D-08's in-client check) | refused with the disabled line |
+| `widths` | A report (LibKa0s#79): writes each skin's measured widths of a fixed corpus per role (body, title, HUD) against Ka0s Default to the debug console through `D:Report`, ungated, revealing the console and printing one chat pointer (`NS.Fonts.PrintWidths`, D-08's in-client check). Without the skin engine it prints one line in chat and writes nothing | refused with the disabled line |
 | `config` | Opens the settings panel | answers |
 | `skin` | Opens the skin picker a new profile shows, whatever `skin.pickerSeen` says (`NS.RunSkinVerb`, LibKa0s's `O.SkinVerb`); in combat a gray line on every call | refused with the disabled line |
 | `enable` / `disable` | Writes `enabled` through the write seam | answers |

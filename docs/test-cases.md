@@ -376,7 +376,7 @@ Total.
 - addon surfaces: the settings-style window follows a skin switch and stays skinned back on Ka0s Default
 - R5-WIN: the settings-style window's title and close sit on S.Band in every skin
 
-### test_showroom_fonts.lua (11)
+### test_showroom_fonts.lua (13)
 
 - fonts: the section is built, one face line per skin, in the library's order
 - fonts: each line names its skin's body and title faces, the new faces among them
@@ -384,7 +384,9 @@ Total.
 - fonts: with Ignore fonts ticked the face lines draw window text's stock flags, as the mode line says
 - fonts: the outline line follows the Font outline and says Ignore fonts wins
 - fonts: Measure gives every skin a width per role and Ka0s Default a ratio of 1
-- fonts: /st widths prints a header and one line per skin against Ka0s Default
+- fonts: /st widths writes its report to the debug console, with one chat pointer
+- fonts: /st widths without the skin engine answers in chat and writes no report
+- fonts: /st widths without LibKa0s-DebugLog streams the report to chat, with no pointer
 - fonts: a face the client cannot resolve reads unmeasured, and nothing raises
 - fonts: a face the client refuses reads unmeasured, never the previous face's width
 - fonts: /st widths is refused while the addon is disabled
@@ -1086,7 +1088,7 @@ Total.
 | test_showroom_values.lua | 15 |
 | test_showroom_textures.lua | 8 |
 | test_showroom_owner.lua | 11 |
-| test_showroom_fonts.lua | 11 |
+| test_showroom_fonts.lua | 13 |
 | test_showroom_hud.lua | 11 |
 | test_showroom_widgets.lua | 20 |
 | test_skin_media.lua | 9 |
@@ -1118,4 +1120,4 @@ Total.
 | test_skin_switch.lua | 222 |
 | test_client_globals.lua | 3 |
 | Skipped | 1 |
-| **Total** | **912** |
+| **Total** | **914** |

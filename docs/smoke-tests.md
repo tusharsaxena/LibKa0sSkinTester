@@ -58,13 +58,18 @@ is no absence check.
   Out of combat, `/st disable`, then `/st skin`. → One tagged line naming `/st enable`; no picker.
   `/st enable` afterwards. Fail: "unknown command", a picker in combat or while disabled, or one gray
   line for two presses. Result: Owner reported pass, 2026-10-31
-- **SLASH-6. `/st widths` (ST-01; LibKa0s v1.82.0, D-08).** Fully restart the client, clear any Font
-  override on General -> Skin, then `/st widths`. → A header, "Widths of a fixed corpus against Ka0s
-  Default (1.000x is parity):", and nine lines, one per skin, each "<skin>: body <face> <size>
+- **SLASH-6. `/st widths` (ST-01; LibKa0s v1.82.0, D-08; amended AD-79-ST, LibKa0s#79).** Fully restart
+  the client, clear any Font override on General -> Skin, close the debug window, leave logging off
+  (`/st debug off`), then `/st widths`. → Chat gets exactly one line, "widths: N lines written to the
+  debug console. Use Copy to share it."; the debug window opens on its own and shows "/st widths", then
+  a header, "Widths of a fixed corpus against Ka0s Default (1.000x is parity):", and nine lines, one per skin, each "<skin>: body <face> <size>
   <ratio>x, title ..., hud ...". Ka0s Default reads 1.000x on all three. Note every other ratio here
   (D-08's in-client check: the owner judges how near 1.000x is near enough); a ratio far from 1, say
-  below 0.95 or above 1.05, is a finding for LibKa0s's sizes, not for this addon. Fail: "unmeasured"
-  for a shipped face, or a line missing. Result: Owner reported pass, 2026-10-31
+  below 0.95 or above 1.05, is a finding for LibKa0s's sizes, not for this addon. Copy the window and
+  paste the text somewhere: no `|c` color codes in it. Fail: "unmeasured" for a shipped face, a line
+  missing, the widths lines in chat, more than one chat line, the window staying closed, or logging
+  turned on by the report. Result: pending (amended AD-79-ST; the 2026-10-31 pass was for the chat
+  form)
 
 ## Settings panel
 
