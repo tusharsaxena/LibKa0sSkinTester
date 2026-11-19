@@ -104,6 +104,21 @@ test("widgets: the section is built with every sample", function()
     end
 end)
 
+test("widgets: the drag handle specimen wears the library's default marks, ? and settings, no X", function()
+    -- AF-WVR-ST (LibKa0s v1.107.0, WidgetsDragHandle 15): the specimen shows the strip as the library
+    -- builds it by default, so it passes no `settings` (the gear is standard) and no onClose (the
+    -- specimen is no display to close, and a strip without onClose shows no X).
+    -- red under: WidgetsDragHandle 14 (the gear opt-in), or a specimen passing settings = false.
+    local _, mock, sec = opened()
+    local handle, spec = sec.handle, sec.handleSpec
+    assertTrue(spec.settings == nil and spec.onClose == nil, "the default strip: no settings, no onClose")
+    assertTrue(handle.help ~= nil, "the ? mark")
+    assertTrue(handle.settings ~= nil, "the settings mark, on by default")
+    assertTrue(handle.close == nil, "no X without onClose")
+    local D = mock.LibStub("LibKa0s-Widgets-1.0").DRAG_HANDLE
+    assertEqual(handle:Reserve(), D.RESERVE + D.HELP_HIT + D.CLOSE_GAP, "the reserve holds the ? and the gear")
+end)
+
 test("widgets: the drag handle's tooltip draws gtip.title, gtip.value and gtip.footer, per skin", function()
     -- red under: LibKa0s before LK-08 (v1.81.0): fixed gold, white and 0.6 gray in every skin.
     local NS, mock, sec = opened()
