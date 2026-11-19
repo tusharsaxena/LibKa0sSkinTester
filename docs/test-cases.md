@@ -406,9 +406,10 @@ Total.
 - overlays: S.Mark tints its marks and the MarkText line is written again
 - overlays: the hot row shows rest, hot, heading and the row washes, in every skin
 
-### test_showroom_widgets.lua (20)
+### test_showroom_widgets.lua (21)
 
 - widgets: the section is built with every sample
+- widgets: the drag handle specimen wears the library's default marks, ? and settings, no X
 - widgets: the drag handle's tooltip draws gtip.title, gtip.value and gtip.footer, per skin
 - widgets: the chart sample fills the area under its first series (#70)
 - widgets: the drag handle, chart and autocomplete are owned by this addon, off the panel
@@ -1090,7 +1091,7 @@ Total.
 | test_showroom_owner.lua | 11 |
 | test_showroom_fonts.lua | 13 |
 | test_showroom_hud.lua | 11 |
-| test_showroom_widgets.lua | 20 |
+| test_showroom_widgets.lua | 21 |
 | test_skin_media.lua | 9 |
 | test_skin_outline.lua | 9 |
 | test_skin_verb.lua | 7 |
@@ -1120,4 +1121,4 @@ Total.
 | test_skin_switch.lua | 222 |
 | test_client_globals.lua | 3 |
 | Skipped | 1 |
-| **Total** | **914** |
+| **Total** | **915** |
