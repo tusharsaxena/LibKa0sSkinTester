@@ -92,8 +92,9 @@ The Library widgets section's `W.DragHandle` is a specimen of the widget, not a 
 (it moves its own cell and has no display behind it). It passes neither `settings` nor `onClose`, so it
 shows the strip the library builds by default: from LibKa0s v1.107.0 (WidgetsDragHandle 15) that is the
 `?` and the settings mark, in the window header's tints, and no X, since there is no display to close.
-It never passes `settings = false`: a strip without the gear is a shape no real strip has after the
-owner's 2026-11-19 ruling (AF-WVR-ST, pinned in `tests/test_showroom_widgets.lua`).
+It never passes `settings = false`. A host can still opt out of the gear that way, but the specimen exists
+to show the library's default strip, which has the gear on by default since the owner's 2026-11-19 ruling
+(AF-WVR-ST, pinned in `tests/test_showroom_widgets.lua`).
 
 ### Tooltip placement (LibKa0s#92, AD-92-ST)
 
