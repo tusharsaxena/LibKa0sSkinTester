@@ -125,20 +125,55 @@ test("fonts: Measure gives every skin a width per role and Ka0s Default a ratio 
     end
 end)
 
-test("fonts: /st widths prints a header and one line per skin against Ka0s Default", function()
-    -- red under: no widths verb (the dispatcher answers "unknown command").
+test("fonts: /st widths writes its report to the debug console, with one chat pointer", function()
+    -- red under: the verb printing its lines to chat (LibKa0s#79, the owner's report-routing ruling
+    -- of 2026-11-08: a report goes to the console, ungated, and chat gets exactly one pointer).
     local NS, mock = opened()
     fakeLSM(mock)
     armProbe(NS, mock)
+    assertTrue(not NS.DebugLog:IsEnabled(), "logging starts off: the report is written ungated")
+    assertTrue(not NS.DebugLog:IsShown(), "the console starts hidden")
+    local mark, before = #mock.prints, #NS.DebugLog.buffer
+    NS.addon:OnSlashCommand("widths")
+    local buf, out = NS.DebugLog.buffer, {}
+    for i = before + 1, #buf do out[#out + 1] = buf[i] end
+    assertEqual(#out, 2 + #NS.Fonts.order, "the /st widths header, the corpus line and a line per skin")
+    assertTrue(out[1]:find("/st widths", 1, true) ~= nil, out[1])
+    assertTrue(out[2]:find("against Ka0s Default", 1, true) ~= nil, out[2])
+    local base = lib(mock):ResolveSkin("ka0s")
+    assertTrue(out[3]:find(("body %s %s 1.000x"):format(base["font.body"], tostring(base["font.bodySize"])), 1, true)
+        ~= nil, out[3])
+    assertEqual(#mock.prints - mark, 1, "exactly one chat line")
+    assertTrue(mock.prints[#mock.prints]:find(("widths: %d lines written to the debug console"):format(#out), 1, true)
+        ~= nil, mock.prints[#mock.prints])
+    assertTrue(NS.DebugLog:IsShown(), "the report reveals the console")
+    assertTrue(not NS.DebugLog:IsEnabled(), "and never turns logging on")
+end)
+
+test("fonts: /st widths without the skin engine answers in chat and writes no report", function()
+    -- red under: the engine-absent line written as a one-line report (an error stays in chat).
+    local NS, _, mock = T.enableAddon{ skip = { "libs/LibKa0s/Skin.lua" } }
+    local mark, before = #mock.prints, #NS.DebugLog.buffer
+    NS.addon:OnSlashCommand("widths")
+    assertEqual(#NS.DebugLog.buffer, before, "nothing written to the console")
+    assertEqual(#mock.prints - mark, 1, "one chat line")
+    assertTrue(mock.prints[#mock.prints]:find("did not load", 1, true) ~= nil, mock.prints[#mock.prints])
+    assertTrue(not NS.DebugLog:IsShown(), "the console stays hidden")
+end)
+
+test("fonts: /st widths without LibKa0s-DebugLog streams the report to chat, with no pointer", function()
+    -- The ruling's library-absent arm: the stub's Report prints the body in chat.
+    local NS, _, mock = T.enableAddon{
+        skip = { "libs/LibKa0s/DebugLog.lua", "libs/LibKa0s/DebugLogDiagnostics.lua" },
+        mock = function(m) installPaint(m) end,
+    }
     local mark = #mock.prints
     NS.addon:OnSlashCommand("widths")
-    local out = {}
-    for i = mark + 1, #mock.prints do out[#out + 1] = mock.prints[i] end
-    assertEqual(#out, 1 + #NS.Fonts.order, "a header and a line per skin")
-    assertTrue(out[1]:find("against Ka0s Default", 1, true) ~= nil, "the header")
-    local base = lib(mock):ResolveSkin("ka0s")
-    assertTrue(out[2]:find(("body %s %s 1.000x"):format(base["font.body"], tostring(base["font.bodySize"])), 1, true)
-        ~= nil, out[2])
+    assertEqual(#mock.prints - mark, 1 + #NS.Fonts.Measure(), "the corpus line and a line per skin")
+    assertTrue(mock.prints[mark + 1]:find("against Ka0s Default", 1, true) ~= nil, mock.prints[mark + 1])
+    for i = mark + 1, #mock.prints do
+        assertTrue(mock.prints[i]:find("written to the debug console", 1, true) == nil, "no pointer")
+    end
 end)
 
 test("fonts: a face the client cannot resolve reads unmeasured, and nothing raises", function()

@@ -17,7 +17,9 @@ CurseForge. Purpose, audience and non-goals: [`scope.md`](./scope.md).
 ## Module Map
 
 One shell, the setup files that wire LibKa0s, the swatch selector, the showroom window with its paint
-wrapper and section registry, twelve section files (Chrome, Controls, Lists, Text, Panels, Overlays,
+wrapper and section registry (its footer the library's `W.Footer`, 24 px with no fill, standalone-windows'
+*The footer*; AD-89-ST; its title marks the library's `W.HeaderButtons` strip, settings · close,
+standalone-windows' *Title-bar controls*; AD-86-ST), twelve section files (Chrome, Controls, Lists, Text, Panels, Overlays,
 Addon surfaces, Library widgets, Values, Textures, Faces and widths, HUD faces), and the settings pages with the first-run skin picker. Every file, its job and its load-order constraint:
 [`module-map.md`](./module-map.md). The load order itself is
 the TOC, where each load-bearing position carries the reason.
@@ -53,7 +55,7 @@ sections through the skin engine's own `OnLooksChanged` notification, not a bus 
 ## Slash Commands
 
 `/st` and the alias `/skintester`, dispatched by LibKa0s-Slash-1.0 from the ordered `COMMANDS` table
-in `settings/Slash.lua`: the reserved verbs (`skin` among them), plus `show`, the showroom toggle, and `widths`, the width probe. At login a `/st` held
+in `settings/Slash.lua`: the reserved verbs (`skin` among them), plus `show`, the showroom toggle, and `widths`, the width probe, a report written to the debug console through `D:Report` (LibKa0s#79). At login a `/st` held
 by another addon is left to it (`NS.CheckSlashCollision`), and this addon keeps `/skintester`. Every
 verb and what it answers while disabled: [`slash-dispatch.md`](./slash-dispatch.md).
 
@@ -70,6 +72,51 @@ Nothing here is secure. The showroom is a plain frame (standalone-windows), open
 repainted in combat freely; the key binding clicks a plain hidden button. The settings panel's open is
 refused in combat by the library (options-ui-§2), and a page shown in combat is locked by it.
 `UISpecialFrames` is written once, at the first show, never at load.
+
+### Title-bar marks (LibKa0s#86, AD-86-ST)
+
+The showroom is the one window this addon builds with a title bar. Its marks are `W.HeaderButtons`'
+(`modules/Showroom.lua`, `buildMarks`): left to right settings · close, with this addon's folder as
+`owner`. The close is Core's `MakeCloseButton` (three arguments, built by the strip) and hides the
+showroom. The settings mark opens this addon's settings through the opener its launcher registered
+(`spec.settings` nil, Core's `OpenSettings(addonName)`, which calls `NS.addon:OpenSettings`). It passes
+no `hideOnSettings`: the showroom sits in MEDIUM, under the settings panel, and the Skin tab is meant to
+be read beside it. With no library widgets the close alone is placed by hand, as before. The confirm
+popup and the sample tooltip in the Overlays section are specimens, not this addon's windows, and carry
+no title marks. The Addon surfaces section's `SettingsFrameTemplate` miniature
+(`modules/ShowroomOwner.lua`, `stockWindow`) is a specimen too: it has a title and the template's own
+`ClosePanelButton` (its click cleared), shown to be skinned, and is deliberately not given a
+`W.HeaderButtons` strip.
+
+The Library widgets section's `W.DragHandle` is a specimen of the widget, not a strip of this addon's
+(it moves its own cell and has no display behind it), so it does not turn on `spec.settings`; the
+drag-handle settings mark is the library's to show and its own suite's to pin.
+
+### Tooltip placement (LibKa0s#92, AD-92-ST)
+
+standalone-windows' *Tooltip placement* binds every tooltip this addon places itself. There is one:
+the Overlays section's sample tooltip (`modules/ShowroomOverlays.lua`, `placeTip`), a frame of this
+addon's shown on hover of "Hover me". The button is a control in the showroom's content, so it is a
+**body** element: the frame is shown, then placed by `LibKa0s-Tooltip-1.0`'s `PlaceBeside` against the
+showroom window (`R.Frame()`, a group of one: nothing docks to it), right of the window and else left,
+its top level with the button's top, `TIP_GAP` off, `comparisons = false` (it is no item tooltip). When
+the placers cannot read the geometry it takes `PlaceAttached`, then a plain `BOTTOM` on the button's
+`TOP` + `TIP_GAP`. It used to sit on the button's top-right corner, 4 px off, the corner offset the rule
+rules out. No code of this addon anchors a tooltip at the cursor or follows it (pinned by the AD-92-ST
+cases in `tests/test_showroom.lua`).
+
+Placed by the library, through its own placers, and so not this addon's to move: the showroom's
+title marks (`W.HeaderButtons`, chrome, above the mark), the Library widgets specimens (the
+`W.DragHandle` strip, the `W.ContextMenu` cascade's entries, the line chart's hover), the skin picker's
+toolbar and the minimap button's tooltip (`PlaceLauncher`).
+
+Left where they are, outside the rule's reach (*What it does not bind*):
+
+| Tooltip | Why it stays |
+|---|---|
+| The settings pages' row tooltips and the header's Reset all settings tooltip (`settings/`) | Pages inside Blizzard's Settings canvas, which options-ui governs. |
+| The launcher's options menu entries (`core/LauncherSetup.lua`) | A `MenuUtil.CreateContextMenu` menu: the client's menu code places its tooltips. |
+| The Addon surfaces section's `SettingsFrameTemplate` miniature and other Blizzard-template specimens (`modules/ShowroomOwner.lua`) | They raise no tooltip of this addon's; any tooltip on them is the client's own frame. |
 
 ## Known Limitations
 

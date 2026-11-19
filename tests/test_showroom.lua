@@ -91,7 +91,7 @@ test("showroom: a skin change repaints the open window", function()
     NS.Selector.Pick("contrast")
     assertToken(mock, mock.__paint(window(mock)).backdropColor, "win.bg", "the shell under contrast")
     assertToken(mock, mock.__paint(caption).textColor, "text.muted", "a caption under contrast")
-    assertTrue(window(mock).footer.text:GetText():find("High Contrast", 1, true) ~= nil,
+    assertTrue(window(mock).footer.left:GetText():find("High Contrast", 1, true) ~= nil,
         "the footer names the skin worn")
 end)
 
@@ -214,6 +214,127 @@ test("a5: the hover tooltip is a frame of this addon's, in tooltip.* and gtip.*"
     NS.Showroom.Section("overlays").tipButton:GetScript("OnEnter")(NS.Showroom.Section("overlays").tipButton)
     assertToken(mock, title[#title], "gtip.title", "the title")
     assertToken(mock, line[#line], "gtip.value", "the line")
+end)
+
+-- ── AD-92-ST (LibKa0s#92): the sample tooltip opens by the body rule (standalone-windows' *Tooltip
+-- placement*). "Hover me" is a control in the showroom's content, so its tooltip is a body element's:
+-- beside the window group (the showroom alone), right then left, its top level with the button's
+-- top, through LibKa0s-Tooltip-1.0's PlaceBeside. Before it the frame sat on the button's top-right
+-- corner, 4 px off (a corner offset, which the rule names as ruled out).
+
+--- Gives `f` a rect in screen units (scale 1), read through the client's geometry methods.
+local function placeAt(f, left, bottom, width, height)
+    rawset(f, "GetLeft", function() return left end)
+    rawset(f, "GetBottom", function() return bottom end)
+    rawset(f, "GetRight", function() return left + width end)
+    rawset(f, "GetTop", function() return bottom + height end)
+    rawset(f, "GetWidth", function() return width end)
+    rawset(f, "GetHeight", function() return height end)
+    rawset(f, "GetEffectiveScale", function() return 1 end)
+end
+
+--- Hovers "Hover me" and answers the sample tooltip, every SetPoint it took on that hover, the button.
+local function hoverSample(NS)
+    local btn = NS.Showroom.Section("overlays").tipButton
+    local tip = NS.Showroom.sampleTooltip
+    local points = shadowed(tip, "SetPoint")
+    btn:GetScript("OnEnter")(btn)
+    return tip, points, btn
+end
+
+test("AD-92-ST: the sample tooltip is placed by PlaceBeside, on the button, against the showroom", function()
+    -- red under: the corner anchor (BOTTOMLEFT on the button's TOPRIGHT, 4, 4) with no placer call.
+    local NS, mock = opened()
+    local Tip = mock.LibStub("LibKa0s-Tooltip-1.0")
+    local calls, real, shownFirst = {}, Tip.PlaceBeside, nil
+    rawset(Tip, "PlaceBeside", function(tip, element, group, o)
+        calls[#calls + 1] = { tip = tip, element = element, group = group, opts = o }
+        shownFirst = tip:IsShown() == true
+        return real(tip, element, group, o)
+    end)
+    local ok, err = pcall(hoverSample, NS)
+    rawset(Tip, "PlaceBeside", real)
+    assertTrue(ok, tostring(err))
+    assertEqual(#calls, 1, "one PlaceBeside per hover")
+    local c = calls[1]
+    assertEqual(c.tip, NS.Showroom.sampleTooltip, "the sample's own frame")
+    assertEqual(c.element, NS.Showroom.Section("overlays").tipButton, "placed by the hovered button")
+    assertEqual(c.group, window(mock), "the window group is the showroom")
+    assertTrue(shownFirst, "shown before it is placed, so its size is known")
+    assertTrue(type(c.opts) == "table" and c.opts.comparisons == false,
+        "no comparison anchor type: it is no item tooltip")
+end)
+
+test("AD-92-ST: the sample tooltip opens right of the showroom, top level with the button, 2 px off",
+    function()
+    local NS, mock = opened()
+    local scr = dofile("tests/_kit/mock_screen.lua")(mock, { width = 1920, height = 1080 })
+    placeAt(window(mock), 400, 200, 600, 600)
+    placeAt(NS.Showroom.Section("overlays").tipButton, 450, 500, 120, 24)
+    placeAt(NS.Showroom.sampleTooltip, 0, 0, 170, 48)
+    local ok, tip, points = pcall(hoverSample, NS)
+    scr.restore()
+    assertTrue(ok, tostring(tip))
+    local p = points[#points]
+    assertTrue(p ~= nil, "the tooltip was placed")
+    assertEqual(p[1], "TOPLEFT", "its top-left")
+    assertEqual(p[2], mock.UIParent, "one absolute point on UIParent")
+    assertEqual(p[3], "BOTTOMLEFT")
+    assertEqual(p[4], 1000 + 2, "at the showroom's right edge + TIP_GAP")
+    assertEqual(p[5], 524, "its top level with the button's top")
+end)
+
+test("AD-92-ST: with no room on the right the sample tooltip opens left of the showroom", function()
+    local NS, mock = opened()
+    local scr = dofile("tests/_kit/mock_screen.lua")(mock, { width = 1920, height = 1080 })
+    placeAt(window(mock), 1300, 200, 600, 600)
+    placeAt(NS.Showroom.Section("overlays").tipButton, 1350, 500, 120, 24)
+    placeAt(NS.Showroom.sampleTooltip, 0, 0, 170, 48)
+    local ok, tip, points = pcall(hoverSample, NS)
+    scr.restore()
+    assertTrue(ok, tostring(tip))
+    local p = points[#points]
+    assertTrue(p ~= nil, "the tooltip was placed")
+    assertEqual(p[1], "TOPRIGHT", "its top-right")
+    assertEqual(p[4], 1300 - 2, "at the showroom's left edge - TIP_GAP")
+    assertEqual(p[5], 524, "its top level with the button's top")
+end)
+
+test("AD-92-ST: unreadable geometry attaches the sample above the button, never a corner or the cursor",
+    function()
+    -- red under: the corner anchor kept as the fallback, or any cursor read.
+    local NS, mock = opened()
+    local Tip = mock.LibStub("LibKa0s-Tooltip-1.0")
+    local beside, attached = Tip.PlaceBeside, Tip.PlaceAttached
+    rawset(Tip, "PlaceBeside", function() return nil end)
+    rawset(Tip, "PlaceAttached", function() return nil end)
+    local ok, tip, points, btn = pcall(hoverSample, NS)
+    rawset(Tip, "PlaceBeside", beside); rawset(Tip, "PlaceAttached", attached)
+    assertTrue(ok, tostring(tip))
+    assertEqual(#points, 1, "one point")
+    local p = points[1]
+    assertEqual(p[1], "BOTTOM"); assertEqual(p[2], btn); assertEqual(p[3], "TOP")
+    assertEqual(p[4], 0); assertEqual(p[5], Tip.TIP_GAP, "TIP_GAP above the button")
+end)
+
+test("AD-92-ST: no tooltip of this addon follows the cursor or sits on a corner offset", function()
+    -- The addon's own code: core/, modules/ and settings/ (libs/ and the kit are the library's).
+    local files = {}
+    for _, dir in ipairs({ "core", "modules", "settings" }) do
+        local p = io.popen('ls "' .. (T.root or ".") .. "/" .. dir .. '"')
+        for name in p:lines() do
+            if name:match("%.lua$") then files[#files + 1] = dir .. "/" .. name end
+        end
+        p:close()
+    end
+    assertTrue(#files > 10, "the addon's sources were listed")
+    for _, rel in ipairs(files) do
+        local fh = assert(io.open((T.root or ".") .. "/" .. rel, "rb"))
+        local src = fh:read("*a"); fh:close()
+        for _, bad in ipairs({ "ANCHOR_CURSOR", "GetCursorPosition", '"BOTTOMLEFT", self, "TOPRIGHT"' }) do
+            assertTrue(src:find(bad, 1, true) == nil, rel .. " carries " .. bad)
+        end
+    end
 end)
 
 test("a5: the ApplyBarFill sample draws the skin's texture and accent, and follows a change", function()
@@ -550,4 +671,138 @@ test("SR-ST: the showroom's close X rests in icon.tint and lights close.hot, in 
         f.close.__fire("OnLeave")
         assertToken(mock, artColor(mock, f.close), "icon.tint", key .. ": the X at rest again")
     end
+end)
+
+-- AD-89-ST (LibKa0s#89; standalone-windows' *The footer*, v2.110.0): the showroom's footer is the
+-- library's W.Footer, FOOTER.HEIGHT (24 px) tall with no fill, a hairline in the skin's `divider` and
+-- the skin worn on its muted left line. The facade's Footer primitive, a band, stays on show as a
+-- specimen in the Window chrome section, so the coverage claim still sees it.
+
+test("AD-89-ST: the showroom's footer is W.Footer, FOOTER.HEIGHT tall, the skin worn on its left line", function()
+    -- red under: the hand-built 22 px band (a BackdropTemplate frame with its own font string).
+    local NS, _, mock = painted()
+    NS.Showroom.Show()
+    local f = window(mock)
+    local W = mock.LibStub("LibKa0s-Widgets-1.0")
+    assertEqual(W.FOOTER.HEIGHT, 24, "the library's footer is 24 px")
+    assertEqual(f.footer:GetHeight(), W.FOOTER.HEIGHT, "the footer is FOOTER.HEIGHT tall")
+    assertTrue(f.footer.line ~= nil and f.footer.left ~= nil and f.footer.SetLeft ~= nil, "built by W.Footer")
+    assertEqual(f.footer.left:GetText(), "Wearing Ka0s Default", "the left line names the skin worn")
+    assertTrue(mock.__paint(f.footer).backdropColor == nil, "no fill: the window shows through")
+    assertToken(mock, mock.__paint(f.footer.left).textColor, "text.muted", "the left line")
+    NS.Selector.Pick("contrast")
+    assertTrue(f.footer.left:GetText():find("High Contrast", 1, true) ~= nil, "a skin change rewrites it")
+    assertToken(mock, mock.__paint(f.footer.left).textColor, "text.muted", "the left line under contrast")
+end)
+
+test("AD-89-ST: the body ends FOOTER.HEIGHT plus its 6 px gap above the window's bottom edge", function()
+    local NS, _, mock = painted()
+    NS.Showroom.Show()
+    local f = window(mock)
+    local p, rel, rp, _, y = f.body:GetPoint(2)
+    assertEqual(p .. rp, "BOTTOMRIGHTTOPRIGHT", "over the footer"); assertTrue(rel == f.footer, "the footer")
+    assertEqual(y, 6, "6 px up from its top")
+    p, rel, rp = f.footer:GetPoint(1)
+    assertEqual(p .. rp, "BOTTOMLEFTBOTTOMLEFT", "the footer sits on the window's bottom edge")
+    assertTrue(rel == f, "on the window")
+end)
+
+test("AD-89-ST: with no library widgets the footer is a bare frame of the same height and line", function()
+    -- red under: a footer that indexes LibKa0s-Widgets-1.0 without checking it loaded.
+    local NS, _, mock = T.enableAddon{ skip = { "libs/LibKa0s/Widgets.lua" } }
+    NS.Showroom.Show()
+    local f = window(mock)
+    assertEqual(f.footer:GetHeight(), 24, "24 px, the library's figure")
+    assertEqual(f.footer.left:GetText(), "Wearing Ka0s Default", "the left line names the skin worn")
+end)
+
+test("AD-89-ST: the facade's Footer band is on show as a specimen in the Window chrome section", function()
+    -- red under: the band dropped with the hand-built footer, so lib.VOCAB's Footer goes unshown.
+    local NS, _, mock = painted()
+    NS.Showroom.Show()
+    local cell = NS.Showroom.Section("chrome").cells["Footer (the facade's band, a specimen)"]
+    assertTrue(cell ~= nil, "the specimen cell")
+    assertTrue(NS.Showroom.used.Footer == true, "Footer went through NS.Showroom.Paint")
+    assertToken(mock, mock.__paint(cell).backdropColor, "foot.bg", "the specimen's band")
+    assertTrue(mock.__paint(window(mock).footer).backdropColor == nil, "and not on the window's footer")
+end)
+
+-- AD-86-ST (LibKa0s#86; standalone-windows' *Title-bar controls*, v2.113.0): the showroom's title marks
+-- are the library's W.HeaderButtons strip, left to right settings · close, 18 px marks 6 px from the
+-- corner and 6 px apart. Settings opens this addon's settings through the opener its launcher
+-- registered; the showroom (MEDIUM) sits under the settings panel, so it stays shown.
+
+test("AD-86-ST: the showroom's marks are W.HeaderButtons', settings beside the close", function()
+    -- red under: the hand-placed Core close alone, with no settings mark.
+    local _, mock = opened()
+    local f = window(mock)
+    local W = mock.LibStub("LibKa0s-Widgets-1.0")
+    local hb = f.headerButtons
+    assertTrue(hb ~= nil, "built by W.HeaderButtons")
+    assertTrue(hb.close ~= nil and hb.close == f.close, "the strip's close is the window's close")
+    assertTrue(hb.settings ~= nil and hb.settings == f.settings, "a settings mark")
+    assertEqual(table.concat(hb.order, ","), "settings,close", "left to right: settings, close")
+    assertEqual(hb.offsets.close, -W.HEADER.PAD, "the close 6 px from the corner")
+    assertEqual(hb.offsets.settings, -(W.HEADER.PAD + W.HEADER.SIZE + W.HEADER.GAP), "settings 6 px inward of it")
+    assertTrue(hb.optOut == nil, "no opt-out")
+end)
+
+test("AD-86-ST: the settings mark sits on S.Band's middle with the close, in every skin", function()
+    local NS, mock = bandOpened()
+    local f = window(mock)
+    for _, def in ipairs(lib(mock):Skins()) do
+        NS.Selector.Pick(def.key)
+        local band = NS.Skin.Band(f)
+        assertOnBand(f.settings, band, def.key .. ": the settings mark")
+        assertEqual(select(1, f.settings:GetPoint(1)), "RIGHT", def.key .. ": on the right, inward of the close")
+    end
+end)
+
+test("AD-86-ST: the settings mark opens this addon's settings, and the showroom stays shown", function()
+    -- red under: no settings mark on the showroom's title bar.
+    local NS, mock = opened()
+    local f = window(mock)
+    local opens = 0
+    local saved = NS.addon.OpenSettings
+    NS.addon.OpenSettings = function() opens = opens + 1 end
+    local ok, err = pcall(function() f.settings.__fire("OnClick", "LeftButton") end)
+    NS.addon.OpenSettings = saved
+    assertTrue(ok, tostring(err))
+    assertEqual(opens, 1, "the launcher's registered opener ran once")
+    assertTrue(f:IsShown(), "the showroom sits under the settings panel, so it is not hidden")
+end)
+
+test("AD-86-ST: the settings mark says Open settings, rests in icon.tint and lights text.link, in every skin", function()
+    local NS, mock = opened()
+    local f = window(mock)
+    for _, def in ipairs(lib(mock):Skins()) do
+        NS.Selector.Pick(def.key)
+        local got = titleTip(mock, f.settings)
+        assertEqual(got and got.text, "Open settings", def.key .. ": the tooltip")
+        assertToken(mock, got.color, "gtip.title", def.key .. ": the tooltip's color")
+        assertToken(mock, artColor(mock, f.settings), "icon.tint", def.key .. ": at rest")
+        f.settings.__fire("OnEnter")
+        assertToken(mock, artColor(mock, f.settings), "text.link", def.key .. ": under the pointer")
+        f.settings.__fire("OnLeave")
+        assertToken(mock, artColor(mock, f.settings), "icon.tint", def.key .. ": at rest again")
+    end
+end)
+
+test("AD-86-ST: with no library widgets the close alone, on the bar's right", function()
+    -- red under: a title bar that indexes W.HeaderButtons without checking it loaded.
+    local NS, _, mock = T.enableAddon{ skip = { "libs/LibKa0s/Widgets.lua" } }
+    NS.Showroom.Show()
+    local f = window(mock)
+    assertTrue(f.settings == nil, "no settings mark without the library's strip")
+    assertTrue(rawget(f, "headerButtons") == nil, "no strip")
+    assertTrue(f.close ~= nil, "the fallback close is built")
+    local point, rel, relPoint, x = f.close:GetPoint(1)
+    assertEqual(point, "RIGHT", "the close sits on the right")
+    -- The Header paint re-places the marks on its band (the bar's middle), so rel is that band.
+    assertTrue(rel ~= nil, "anchored to a frame, not the screen")
+    assertEqual(relPoint, "RIGHT", "on the bar's right edge")
+    assertEqual(x, -6, "6 px in from the bar's right")
+    assertTrue(f:IsShown(), "shown before the close")
+    f.close.__fire("OnClick", "LeftButton")
+    assertTrue(not f:IsShown(), "the fallback close hides the showroom")
 end)

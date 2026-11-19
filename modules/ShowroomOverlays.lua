@@ -46,6 +46,22 @@ local function tipLine(fs, token)
     R.Paint("Font", fs, r, g, b)
 end
 
+-- "Hover me" sits in the showroom's content, so its tooltip is a body element's (standalone-windows'
+-- *Tooltip placement*, AD-92-ST, LibKa0s#92): beside the showroom, right then left, its top level with
+-- the button's, through LibKa0s-Tooltip-1.0. Shown first, so the placer reads its size. The frame is no
+-- GameTooltip, so it is not owned and takes no comparison anchor type. With geometry the placers
+-- cannot read (or no library) it attaches above the button, TIP_GAP off: never the cursor or a corner.
+local TIP_GAP = 2
+
+local function placeTip(tip, btn)
+    local Tip = LibStub and LibStub("LibKa0s-Tooltip-1.0", true)
+    local placed = Tip and Tip.PlaceBeside(tip, btn, R.Frame(), { comparisons = false })
+    if not placed and Tip then placed = Tip.PlaceAttached(tip, btn) end
+    if placed then return end
+    tip:ClearAllPoints()
+    tip:SetPoint("BOTTOM", btn, "TOP", 0, Tip and Tip.TIP_GAP or TIP_GAP)
+end
+
 local function hoverTooltip(cell, paint)
     tooltip = tooltip or tooltipFrame(paint)
     R.sampleTooltip = tooltip
@@ -55,9 +71,8 @@ local function hoverTooltip(cell, paint)
     btn:SetScript("OnEnter", function(self)
         tipLine(tooltip.title, "gtip.title")
         tipLine(tooltip.line, "gtip.value")
-        tooltip:ClearAllPoints()
-        tooltip:SetPoint("BOTTOMLEFT", self, "TOPRIGHT", 4, 4)
         tooltip:Show()
+        placeTip(tooltip, self)
     end)
     btn:SetScript("OnLeave", function() tooltip:Hide() end)
     return btn

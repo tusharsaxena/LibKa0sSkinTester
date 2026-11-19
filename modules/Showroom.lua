@@ -30,9 +30,11 @@ local LAYERS = NS.Constants.LAYERS
 
 local WINDOW_NAME = "LibKa0sSkinTesterShowroom"
 local WIDTH, HEIGHT = 960, 640
--- Geometry is skin-invariant (skinning-§4), so the two the skin states are read once. The fallbacks
--- are Ka0s Default's, for the library-absent window. The footer has no token.
-local TITLE_H, FOOTER_H = (NS.Skin and NS.Skin.Token("title.height")) or 30, 22
+-- Geometry is skin-invariant (skinning-§4), so the title bar's height the skin states is read once.
+-- The fallback is Ka0s Default's, for the library-absent window. The footer is W.Footer's
+-- (standalone-windows' *The footer*), FOOTER.HEIGHT tall; the bare one with no library matches it.
+local TITLE_H = (NS.Skin and NS.Skin.Token("title.height")) or 30
+local FOOTER_FALLBACK_H, FOOTER_FALLBACK_PAD = 24, 8   -- W.FOOTER.HEIGHT and PAD at Widgets minor 27
 local SECTION_TITLE_H, SECTION_GAP = 24, 16
 local SCROLL_STEP = 60
 local BAR_W, BAR_GAP, MIN_THUMB = (NS.Skin and NS.Skin.Token("scroll.width")) or 8, 6, 24   -- the scrollbar's width, its gap from the sections, its shortest knob
@@ -142,7 +144,29 @@ local function wornLabel()
 end
 
 local function refreshFooter()
-    if frame then frame.footer.text:SetText(L["Wearing %s"]:format(wornLabel())) end
+    if frame then frame.footer:SetLeft(L["Wearing %s"]:format(wornLabel())) end
+end
+
+local function widgets() return LibStub and LibStub("LibKa0s-Widgets-1.0", true) end
+
+-- The window's footer (AD-89-ST, LibKa0s#89): the library's W.Footer, across the window's bottom edge
+-- with no fill, a hairline in the skin's `divider` and a muted left line, painted for this owner. With
+-- no library widgets, a bare frame of the same height with the same left line and setter, and no
+-- hairline, so the body lays out the same.
+local function buildFooter(f)
+    local W = widgets()
+    if W and type(W.Footer) == "function" then return W.Footer(f, { owner = addonName }) end
+    local foot = CreateFrame("Frame", nil, f)
+    foot:SetPoint("BOTTOMLEFT", f, "BOTTOMLEFT", 0, 0)
+    foot:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", 0, 0)
+    foot:SetHeight(FOOTER_FALLBACK_H)
+    foot.left = foot:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    foot.left:SetPoint("LEFT", foot, "LEFT", FOOTER_FALLBACK_PAD, 0)
+    foot.left:SetWordWrap(false)
+    foot.left:SetJustifyH("LEFT")
+    R.Paint("Text", foot.left, "muted")
+    foot.SetLeft = function(self, text) self.left:SetText(type(text) == "string" and text or "") end
+    return foot
 end
 
 -- The scrollbar follows the scroll frame (ST-03): its range and knob match the sections' overflow,
@@ -224,6 +248,29 @@ local function buildSections(content, width)
     content:SetHeight(math.max(1, y))
 end
 
+-- The title marks (AD-86-ST, LibKa0s#86; standalone-windows' *Title-bar controls*): the library's
+-- W.HeaderButtons strip, left to right settings . close, 6 px from the bar's right corner and 6 px
+-- apart. The close is Core's, built with this addon as owner, and hides the showroom; the settings
+-- mark opens this addon's settings through the opener its launcher registered (Core's OpenSettings
+-- by this folder). No hideOnSettings: the showroom is MEDIUM, under the settings panel, and the skin
+-- rows there are meant to be read beside it. With no library widgets, the close alone, as before.
+-- Answers the close and the Header's `right` list (the strip's, outermost first).
+local function buildMarks(f, bar)
+    local W = widgets()
+    if W and type(W.HeaderButtons) == "function" then
+        local hb = W.HeaderButtons(bar, { owner = addonName, frame = f, close = function() R.Hide() end })
+        f.headerButtons = hb   -- spec.frame's record, kept explicit for the reader
+        f.close, f.settings = hb.close, hb.settings
+        return hb.close, hb.right
+    end
+    local close = NS.MakeCloseButton(bar, function() R.Hide() end)
+    if close then
+        close:SetPoint("RIGHT", bar, "RIGHT", -6, 0)
+        f.close = close
+    end
+    return close, { close }
+end
+
 local function build()
     local t0 = Perf.on and debugprofilestop()
     local f = CreateFrame("Frame", WINDOW_NAME, UIParent, "BackdropTemplate")
@@ -249,18 +296,9 @@ local function build()
     bar.title:SetText(NS.BRAND_NAME .. " \226\128\148 " .. L["Skin showroom"])
     f.titleBar = bar
 
-    local close = NS.MakeCloseButton(bar, function() R.Hide() end)
-    if close then
-        close:SetPoint("RIGHT", bar, "RIGHT", -6, 0)
-        f.close = close
-    end
+    local close, right = buildMarks(f, bar)
 
-    local footer = CreateFrame("Frame", nil, f, "BackdropTemplate")
-    footer:SetPoint("BOTTOMLEFT", f, "BOTTOMLEFT", 0, 0)
-    footer:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", 0, 0)
-    footer:SetHeight(FOOTER_H)
-    footer.text = footer:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    footer.text:SetPoint("LEFT", footer, "LEFT", 8, 0)
+    local footer = buildFooter(f)
     f.footer = footer
 
     -- The body: the swatch selector on top, the sections scrolling below it.
@@ -295,9 +333,8 @@ local function build()
     -- close sit on its middle at y 0, in every skin, a 2 px edge and EllesmereUI's 25 px bar included.
     -- The anchors above stay as the no-library fallback, where both calls are no-ops.
     f.band = R.Paint("Band", f)
-    R.Paint("Header", f, { title = bar.title, right = { close }, bars = { bar } })
+    R.Paint("Header", f, { title = bar.title, right = right, bars = { bar } })
     if close then R.Paint("CloseButton", close) end
-    R.Paint("Footer", footer, { text = footer.text })
     R.Paint("ScrollBar", f.scrollBar, { track = f.track, thumb = f.thumb })
     buildSections(content, SECTIONS_W)
     refreshFooter()
@@ -320,6 +357,11 @@ function R.ResetPosition()
     NS.Windows.Forget(WINDOW_NAME)
     if frame then anchorDefault(frame) end
     NS.Debug("Showroom", "position reset")
+end
+
+--- The showroom window itself, the window group its body tooltips open beside; nil before the first open.
+function R.Frame()
+    return frame
 end
 
 --- The swatch selector of the built window; nil before the first open.

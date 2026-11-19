@@ -267,7 +267,7 @@ Total.
 - skin default: a fresh profile stores and wears the client's default skin
 - skin default: Reset puts the profile back on the client's default skin
 
-### test_showroom.lua (29)
+### test_showroom.lua (43)
 
 - showroom: the window is painted through the wrapper
 - showroom: Paint answers the primitive's answer and records the name once
@@ -281,6 +281,11 @@ Total.
 - showroom scrollbar: dragging the knob scrolls the sections, and a sync does not scroll back
 - showroom scrollbar: the corridor and the knob are the skin's
 - a5: the hover tooltip is a frame of this addon's, in tooltip.* and gtip.*
+- AD-92-ST: the sample tooltip is placed by PlaceBeside, on the button, against the showroom
+- AD-92-ST: the sample tooltip opens right of the showroom, top level with the button, 2 px off
+- AD-92-ST: with no room on the right the sample tooltip opens left of the showroom
+- AD-92-ST: unreadable geometry attaches the sample above the button, never a corner or the cursor
+- AD-92-ST: no tooltip of this addon follows the cursor or sits on a corner offset
 - a5: the ApplyBarFill sample draws the skin's texture and accent, and follows a change
 - a5: the fade's label and the icon border follow the skin
 - a5: every IconBorder sample asks for the skin's own edge
@@ -298,6 +303,15 @@ Total.
 - R5-WIN: the showroom's body sits 6 px in from its title bar and footer, as LootHistory's content
 - SR-ST: every showroom title-bar control shows a tooltip in gtip.title, in every skin
 - SR-ST: the showroom's close X rests in icon.tint and lights close.hot, in Ka0s Default and every skin
+- AD-89-ST: the showroom's footer is W.Footer, FOOTER.HEIGHT tall, the skin worn on its left line
+- AD-89-ST: the body ends FOOTER.HEIGHT plus its 6 px gap above the window's bottom edge
+- AD-89-ST: with no library widgets the footer is a bare frame of the same height and line
+- AD-89-ST: the facade's Footer band is on show as a specimen in the Window chrome section
+- AD-86-ST: the showroom's marks are W.HeaderButtons', settings beside the close
+- AD-86-ST: the settings mark sits on S.Band's middle with the close, in every skin
+- AD-86-ST: the settings mark opens this addon's settings, and the showroom stays shown
+- AD-86-ST: the settings mark says Open settings, rests in icon.tint and lights text.link, in every skin
+- AD-86-ST: with no library widgets the close alone, on the bar's right
 
 ### test_showroom_coverage.lua (6)
 
@@ -362,7 +376,7 @@ Total.
 - addon surfaces: the settings-style window follows a skin switch and stays skinned back on Ka0s Default
 - R5-WIN: the settings-style window's title and close sit on S.Band in every skin
 
-### test_showroom_fonts.lua (11)
+### test_showroom_fonts.lua (13)
 
 - fonts: the section is built, one face line per skin, in the library's order
 - fonts: each line names its skin's body and title faces, the new faces among them
@@ -370,7 +384,9 @@ Total.
 - fonts: with Ignore fonts ticked the face lines draw window text's stock flags, as the mode line says
 - fonts: the outline line follows the Font outline and says Ignore fonts wins
 - fonts: Measure gives every skin a width per role and Ka0s Default a ratio of 1
-- fonts: /st widths prints a header and one line per skin against Ka0s Default
+- fonts: /st widths writes its report to the debug console, with one chat pointer
+- fonts: /st widths without the skin engine answers in chat and writes no report
+- fonts: /st widths without LibKa0s-DebugLog streams the report to chat, with no pointer
 - fonts: a face the client cannot resolve reads unmeasured, and nothing raises
 - fonts: a face the client refuses reads unmeasured, never the previous face's width
 - fonts: /st widths is refused while the addon is disabled
@@ -820,7 +836,7 @@ Total.
 - skin values: no typed value outside the kit's categories and the host's rows
 - skin values: the check is falsifiable, a planted value of each shape is reported
 
-### test_skin_switch.lua (220)
+### test_skin_switch.lua (222)
 
 - skin switch: the check is falsifiable, a surface that redraws a literal is reported
 - skin switch: the window's shell changes
@@ -835,8 +851,10 @@ Total.
 - skin switch: the skin selector changes with the Scope ignored
 - skin switch: chrome: the title changes
 - skin switch: chrome: the title changes with the Scope ignored
-- skin switch: chrome: Shell, Band, Header, TitleBar, CloseButton, Footer changes
-- skin switch: chrome: Shell, Band, Header, TitleBar, CloseButton, Footer changes with the Scope ignored
+- skin switch: chrome: Footer (the facade's band, a specimen) changes
+- skin switch: chrome: Footer (the facade's band, a specimen) changes with the Scope ignored
+- skin switch: chrome: Shell, Band, Header, TitleBar, CloseButton, W.Footer changes
+- skin switch: chrome: Shell, Band, Header, TitleBar, CloseButton, W.Footer changes with the Scope ignored
 - skin switch: chrome: Tab x3 + SetTabSelection (click one) changes
 - skin switch: chrome: Tab x3 + SetTabSelection (click one) changes with the Scope ignored
 - skin switch: controls: the title changes
@@ -1064,13 +1082,13 @@ Total.
 | test_slash.lua | 20 |
 | test_selector.lua | 13 |
 | test_skin_default.lua | 2 |
-| test_showroom.lua | 29 |
+| test_showroom.lua | 43 |
 | test_showroom_coverage.lua | 6 |
 | test_showroom_dropdowns.lua | 8 |
 | test_showroom_values.lua | 15 |
 | test_showroom_textures.lua | 8 |
 | test_showroom_owner.lua | 11 |
-| test_showroom_fonts.lua | 11 |
+| test_showroom_fonts.lua | 13 |
 | test_showroom_hud.lua | 11 |
 | test_showroom_widgets.lua | 20 |
 | test_skin_media.lua | 9 |
@@ -1099,7 +1117,7 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | test_skin_values.lua | 3 |
-| test_skin_switch.lua | 220 |
+| test_skin_switch.lua | 222 |
 | test_client_globals.lua | 3 |
 | Skipped | 1 |
-| **Total** | **896** |
+| **Total** | **914** |
