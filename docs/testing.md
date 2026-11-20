@@ -27,12 +27,17 @@ base mock. The kit's own suites (`test_eol`, `test_prose`, `test_layout_cap`,
 `test_diagnostics_contract`, `test_lizard_sighted`, `test_skin_values`, `test_skin_switch`) are
 declared by their directory.
 
-### The skin gates (skinning-§1, kit revision 50)
+### The skin gates (skinning-§1, kit revision 58)
 
 `test_skin_values` reads every typed color and texture in `core/`, `modules/` and `settings/`. A value
 the skin has a token for goes through the token; anything else no kit category takes is a row in
-`Kit.skinValues.rows` in `tests/run.lua`, with its reason and cause id, and a stale row fails.
-`test_skin_switch` flips every declared surface to a probe skin and fails one that draws the same.
+`Kit.skinValues.rows` in `tests/run.lua`, with its reason and either a cause id or a kit row category
+(`unreachable default`, `white base for tinting`, `not a color`), and a stale row fails.
+`test_skin_switch` flips every declared surface to a probe skin and fails one that draws the same. From
+kit revision 58 it also asks each setter family a surface draws (texture, color, font, shadow) to move on
+its own, every StatusBar's fill to move, and every string whose face moves to have its color set. A
+surface may carry `expect` (a family that must move), `hold` (a family a cited ruling keeps fixed) and
+`clear = true` (a StatusBar drawn clear).
 `tests/skin_surfaces.lua` declares them: the window's chrome, then every captioned sample cell off
 `body.cells`, so a new sample is declared with no edit here. A cell left out is in its `LEFT_OUT`, with
 the reason.

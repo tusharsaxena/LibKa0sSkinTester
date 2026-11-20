@@ -74,7 +74,11 @@ local function fontGetter(g)
     V.shown.GetFont = true
     draws[#draws + 1] = function()
         local path = R.Paint("GetFont")
-        if path then fs:SetFont(path, 14, "") end
+        -- The face at a fixed 14 (the text-size Leave class), its flags and color the skin's
+        -- (SD-SK-ST.3): not R.Paint("Text"), whose recorded repaint would put the body size back.
+        if path then fs:SetFont(path, 14, R.Paint("FontFlags", NS.Skin.FROM_SKIN, "window") or "") end
+        local r, gg, b, a = NS.Skin.Color("text.body")
+        if r then fs:SetTextColor(r, gg, b, a) end
         fs:SetText(("Body font: %s"):format(tostring(path)))
     end
 end

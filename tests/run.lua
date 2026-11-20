@@ -156,6 +156,11 @@ Kit.skinValues = {
         { file = "modules/ShowroomWidgets.lua", substring = "UI-QuestLogTitleHighlight",
           why = "the client's hover art a skin tints through list.hoverArt and never replaces",
           cause = "D9" },
+        -- Kit revision 58 reads `return` triples. rgba's fallback answers only a token that is no
+        -- color table, and every token it reads (chart.series, bar.bg, sem.*) holds one in every skin.
+        { file = "modules/ShowroomTextures.lua", substring = "return 1, 1, 1, 1",
+          why = "rgba's fallback for a token that is no color, which no skin's chart.series, bar.bg or sem.* is",
+          category = "unreachable default" },
     },
 }
 Kit.skinSwitch = dofile("tests/skin_surfaces.lua")(enableAddon)
