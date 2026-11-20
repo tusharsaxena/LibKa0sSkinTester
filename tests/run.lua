@@ -152,7 +152,8 @@ Kit.skinValues = {
     rows = {
         { file = "modules/ShowroomPanels.lua", substring = "sel:SetColorTexture(1, 1, 1, 1)",
           why = "the white base S.NavItem tints nav.selected, a blank texture draws no fill",
-          cause = "A5" },
+          -- A kit row category, not the cause id A5 it once borrowed (owner U-6, 2026-11-20).
+          category = "white base for tinting" },
         { file = "modules/ShowroomWidgets.lua", substring = "UI-QuestLogTitleHighlight",
           why = "the client's hover art a skin tints through list.hoverArt and never replaces",
           cause = "D9" },

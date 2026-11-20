@@ -17,6 +17,7 @@ local addonName, NS = ...
 --   NS.Values.heads   [category] = the heading FontString ("sem", "q", "gtip", "art")
 --   NS.Values.getters [color getter] = its readout FontString
 --   NS.Values.bar, .barLine   the BarStyle sample's bar and its readout
+--   NS.Values.fontLine        the GetFont readout, in the body face at 14 px
 --   NS.Values.barBorder       the BarBorder sample's readout
 --
 -- Everything redraws on OnLooksChanged: these are values read once, not paint the library records.
@@ -72,6 +73,7 @@ local function fontGetter(g)
     local fs = g:Add(300, 18, "GetFont"):CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     fs:SetPoint("LEFT")
     V.shown.GetFont = true
+    V.fontLine = fs
     draws[#draws + 1] = function()
         local path = R.Paint("GetFont")
         -- The face at a fixed 14 (the text-size Leave class), its flags and color the skin's

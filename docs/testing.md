@@ -40,7 +40,8 @@ surface may carry `expect` (a family that must move), `hold` (a family a cited r
 `clear = true` (a StatusBar drawn clear).
 `tests/skin_surfaces.lua` declares them: the window's chrome, then every captioned sample cell off
 `body.cells`, so a new sample is declared with no edit here. A cell left out is in its `LEFT_OUT`, with
-the reason.
+the reason. Its `EXPECT` names the surfaces whose texture must move (the bar fills and the shells), and
+the per-skin HUD lines hold their font family by the owner's ruling R-4, so only their color is asked.
 
 What the suites test is this addon's wiring: each descriptor, each degradation stub (by loading the
 addon with the library absent, never by hand-stubbing), the stand-down, the bindings and the layers.

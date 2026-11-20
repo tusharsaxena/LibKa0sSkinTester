@@ -46,16 +46,19 @@ local function newLine(g, caption)
     return fs
 end
 
+local function setColor(fs, r, g, b, a)
+    if r then fs:SetTextColor(r, g, b, a) end
+end
+
+--- One skin's line: that skin's face, size and outline, in the worn skin's HUD text color
+--- (SD-SK-ST.2), so only the color follows what is worn.
 local function drawSkin(key, label)
     local fs, t = H.lines[key], Skin():ResolveSkin(key)
     local face = t["hud.font"]
     fs.faceKey = face
     setFace(fs, face, t["hud.fontSize"], t["hud.outline"])
+    setColor(fs, R.Paint("HudTextColor"))
     fs:SetText(("%s  %s  (%s)"):format(label, SAMPLE, tostring(face)))
-end
-
-local function setColor(fs, r, g, b, a)
-    if r then fs:SetTextColor(r, g, b, a) end
 end
 
 local function drawWorn()

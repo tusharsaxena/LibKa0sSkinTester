@@ -211,3 +211,24 @@ test("fonts: without the skin engine the section builds and the probe says why",
     assertEqual(#NS.Fonts.Lines(), 1)
     assertTrue(NS.Fonts.Lines()[1]:find("did not load", 1, true) ~= nil)
 end)
+
+test("fonts: each skin's body and title lines draw in the worn skin's text.body and text.heading (SD-SK-ST.1)", function()
+    -- red under: the lines before SD-SK-ST.1, which set a face and never a color, so a skin whose body
+    -- text is not white still drew them in the template's stock white.
+    local NS, mock = opened()
+    fakeLSM(mock)
+    for _, worn in ipairs({ "obsidian", "azeroth" }) do
+        NS.Selector.Pick(worn)
+        local br, bg, bb = lib(mock):Color(OWNER, "text.body")
+        local hr, hg, hb = lib(mock):Color(OWNER, "text.heading")
+        for _, key in ipairs(NS.Fonts.order) do
+            local line = NS.Fonts.lines[key]
+            local r, g, b = line.body:GetTextColor()
+            assertEqual(("%.3f %.3f %.3f"):format(r, g, b), ("%.3f %.3f %.3f"):format(br, bg, bb),
+                worn .. ": " .. key .. "'s body line in text.body")
+            r, g, b = line.title:GetTextColor()
+            assertEqual(("%.3f %.3f %.3f"):format(r, g, b), ("%.3f %.3f %.3f"):format(hr, hg, hb),
+                worn .. ": " .. key .. "'s title line in text.heading")
+        end
+    end
+end)
