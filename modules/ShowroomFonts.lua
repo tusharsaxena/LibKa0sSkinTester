@@ -188,11 +188,20 @@ local function faceLine(g, def)
     F.lines[def.key] = line
 end
 
+--- A string's color from the worn skin's `token`; set by hand, because R.Paint("Text") would put the
+--- worn skin's face over the face this line shows (SD-SK-ST.1).
+local function setColor(fs, token)
+    local r, g, b, a = NS.Skin.Color(token)
+    if r then fs:SetTextColor(r, g, b, a) end
+end
+
 local function drawLine(key, t, row)
     local line, flags = F.lines[key], windowFlags(t)
     line.body.faceKey, line.title.faceKey = t["font.body"], t["font.title"]
     setFace(line.body, t["font.body"], t["font.bodySize"], flags)
     setFace(line.title, t["font.title"], t["font.titleSize"], flags)
+    setColor(line.body, "text.body")
+    setColor(line.title, "text.heading")
     line.body:SetText(("%s  (%s %s)"):format(BODY_SAMPLE, tostring(t["font.body"]), tostring(t["font.bodySize"])))
     line.title:SetText(("%s  (%s %s)"):format(TITLE_SAMPLE, tostring(t["font.title"]), tostring(t["font.titleSize"])))
     line.ratio:SetText(row and ("body %s  title %s  hud %s"):format(ratioText(row.body), ratioText(row.title),

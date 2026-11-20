@@ -333,7 +333,7 @@ Total.
 - controls: the Blizzard dropdown's menu offers both choices and marks the pick
 - controls: a client without the Blizzard template shows a label in its cell
 
-### test_showroom_values.lua (15)
+### test_showroom_values.lua (16)
 
 - values: every getter is displayed
 - values: every sem token has a line
@@ -350,6 +350,7 @@ Total.
 - values: without the skin engine FontFlags and HudFontSize still answer what SetFont takes
 - values: BarBorder defers to the stored three under None and a real style wins
 - values: without the skin engine BarBorder answers the stored three
+- values: the GetFont line draws in text.body, at 14 px, under the window's From skin flags (SD-SK-ST.3)
 
 ### test_showroom_textures.lua (8)
 
@@ -376,7 +377,7 @@ Total.
 - addon surfaces: the settings-style window follows a skin switch and stays skinned back on Ka0s Default
 - R5-WIN: the settings-style window's title and close sit on S.Band in every skin
 
-### test_showroom_fonts.lua (13)
+### test_showroom_fonts.lua (14)
 
 - fonts: the section is built, one face line per skin, in the library's order
 - fonts: each line names its skin's body and title faces, the new faces among them
@@ -391,8 +392,9 @@ Total.
 - fonts: a face the client refuses reads unmeasured, never the previous face's width
 - fonts: /st widths is refused while the addon is disabled
 - fonts: without the skin engine the section builds and the probe says why
+- fonts: each skin's body and title lines draw in the worn skin's text.body and text.heading (SD-SK-ST.1)
 
-### test_showroom_hud.lua (11)
+### test_showroom_hud.lua (12)
 
 - hud: the section is built, one line per skin, in the library's order
 - hud: each skin's line names that skin's own HUD face, all nine of them
@@ -405,6 +407,7 @@ Total.
 - hud: BarGloss shows under a skin with gloss and only there
 - overlays: S.Mark tints its marks and the MarkText line is written again
 - overlays: the hot row shows rest, hot, heading and the row washes, in every skin
+- hud: each skin's line draws in the worn skin's HudTextColor, its face its own skin's (SD-SK-ST.2)
 
 ### test_showroom_widgets.lua (21)
 
@@ -833,13 +836,14 @@ Total.
 
 ### test_skin_values.lua (3)
 
-- skin values: every host row carries its file, substring, why and cause id
+- skin values: every host row carries its file, substring, why and a cause id or kit row category
 - skin values: no typed value outside the kit's categories and the host's rows
 - skin values: the check is falsifiable, a planted value of each shape is reported
 
-### test_skin_switch.lua (222)
+### test_skin_switch.lua (241)
 
 - skin switch: the check is falsifiable, a surface that redraws a literal is reported
+- skin switch: the check is falsifiable, a bar whose texture never moves is reported
 - skin switch: the window's shell changes
 - skin switch: the window's shell changes with the Scope ignored
 - skin switch: the title bar changes
@@ -1061,6 +1065,24 @@ Total.
 - skin switch: hud: BarStyle (the skin worn; Ignore fonts gives the host's face back) changes with the Scope ignored
 - skin switch: hud: HudFont: HudTextColor, HudLabelColor, HudShadow changes
 - skin switch: hud: HudFont: HudTextColor, HudLabelColor, HudShadow changes with the Scope ignored
+- skin switch: hud: hud.font (Azeroth) changes
+- skin switch: hud: hud.font (Azeroth) changes with the Scope ignored
+- skin switch: hud: hud.font (Ember) changes
+- skin switch: hud: hud.font (Ember) changes with the Scope ignored
+- skin switch: hud: hud.font (Glass) changes
+- skin switch: hud: hud.font (Glass) changes with the Scope ignored
+- skin switch: hud: hud.font (High Contrast) changes
+- skin switch: hud: hud.font (High Contrast) changes with the Scope ignored
+- skin switch: hud: hud.font (Ka0s Default) changes
+- skin switch: hud: hud.font (Ka0s Default) changes with the Scope ignored
+- skin switch: hud: hud.font (Obsidian) changes
+- skin switch: hud: hud.font (Obsidian) changes with the Scope ignored
+- skin switch: hud: hud.font (WoW Default) changes
+- skin switch: hud: hud.font (WoW Default) changes with the Scope ignored
+- skin switch: hud: hud.font (WoW Forever) changes
+- skin switch: hud: hud.font (WoW Forever) changes with the Scope ignored
+- skin switch: hud: hud.font (WoW Midnight) changes
+- skin switch: hud: hud.font (WoW Midnight) changes with the Scope ignored
 
 ### test_client_globals.lua (3)
 
@@ -1086,11 +1108,11 @@ Total.
 | test_showroom.lua | 43 |
 | test_showroom_coverage.lua | 6 |
 | test_showroom_dropdowns.lua | 8 |
-| test_showroom_values.lua | 15 |
+| test_showroom_values.lua | 16 |
 | test_showroom_textures.lua | 8 |
 | test_showroom_owner.lua | 11 |
-| test_showroom_fonts.lua | 13 |
-| test_showroom_hud.lua | 11 |
+| test_showroom_fonts.lua | 14 |
+| test_showroom_hud.lua | 12 |
 | test_showroom_widgets.lua | 21 |
 | test_skin_media.lua | 9 |
 | test_skin_outline.lua | 9 |
@@ -1118,7 +1140,7 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | test_skin_values.lua | 3 |
-| test_skin_switch.lua | 222 |
+| test_skin_switch.lua | 241 |
 | test_client_globals.lua | 3 |
 | Skipped | 1 |
-| **Total** | **915** |
+| **Total** | **937** |

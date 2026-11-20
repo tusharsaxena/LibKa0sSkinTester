@@ -284,3 +284,19 @@ test("overlays: the hot row shows rest, hot, heading and the row washes, in ever
     end
     assertEqual(n, 9, "every shipped skin")
 end)
+
+test("hud: each skin's line draws in the worn skin's HudTextColor, its face its own skin's (SD-SK-ST.2)", function()
+    -- red under: the lines before SD-SK-ST.2, which set a face and never a color.
+    local NS, mock = opened()
+    fakeLSM(mock)
+    local S = NS.Skin
+    for _, worn in ipairs({ "obsidian", "azeroth" }) do
+        NS.Selector.Pick(worn)
+        local want = ("%.3f %.3f %.3f"):format(S.HudTextColor())
+        for _, key in ipairs(NS.Hud.order) do
+            local r, g, b = NS.Hud.lines[key]:GetTextColor()
+            assertEqual(("%.3f %.3f %.3f"):format(r, g, b), want, worn .. ": " .. key .. "'s line in HudTextColor")
+            assertEqual(NS.Hud.lines[key].faceKey, lib(mock):ResolveSkin(key)["hud.font"], key .. " keeps its own face")
+        end
+    end
+end)

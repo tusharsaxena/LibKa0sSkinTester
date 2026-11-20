@@ -152,10 +152,16 @@ Kit.skinValues = {
     rows = {
         { file = "modules/ShowroomPanels.lua", substring = "sel:SetColorTexture(1, 1, 1, 1)",
           why = "the white base S.NavItem tints nav.selected, a blank texture draws no fill",
-          cause = "A5" },
+          -- A kit row category, not the cause id A5 it once borrowed (owner U-6, 2026-11-20).
+          category = "white base for tinting" },
         { file = "modules/ShowroomWidgets.lua", substring = "UI-QuestLogTitleHighlight",
           why = "the client's hover art a skin tints through list.hoverArt and never replaces",
           cause = "D9" },
+        -- Kit revision 58 reads `return` triples. rgba's fallback answers only a token that is no
+        -- color table, and every token it reads (chart.series, bar.bg, sem.*) holds one in every skin.
+        { file = "modules/ShowroomTextures.lua", substring = "return 1, 1, 1, 1",
+          why = "rgba's fallback for a token that is no color, which no skin's chart.series, bar.bg or sem.* is",
+          category = "unreachable default" },
     },
 }
 Kit.skinSwitch = dofile("tests/skin_surfaces.lua")(enableAddon)

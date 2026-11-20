@@ -241,3 +241,27 @@ test("values: without the skin engine BarBorder answers the stored three", funct
     assertEqual(show, false, "the show")
     assertEqual(size, 2, "the size")
 end)
+
+test("values: the GetFont line draws in text.body, at 14 px, under the window's From skin flags (SD-SK-ST.3)", function()
+    -- red under: the line before SD-SK-ST.3, never colored and always typed "" flags.
+    local NS, mock = opened()
+    local Skin = mock.LibStub("LibKa0s-Skin-1.0")
+    local LSM = mock.LibStub:NewLibrary("LibSharedMedia-3.0", 1) or mock.LibStub("LibSharedMedia-3.0")
+    LSM.Fetch = function(_, kind, key) return ("Fonts\\%s\\%s.ttf"):format(kind, tostring(key)) end
+    for _, worn in ipairs({ "obsidian", "azeroth" }) do
+        NS.Selector.Pick(worn)
+        local fs = NS.Values.fontLine
+        local r, g, b = fs:GetTextColor()
+        local wr, wg, wb = Skin:Color(OWNER, "text.body")
+        assertEqual(("%.3f %.3f %.3f"):format(r, g, b), ("%.3f %.3f %.3f"):format(wr, wg, wb), worn .. ": text.body")
+        local font = mock.__paint(fs).font
+        assertTrue(font ~= nil, worn .. ": a face is set")
+        assertEqual(font[2], 14, worn .. ": the fixed 14 px")
+        assertEqual(font[3], NS.Skin.FontFlags(NS.Skin.FROM_SKIN, "window"), worn .. ": the window's From skin flags")
+    end
+    NS.Selector.Pick("ka0s")
+    Skin:SetOutline(OWNER, "all")
+    local font = mock.__paint(NS.Values.fontLine).font
+    assertEqual(font[3], "OUTLINE", "All text: Ka0s Default's window outline, live")
+    Skin:SetOutline(OWNER, "hud")
+end)
