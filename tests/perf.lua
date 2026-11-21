@@ -222,9 +222,27 @@ NS.Showroom.Hide()
 -- is accepted, not cut. The API pin is the measured count; the byte ceiling is the measured figure plus
 -- about 20 bytes, to the nearest 10, the same headroom as SF-FIX's and SF-ST-2's pins.
 --
+-- Re-pinned 2026-11-21 (FU-ST-PERF) at 1459 calls and 252244.8 bytes, stable over five runs at FU-RV-ST
+-- (dabb47b, LibKa0s v1.109.0). The R6-AT pin went stale at V89A-ST and nothing re-measured it until the
+-- repaint stood 44 calls over. Measured at every commit from 9c3debb on, in a scratch worktree: flat at
+-- 1415 / 249622.3 to V89-ST (da85eef); V89A-ST (b16435a, the skinned W.ContextMenu cascade sample)
+-- 1415 -> 1422, 249621.4 -> 250869.4; QFE-ST1 (c2ca48f, the Sample controls page removed) -> 1418,
+-- 250805.4; QFE-ST2 (ff32e0a, Ignore settings panel on by default) -> 1412, 235461.4; RV-ST (21c53b1,
+-- LibKa0s v1.105.0) -> 1407, 234677.1; ST-82 (7470b3b, the Overlays hot-state row) -> 1419, 235709.1;
+-- SR2-STP (89548c6, Ignore settings panel back to off) -> 1425, 251052.8; AD-89-ST (6aebbc4, the
+-- W.Footer footer) -> 1428, 251461.1; AD-86-ST (98547c3, the W.HeaderButtons title marks) -> 1430,
+-- 251925.1; AF-RV-ST (ef68f81, LibKa0s v1.107.0) -> 1431, 252245.1; SD-RV-ST (62b5a7e, v1.108.0) ->
+-- 1432, 252245.0; SD-SK-ST (d4bb757) -> 1459, 252245.0. That last step is the skin-defaults work and
+-- allocates nothing: the Faces and widths lines take text.body and text.heading (2 SetTextColor per
+-- skin line) and the per-skin HUD lines take HudTextColor (1 per line), nine skin lines each, 27 calls,
+-- confirmed by removing those sets in a scratch copy (1459 -> 1441 -> 1432). 06f8d8a, d9b1ed9, 5eabf16
+-- and FU-RV-ST left it flat. Each step is deliberate work, so the figure is accepted, not cut. The API
+-- pin is the measured count; the byte ceiling is the measured figure plus about 20 bytes, to the
+-- nearest 10, as before.
+--
 -- Raise a ceiling only by re-measuring and saying why; a rise IS the finding. A LibKa0s re-vendor or a
 -- new sample moves the repaint's figures, so that is the moment to re-measure and re-pin them.
-local REPAINT_MAX_BYTES, REPAINT_MAX_API = 249640, 1415
+local REPAINT_MAX_BYTES, REPAINT_MAX_API = 252260, 1459
 assert_(repaint.apiPerIter <= REPAINT_MAX_API,
     ("skinRepaint made %.1f API calls, over its pinned %d"):format(repaint.apiPerIter, REPAINT_MAX_API))
 local CEILINGS = {
