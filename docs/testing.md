@@ -27,7 +27,7 @@ base mock. The kit's own suites (`test_eol`, `test_prose`, `test_layout_cap`,
 `test_diagnostics_contract`, `test_lizard_sighted`, `test_skin_values`, `test_skin_switch`) are
 declared by their directory.
 
-### The skin gates (skinning-§1, kit revision 58)
+### The skin gates (skinning-§1, kit revision 59)
 
 `test_skin_values` reads every typed color and texture in `core/`, `modules/` and `settings/`. A value
 the skin has a token for goes through the token; anything else no kit category takes is a row in
