@@ -61,7 +61,8 @@ is no packaging step.
 ## Am I set up correctly?
 
 ```sh
-lua tests/run.lua                                     # the suite — must be green
+lua tests/run.lua                                     # the suite — must be green, as Retail
+KA0S_KIT_CLIENT=forever lua tests/run.lua             # and as WoW Forever
 ~/.claude/dev-copilot/bin/ka0s-bounded luacheck .     # must be 0 warnings / 0 errors
 ~/.claude/dev-copilot/bin/ka0s-bounded bash tests/_kit/run-automated-tests.sh --suite complexity --no-bundle
 ```

@@ -11,7 +11,7 @@ its theme, and a retired number is never reused.
 |---|---|---|
 | INSTALL-1..3 | Install | Load, reload, first run |
 | SLASH-1..6 | Slash commands | `/st`, `/skintester`, help, the disabled refusal, a foreign `/st`, `/st skin`, `/st widths` |
-| PANEL-1..21 | Settings panel | Landing page, General's tabs, Skin, Keybindings, the Scope, Font and texture, the settings chrome's face and tooltips, the Font outline, the media pickers, a dropdown list closing on an outside press, no Sim mode box, the Scope kept through another addon's copy, the settings panel in the game's look by default |
+| PANEL-1..22 | Settings panel | Landing page, General's tabs, Skin, Keybindings, the Scope, Font and texture, the settings chrome's face and tooltips, the Font outline, the media pickers, a dropdown list closing on an outside press, no Sim mode box, the Scope kept through another addon's copy, the settings panel in the game's look by default, the tester skinning its own panel on a fresh profile |
 | PROFILE-1..3 | Profiles | The Profiles page and the `profile` verb |
 | STATE-1..2 | Enable and disable | The stand-down and its refusal |
 | COMBAT-1..2 | Combat | The showroom and the panel in combat |
@@ -19,7 +19,7 @@ its theme, and a retired number is never reused.
 | DEGRADED-1 | Degraded install | The library-absent load |
 | SHOW-1..60 | Showroom | The window, the swatch selector, the sections, position and scale, the textures, Ka0s Default's face and bar, the addon surfaces, the library widgets, the tooltip colors and art tints, the HUD faces, the faces and widths, FontFlags and HudFontSize, the icon samples, a stored pick of the deleted Friz, Ka0s Default's header, the icon outline colors, the window edge beside the HUD's, round 5's darker header, the header on its band, every window like Loot History's, the menu cascade, the hot state, the title marks, the sample tooltip's placement, the GetFont line's color and flags, the cascade's submenu arrows, the face and HUD lines' colors |
 | PICKER-1..27 | First-run skin picker | When and where it shows, its title, preview, Apply, close, the gear, Apply to all, one window across addons, taking it down, combat, a preview meeting another write, the reload popup, the list closing on an outside press, the title on its band, the eye's window mode |
-| FOREVER-1..12 | WoW Forever | The checks re-run on a live WoW Forever client: the AddOns list, a clean load, the showroom and its sections, skins, the panel and its widgets, profiles across a full restart, the picker, the launcher and diagnostics |
+| FOREVER-1..13 | WoW Forever | The checks re-run on a live WoW Forever client: the AddOns list, a clean load, the showroom and its sections, skins, the panel and its widgets, profiles across a full restart, the picker, the launcher and diagnostics, the default skin per client |
 | LOC-1 | Non-English client | Locale-dependent behavior |
 
 ## Before you start
