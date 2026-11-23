@@ -267,7 +267,7 @@ Total.
 - skin default: a fresh profile stores and wears the client's default skin
 - skin default: Reset puts the profile back on the client's default skin
 
-### test_showroom.lua (43)
+### test_showroom.lua (44)
 
 - showroom: the window is painted through the wrapper
 - showroom: Paint answers the primitive's answer and records the name once
@@ -312,6 +312,7 @@ Total.
 - AD-86-ST: the settings mark opens this addon's settings, and the showroom stays shown
 - AD-86-ST: the settings mark says Open settings, rests in icon.tint and lights text.link, in every skin
 - AD-86-ST: with no library widgets the close alone, on the bar's right
+- FB-ST-01: a disabled primary sample looks like the Disabled sample, in every skin
 
 ### test_showroom_coverage.lua (6)
 
@@ -840,7 +841,7 @@ Total.
 - skin values: no typed value outside the kit's categories and the host's rows
 - skin values: the check is falsifiable, a planted value of each shape is reported
 
-### test_skin_switch.lua (241)
+### test_skin_switch.lua (243)
 
 - skin switch: the check is falsifiable, a surface that redraws a literal is reported
 - skin switch: the check is falsifiable, a bar whose texture never moves is reported
@@ -870,6 +871,8 @@ Total.
 - skin switch: controls: Button (disabled) changes with the Scope ignored
 - skin switch: controls: Button (primary) changes
 - skin switch: controls: Button (primary) changes with the Scope ignored
+- skin switch: controls: Button (primary, disabled) changes
+- skin switch: controls: Button (primary, disabled) changes with the Scope ignored
 - skin switch: controls: Checkbox (checked) changes
 - skin switch: controls: Checkbox (checked) changes with the Scope ignored
 - skin switch: controls: Checkbox (unchecked) changes
@@ -1105,7 +1108,7 @@ Total.
 | test_slash.lua | 20 |
 | test_selector.lua | 13 |
 | test_skin_default.lua | 2 |
-| test_showroom.lua | 43 |
+| test_showroom.lua | 44 |
 | test_showroom_coverage.lua | 6 |
 | test_showroom_dropdowns.lua | 8 |
 | test_showroom_values.lua | 16 |
@@ -1140,7 +1143,7 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | test_skin_values.lua | 3 |
-| test_skin_switch.lua | 241 |
+| test_skin_switch.lua | 243 |
 | test_client_globals.lua | 3 |
 | Skipped | 1 |
-| **Total** | **937** |
+| **Total** | **940** |
