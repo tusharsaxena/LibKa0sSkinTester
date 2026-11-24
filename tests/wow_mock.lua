@@ -220,6 +220,21 @@ local function build()
         api.SetShown  = function(_, v) if v then api.Show() else api.Hide() end return f end
         api.IsShown   = function() return f.__shown end
         api.IsVisible = function() return f.__shown end
+        -- Enabled state, TRACKED (FB-ST-01): the PascalCase fallback below answers the frame itself,
+        -- so an IsEnabled read was truthy whatever Disable was told, and a disabled sample painted as
+        -- an enabled one. As the client, a change of state fires OnEnable / OnDisable.
+        f.__enabled = true
+        local function setEnabled(on)
+            on = not not on
+            if f.__enabled == on then return f end
+            f.__enabled = on
+            f.__fire(on and "OnEnable" or "OnDisable")
+            return f
+        end
+        api.Enable     = function() return setEnabled(true) end
+        api.Disable    = function() return setEnabled(false) end
+        api.SetEnabled = function(_, on) return setEnabled(on) end
+        api.IsEnabled  = function() return f.__enabled end
 
         -- geometry
         api.SetPoint = function(_, point, ...)

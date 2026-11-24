@@ -806,3 +806,27 @@ test("AD-86-ST: with no library widgets the close alone, on the bar's right", fu
     f.close.__fire("OnClick", "LeftButton")
     assertTrue(not f:IsShown(), "the fallback close hides the showroom")
 end)
+
+test("FB-ST-01: a disabled primary sample looks like the Disabled sample, in every skin", function()
+    -- The owner, 2026-11-24 (Outfitter Reborn's New Outfit "Done"): "It should look like this (from
+    -- skin tester)", meaning Normal / Primary / Disabled. SkinPaintControls 21 (LibKa0s v1.112.0)
+    -- paints a disabled primary as the plain button box with text.disabled; the showroom shows it.
+    -- red under: no "Button (primary, disabled)" sample, or a vendored SkinPaintControls older than
+    -- 21 (the primary fill kept under the disabled label).
+    local NS, _, mock = painted()
+    NS.Showroom.Show()
+    local sec = NS.Showroom.Section("controls")
+    local pd, dis, pri = sec.primaryDisabled, sec.disabledButton, sec.primaryButton
+    assertTrue(pd ~= nil and dis ~= nil and pri ~= nil, "the three button samples are kept on the section")
+    assertEqual(pd:IsEnabled(), false, "the disabled primary is disabled")
+    assertEqual(pd.text:GetText(), "Disabled", "its label")
+    for _, def in ipairs(lib(mock):Skins()) do
+        NS.Selector.Pick(def.key)
+        local what = def.key .. ": the disabled primary"
+        assertToken(mock, mock.__paint(pd).backdropColor, "btn.bg", what .. "'s box")
+        assertToken(mock, mock.__paint(pd.text).textColor, "text.disabled", what .. "'s label")
+        assertToken(mock, mock.__paint(pri).backdropColor, "btnPrimary.bg", def.key .. ": the enabled primary's box")
+        local a, b = mock.__paint(pd).backdropColor, mock.__paint(dis).backdropColor
+        assertTrue(near(a[1], b[1]) and near(a[2], b[2]) and near(a[3], b[3]), what .. " matches Disabled")
+    end
+end)

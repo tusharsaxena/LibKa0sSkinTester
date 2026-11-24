@@ -267,7 +267,7 @@ Total.
 - skin default: a fresh profile stores and wears the client's default skin
 - skin default: Reset puts the profile back on the client's default skin
 
-### test_showroom.lua (43)
+### test_showroom.lua (44)
 
 - showroom: the window is painted through the wrapper
 - showroom: Paint answers the primitive's answer and records the name once
@@ -312,6 +312,7 @@ Total.
 - AD-86-ST: the settings mark opens this addon's settings, and the showroom stays shown
 - AD-86-ST: the settings mark says Open settings, rests in icon.tint and lights text.link, in every skin
 - AD-86-ST: with no library widgets the close alone, on the bar's right
+- FB-ST-01: a disabled primary sample looks like the Disabled sample, in every skin
 
 ### test_showroom_coverage.lua (6)
 
@@ -432,6 +433,18 @@ Total.
 - widgets: the cascade draws the arrow, the tick column and a child level beside its row, the parent kept
 - widgets: the cascade's picks change only the sample's own state
 - widgets: the cascade closes when the showroom hides and when the skin changes
+
+### test_menu_selected.lua (4)
+
+- menu selected: the Controls dropdown's selected row stands off its plain row under every skin
+- menu selected: the Selector's Source dropdown marks the applied source apart under every skin
+- menu selected: the cascade's ticked rows paint selected, not a tick beside plain text
+- menu selected: Azeroth, the skin whose accent sits near its text, takes Ka0s Default's gold
+
+### test_sample_names.lua (2)
+
+- sample names: the matcher finds a hand-copied name and realm, and passes English and code names
+- sample names: no Sample*/Mock* name literal lives outside tests/, libs/ and the frozen bundles
 
 ### test_skin_media.lua (9)
 
@@ -840,7 +853,7 @@ Total.
 - skin values: no typed value outside the kit's categories and the host's rows
 - skin values: the check is falsifiable, a planted value of each shape is reported
 
-### test_skin_switch.lua (241)
+### test_skin_switch.lua (243)
 
 - skin switch: the check is falsifiable, a surface that redraws a literal is reported
 - skin switch: the check is falsifiable, a bar whose texture never moves is reported
@@ -870,6 +883,8 @@ Total.
 - skin switch: controls: Button (disabled) changes with the Scope ignored
 - skin switch: controls: Button (primary) changes
 - skin switch: controls: Button (primary) changes with the Scope ignored
+- skin switch: controls: Button (primary, disabled) changes
+- skin switch: controls: Button (primary, disabled) changes with the Scope ignored
 - skin switch: controls: Checkbox (checked) changes
 - skin switch: controls: Checkbox (checked) changes with the Scope ignored
 - skin switch: controls: Checkbox (unchecked) changes
@@ -1105,7 +1120,7 @@ Total.
 | test_slash.lua | 20 |
 | test_selector.lua | 13 |
 | test_skin_default.lua | 2 |
-| test_showroom.lua | 43 |
+| test_showroom.lua | 44 |
 | test_showroom_coverage.lua | 6 |
 | test_showroom_dropdowns.lua | 8 |
 | test_showroom_values.lua | 16 |
@@ -1114,6 +1129,8 @@ Total.
 | test_showroom_fonts.lua | 14 |
 | test_showroom_hud.lua | 12 |
 | test_showroom_widgets.lua | 21 |
+| test_menu_selected.lua | 4 |
+| test_sample_names.lua | 2 |
 | test_skin_media.lua | 9 |
 | test_skin_outline.lua | 9 |
 | test_skin_verb.lua | 7 |
@@ -1140,7 +1157,7 @@ Total.
 | test_diagnostics_contract.lua | 8 |
 | test_lizard_sighted.lua | 8 |
 | test_skin_values.lua | 3 |
-| test_skin_switch.lua | 241 |
+| test_skin_switch.lua | 243 |
 | test_client_globals.lua | 3 |
 | Skipped | 1 |
-| **Total** | **937** |
+| **Total** | **946** |

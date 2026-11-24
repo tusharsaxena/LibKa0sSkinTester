@@ -166,11 +166,21 @@ R.AddSection("controls", L["Controls"], function(body, paint)
     local primary = R.SampleButton(g:Add(110, 24, "Button (primary)"), 110, 24, "Primary")
     primary:SetPoint("TOPLEFT")
     paint("Button", primary, { primary = true })
+    body.primaryButton = primary
 
     local disabled = R.SampleButton(g:Add(110, 24, "Button (disabled)"), 110, 24, "Disabled")
     disabled:SetPoint("TOPLEFT")
     disabled:Disable()
     paint("Button", disabled)
+    body.disabledButton = disabled
+
+    -- A disabled primary (FB-ST-01, the owner's 2026-11-24 Done button): SkinPaintControls 21 paints it
+    -- as the Disabled sample beside it, the plain button box with text.disabled, never the primary fill.
+    local primaryOff = R.SampleButton(g:Add(110, 24, "Button (primary, disabled)"), 110, 24, "Disabled")
+    primaryOff:SetPoint("TOPLEFT")
+    primaryOff:Disable()
+    paint("Button", primaryOff, { primary = true })
+    body.primaryDisabled = primaryOff
 
     local white = R.SampleButton(g:Add(110, 24, "WhiteButtonLabel"), 110, 24, "White label")
     white:SetPoint("TOPLEFT")
