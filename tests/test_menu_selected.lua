@@ -11,7 +11,10 @@
 --   the Widgets section's cascade      W.ContextMenu, owned: a ticked row (Bags, Medium) is selected
 --
 -- A selected row's text is W.SelectedColor(owner), the color the shared menu itself answers, and it
--- stands at least 20 CIEDE2000 off a plain row's (the library's floor, its own ΔE00 seam). None of
+-- stands at least 20 CIEDE2000 off a plain row's (the library's floor, its own ΔE00 seam). Since the
+-- owner's ruling of 2026-11-24 on round 2 (FB2-ST-02; LibKa0s v1.113.0 re-cut, FB2-LK-04) that color
+-- is Ka0s Default's gold in every skin, WoW Forever's included; only a skin whose plain text sits
+-- under the floor off the gold would take its own menu.textSel, and no shipped skin does. None of
 -- these menus carries a value color (class, quality), so "off a value color" has no row to test
 -- here. The AceGUI Dropdown and the Blizzard DropdownButton samples open the client's own menus,
 -- which no Ka0s skin paints.
@@ -122,12 +125,27 @@ test("menu selected: the cascade's ticked rows paint selected, not a tick beside
     end
 end)
 
-test("menu selected: Azeroth, the skin whose accent sits near its text, takes Ka0s Default's gold", function()
-    -- red under: a selection that follows Azeroth's own menu.textSel (the owner's report on Loot History).
+test("menu selected: the selected row is Ka0s Default's gold in every skin, WoW Forever's included", function()
+    -- red under: the first cut of LibKa0s v1.113.0, which kept a skin's own menu.textSel while it stood
+    -- 20 ΔE00 off menu.text, so WoW Forever's tan accent marked the selection (the owner's report on
+    -- Loot History's Character dropdown on Forever: the issue "has not been fixed"; "leave it as gold").
     local NS, mock = opened()
-    local W, dd = mock.LibStub("LibKa0s-Widgets-1.0"), NS.Showroom.Section("controls").dropdown
-    NS.Selector.Pick("azeroth")
-    local menu = openDropdown(mock, dd, {})
-    assertEqual(rgb(painted(mock, shownRow(menu, "First choice"))), rgb({ 1, 0.82, 0 }), "the gold")
-    W.CloseMenu()
+    local W, dd, state = mock.LibStub("LibKa0s-Widgets-1.0"), NS.Showroom.Section("controls").dropdown, {}
+    local GOLD, seen = { 1, 0.82, 0 }, {}
+    for _, key in ipairs(skinKeys(mock)) do
+        NS.Selector.Pick(key)
+        local menu = openDropdown(mock, dd, state)
+        local sel, plain = shownRow(menu, "First choice"), shownRow(menu, "Second choice")
+        -- The gold, unless it sits under the floor off this skin's plain text (none shipped does).
+        if W.__menuDE00(GOLD, painted(mock, plain)) >= SEL_DE00_MIN then
+            seen[key] = true
+            assertEqual(rgb(painted(mock, sel)), rgb(GOLD), key .. ": the selected row is the gold")
+            local r, g, b = W.SelectedColor(OWNER)
+            assertEqual(rgb({ r, g, b }), rgb(GOLD), key .. ": W.SelectedColor answers the gold")
+        end
+        W.CloseMenu()
+    end
+    for _, key in ipairs({ "ka0s", "forever", "azeroth", "obsidian" }) do
+        assertTrue(seen[key], key .. ": its selected row is the gold")
+    end
 end)
