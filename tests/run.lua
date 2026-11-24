@@ -206,6 +206,7 @@ Kit.run{
         "test_showroom_fonts",
         "test_showroom_hud",
         "test_showroom_widgets",
+        "test_menu_selected",
         "test_skin_media",
         "test_skin_outline",
         "test_skin_verb",
