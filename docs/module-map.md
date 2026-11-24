@@ -99,6 +99,8 @@ generated case inventory.
 | `tests/test_showroom_textures.lua` | The Textures section: status bars, a bar chart and a stacked bar in the skin's bar texture |
 | `tests/test_showroom_values.lua` | The Values section: the getters' answers, the semantic colors and the item quality tiers |
 | `tests/test_showroom_widgets.lua` | The Library widgets section |
+| `tests/test_menu_selected.lua` | Every showroom menu marks its selected row in the shared selected color, apart from plain rows under every skin (FB2-ST-01, D3) |
+| `tests/test_sample_names.lua` | No Sample*/Mock* name literal outside tests/, libs/ and the frozen bundles: every named sample person comes from LibKa0s-Sim-1.0 (FB2-ST-01, D1) |
 
 ## Events
 

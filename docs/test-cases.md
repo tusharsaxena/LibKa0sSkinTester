@@ -434,6 +434,18 @@ Total.
 - widgets: the cascade's picks change only the sample's own state
 - widgets: the cascade closes when the showroom hides and when the skin changes
 
+### test_menu_selected.lua (4)
+
+- menu selected: the Controls dropdown's selected row stands off its plain row under every skin
+- menu selected: the Selector's Source dropdown marks the applied source apart under every skin
+- menu selected: the cascade's ticked rows paint selected, not a tick beside plain text
+- menu selected: Azeroth, the skin whose accent sits near its text, takes Ka0s Default's gold
+
+### test_sample_names.lua (2)
+
+- sample names: the matcher finds a hand-copied name and realm, and passes English and code names
+- sample names: no Sample*/Mock* name literal lives outside tests/, libs/ and the frozen bundles
+
 ### test_skin_media.lua (9)
 
 - media: a fresh profile stores the skin's own font and texture, and the picker unseen
@@ -1117,6 +1129,8 @@ Total.
 | test_showroom_fonts.lua | 14 |
 | test_showroom_hud.lua | 12 |
 | test_showroom_widgets.lua | 21 |
+| test_menu_selected.lua | 4 |
+| test_sample_names.lua | 2 |
 | test_skin_media.lua | 9 |
 | test_skin_outline.lua | 9 |
 | test_skin_verb.lua | 7 |
@@ -1146,4 +1160,4 @@ Total.
 | test_skin_switch.lua | 243 |
 | test_client_globals.lua | 3 |
 | Skipped | 1 |
-| **Total** | **940** |
+| **Total** | **946** |
