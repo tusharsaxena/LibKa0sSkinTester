@@ -439,7 +439,7 @@ Total.
 - menu selected: the Controls dropdown's selected row stands off its plain row under every skin
 - menu selected: the Selector's Source dropdown marks the applied source apart under every skin
 - menu selected: the cascade's ticked rows paint selected, not a tick beside plain text
-- menu selected: Azeroth, the skin whose accent sits near its text, takes Ka0s Default's gold
+- menu selected: the selected row is Ka0s Default's gold in every skin, WoW Forever's included
 
 ### test_sample_names.lua (2)
 
